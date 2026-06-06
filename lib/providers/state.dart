@@ -36,8 +36,7 @@ GroupsState currentGroupsState(Ref ref) {
       Mode.global => groups.toList(),
       Mode.rule =>
         groups
-            .where((item) => item.hidden == false)
-            .where((element) => element.name != GroupName.GLOBAL.name)
+            .where((item) => !item.hidden && item.name != GroupName.GLOBAL.name)
             .toList(),
     },
   );
@@ -804,8 +803,12 @@ Future<SetupState> setupState(Ref ref, int? profileId) async {
           ? null
           : await database.scriptsDao.get(scriptId).getSingleOrNull();
     } else {
-      rules = await database.rulesDao.queryProfileCustomRules(profileId).get();
-      proxyGroups = await database.proxyGroupsDao.query(profileId).get();
+      final results = await Future.wait([
+        database.rulesDao.queryProfileCustomRules(profileId).get(),
+        database.proxyGroupsDao.query(profileId).get(),
+      ]);
+      rules = results[0] as List<Rule>;
+      proxyGroups = results[1] as List<ProxyGroup>;
     }
   }
   return SetupState(
