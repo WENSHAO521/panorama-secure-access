@@ -276,8 +276,10 @@ class SetupAction extends _$SetupAction {
       silence: silence,
       preloadInvoke: preloadInvoke,
       onUpdated: () async {
-        await ref.read(proxiesActionProvider.notifier).updateGroups();
-        await ref.read(providersProvider.notifier).syncProviders();
+        await Future.wait([
+          ref.read(proxiesActionProvider.notifier).updateGroups(),
+          ref.read(providersProvider.notifier).syncProviders(),
+        ]);
       },
     );
   }

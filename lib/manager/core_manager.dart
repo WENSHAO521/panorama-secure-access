@@ -67,7 +67,7 @@ class _CoreContainerState extends ConsumerState<CoreManager>
     proxiesAction.setDelay(delay);
     debouncer.call(FunctionTag.updateDelay, () async {
       proxiesAction.updateGroupsDebounce();
-    }, duration: const Duration(milliseconds: 5000));
+    }, duration: const Duration(milliseconds: 2000));
   }
 
   @override
@@ -93,7 +93,7 @@ class _CoreContainerState extends ConsumerState<CoreManager>
         .setProvider(await coreController.getExternalProvider(providerName));
     debouncer.call(FunctionTag.loadedProvider, () async {
       ref.read(proxiesActionProvider.notifier).updateGroupsDebounce();
-    }, duration: const Duration(milliseconds: 5000));
+    }, duration: const Duration(milliseconds: 2000));
     super.onLoaded(providerName);
   }
 
