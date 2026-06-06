@@ -11,21 +11,28 @@ extension FutureExt<T> on Future<T> {
     FutureOr<T> Function()? onTimeout,
   }) {
     final realTimeout = timeout ?? const Duration(minutes: 3);
-    Timer(realTimeout + commonDuration, () {
-      if (onLast != null) {
-        onLast();
-      }
-    });
+    bool timedOut = false;
+    Timer? cleanupTimer;
+    if (onLast != null) {
+      cleanupTimer = Timer(realTimeout + commonDuration, onLast);
+    }
     return this.timeout(
       realTimeout,
       onTimeout: () async {
+        timedOut = true;
         if (onTimeout != null) {
           return onTimeout();
         } else {
           throw TimeoutException('${tag ?? runtimeType} timeout');
         }
       },
-    );
+    ).whenComplete(() {
+      // Only cancel the cleanup timer on normal completion.
+      // On timeout (timedOut == true), let it fire so onLast runs cleanup.
+      if (!timedOut) {
+        cleanupTimer?.cancel();
+      }
+    });
   }
 }
 

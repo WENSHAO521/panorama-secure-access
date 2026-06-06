@@ -1,34 +1,48 @@
+import 'dart:collection';
+
 import 'iterable.dart';
 
 typedef ValueCallback<T> = T Function();
 
 class FixedList<T> {
   final int maxLength;
-  final List<T> _list;
+  final ListQueue<T> _queue;
 
   FixedList(this.maxLength, {List<T>? list})
-      : _list = (list ?? [])..truncate(maxLength);
+      : _queue = maxLength > 0 ? ListQueue(maxLength) : ListQueue() {
+    if (list != null) {
+      if (maxLength > 0) {
+        final start = list.length > maxLength ? list.length - maxLength : 0;
+        for (var i = start; i < list.length; i++) {
+          _queue.addLast(list[i]);
+        }
+      } else {
+        for (final item in list) {
+          _queue.addLast(item);
+        }
+      }
+    }
+  }
 
   void add(T item) {
-    _list.add(item);
-    _list.truncate(maxLength);
+    if (maxLength > 0 && _queue.length >= maxLength) {
+      _queue.removeFirst();
+    }
+    _queue.addLast(item);
   }
 
   void clear() {
-    _list.clear();
+    _queue.clear();
   }
 
-  List<T> get list => List.unmodifiable(_list);
+  List<T> get list => List.unmodifiable(_queue);
 
-  int get length => _list.length;
+  int get length => _queue.length;
 
-  T operator [](int index) => _list[index];
+  T operator [](int index) => _queue.elementAt(index);
 
   FixedList<T> copyWith() {
-    return FixedList(
-      maxLength,
-      list: List.of(_list),
-    );
+    return FixedList(maxLength, list: _queue.toList());
   }
 }
 
