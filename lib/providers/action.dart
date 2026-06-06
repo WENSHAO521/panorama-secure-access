@@ -58,10 +58,12 @@ class CommonAction extends _$CommonAction {
     final onlyStatisticsProxy = ref.read(
       appSettingProvider.select((state) => state.onlyStatisticsProxy),
     );
-    final traffic = await coreController.getTraffic(onlyStatisticsProxy);
-    ref.read(trafficsProvider.notifier).addTraffic(traffic);
-    ref.read(totalTrafficProvider.notifier).value = await coreController
-        .getTotalTraffic(onlyStatisticsProxy);
+    final results = await Future.wait([
+      coreController.getTraffic(onlyStatisticsProxy),
+      coreController.getTotalTraffic(onlyStatisticsProxy),
+    ]);
+    ref.read(trafficsProvider.notifier).addTraffic(results[0]);
+    ref.read(totalTrafficProvider.notifier).value = results[1];
   }
 
   Future<void> autoCheckUpdate() async {
@@ -500,11 +502,7 @@ class CoreAction extends _$CoreAction {
 
   Future<void> connectCore() async {
     ref.read(coreStatusProvider.notifier).value = CoreStatus.connecting;
-    final result = await Future.wait([
-      coreController.preload(),
-      Future.delayed(const Duration(milliseconds: 300)),
-    ]);
-    final String message = result[0];
+    final message = await coreController.preload();
     if (message.isNotEmpty) {
       ref.read(coreStatusProvider.notifier).value = CoreStatus.disconnected;
       globalState.showNotifier(message);

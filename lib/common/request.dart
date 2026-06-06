@@ -17,11 +17,25 @@ class Request {
   String? userAgent;
 
   Request() {
-    dio = Dio(BaseOptions(headers: {'User-Agent': browserUa}));
-    _clashDio = Dio();
+    dio = Dio(
+      BaseOptions(
+        headers: {'User-Agent': browserUa},
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 15),
+        sendTimeout: const Duration(seconds: 10),
+      ),
+    );
+    _clashDio = Dio(
+      BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 60),
+        sendTimeout: const Duration(seconds: 10),
+      ),
+    );
     _clashDio.httpClientAdapter = IOHttpClientAdapter(
       createHttpClient: () {
         final client = HttpClient();
+        client.idleTimeout = const Duration(seconds: 30);
         client.findProxy = (Uri uri) {
           client.userAgent = globalState.ua;
           return FlClashHttpOverrides.handleFindProxy(uri);
