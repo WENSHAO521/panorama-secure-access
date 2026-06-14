@@ -1,3 +1,8 @@
+## v1.0.4
+
+- 修复 Android 无法覆盖安装旧版问题（applicationId 改为 com.psg.internal，独立于原版 FlClash）
+- 修复 Android 签名一致性问题（提交固定 keystore，每次构建签名一致）
+
 ## v1.0.3
 
 - 图标全面更新为 Bauhaus 黑底几何 P 设计，四端统一，圆角处理

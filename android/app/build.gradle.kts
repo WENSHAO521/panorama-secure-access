@@ -16,16 +16,20 @@ val localProperties = Properties().apply {
     }
 }
 
+// PSG release keystore is committed to the repo for consistent update signing.
+// Passwords can be overridden via local.properties for CI secret-based signing.
 val mStoreFile: File = file("keystore.jks")
-val mStorePassword: String? = localProperties.getProperty("storePassword")
-val mKeyAlias: String? = localProperties.getProperty("keyAlias")
-val mKeyPassword: String? = localProperties.getProperty("keyPassword")
-val isRelease =
-    mStoreFile.exists() && mStorePassword != null && mKeyAlias != null && mKeyPassword != null
+val mStorePassword: String =
+    localProperties.getProperty("storePassword") ?: "psg-release-2024"
+val mKeyAlias: String =
+    localProperties.getProperty("keyAlias") ?: "psg"
+val mKeyPassword: String =
+    localProperties.getProperty("keyPassword") ?: "psg-release-2024"
+val isRelease = mStoreFile.exists()
 
 
 android {
-    namespace = "com.follow.clash"
+    namespace = "com.psg.internal"
     compileSdk = libs.versions.compileSdk.get().toInt()
     ndkVersion = libs.versions.ndkVersion.get()
 
@@ -37,7 +41,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.follow.clash"
+        applicationId = "com.psg.internal"
         minSdk = flutter.minSdkVersion
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = flutter.versionCode
@@ -70,12 +74,7 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            if (isRelease) {
-                signingConfig = signingConfigs.getByName("release")
-            } else {
-                signingConfig = signingConfigs.getByName("debug")
-                applicationIdSuffix = ".dev"
-            }
+            signingConfig = signingConfigs.getByName("release")
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
