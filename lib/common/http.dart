@@ -24,7 +24,8 @@ class PSGHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     final client = super.createHttpClient(context);
-    client.badCertificateCallback = (_, _, _) => true;
+    client.badCertificateCallback = (cert, host, port) =>
+        host == localhost || host == '::1';
     client.findProxy = handleFindProxy;
     return client;
   }

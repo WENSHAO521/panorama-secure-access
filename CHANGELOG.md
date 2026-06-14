@@ -1,3 +1,10 @@
+## v1.0.6
+
+- 安全：修复 SSL 证书验证绕过漏洞，现仅对 localhost 跳过证书检查
+- DNS：启用 HTTP/3 (QUIC) 优先，加快 DNS 解析速度
+- DNS：fallback DNS 由 DoT(853端口) 改为 DoH(HTTPS 443端口)，更稳定且难被封锁
+- 性能：TCP keepAlive 间隔由 30s 降至 15s，不稳定网络下连接恢复更快
+
 ## v1.0.5
 
 - 安全：新增 PIN 锁屏功能（启动时、从后台返回时验证，支持自动锁定超时）

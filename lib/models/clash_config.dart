@@ -12,7 +12,7 @@ const defaultDns = Dns();
 const defaultGeoXUrl = GeoXUrl();
 
 const defaultMixedPort = 7890;
-const defaultKeepAliveInterval = 30;
+const defaultKeepAliveInterval = 15;
 
 const defaultBypassPrivateRouteAddress = [
   '1.0.0.0/8',
@@ -263,7 +263,7 @@ abstract class Dns with _$Dns {
   const factory Dns({
     @Default(true) bool enable,
     @Default('0.0.0.0:1053') String listen,
-    @Default(false) @JsonKey(name: 'prefer-h3') bool preferH3,
+    @Default(true) @JsonKey(name: 'prefer-h3') bool preferH3,
     @Default(true) @JsonKey(name: 'use-hosts') bool useHosts,
     @Default(true) @JsonKey(name: 'use-system-hosts') bool useSystemHosts,
     @Default(false) @JsonKey(name: 'respect-rules') bool respectRules,
@@ -289,7 +289,8 @@ abstract class Dns with _$Dns {
     Map<String, String> nameserverPolicy,
     @Default(['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query'])
     List<String> nameserver,
-    @Default(['tls://8.8.4.4', 'tls://1.1.1.1']) List<String> fallback,
+    @Default(['https://1.1.1.1/dns-query', 'https://8.8.8.8/dns-query'])
+    List<String> fallback,
     @Default(['https://doh.pub/dns-query'])
     @JsonKey(name: 'proxy-server-nameserver')
     List<String> proxyServerNameserver,
