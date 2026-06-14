@@ -1,7 +1,7 @@
 name: fl_clash
 description: PSG internal network proxy client — Publishing Society Group internal tool.
 publish_to: 'none'
-version: 1.0.1+2
+version: 1.0.3+3
 environment:
   sdk: '>=3.8.0 <4.0.0'
 
