@@ -36,6 +36,52 @@ class ApplicationState extends ConsumerState<Application> {
     },
   );
 
+  // Bauhaus/German design: sharp edges, minimal radius
+  static const _psgShapeBorder = RoundedRectangleBorder(
+    borderRadius: BorderRadius.all(Radius.circular(3)),
+  );
+
+  static ThemeData _applyPSGStyle(ThemeData base) {
+    return base.copyWith(
+      cardTheme: base.cardTheme.copyWith(
+        shape: _psgShapeBorder,
+        elevation: 0,
+        margin: EdgeInsets.zero,
+      ),
+      chipTheme: base.chipTheme.copyWith(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(2)),
+        ),
+        side: BorderSide.none,
+      ),
+      dialogTheme: base.dialogTheme.copyWith(
+        shape: _psgShapeBorder,
+      ),
+      bottomSheetTheme: base.bottomSheetTheme.copyWith(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(3)),
+        ),
+      ),
+      inputDecorationTheme: base.inputDecorationTheme.copyWith(
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(3)),
+        ),
+      ),
+      navigationBarTheme: base.navigationBarTheme.copyWith(
+        labelTextStyle: WidgetStateProperty.all(
+          const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 0.8),
+        ),
+      ),
+      textTheme: base.textTheme.copyWith(
+        titleLarge: base.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800, letterSpacing: -0.5),
+        titleMedium: base.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+        titleSmall: base.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.5),
+        labelLarge: base.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.8),
+      ),
+      dividerTheme: const DividerThemeData(thickness: 1, space: 1),
+    );
+  }
+
   ColorScheme _getAppColorScheme({
     required Brightness brightness,
     int? primaryColor,
@@ -161,22 +207,22 @@ class ApplicationState extends ConsumerState<Application> {
           locale: utils.getLocaleForString(locale),
           supportedLocales: AppLocalizations.delegate.supportedLocales,
           themeMode: themeProps.themeMode,
-          theme: ThemeData(
+          theme: _applyPSGStyle(ThemeData(
             useMaterial3: true,
             pageTransitionsTheme: _pageTransitionsTheme,
             colorScheme: _getAppColorScheme(
               brightness: Brightness.light,
               primaryColor: themeProps.primaryColor,
             ),
-          ),
-          darkTheme: ThemeData(
+          )),
+          darkTheme: _applyPSGStyle(ThemeData(
             useMaterial3: true,
             pageTransitionsTheme: _pageTransitionsTheme,
             colorScheme: _getAppColorScheme(
               brightness: Brightness.dark,
               primaryColor: themeProps.primaryColor,
             ).toPureBlack(themeProps.pureBlack),
-          ),
+          )),
           home: child!,
         );
       },

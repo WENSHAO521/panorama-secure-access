@@ -1,14 +1,14 @@
-display_name: FlClash
+display_name: PSG
 
 icon: ./assets/images/icon.png
 
 keywords:
-  - FlClash
-  - Clash
-  - ClashMeta
+  - PSG
+  - Publishing
   - Proxy
+  - Network
 
-generic_name: FlClash
+generic_name: PSG Network Client
 
 categories:
   - Network

@@ -1,23 +1,28 @@
 <svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="75" y="50" width="150" height="180" rx="24" fill="#FDF7FF" stroke="#E8DEF8" stroke-width="2"/>
+  <!-- Bauhaus style: Connection empty state -->
+  <!-- Card outline -->
+  <rect x="70" y="45" width="160" height="200" fill="#FFFFFF" stroke="#1A1A1A" stroke-width="3"/>
+  <!-- Header bar -->
+  <rect x="70" y="45" width="160" height="24" fill="#1A1A1A"/>
+  <!-- Three dots indicator -->
+  <circle cx="86" cy="57" r="4" fill="#CC0000"/>
+  <circle cx="100" cy="57" r="4" fill="#FFFFFF"/>
+  <circle cx="114" cy="57" r="4" fill="#FFFFFF"/>
 
-    <rect x="95" y="90" width="36" height="12" rx="4" fill="#E8DEF8"/>
-    <rect x="140" y="90" width="65" height="12" rx="6" fill="#E8DEF8"/>
+  <!-- Content lines -->
+  <rect x="90" y="90" width="40" height="8" fill="#1A1A1A"/>
+  <rect x="138" y="90" width="72" height="8" fill="#D0D0D0"/>
+  <rect x="90" y="118" width="56" height="8" fill="#D0D0D0"/>
+  <rect x="90" y="136" width="80" height="8" fill="#D0D0D0"/>
+  <!-- Divider line -->
+  <rect x="90" y="112" width="120" height="2" fill="#1A1A1A"/>
 
-    <path d="M95 118H205" stroke="#E8DEF8" stroke-width="2" stroke-dasharray="4 4"/>
-
-    <rect x="95" y="138" width="40" height="12" rx="6" fill="#E8DEF8" opacity="0.7"/>
-    <rect x="145" y="138" width="50" height="12" rx="6" fill="#E8DEF8" opacity="0.5"/>
-
-    <rect x="95" y="162" width="55" height="12" rx="6" fill="#E8DEF8" opacity="0.7"/>
-    <rect x="160" y="162" width="30" height="12" rx="6" fill="#E8DEF8" opacity="0.5"/>
-
-    <g transform="translate(210, 210)">
-        <circle cx="0" cy="0" r="38" fill="#6750A4" stroke="#FDF7FF" stroke-width="6"/>
-
-        <path d="M-10 16V-16M-10 -16L-18 -8M-10 -16L-2 -8" stroke="#FDF7FF" stroke-width="5" stroke-linecap="round"
-              stroke-linejoin="round"/>
-        <path d="M10 -16V16M10 16L2 8M10 16L18 8" stroke="#FDF7FF" stroke-width="5" stroke-linecap="round"
-              stroke-linejoin="round"/>
-    </g>
+  <!-- Arrow icon (up-down transfer) — red accent circle -->
+  <circle cx="210" cy="218" r="34" fill="#CC0000"/>
+  <!-- Up arrow -->
+  <rect x="204" y="202" width="6" height="20" fill="#FFFFFF"/>
+  <path d="M201,208 L207,200 L213,208" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Down arrow -->
+  <rect x="216" y="210" width="6" height="20" fill="#FFFFFF"/>
+  <path d="M213,224 L219,232 L225,224" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round"/>
 </svg>

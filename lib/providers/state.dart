@@ -530,22 +530,10 @@ ColorScheme genColorScheme(
       (state) => VM2(state.primaryColor, state.schemeVariant),
     ),
   );
-  if (color == null && (ignoreConfig == true || vm2.a == null)) {
-    // if (globalState.corePalette != null) {
-    //   return globalState.corePalette!.toColorScheme(brightness: brightness);
-    // }
-    return ColorScheme.fromSeed(
-      seedColor:
-          globalState.corePalette
-              ?.toColorScheme(brightness: brightness)
-              .primary ??
-          globalState.accentColor,
-      brightness: brightness,
-      dynamicSchemeVariant: vm2.b,
-    );
-  }
+  // PSG brand: always use configured color or brand red; never pull from system wallpaper
+  final seedColor = color ?? Color(vm2.a ?? defaultPrimaryColor);
   return ColorScheme.fromSeed(
-    seedColor: color ?? Color(vm2.a!),
+    seedColor: seedColor,
     brightness: brightness,
     dynamicSchemeVariant: vm2.b,
   );

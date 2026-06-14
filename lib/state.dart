@@ -55,12 +55,8 @@ class GlobalState {
   }
 
   Future<void> _initDynamicColor() async {
-    try {
-      corePalette = await DynamicColorPlugin.getCorePalette();
-      accentColor =
-          await DynamicColorPlugin.getAccentColor() ??
-          const Color(defaultPrimaryColor);
-    } catch (_) {}
+    // PSG brand: fixed color scheme, system wallpaper extraction disabled
+    accentColor = const Color(defaultPrimaryColor);
   }
 
   String get ua => container

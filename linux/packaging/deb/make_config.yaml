@@ -1,8 +1,8 @@
-display_name: FlClash
-package_name: FlClash
+display_name: PSG
+package_name: psg
 maintainer:
-  name: chen08209
-  email: chen08209@gmail.com
+  name: Publishing Society Group
+  email: wainixueer3334@gmail.com
 
 priority: optional
 section: x11
@@ -15,12 +15,11 @@ dependencies:
   - libkeybinder-3.0-dev
 
 keywords:
-  - FlClash
-  - Clash
-  - ClashMeta
+  - PSG
   - Proxy
+  - ClashMeta
 
-generic_name: FlClash
+generic_name: PSG
 
 categories:
   - Network

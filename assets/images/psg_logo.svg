@@ -1,0 +1,47 @@
+<svg width="480" height="120" viewBox="0 0 480 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!--
+    PSG full logo — Publishing Society Group
+    Mark: bold P + red connection line + gold endpoint + gray nav dots
+    Colors: #1A1A1A (black) / #CC0000 (red) / #FFCC00 (gold) / #9B9BA8 (gray)
+  -->
+
+  <!-- ── Icon mark (left square, 120×120) ─────────────────────────────── -->
+  <rect x="0" y="0" width="120" height="120" rx="24" fill="#F2F2F7"/>
+
+  <!-- P stem -->
+  <rect x="19" y="15" width="11" height="78" fill="#1A1A1A"/>
+  <!-- P bowl body -->
+  <rect x="19" y="15" width="46" height="37" fill="#1A1A1A"/>
+  <!-- P bowl right cap (semicircle) -->
+  <path d="M65,15 Q86,15 86,33.5 Q86,52 65,52 Z" fill="#1A1A1A"/>
+  <!-- P bowl knockout -->
+  <path d="M30,24 L60,24 Q75,24 75,33.5 Q75,43 60,43 L30,43 Z" fill="#F2F2F7"/>
+
+  <!-- Red diagonal capsule leg -->
+  <line x1="61" y1="55" x2="84" y2="78"
+        stroke="#CC0000" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- Gold endpoint dot -->
+  <circle cx="84" cy="78" r="9" fill="#FFCC00"/>
+
+  <!-- Three gray nav dots (upper-left, staggered) -->
+  <circle cx="15" cy="28" r="3" fill="#9B9BA8"/>
+  <circle cx="21" cy="37" r="3" fill="#9B9BA8"/>
+  <circle cx="15" cy="46" r="3" fill="#9B9BA8"/>
+
+  <!-- ── Wordmark (right) ──────────────────────────────────────────────── -->
+  <text x="140" y="80"
+        font-family="'Arial Black', 'Helvetica Neue', Arial, sans-serif"
+        font-size="64" font-weight="900" fill="#1A1A1A"
+        letter-spacing="-1">PSG</text>
+
+  <!-- Red underline under PSG -->
+  <rect x="140" y="90" width="192" height="4" fill="#CC0000"/>
+
+  <!-- Tagline -->
+  <text x="141" y="112"
+        font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-size="11" font-weight="400" letter-spacing="3.5" fill="#9B9BA8">
+    PUBLISHING SOCIETY GROUP
+  </text>
+</svg>

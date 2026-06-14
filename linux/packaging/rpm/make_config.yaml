@@ -1,7 +1,7 @@
-display_name: FlClash
+display_name: PSG
 
-packager: chen08209
-packagerEmail: chen08209@gmail.com
+packager: Publishing Society Group
+packagerEmail: wainixueer3334@gmail.com
 license: Other
 
 priority: optional
@@ -11,12 +11,11 @@ essential: false
 icon: ./assets/images/icon.png
 
 keywords:
-  - FlClash
-  - Clash
-  - ClashMeta
+  - PSG
   - Proxy
+  - ClashMeta
 
-generic_name: FlClash
+generic_name: PSG
 
 group: Applications/Internet
 
