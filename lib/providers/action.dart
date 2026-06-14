@@ -97,7 +97,34 @@ class CommonAction extends _$CommonAction {
         cancelText: isUser ? null : currentAppLocalizations.noLongerRemind,
       );
       if (res == true) {
-        launchUrl(Uri.parse('https://github.com/$repository/releases/latest'));
+        final version = (tagName as String).replaceFirst('v', '');
+        final base =
+            'https://github.com/$repository/releases/download/$tagName';
+        final String downloadUrl;
+        if (Platform.isAndroid) {
+          downloadUrl = '$base/PSG-$version-android-arm64-v8a.apk';
+        } else if (Platform.isWindows) {
+          final isArm = (Platform.environment['PROCESSOR_ARCHITECTURE'] ?? '')
+              .toUpperCase()
+              .contains('ARM');
+          downloadUrl =
+              '$base/PSG-$version-windows-${isArm ? 'arm64' : 'amd64'}-setup.exe';
+        } else if (Platform.isMacOS) {
+          final result =
+              await Process.run('uname', ['-m'], runInShell: true);
+          final arch =
+              result.stdout.toString().trim() == 'arm64' ? 'arm64' : 'amd64';
+          downloadUrl = '$base/PSG-$version-macos-$arch.dmg';
+        } else if (Platform.isLinux) {
+          downloadUrl = '$base/PSG-$version-linux-amd64.AppImage';
+        } else {
+          downloadUrl =
+              'https://github.com/$repository/releases/tag/$tagName';
+        }
+        launchUrl(
+          Uri.parse(downloadUrl),
+          mode: LaunchMode.externalApplication,
+        );
       } else if (!isUser && res == false) {
         ref
             .read(appSettingProvider.notifier)

@@ -239,7 +239,7 @@
   "action_proxy": "System proxy",
   "action_tun": "TUN",
   "disclaimer": "Disclaimer",
-  "disclaimerDesc": "This software is only used for non-commercial purposes such as learning exchanges and scientific research. It is strictly prohibited to use this software for commercial purposes. Any commercial activity, if any, has nothing to do with this software.",
+  "disclaimerDesc": "PSG is an internal network access tool for Publishing Society Group, authorized personnel only. Users must comply with local laws and regulations. Any misuse is solely the responsibility of the user and has nothing to do with PSG.",
   "agree": "Agree",
   "hotkeyManagement": "Hotkey Management",
   "hotkeyManagementDesc": "Use keyboard to control applications",
