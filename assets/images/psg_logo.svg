@@ -1,18 +1,18 @@
 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background Shape: Bauhaus-inspired clean rounded square -->
-  <rect x="20" y="20" width="160" height="160" rx="30" fill="#F3F4F6" />
+  <!-- Solid Black Background -->
+  <rect x="0" y="0" width="200" height="200" fill="#000000" />
 
-  <!-- Main Geometric Structure: Stylized 'P' for PSG & Security -->
-  <path d="M70 140 V60 H110 Q130 60 130 85 T110 110 H70" stroke="#000000" stroke-width="16" fill="none" stroke-linecap="butt" />
+  <!-- Hard Geometric 'P' - Bauhaus Inspired -->
+  <rect x="50" y="40" width="30" height="120" fill="#FFFFFF" />
+  <rect x="80" y="40" width="70" height="30" fill="#FFFFFF" />
+  <rect x="80" y="85" width="70" height="30" fill="#FFFFFF" />
+  <rect x="120" y="70" width="30" height="15" fill="#FFFFFF" />
 
-  <!-- Red 'Bridge' representing the VPN connection -->
-  <path d="M110 110 L140 140" stroke="#DD0000" stroke-width="12" stroke-linecap="round" />
+  <!-- Speed/Connection Element -->
+  <path d="M150 115 L180 160 H140 L110 115 Z" fill="#FFFFFF" />
 
-  <!-- Gold 'Key/Spark' representing scientific/scholarly access and precision -->
-  <circle cx="140" cy="140" r="12" fill="#FFCC00" />
-
-  <!-- Precision Detail: Industrial grid-like dots -->
-  <circle cx="50" cy="50" r="4" fill="#9CA3AF" />
-  <circle cx="70" cy="50" r="4" fill="#9CA3AF" />
-  <circle cx="50" cy="70" r="4" fill="#9CA3AF" />
+  <!-- Technical Precision Dots -->
+  <rect x="25" y="25" width="10" height="10" fill="#FFFFFF" />
+  <rect x="40" y="25" width="10" height="10" fill="#FFFFFF" />
+  <rect x="25" y="40" width="10" height="10" fill="#FFFFFF" />
 </svg>
