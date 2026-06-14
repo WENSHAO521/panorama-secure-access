@@ -151,26 +151,7 @@ jobs:
       - name: Generate
         if: ${{ env.IS_STABLE == 'true' }}
         run: |
-          last_ver=$(grep -m1 '^## ' CHANGELOG.md 2>/dev/null | sed 's/^## //')
-          
-          tags=($(git tag --merged HEAD --sort=-creatordate))
-          
-          temp="NEW_CHANGELOG.md" > "$temp"
-          
-          for i in "${!tags[@]}"; do
-              curr="${tags[i]}"
-              [[ "$curr" == "$last_ver" ]] && break
-          
-              prev="${tags[i+1]}"
-              range="${prev:+$prev..}$curr"
-          
-              echo -e "## $curr\n" >> "$temp"
-              git log --no-merges --pretty=format:"%B" "$range" | \
-              awk '!/Update changelog/ && NF {print "- " $0 "\n"}' >> "$temp"
-          done
-          [ -f CHANGELOG.md ] && cat CHANGELOG.md >> "$temp"
-          
-          mv "$temp" CHANGELOG.md
+          echo "CHANGELOG.md is manually maintained — no auto-generation."
 
       - name: Commit
         if: ${{ env.IS_STABLE == 'true' }}
@@ -212,24 +193,10 @@ jobs:
 
       - name: Generate release.md
         run: |
-          tags=($(git tag --merged HEAD --sort=-creatordate))
-          preTag=$(curl -s "https://api.github.com/repos/chen08209/FlClash/releases/latest" | \
-          sed -nE 's/.*"tag_name": "([^"]+)".*/\1/p')
-          
-          [ -z "$preTag" ] && preTag=""
-          
-          out="release.md" > "$out"
-          
-          for i in "${!tags[@]}"; do
-            curr="${tags[i]}"
-            [[ "$curr" == "$preTag" ]] && break
-          
-            prev="${tags[i+1]}"
-            range="${prev:+$prev..}$curr"
-          
-            git log --no-merges --pretty=format:"%B" "$range" | \
-            awk '!/Update changelog/ && NF {print "- " $0 "\n"}' >> "$out"
-          done
+          tag="${{ github.ref_name }}"
+          # Extract only the current tag's section from CHANGELOG.md
+          awk "/^## $tag$/{p=1;next} /^## /{p=0} p" CHANGELOG.md > release.md
+          echo "" >> release.md
       - name: Patch release.md
         run: |
           version=$(echo "${{ github.ref_name }}" | sed 's/^v//')

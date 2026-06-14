@@ -43,4 +43,3 @@
 </table>
 </div>
 
-**Full changelog:** [CHANGELOG.md](https://github.com/WENSHAO521/FlClash-/blob/main/CHANGELOG.md)
