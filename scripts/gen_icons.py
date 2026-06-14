@@ -129,16 +129,16 @@ def icon_circle(size):
 
 def status_icon(size, state):
     """
-    Tray / system-bar status icon matching the SVG status design.
-    Design: white rounded-rect + geometric P with bottom curve + two black squares + colored dot.
-      1 = connected   → emerald dot  #10B981
-      2 = connecting  → amber dot    #F59E0B
-      3 = idle/off    → gray dot     #9CA3AF
+    Bauhaus hard-geometric tray icon — black bg + white rectangular P.
+    Connection polygon shows state color:
+      1 = connected   → emerald  #10B981
+      2 = connecting  → amber    #F59E0B
+      3 = idle/off    → dark gray
     """
-    DOT = {
-        1: ( 16, 185, 129, 255),   # emerald — connected
-        2: (245, 158,  11, 255),   # amber   — connecting
-        3: (156, 163, 175, 255),   # gray    — idle
+    CONN_COLOR = {
+        1: ( 16, 185, 129, 255),
+        2: (245, 158,  11, 255),
+        3: ( 80,  80,  80, 255),
     }
 
     img  = Image.new("RGBA", (size, size), TRANSPARENT)
@@ -147,58 +147,28 @@ def status_icon(size, state):
 
     def sc(v): return int(v * s)
     def spt(x, y): return (sc(x), sc(y))
+    def srect(x, y, w, h): return [sc(x), sc(y), sc(x + w), sc(y + h)]
 
-    def qbez(p0, p1, p2, n=20):
-        pts = []
-        for i in range(n + 1):
-            t = i / n
-            u = 1 - t
-            x = u*u*p0[0] + 2*u*t*p1[0] + t*t*p2[0]
-            y = u*u*p0[1] + 2*u*t*p1[1] + t*t*p2[1]
-            pts.append((int(x * s), int(y * s)))
-        return pts
+    # Black background
+    draw.rectangle([0, 0, size - 1, size - 1], fill=(0, 0, 0, 255))
 
-    # ── White rounded-rect background with border ─────────────────────────
-    bg_r = sc(32)
-    rrect(draw, 0, 0, size-1, size-1, bg_r, (255, 255, 255, 255))
-    # Subtle gray border
-    bw = max(1, sc(2))
-    border_color = (229, 231, 235, 255)
-    for i in range(bw):
-        draw.rounded_rectangle([i, i, size-1-i, size-1-i], radius=bg_r-i, outline=border_color)
+    W = (255, 255, 255, 255)
 
-    sw = max(2, sc(18))   # stroke-width=18 from SVG
+    # Hard geometric P (all white rectangles)
+    draw.rectangle(srect(50,  40, 30, 120), fill=W)   # vertical stem
+    draw.rectangle(srect(80,  40, 70,  30), fill=W)   # top bar
+    draw.rectangle(srect(80,  85, 70,  30), fill=W)   # middle bar
+    draw.rectangle(srect(120, 70, 30,  15), fill=W)   # right connector
 
-    # ── P stem: M70,60 V140 ───────────────────────────────────────────────
-    draw.line([spt(70, 60), spt(70, 140)], fill=(0, 0, 0, 255), width=sw)
+    # Speed/connection polygon — state color
+    # M150,115 L180,160 H140 L110,115 Z
+    poly = [spt(150, 115), spt(180, 160), spt(140, 160), spt(110, 115)]
+    draw.polygon(poly, fill=CONN_COLOR[state])
 
-    # ── P bowl: M70,60 H110 Q130,60 130,85 T110,110 H70 ──────────────────
-    bowl_pts = (
-        [spt(70, 60), spt(110, 60)]
-        + qbez((110, 60),  (130,  60), (130,  85))
-        + qbez((130,  85), (130, 110), (110, 110))
-        + [spt(70, 110)]
-    )
-    draw.line(bowl_pts, fill=(0, 0, 0, 255), width=sw, joint="curve")
-
-    # ── Bottom curve: M130,110 Q130,140 100,140 H70 ───────────────────────
-    bot_pts = (
-        [spt(130, 110)]
-        + qbez((130, 110), (130, 140), (100, 140))
-        + [spt(70, 140)]
-    )
-    draw.line(bot_pts, fill=(0, 0, 0, 255), width=sw, joint="curve")
-
-    # ── Two black squares (Bauhaus accents) ───────────────────────────────
-    sq = max(2, sc(10))
-    sx = sc(50)
-    draw.rectangle([sx, sc(50), sx + sq, sc(50) + sq], fill=(0, 0, 0, 255))
-    draw.rectangle([sx, sc(65), sx + sq, sc(65) + sq], fill=(0, 0, 0, 255))
-
-    # ── Status dot at (140,140) r=14 ─────────────────────────────────────
-    dr  = max(3, sc(14))
-    dcx, dcy = spt(140, 140)
-    draw.ellipse([dcx - dr, dcy - dr, dcx + dr, dcy + dr], fill=DOT[state])
+    # Precision dots (white squares, upper-left)
+    draw.rectangle(srect(25, 25, 10, 10), fill=W)
+    draw.rectangle(srect(40, 25, 10, 10), fill=W)
+    draw.rectangle(srect(25, 40, 10, 10), fill=W)
 
     return img
 
