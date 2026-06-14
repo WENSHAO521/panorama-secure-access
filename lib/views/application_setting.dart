@@ -1,5 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/providers/config.dart';
+import 'package:fl_clash/views/lock_screen.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -268,6 +269,98 @@ class AutoCheckUpdateItem extends ConsumerWidget {
   }
 }
 
+class AppLockItem extends ConsumerWidget {
+  const AppLockItem({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final loc = context.appLocalizations;
+    final enabled = ref.watch(appSettingProvider.select((s) => s.appLockEnabled));
+    final hasPin = ref.watch(appSettingProvider.select((s) => s.appLockPin != null));
+    return ListItem.switchItem(
+      title: Text(loc.appLockEnabled),
+      subtitle: Text(loc.appLockEnabledDesc),
+      delegate: SwitchDelegate(
+        value: enabled,
+        onChanged: (value) async {
+          if (value && !hasPin) {
+            final hash = await showDialog<String>(
+              context: context,
+              barrierDismissible: false,
+              builder: (_) => const PinSetupDialog(hasExistingPin: false),
+            );
+            if (hash == null) return;
+            ref.read(appSettingProvider.notifier).update(
+              (s) => s.copyWith(appLockPin: hash, appLockEnabled: true),
+            );
+            context.showNotifier(loc.pinSet);
+          } else {
+            ref.read(appSettingProvider.notifier).update(
+              (s) => s.copyWith(appLockEnabled: value),
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+class SetPinItem extends ConsumerWidget {
+  const SetPinItem({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final loc = context.appLocalizations;
+    final hasPin = ref.watch(appSettingProvider.select((s) => s.appLockPin != null));
+    return ListItem(
+      title: Text(hasPin ? loc.changePIN : loc.setPIN),
+      onTap: () async {
+        final hash = await showDialog<String>(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => PinSetupDialog(hasExistingPin: hasPin),
+        );
+        if (hash == null) return;
+        ref.read(appSettingProvider.notifier).update(
+          (s) => s.copyWith(appLockPin: hash),
+        );
+        context.showNotifier(loc.pinSet);
+      },
+    );
+  }
+}
+
+class AutoLockTimeoutItem extends ConsumerWidget {
+  const AutoLockTimeoutItem({super.key});
+
+  static const _options = [0, 1, 5, 15, 30];
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final loc = context.appLocalizations;
+    final minutes = ref.watch(appSettingProvider.select((s) => s.autoLockMinutes));
+    return ListItem(
+      title: Text(loc.autoLockTimeout),
+      trailing: DropdownButton<int>(
+        value: _options.contains(minutes) ? minutes : 5,
+        underline: const SizedBox(),
+        items: _options.map((m) {
+          return DropdownMenuItem(
+            value: m,
+            child: Text(m == 0 ? loc.neverLock : '$m min'),
+          );
+        }).toList(),
+        onChanged: (v) {
+          if (v == null) return;
+          ref.read(appSettingProvider.notifier).update(
+            (s) => s.copyWith(autoLockMinutes: v),
+          );
+        },
+      ),
+    );
+  }
+}
+
 class ApplicationSettingView extends StatelessWidget {
   const ApplicationSettingView({super.key});
 
@@ -284,6 +377,10 @@ class ApplicationSettingView extends StatelessWidget {
       const UsageItem(),
       if (system.isAndroid) const CrashlyticsItem(),
       const AutoCheckUpdateItem(),
+      const Divider(height: 24),
+      const AppLockItem(),
+      const SetPinItem(),
+      const AutoLockTimeoutItem(),
     ];
     return BaseScaffold(
       title: context.appLocalizations.application,

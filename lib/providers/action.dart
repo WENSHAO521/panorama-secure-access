@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/database/database.dart';
@@ -12,6 +13,7 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -64,6 +66,71 @@ class CommonAction extends _$CommonAction {
     ]);
     ref.read(trafficsProvider.notifier).addTraffic(results[0]);
     ref.read(totalTrafficProvider.notifier).value = results[1];
+  }
+
+  Future<void> _downloadUpdate(String url) async {
+    final context = globalState.navigatorKey.currentContext!;
+    final loc = currentAppLocalizations;
+    final fileName = url.split('/').last;
+    final tmpDir = await getTemporaryDirectory();
+    final savePath = '${tmpDir.path}/$fileName';
+    final progress = ValueNotifier<double>(0);
+    CancelToken? cancelToken = CancelToken();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        title: Text(loc.downloading),
+        content: ValueListenableBuilder<double>(
+          valueListenable: progress,
+          builder: (_, value, _) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              LinearProgressIndicator(value: value == 0 ? null : value),
+              const SizedBox(height: 12),
+              Text('${(value * 100).toStringAsFixed(0)}%'),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              cancelToken?.cancel();
+              Navigator.of(context).pop();
+            },
+            child: Text(loc.cancelDownload),
+          ),
+        ],
+      ),
+    );
+
+    try {
+      await Dio().download(
+        url,
+        savePath,
+        cancelToken: cancelToken,
+        onReceiveProgress: (received, total) {
+          if (total > 0) progress.value = received / total;
+        },
+      );
+      if (context.mounted) Navigator.of(context).pop();
+      progress.dispose();
+      cancelToken = null;
+      await launchUrl(
+        Uri.file(savePath),
+        mode: LaunchMode.externalApplication,
+      );
+    } on DioException catch (e) {
+      if (context.mounted) Navigator.of(context).pop();
+      progress.dispose();
+      if (e.type != DioExceptionType.cancel && context.mounted) {
+        globalState.showMessage(
+          title: loc.downloadFailed,
+          message: TextSpan(text: e.message ?? ''),
+        );
+      }
+    }
   }
 
   Future<void> autoCheckUpdate() async {
@@ -121,10 +188,7 @@ class CommonAction extends _$CommonAction {
           downloadUrl =
               'https://github.com/$repository/releases/tag/$tagName';
         }
-        launchUrl(
-          Uri.parse(downloadUrl),
-          mode: LaunchMode.externalApplication,
-        );
+        _downloadUpdate(downloadUrl);
       } else if (!isUser && res == false) {
         ref
             .read(appSettingProvider.notifier)

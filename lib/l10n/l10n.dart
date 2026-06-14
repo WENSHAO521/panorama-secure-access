@@ -4378,6 +4378,96 @@ class AppLocalizations {
   String get suspended {
     return Intl.message('Suspended...', name: 'suspended', desc: '', args: []);
   }
+
+  /// `App Lock`
+  String get appLock {
+    return Intl.message('App Lock', name: 'appLock', desc: '', args: []);
+  }
+
+  /// `Enable App Lock`
+  String get appLockEnabled {
+    return Intl.message('Enable App Lock', name: 'appLockEnabled', desc: '', args: []);
+  }
+
+  /// `Require PIN when launching or returning from background`
+  String get appLockEnabledDesc {
+    return Intl.message('Require PIN when launching or returning from background', name: 'appLockEnabledDesc', desc: '', args: []);
+  }
+
+  /// `Set PIN`
+  String get setPIN {
+    return Intl.message('Set PIN', name: 'setPIN', desc: '', args: []);
+  }
+
+  /// `Change PIN`
+  String get changePIN {
+    return Intl.message('Change PIN', name: 'changePIN', desc: '', args: []);
+  }
+
+  /// `Enter current PIN`
+  String get enterCurrentPIN {
+    return Intl.message('Enter current PIN', name: 'enterCurrentPIN', desc: '', args: []);
+  }
+
+  /// `Enter new PIN`
+  String get enterNewPIN {
+    return Intl.message('Enter new PIN', name: 'enterNewPIN', desc: '', args: []);
+  }
+
+  /// `Confirm PIN`
+  String get confirmPIN {
+    return Intl.message('Confirm PIN', name: 'confirmPIN', desc: '', args: []);
+  }
+
+  /// `PINs do not match, please try again`
+  String get pinMismatch {
+    return Intl.message('PINs do not match, please try again', name: 'pinMismatch', desc: '', args: []);
+  }
+
+  /// `PIN must be at least 4 digits`
+  String get pinTooShort {
+    return Intl.message('PIN must be at least 4 digits', name: 'pinTooShort', desc: '', args: []);
+  }
+
+  /// `PIN set successfully`
+  String get pinSet {
+    return Intl.message('PIN set successfully', name: 'pinSet', desc: '', args: []);
+  }
+
+  /// `Incorrect PIN`
+  String get pinIncorrect {
+    return Intl.message('Incorrect PIN', name: 'pinIncorrect', desc: '', args: []);
+  }
+
+  /// `Auto-lock timeout`
+  String get autoLockTimeout {
+    return Intl.message('Auto-lock timeout', name: 'autoLockTimeout', desc: '', args: []);
+  }
+
+  /// `Never`
+  String get neverLock {
+    return Intl.message('Never', name: 'neverLock', desc: '', args: []);
+  }
+
+  /// `Downloading`
+  String get downloading {
+    return Intl.message('Downloading', name: 'downloading', desc: '', args: []);
+  }
+
+  /// `Download complete, tap to install`
+  String get downloadComplete {
+    return Intl.message('Download complete, tap to install', name: 'downloadComplete', desc: '', args: []);
+  }
+
+  /// `Download failed, please retry`
+  String get downloadFailed {
+    return Intl.message('Download failed, please retry', name: 'downloadFailed', desc: '', args: []);
+  }
+
+  /// `Cancel`
+  String get cancelDownload {
+    return Intl.message('Cancel', name: 'cancelDownload', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

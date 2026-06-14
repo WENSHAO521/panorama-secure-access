@@ -166,10 +166,10 @@ class ApplicationState extends ConsumerState<Application> {
   }
 
   Widget _buildPlatformApp({required Widget child}) {
-    if (system.isDesktop) {
-      return WindowHeaderContainer(child: child);
-    }
-    return VpnManager(child: child);
+    final inner = system.isDesktop
+        ? WindowHeaderContainer(child: child)
+        : VpnManager(child: child);
+    return LockManager(child: inner);
   }
 
   Widget _buildApp({required Widget child}) {

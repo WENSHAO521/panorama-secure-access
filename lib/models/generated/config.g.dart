@@ -35,6 +35,9 @@ _AppSettingProps _$AppSettingPropsFromJson(Map<String, dynamic> json) =>
           ) ??
           RestoreStrategy.compatible,
       showTrayTitle: json['showTrayTitle'] as bool? ?? true,
+      appLockEnabled: json['appLockEnabled'] as bool? ?? false,
+      appLockPin: json['appLockPin'] as String?,
+      autoLockMinutes: json['autoLockMinutes'] as int? ?? 5,
     );
 
 Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
@@ -61,6 +64,9 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
       'developerMode': instance.developerMode,
       'restoreStrategy': _$RestoreStrategyEnumMap[instance.restoreStrategy]!,
       'showTrayTitle': instance.showTrayTitle,
+      'appLockEnabled': instance.appLockEnabled,
+      'appLockPin': instance.appLockPin,
+      'autoLockMinutes': instance.autoLockMinutes,
     };
 
 const _$RestoreStrategyEnumMap = {
