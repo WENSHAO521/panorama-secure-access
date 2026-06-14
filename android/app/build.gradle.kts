@@ -16,16 +16,12 @@ val localProperties = Properties().apply {
     }
 }
 
-// PSG release keystore is committed to the repo for consistent update signing.
-// Passwords can be overridden via local.properties for CI secret-based signing.
 val mStoreFile: File = file("keystore.jks")
-val mStorePassword: String =
-    localProperties.getProperty("storePassword") ?: "psg-release-2024"
-val mKeyAlias: String =
-    localProperties.getProperty("keyAlias") ?: "psg"
-val mKeyPassword: String =
-    localProperties.getProperty("keyPassword") ?: "psg-release-2024"
-val isRelease = mStoreFile.exists()
+val mStorePassword: String? = localProperties.getProperty("storePassword") ?: if (mStoreFile.exists()) "psg-release-2024" else null
+val mKeyAlias: String? = localProperties.getProperty("keyAlias") ?: if (mStoreFile.exists()) "psg" else null
+val mKeyPassword: String? = localProperties.getProperty("keyPassword") ?: if (mStoreFile.exists()) "psg-release-2024" else null
+val isRelease =
+    mStoreFile.exists() && mStorePassword != null && mKeyAlias != null && mKeyPassword != null
 
 
 android {
@@ -74,7 +70,11 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            signingConfig = signingConfigs.getByName("release")
+            if (isRelease) {
+                signingConfig = signingConfigs.getByName("release")
+            } else {
+                signingConfig = signingConfigs.getByName("debug")
+            }
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
