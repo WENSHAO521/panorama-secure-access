@@ -38,7 +38,7 @@ class Request {
         client.idleTimeout = const Duration(seconds: 30);
         client.findProxy = (Uri uri) {
           client.userAgent = globalState.ua;
-          return FlClashHttpOverrides.handleFindProxy(uri);
+          return PSGHttpOverrides.handleFindProxy(uri);
         };
         return client;
       },
