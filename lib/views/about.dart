@@ -70,14 +70,14 @@ class AboutView extends StatelessWidget {
   List<Widget> _buildContributorsSection(AppLocalizations appLocalizations) {
     const contributors = [
       Contributor(
-        avatar: 'assets/images/avatar/june2.jpg',
-        name: 'June2',
-        link: 'https://t.me/Jibadong',
+        avatar: 'https://github.com/chen08209.png',
+        name: 'chen08209',
+        link: 'https://github.com/chen08209/FlClash',
       ),
       Contributor(
-        avatar: 'assets/images/avatar/arue.jpg',
-        name: 'Arue',
-        link: 'https://t.me/xrcm6868',
+        avatar: 'assets/images/icon.png',
+        name: 'PSG Official',
+        link: 'https://github.com/WENSHAO521/FlClash-',
       ),
     ];
     return generateSection(
@@ -176,25 +176,27 @@ class Avatar extends StatelessWidget {
 
   const Avatar({super.key, required this.contributor});
 
+  ImageProvider get _image {
+    final avatar = contributor.avatar;
+    if (avatar.startsWith('http')) return NetworkImage(avatar);
+    return AssetImage(avatar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: () => globalState.openUrl(contributor.link),
       child: Column(
         children: [
           SizedBox(
             width: 36,
             height: 36,
-            child: CircleAvatar(
-              foregroundImage: AssetImage(contributor.avatar),
-            ),
+            child: CircleAvatar(foregroundImage: _image),
           ),
           const SizedBox(height: 4),
           Text(contributor.name, style: context.textTheme.bodySmall),
         ],
       ),
-      // onTap: () {
-      //   globalState.openUrl(contributor.link);
-      // },
     );
   }
 }
