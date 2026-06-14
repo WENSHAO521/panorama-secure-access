@@ -1,7 +1,8 @@
 """
 PSG icon generator — Bauhaus hard-geometric design
-All icons: black background + white rectangular P + colored connection polygon
-Status polygon color varies by connection state; all other icons use white.
+- icon_square: black rounded-rect bg (transparent corners)
+- icon_circle: circular clip
+- status_icon: black square, polygon color indicates connection state
 """
 from PIL import Image, ImageDraw
 import os
@@ -13,38 +14,25 @@ BLACK       = (0, 0, 0, 255)
 WHITE       = (255, 255, 255, 255)
 
 
-# ── Core drawing (200×200 coordinate space) ───────────────────────────────────
+# ── Mark-only drawing (200×200 coordinate space, no background) ───────────────
 
-def draw_bauhaus(draw, size, conn_color=WHITE):
-    """
-    PSG Bauhaus mark on black background.
-    Matches psg_logo.svg exactly — all shapes are rectangles or a polygon.
-    conn_color: color of the connection polygon (white for logo, state-color for tray)
-    """
+def _draw_mark(draw, size, conn_color=WHITE):
+    """White PSG mark scaled to [size]. Caller is responsible for background."""
     s = size / 200.0
 
     def sc(v): return int(v * s)
     def srect(x, y, w, h): return [sc(x), sc(y), sc(x + w), sc(y + h)]
     def spt(x, y): return (sc(x), sc(y))
 
-    # Black background
-    draw.rectangle([0, 0, size - 1, size - 1], fill=BLACK)
-
     W = WHITE
-
-    # Geometric P
-    draw.rectangle(srect(50,  40, 30, 120), fill=W)  # vertical stem
-    draw.rectangle(srect(80,  40, 70,  30), fill=W)  # top bar
-    draw.rectangle(srect(80,  85, 70,  30), fill=W)  # middle bar
-    draw.rectangle(srect(120, 70, 30,  15), fill=W)  # right connector
-
-    # Connection polygon: M150,115 L180,160 H140 L110,115 Z
+    draw.rectangle(srect(50,  40, 30, 120), fill=W)   # vertical stem
+    draw.rectangle(srect(80,  40, 70,  30), fill=W)   # top bar
+    draw.rectangle(srect(80,  85, 70,  30), fill=W)   # middle bar
+    draw.rectangle(srect(120, 70, 30,  15), fill=W)   # right connector
     draw.polygon(
         [spt(150, 115), spt(180, 160), spt(140, 160), spt(110, 115)],
         fill=conn_color,
     )
-
-    # Precision squares (upper-left)
     draw.rectangle(srect(25, 25, 10, 10), fill=W)
     draw.rectangle(srect(40, 25, 10, 10), fill=W)
     draw.rectangle(srect(25, 40, 10, 10), fill=W)
@@ -53,9 +41,12 @@ def draw_bauhaus(draw, size, conn_color=WHITE):
 # ── Icon factories ────────────────────────────────────────────────────────────
 
 def icon_square(size):
+    """Black rounded-rect icon — corners transparent (matches adaptive icon look)."""
     img  = Image.new("RGBA", (size, size), TRANSPARENT)
     draw = ImageDraw.Draw(img)
-    draw_bauhaus(draw, size)
+    r = max(4, int(0.18 * size))          # ~18% radius — iOS/Android squircle feel
+    draw.rounded_rectangle([0, 0, size - 1, size - 1], radius=r, fill=BLACK)
+    _draw_mark(draw, size)
     return img
 
 
@@ -63,19 +54,17 @@ def icon_circle(size):
     """Circular clip (Android round launcher)."""
     img  = Image.new("RGBA", (size, size), TRANSPARENT)
     draw = ImageDraw.Draw(img)
-    draw_bauhaus(draw, size)
-    mask = Image.new("L", (size, size), 0)
-    ImageDraw.Draw(mask).ellipse([0, 0, size - 1, size - 1], fill=255)
-    img.putalpha(mask)
+    draw.ellipse([0, 0, size - 1, size - 1], fill=BLACK)
+    _draw_mark(draw, size)
     return img
 
 
 def status_icon(size, state):
     """
-    Tray icon — same Bauhaus design, connection polygon shows state:
-      1 = connected   → emerald  #10B981
-      2 = connecting  → amber    #F59E0B
-      3 = idle/off    → dark gray
+    Tray icon — Bauhaus P on black, connection polygon shows state:
+      1 = connected  → emerald  #10B981
+      2 = connecting → amber    #F59E0B
+      3 = idle/off   → dark gray
     """
     CONN = {
         1: ( 16, 185, 129, 255),
@@ -84,7 +73,8 @@ def status_icon(size, state):
     }
     img  = Image.new("RGBA", (size, size), TRANSPARENT)
     draw = ImageDraw.Draw(img)
-    draw_bauhaus(draw, size, conn_color=CONN[state])
+    draw.rectangle([0, 0, size - 1, size - 1], fill=BLACK)
+    _draw_mark(draw, size, conn_color=CONN[state])
     return img
 
 
@@ -131,7 +121,6 @@ for folder, sz in {
     save_webp(icon_circle(sz), os.path.join(d, "ic_launcher_round.webp"))
 
 print("Android TV banner …")
-# Banner: black bg, icon left, PSG text right
 bw, bh = 320, 180
 banner = Image.new("RGBA", (bw, bh), BLACK)
 ic = icon_square(bh - 16)

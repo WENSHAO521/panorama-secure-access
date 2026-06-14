@@ -5,37 +5,38 @@
     android:viewportHeight="108">
 
     <!--
-        PSG Bauhaus adaptive icon foreground (white mark on transparent).
-        Background layer supplies the black fill.
-        Scaled from 200×200 SVG at 0.54×.
+        PSG Bauhaus adaptive icon foreground.
+        All elements scaled to the safe zone (18dp–90dp) so nothing is
+        clipped by circle/squircle launcher masks.
+        Scale: 200px SVG × 0.36 + 18dp offset.
     -->
 
-    <!-- Vertical stem: rect(50,40,30,120) -->
+    <!-- Vertical stem: rect(50,40,30,120) → (36,32) w=11 h=43 -->
     <path android:fillColor="#FFFFFF"
-          android:pathData="M27,22 H43 V87 H27 Z"/>
+          android:pathData="M36,32 H47 V75 H36 Z"/>
 
-    <!-- Top bar: rect(80,40,70,30) -->
+    <!-- Top bar: rect(80,40,70,30) → (47,32) w=25 h=11 -->
     <path android:fillColor="#FFFFFF"
-          android:pathData="M43,22 H81 V38 H43 Z"/>
+          android:pathData="M47,32 H72 V43 H47 Z"/>
 
-    <!-- Middle bar: rect(80,85,70,30) -->
+    <!-- Middle bar: rect(80,85,70,30) → (47,49) w=25 h=11 -->
     <path android:fillColor="#FFFFFF"
-          android:pathData="M43,46 H81 V62 H43 Z"/>
+          android:pathData="M47,49 H72 V60 H47 Z"/>
 
-    <!-- Right connector: rect(120,70,30,15) -->
+    <!-- Right connector: rect(120,70,30,15) → (61,43) w=11 h=6 -->
     <path android:fillColor="#FFFFFF"
-          android:pathData="M65,38 H81 V46 H65 Z"/>
+          android:pathData="M61,43 H72 V49 H61 Z"/>
 
     <!-- Connection polygon: M150,115 L180,160 H140 L110,115 Z -->
     <path android:fillColor="#FFFFFF"
-          android:pathData="M81,62 L97,86 H76 L59,62 Z"/>
+          android:pathData="M72,59 L83,76 H68 L58,59 Z"/>
 
-    <!-- Precision squares -->
+    <!-- Precision squares (25,25)(40,25)(25,40) each 10×10 → 4×4 -->
     <path android:fillColor="#FFFFFF"
-          android:pathData="M14,14 H19 V19 H14 Z"/>
+          android:pathData="M27,27 H31 V31 H27 Z"/>
     <path android:fillColor="#FFFFFF"
-          android:pathData="M22,14 H27 V19 H22 Z"/>
+          android:pathData="M32,27 H36 V31 H32 Z"/>
     <path android:fillColor="#FFFFFF"
-          android:pathData="M14,22 H19 V27 H14 Z"/>
+          android:pathData="M27,32 H31 V36 H27 Z"/>
 
 </vector>
