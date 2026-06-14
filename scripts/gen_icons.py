@@ -7,11 +7,11 @@ from PIL import Image, ImageDraw, ImageFont
 import os, math
 
 # ── Brand palette ─────────────────────────────────────────────────────────────
-PSG_RED    = (204,   0,   0, 255)   # German red
-PSG_GOLD   = (255, 204,   0, 255)   # German Bundesgold
-NEAR_BLACK = ( 26,  26,  26, 255)
-LIGHT_BG   = (242, 242, 247, 255)   # iOS-style light gray
-NAV_GRAY   = (155, 155, 165, 255)
+PSG_RED    = (221,   0,   0, 255)   # #DD0000
+PSG_GOLD   = (255, 204,   0, 255)   # #FFCC00
+NEAR_BLACK = (  0,   0,   0, 255)   # #000000
+LIGHT_BG   = (243, 244, 246, 255)   # #F3F4F6
+NAV_GRAY   = (156, 163, 175, 255)   # #9CA3AF
 WHITE      = (255, 255, 255, 255)
 MUTED_RED  = (160,  40,  40, 255)
 MID_GRAY   = (110, 110, 110, 255)
@@ -56,39 +56,55 @@ def draw_mark(draw, size,
               dot_color=PSG_GOLD,
               nav_color=NAV_GRAY):
     """
-    Draw the PSG mark:
-      • Bold "P" letterform (Arial Black)
-      • Red diagonal capsule (the R-leg / connection line)
-      • Gold endpoint dot
-      • Three gray nav dots (upper-left)
-    All coordinates are normalized to a 100-unit square.
+    PSG mark matching the SVG logo (200×200 coordinate space):
+      • Geometric stroke P: M70 140 V60 H110 Q130 60 130 85 T110 110 H70
+      • Red diagonal line (110,110)→(140,140)
+      • Gold circle at (140,140) r=12
+      • Three gray dots at (50,50),(70,50),(50,70) r=4
     """
-    s = size / 100.0
+    s = size / 200.0
 
-    # ── Bold "P" ──────────────────────────────────────────────────────────
-    font = get_font(int(73 * s))
-    bb   = draw.textbbox((0, 0), "P", font=font)
-    # Position: slight inset from top-left, letter fills ~70% of icon
-    tx = int(11 * s) - bb[0]
-    ty = int(11 * s) - bb[1]
-    draw.text((tx, ty), "P", fill=p_color, font=font)
+    def sc(v): return int(v * s)
+    def spt(x, y): return (sc(x), sc(y))
 
-    # ── Red diagonal capsule (starts at bowl-stem junction, goes lower-right)
-    lx0, ly0 = int(57 * s), int(54 * s)
-    lx1, ly1 = int(80 * s), int(75 * s)
-    lt       = max(3, int(9 * s))
-    capsule(draw, lx0, ly0, lx1, ly1, lt, leg_color)
+    def qbez(p0, p1, p2, n=20):
+        pts = []
+        for i in range(n + 1):
+            t = i / n
+            u = 1 - t
+            x = u*u*p0[0] + 2*u*t*p1[0] + t*t*p2[0]
+            y = u*u*p0[1] + 2*u*t*p1[1] + t*t*p2[1]
+            pts.append((int(x * s), int(y * s)))
+        return pts
 
-    # ── Gold endpoint dot ─────────────────────────────────────────────────
-    dr = max(2, int(8.5 * s))
-    draw.ellipse([lx1-dr, ly1-dr, lx1+dr, ly1+dr], fill=dot_color)
+    sw = max(2, sc(16))   # P stroke width (SVG stroke-width=16)
 
-    # ── Three navigation dots (upper-left, staggered) ─────────────────────
+    # Full P path as polyline: stem + top bar + bowl + bottom bar
+    # SVG: M70,140 V60 H110 Q130,60 130,85 T110,110 H70
+    # T reflected control: (130,110) from prev ctrl (130,60) → end (130,85)
+    p_pts = (
+        [spt(70, 140), spt(70, 60), spt(110, 60)]
+        + qbez((110, 60),  (130,  60), (130,  85))
+        + qbez((130,  85), (130, 110), (110, 110))
+        + [spt(70, 110)]
+    )
+    draw.line(p_pts, fill=p_color, width=sw, joint="curve")
+
+    # Red diagonal: (110,110)→(140,140), stroke-width=12
+    rw = max(2, sc(12))
+    capsule(draw, *spt(110, 110), *spt(140, 140), rw, leg_color)
+
+    # Gold circle at (140,140) r=12
+    dr = max(2, sc(12))
+    gx, gy = spt(140, 140)
+    draw.ellipse([gx - dr, gy - dr, gx + dr, gy + dr], fill=dot_color)
+
+    # Gray dots: (50,50),(70,50),(50,70) r=4
     if size >= 32:
-        gr = max(1, int(2.7 * s))
-        for dx, dy in [(13.0, 24.0), (18.5, 31.0), (13.0, 38.0)]:
-            cx, cy = int(dx * s), int(dy * s)
-            draw.ellipse([cx-gr, cy-gr, cx+gr, cy+gr], fill=nav_color)
+        gr = max(1, sc(4))
+        for dx, dy in [(50, 50), (70, 50), (50, 70)]:
+            cx, cy = spt(dx, dy)
+            draw.ellipse([cx - gr, cy - gr, cx + gr, cy + gr], fill=nav_color)
 
 
 # ── Icon factories ────────────────────────────────────────────────────────────
@@ -113,47 +129,76 @@ def icon_circle(size):
 
 def status_icon(size, state):
     """
-    Tray / system-bar status icon — white bg style.
-    Design: white rounded-rect + bold black P + two pixel squares + colored dot.
-      1 = connected   → teal dot
-      2 = connecting  → amber dot
-      3 = idle/off    → gray dot
+    Tray / system-bar status icon matching the SVG status design.
+    Design: white rounded-rect + geometric P with bottom curve + two black squares + colored dot.
+      1 = connected   → emerald dot  #10B981
+      2 = connecting  → amber dot    #F59E0B
+      3 = idle/off    → gray dot     #9CA3AF
     """
     DOT = {
-        1: ( 46, 206, 138, 255),   # teal  — connected
-        2: (255, 149,   0, 255),   # amber — connecting
-        3: (160, 160, 160, 255),   # gray  — idle
+        1: ( 16, 185, 129, 255),   # emerald — connected
+        2: (245, 158,  11, 255),   # amber   — connecting
+        3: (156, 163, 175, 255),   # gray    — idle
     }
 
     img  = Image.new("RGBA", (size, size), TRANSPARENT)
     draw = ImageDraw.Draw(img)
-    s    = size / 100.0
+    s    = size / 200.0
 
-    # ── White rounded-rect background ────────────────────────────────────
-    rrect(draw, 0, 0, size-1, size-1, int(20 * s), (255, 255, 255, 255))
+    def sc(v): return int(v * s)
+    def spt(x, y): return (sc(x), sc(y))
 
-    # ── Bold "P" letterform ───────────────────────────────────────────────
-    font = get_font(int(62 * s))
-    bb   = draw.textbbox((0, 0), "P", font=font)
-    # Nudge right so the two squares fit to its left
-    tx = int(22 * s) - bb[0]
-    ty = int(13 * s) - bb[1]
-    draw.text((tx, ty), "P", fill=(0, 0, 0, 255), font=font)
+    def qbez(p0, p1, p2, n=20):
+        pts = []
+        for i in range(n + 1):
+            t = i / n
+            u = 1 - t
+            x = u*u*p0[0] + 2*u*t*p1[0] + t*t*p2[0]
+            y = u*u*p0[1] + 2*u*t*p1[1] + t*t*p2[1]
+            pts.append((int(x * s), int(y * s)))
+        return pts
 
-    # ── Two small black squares (upper-left, pixel / bit effect) ─────────
-    sq  = max(2, int(7 * s))      # square side length
-    gap = max(1, int(2.5 * s))    # gap between squares
-    sx  = int(10 * s)             # left edge of squares
-    sy1 = int(20 * s)             # top of upper square
-    sy2 = sy1 + sq + gap          # top of lower square
-    draw.rectangle([sx, sy1, sx + sq, sy1 + sq], fill=(0, 0, 0, 255))
-    draw.rectangle([sx, sy2, sx + sq, sy2 + sq], fill=(0, 0, 0, 255))
+    # ── White rounded-rect background with border ─────────────────────────
+    bg_r = sc(32)
+    rrect(draw, 0, 0, size-1, size-1, bg_r, (255, 255, 255, 255))
+    # Subtle gray border
+    bw = max(1, sc(2))
+    border_color = (229, 231, 235, 255)
+    for i in range(bw):
+        draw.rounded_rectangle([i, i, size-1-i, size-1-i], radius=bg_r-i, outline=border_color)
 
-    # ── Status dot (lower-right, large) ──────────────────────────────────
-    dr  = max(3, int(13 * s))
-    dcx = int(72 * s)
-    dcy = int(73 * s)
-    draw.ellipse([dcx-dr, dcy-dr, dcx+dr, dcy+dr], fill=DOT[state])
+    sw = max(2, sc(18))   # stroke-width=18 from SVG
+
+    # ── P stem: M70,60 V140 ───────────────────────────────────────────────
+    draw.line([spt(70, 60), spt(70, 140)], fill=(0, 0, 0, 255), width=sw)
+
+    # ── P bowl: M70,60 H110 Q130,60 130,85 T110,110 H70 ──────────────────
+    bowl_pts = (
+        [spt(70, 60), spt(110, 60)]
+        + qbez((110, 60),  (130,  60), (130,  85))
+        + qbez((130,  85), (130, 110), (110, 110))
+        + [spt(70, 110)]
+    )
+    draw.line(bowl_pts, fill=(0, 0, 0, 255), width=sw, joint="curve")
+
+    # ── Bottom curve: M130,110 Q130,140 100,140 H70 ───────────────────────
+    bot_pts = (
+        [spt(130, 110)]
+        + qbez((130, 110), (130, 140), (100, 140))
+        + [spt(70, 140)]
+    )
+    draw.line(bot_pts, fill=(0, 0, 0, 255), width=sw, joint="curve")
+
+    # ── Two black squares (Bauhaus accents) ───────────────────────────────
+    sq = max(2, sc(10))
+    sx = sc(50)
+    draw.rectangle([sx, sc(50), sx + sq, sc(50) + sq], fill=(0, 0, 0, 255))
+    draw.rectangle([sx, sc(65), sx + sq, sc(65) + sq], fill=(0, 0, 0, 255))
+
+    # ── Status dot at (140,140) r=14 ─────────────────────────────────────
+    dr  = max(3, sc(14))
+    dcx, dcy = spt(140, 140)
+    draw.ellipse([dcx - dr, dcy - dr, dcx + dr, dcy + dr], fill=DOT[state])
 
     return img
 
