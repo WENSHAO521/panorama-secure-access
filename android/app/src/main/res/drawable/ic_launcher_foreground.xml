@@ -1,54 +1,41 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-        android:width="108dp"
-        android:height="108dp"
-        android:viewportWidth="108"
-        android:viewportHeight="108">
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
 
     <!--
-        PSG mark — vector approximation of the P+connection icon.
-        (Raster WebP files are the primary launcher icons; this vector
-        is used as monochrome / adaptive-icon foreground fallback.)
-
-        Colors: black P stem/bowl  |  #CC0000 red leg  |  #FFCC00 gold dot
+        PSG Bauhaus adaptive icon foreground (white mark on transparent).
+        Background layer supplies the black fill.
+        Scaled from 200×200 SVG at 0.54×.
     -->
 
-    <!-- P stem (vertical bar) -->
-    <path android:fillColor="#1A1A1A"
-          android:pathData="M18,14 L28,14 L28,86 L18,86 Z"/>
+    <!-- Vertical stem: rect(50,40,30,120) -->
+    <path android:fillColor="#FFFFFF"
+          android:pathData="M27,22 H43 V87 H27 Z"/>
 
-    <!-- P bowl outer (rectangle + right half-ellipse) -->
-    <path android:fillColor="#1A1A1A"
-          android:pathData="M18,14 L60,14 L60,52 L18,52 Z"/>
-    <path android:fillColor="#1A1A1A"
-          android:pathData="M60,14 Q84,14 84,33 Q84,52 60,52 Z"/>
+    <!-- Top bar: rect(80,40,70,30) -->
+    <path android:fillColor="#FFFFFF"
+          android:pathData="M43,22 H81 V38 H43 Z"/>
 
-    <!-- P bowl inner knockout (background color) -->
-    <path android:fillColor="#F2F2F7"
-          android:pathData="M28,23 L55,23 Q72,23 72,33 Q72,43 55,43 L28,43 Z"/>
+    <!-- Middle bar: rect(80,85,70,30) -->
+    <path android:fillColor="#FFFFFF"
+          android:pathData="M43,46 H81 V62 H43 Z"/>
 
-    <!-- Red diagonal capsule leg -->
-    <path android:fillColor="#CC0000"
-          android:pathData="
-            M57,52
-            Q58,50 60,51
-            L82,72
-            Q83,74 81,75
-            L79,77
-            Q77,78 76,77
-            L54,56
-            Q53,54 55,53
-            Z"/>
+    <!-- Right connector: rect(120,70,30,15) -->
+    <path android:fillColor="#FFFFFF"
+          android:pathData="M65,38 H81 V46 H65 Z"/>
 
-    <!-- Gold endpoint dot -->
-    <path android:fillColor="#FFCC00"
-          android:pathData="M80,75 m-8,0 a8,8 0 1,0 16,0 a8,8 0 1,0 -16,0"/>
+    <!-- Connection polygon: M150,115 L180,160 H140 L110,115 Z -->
+    <path android:fillColor="#FFFFFF"
+          android:pathData="M81,62 L97,86 H76 L59,62 Z"/>
 
-    <!-- Three gray navigation dots (upper-left) -->
-    <path android:fillColor="#9B9BA8"
-          android:pathData="M14,26 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0"/>
-    <path android:fillColor="#9B9BA8"
-          android:pathData="M19,33 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0"/>
-    <path android:fillColor="#9B9BA8"
-          android:pathData="M14,40 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0"/>
+    <!-- Precision squares -->
+    <path android:fillColor="#FFFFFF"
+          android:pathData="M14,14 H19 V19 H14 Z"/>
+    <path android:fillColor="#FFFFFF"
+          android:pathData="M22,14 H27 V19 H22 Z"/>
+    <path android:fillColor="#FFFFFF"
+          android:pathData="M14,22 H19 V27 H14 Z"/>
 
 </vector>
