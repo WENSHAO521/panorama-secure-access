@@ -1,6 +1,6 @@
 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
   <!-- Solid Black Background -->
-  <rect x="0" y="0" width="200" height="200" fill="#000000" />
+  <rect x="0" y="0" width="200" height="200" rx="36" fill="#000000" />
 
   <!-- Hard Geometric 'P' - Bauhaus Inspired -->
   <rect x="50" y="40" width="30" height="120" fill="#FFFFFF" />

@@ -73,7 +73,8 @@ def status_icon(size, state):
     }
     img  = Image.new("RGBA", (size, size), TRANSPARENT)
     draw = ImageDraw.Draw(img)
-    draw.rectangle([0, 0, size - 1, size - 1], fill=BLACK)
+    r = max(4, int(0.18 * size))
+    draw.rounded_rectangle([0, 0, size - 1, size - 1], radius=r, fill=BLACK)
     _draw_mark(draw, size, conn_color=CONN[state])
     return img
 
