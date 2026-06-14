@@ -1,3 +1,69 @@
+## v1.0.1
+
+- chore: rename FlClashHttpOverrides -> PSGHttpOverrides, fix remaining refs, bump v1.0.1
+
+- - lib/common/http.dart: class rename
+
+- - lib/common/request.dart, lib/main.dart: update references
+
+- - .github/ISSUE_TEMPLATE/bug_report.yml: point to PSG repo
+
+- - plugins/setup/*/pubspec.yaml, build_tool.dart: update descriptions
+
+- - pubspec.yaml: version 1.0.0+1 -> 1.0.1+2
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- design: unify all icons to Bauhaus black-bg geometric P
+
+- psg_logo.svg, icon.png, icon.ico, all Android WebP, all status/tray
+
+- icons now share the same design: solid black bg, white rectangular P,
+
+- white connection polygon (tray icons color polygon by state).
+
+- Eliminates stroke-path approach; pure rect+polygon = pixel-perfect match.
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- fix(icon): match psg_logo.svg — add 10% margin around rounded rect bg
+
+- SVG rect is x=20 y=20 w=160 h=160 rx=30 on 200px canvas (not edge-to-edge).
+
+- icon_square now uses m=10%, r=15% to exactly replicate the logo layout.
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- fix: replace remaining FlClash refs, update notification icon and contributors
+
+- - ic_service.xml: PSG Bauhaus geometric P (white-on-transparent)
+
+- - GlobalState: NOTIFICATION_CHANNEL/log tag -> PSG
+
+- - NotificationParams, NotificationModule: title -> PSG
+
+- - VpnService: setSession -> PSG
+
+- - FilesProvider: COLUMN_TITLE -> PSG
+
+- - State: currentProfileName -> PSG
+
+- - about.dart: contributors -> chen08209 (Original Author) + PSG Official
+
+-   - Avatar widget supports NetworkImage for GitHub avatars
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- design: status icon — Bauhaus black-bg hard geometric P
+
+- Black background, white rectangular P shape, colored connection
+
+- polygon indicates state (emerald/amber/gray), three white precision
+
+- squares upper-left.
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
 ## v1.0.0
 
 - fix(macos): rename app bundle FlClash -> PSG
