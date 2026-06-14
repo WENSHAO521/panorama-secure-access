@@ -1,3 +1,9 @@
+## v1.0.3
+
+- chore: bump version to 1.0.3+3
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
 ## v1.0.1
 
 - chore: rename FlClashHttpOverrides -> PSGHttpOverrides, fix remaining refs, bump v1.0.1
