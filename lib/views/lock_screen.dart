@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:crypto/crypto.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/l10n/l10n.dart';
+import 'package:fl_clash/providers/providers.dart';
+import 'package:fl_clash/state.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
 
 String hashPin(String pin) =>
     sha256.convert(utf8.encode(pin)).toString();
@@ -19,7 +22,6 @@ class LockScreen extends StatefulWidget {
 class _LockScreenState extends State<LockScreen>
     with SingleTickerProviderStateMixin {
   String _input = '';
-  bool _shaking = false;
   late AnimationController _shakeController;
   late Animation<double> _shakeAnimation;
 
@@ -72,7 +74,6 @@ class _LockScreenState extends State<LockScreen>
       await _shakeController.forward(from: 0);
       setState(() {
         _input = '';
-        _shaking = false;
       });
     }
   }
