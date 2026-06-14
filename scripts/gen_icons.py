@@ -110,16 +110,19 @@ def draw_mark(draw, size,
 # ── Icon factories ────────────────────────────────────────────────────────────
 
 def icon_square(size):
-    """Light-gray rounded-rect icon (for most platforms)."""
+    """Matches psg_logo.svg: gray rounded rect with 10% margin on transparent bg.
+    SVG: rect x=20 y=20 w=160 h=160 rx=30 on 200px canvas."""
     img  = Image.new("RGBA", (size, size), TRANSPARENT)
     draw = ImageDraw.Draw(img)
-    rrect(draw, 0, 0, size-1, size-1, int(22*size/100), LIGHT_BG)
+    m = int(0.10 * size)    # 20/200 = 10%
+    r = int(0.15 * size)    # rx=30/200 = 15%
+    rrect(draw, m, m, size-1-m, size-1-m, r, LIGHT_BG)
     draw_mark(draw, size)
     return img
 
 
 def icon_circle(size):
-    """Circular clip version (Android round launcher)."""
+    """Circular clip version (Android round launcher) — same padded mark."""
     img  = Image.new("RGBA", (size, size), TRANSPARENT)
     draw = ImageDraw.Draw(img)
     draw.ellipse([0, 0, size-1, size-1], fill=LIGHT_BG)
