@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:open_file/open_file.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 part 'generated/action.g.dart';
@@ -80,29 +81,75 @@ class CommonAction extends _$CommonAction {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => AlertDialog(
-        title: Text(loc.downloading),
-        content: ValueListenableBuilder<double>(
-          valueListenable: progress,
-          builder: (_, value, _) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              LinearProgressIndicator(value: value == 0 ? null : value),
-              const SizedBox(height: 12),
-              Text('${(value * 100).toStringAsFixed(0)}%'),
-            ],
+      builder: (ctx) {
+        final theme = Theme.of(ctx);
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              cancelToken?.cancel();
-              Navigator.of(context).pop();
-            },
-            child: Text(loc.cancelDownload),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 28, 24, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Icon(
+                  Icons.system_update_rounded,
+                  size: 44,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  loc.downloading,
+                  style: theme.textTheme.titleMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  fileName,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.outline,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 22),
+                ValueListenableBuilder<double>(
+                  valueListenable: progress,
+                  builder: (_, v, _) => Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(6),
+                        child: LinearProgressIndicator(
+                          value: v == 0 ? null : v,
+                          minHeight: 7,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        v == 0 ? '–' : '${(v * 100).toStringAsFixed(1)} %',
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () {
+                    cancelToken?.cancel();
+                    Navigator.of(ctx).pop();
+                  },
+                  child: Text(loc.cancelDownload),
+                ),
+              ],
+            ),
           ),
-        ],
-      ),
+        );
+      },
     );
 
     try {
@@ -117,10 +164,14 @@ class CommonAction extends _$CommonAction {
       if (context.mounted) Navigator.of(context).pop();
       progress.dispose();
       cancelToken = null;
-      await launchUrl(
-        Uri.file(savePath),
-        mode: LaunchMode.externalApplication,
-      );
+      if (Platform.isAndroid) {
+        await OpenFile.open(
+          savePath,
+          type: 'application/vnd.android.package-archive',
+        );
+      } else {
+        await OpenFile.open(savePath);
+      }
     } on DioException catch (e) {
       if (context.mounted) Navigator.of(context).pop();
       progress.dispose();
