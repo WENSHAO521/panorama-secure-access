@@ -293,6 +293,7 @@ class AppLockItem extends ConsumerWidget {
             ref.read(appSettingProvider.notifier).update(
               (s) => s.copyWith(appLockPin: hash, appLockEnabled: true),
             );
+            if (!context.mounted) return;
             context.showNotifier(loc.pinSet);
           } else {
             ref.read(appSettingProvider.notifier).update(
@@ -324,6 +325,7 @@ class SetPinItem extends ConsumerWidget {
         ref.read(appSettingProvider.notifier).update(
           (s) => s.copyWith(appLockPin: hash),
         );
+        if (!context.mounted) return;
         context.showNotifier(loc.pinSet);
       },
     );

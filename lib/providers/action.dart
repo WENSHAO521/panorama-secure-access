@@ -16,7 +16,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:open_file/open_file.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 part 'generated/action.g.dart';
 
@@ -78,6 +77,7 @@ class CommonAction extends _$CommonAction {
     final progress = ValueNotifier<double>(0);
     CancelToken? cancelToken = CancelToken();
 
+    if (!context.mounted) return;
     showDialog(
       context: context,
       barrierDismissible: false,
