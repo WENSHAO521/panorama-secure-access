@@ -1,3 +1,7 @@
+## v1.0.8
+
+- 修复：统一四端 LOGO（macOS / Windows / Android Play Store 均替换为 PSG 黑底白字设计，此前仍显示旧版 FlClash 蓝色图标）
+
 ## v1.0.7
 
 - 修复：下载完成后自动触发安装（Android 使用系统包安装器，Windows/macOS/Linux 自动打开安装包）
