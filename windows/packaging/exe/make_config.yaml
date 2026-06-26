@@ -1,7 +1,7 @@
 script_template: inno_setup.iss
 app_id: 728B3532-C74B-4870-9068-BE70FE12A3E6
 app_name: Panorama Secure Access
-publisher: Publishing Society Group
+publisher: Panorama Scholarly Group
 publisher_url: https://panorama-sg.com/
 display_name: Panorama Secure Access
 executable_name: PSA.exe

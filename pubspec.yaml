@@ -1,5 +1,5 @@
 name: fl_clash
-description: PSG internal network proxy client — Publishing Society Group internal tool.
+description: PSG internal network proxy client — Panorama Scholarly Group internal tool.
 publish_to: 'none'
 version: 2.0.0+1
 environment:

@@ -10,7 +10,7 @@
 [![Last Version](https://img.shields.io/github/release/WENSHAO521/FlClash-/all.svg?style=flat-square)](https://github.com/WENSHAO521/FlClash-/releases/)
 [![License](https://img.shields.io/github/license/WENSHAO521/FlClash-?style=flat-square)](LICENSE)
 
-A multi-platform secure proxy client built by **Publishing Society Group (PSG)**, based on [ClashMeta](https://github.com/MetaCubeX/mihomo). Simple to use, open-source, and ad-free.
+A multi-platform secure proxy client built by **Panorama Scholarly Group (PSG)**, based on [ClashMeta](https://github.com/MetaCubeX/mihomo). Simple to use, open-source, and ad-free.
 
 Official website: [panorama-sg.com](https://panorama-sg.com/)
 
@@ -95,4 +95,4 @@ com.follow.clash.action.TOGGLE
 
 ## License
 
-[GPL-3.0](LICENSE) — Publishing Society Group
+[GPL-3.0](LICENSE) — Panorama Scholarly Group

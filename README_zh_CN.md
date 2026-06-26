@@ -10,7 +10,7 @@
 [![Last Version](https://img.shields.io/github/release/WENSHAO521/FlClash-/all.svg?style=flat-square)](https://github.com/WENSHAO521/FlClash-/releases/)
 [![License](https://img.shields.io/github/license/WENSHAO521/FlClash-?style=flat-square)](LICENSE)
 
-**Publishing Society Group (PSG)** 出品的多平台安全代理客户端，基于 [ClashMeta](https://github.com/MetaCubeX/mihomo)，简单易用，开源无广告。
+**Panorama Scholarly Group (PSG)** 出品的多平台安全代理客户端，基于 [ClashMeta](https://github.com/MetaCubeX/mihomo)，简单易用，开源无广告。
 
 官网：[panorama-sg.com](https://panorama-sg.com/)
 
@@ -95,4 +95,4 @@ com.follow.clash.action.TOGGLE
 
 ## 开源协议
 
-[GPL-3.0](LICENSE) — Publishing Society Group
+[GPL-3.0](LICENSE) — Panorama Scholarly Group
