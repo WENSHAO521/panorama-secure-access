@@ -1,0 +1,28 @@
+display_name: Panorama Secure Access
+package_name: psg
+maintainer:
+  name: Publishing Society Group
+  email: wainixueer3334@gmail.com
+
+priority: optional
+section: x11
+installed_size: 6604
+essential: false
+icon: ./assets/images/icon.png
+
+dependencies:
+  - libayatana-appindicator3-dev
+  - libkeybinder-3.0-dev
+
+keywords:
+  - Panorama Secure Access
+  - PSG
+  - Proxy
+  - ClashMeta
+
+generic_name: Panorama Secure Access
+
+categories:
+  - Network
+
+startup_notify: true

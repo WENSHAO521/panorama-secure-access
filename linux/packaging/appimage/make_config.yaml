@@ -1,0 +1,19 @@
+display_name: Panorama Secure Access
+
+icon: ./assets/images/icon.png
+
+keywords:
+  - Panorama Secure Access
+  - PSG
+  - Publishing
+  - Proxy
+  - Network
+
+generic_name: Panorama Secure Access
+
+categories:
+  - Network
+
+startup_notify: true
+
+include: []

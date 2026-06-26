@@ -1,0 +1,11 @@
+*.jks binary
+*.so binary
+*.dylib binary
+*.dll binary
+*.exe binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary

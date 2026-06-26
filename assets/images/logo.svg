@@ -1,0 +1,48 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Glass panel: bright top-left → dim bottom-right, semi-transparent white -->
+    <linearGradient id="glassFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.06"/>
+    </linearGradient>
+    <!-- Top sheen that fades out -->
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.40"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.00"/>
+    </linearGradient>
+    <!-- Pillar: glass red gradient left→right -->
+    <linearGradient id="pillarGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#EF5350" stop-opacity="0.85"/>
+      <stop offset="45%"  stop-color="#C62828" stop-opacity="1.00"/>
+      <stop offset="100%" stop-color="#B71C1C" stop-opacity="0.75"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ① Glass panel (rounded rect) — corners outside are transparent -->
+  <rect width="200" height="200" rx="24" fill="url(#glassFill)"/>
+
+  <!-- ② Glass border — thin white outline on the panel edge -->
+  <rect x="0.75" y="0.75" width="198.5" height="198.5" rx="23.5"
+        fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.5"/>
+
+  <!-- ③ Top sheen — bright strip near top fading to transparent -->
+  <rect x="1.5" y="1.5" width="197" height="88" rx="22.5"
+        fill="url(#sheen)"/>
+
+  <!-- ④ Panorama arcs -->
+  <path d="M40 100 A 60 60 0 0 1 160 100"
+        stroke="#E0E0E0" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M55 100 A 45 45 0 0 1 145 100"
+        stroke="#BDBDBD" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M70 100 A 30 30 0 0 1 130 100"
+        stroke="#757575" stroke-width="8" fill="none" stroke-linecap="round"/>
+
+  <!-- ⑤ Secure Access Pillar (glass gradient red) -->
+  <rect x="94" y="80" width="12" height="60" rx="2" fill="url(#pillarGrad)"/>
+  <!-- Pillar glass catchlight (bright strip at top-left of pillar) -->
+  <rect x="95.5" y="82" width="3.5" height="18" rx="1"
+        fill="#ffffff" fill-opacity="0.52"/>
+
+  <!-- ⑥ Base line -->
+  <rect x="40" y="145" width="120" height="4" fill="#424242"/>
+</svg>

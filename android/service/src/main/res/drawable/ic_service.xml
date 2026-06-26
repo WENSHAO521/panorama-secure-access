@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Outer panorama arc -->
+    <path android:pathData="M40,100 A60,60 0 0,1 160,100"
+          android:strokeColor="#FFFFFF"
+          android:strokeWidth="8"
+          android:strokeLineCap="round"
+          android:fillColor="#00000000"/>
+
+    <!-- Middle panorama arc -->
+    <path android:pathData="M55,100 A45,45 0 0,1 145,100"
+          android:strokeColor="#FFFFFF"
+          android:strokeWidth="8"
+          android:strokeLineCap="round"
+          android:fillColor="#00000000"/>
+
+    <!-- Inner panorama arc -->
+    <path android:pathData="M70,100 A30,30 0 0,1 130,100"
+          android:strokeColor="#FFFFFF"
+          android:strokeWidth="8"
+          android:strokeLineCap="round"
+          android:fillColor="#00000000"/>
+
+    <!-- Secure-access pillar -->
+    <path android:pathData="M94,80 H106 V140 H94 Z"
+          android:fillColor="#FFFFFF"/>
+
+    <!-- Base line -->
+    <path android:pathData="M40,145 H160 V149 H40 Z"
+          android:fillColor="#FFFFFF"/>
+
+</vector>

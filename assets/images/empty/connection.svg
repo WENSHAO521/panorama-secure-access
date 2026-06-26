@@ -1,0 +1,28 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Bauhaus style: Connection empty state -->
+  <!-- Card outline -->
+  <rect x="70" y="45" width="160" height="200" fill="#FFFFFF" stroke="#1A1A1A" stroke-width="3"/>
+  <!-- Header bar -->
+  <rect x="70" y="45" width="160" height="24" fill="#1A1A1A"/>
+  <!-- Three dots indicator -->
+  <circle cx="86" cy="57" r="4" fill="#CC0000"/>
+  <circle cx="100" cy="57" r="4" fill="#FFFFFF"/>
+  <circle cx="114" cy="57" r="4" fill="#FFFFFF"/>
+
+  <!-- Content lines -->
+  <rect x="90" y="90" width="40" height="8" fill="#1A1A1A"/>
+  <rect x="138" y="90" width="72" height="8" fill="#D0D0D0"/>
+  <rect x="90" y="118" width="56" height="8" fill="#D0D0D0"/>
+  <rect x="90" y="136" width="80" height="8" fill="#D0D0D0"/>
+  <!-- Divider line -->
+  <rect x="90" y="112" width="120" height="2" fill="#1A1A1A"/>
+
+  <!-- Arrow icon (up-down transfer) — red accent circle -->
+  <circle cx="210" cy="218" r="34" fill="#CC0000"/>
+  <!-- Up arrow -->
+  <rect x="204" y="202" width="6" height="20" fill="#FFFFFF"/>
+  <path d="M201,208 L207,200 L213,208" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Down arrow -->
+  <rect x="216" y="210" width="6" height="20" fill="#FFFFFF"/>
+  <path d="M213,224 L219,232 L225,224" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round"/>
+</svg>

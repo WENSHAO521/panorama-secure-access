@@ -1,0 +1,23 @@
+display_name: Panorama Secure Access
+
+packager: Publishing Society Group
+packagerEmail: wainixueer3334@gmail.com
+license: Other
+
+priority: optional
+section: x11
+installed_size: 6604
+essential: false
+icon: ./assets/images/icon.png
+
+keywords:
+  - Panorama Secure Access
+  - PSG
+  - Proxy
+  - ClashMeta
+
+generic_name: Panorama Secure Access
+
+group: Applications/Internet
+
+startup_notify: true

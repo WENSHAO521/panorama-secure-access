@@ -1,0 +1,46 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!--
+        Panorama Secure Access adaptive icon foreground — transparent background.
+        Safe zone 18dp–90dp: scale=0.36, offset=18dp. Center=(54,54).
+        Stroke width = 8 × 0.36 = 2.88.
+    -->
+
+    <!-- Outer arc: r=60 → 21.6 -->
+    <path android:pathData="M32.4,54 A21.6,21.6 0 0,1 75.6,54"
+          android:strokeColor="#E0E0E0"
+          android:strokeWidth="2.88"
+          android:strokeLineCap="round"
+          android:fillColor="#00000000"/>
+
+    <!-- Middle arc: r=45 → 16.2 -->
+    <path android:pathData="M37.8,54 A16.2,16.2 0 0,1 70.2,54"
+          android:strokeColor="#BDBDBD"
+          android:strokeWidth="2.88"
+          android:strokeLineCap="round"
+          android:fillColor="#00000000"/>
+
+    <!-- Inner arc: r=30 → 10.8 -->
+    <path android:pathData="M43.2,54 A10.8,10.8 0 0,1 64.8,54"
+          android:strokeColor="#757575"
+          android:strokeWidth="2.88"
+          android:strokeLineCap="round"
+          android:fillColor="#00000000"/>
+
+    <!-- Pillar body -->
+    <path android:pathData="M51.84,46.8 H56.16 V68.4 H51.84 Z"
+          android:fillColor="#C62828"/>
+
+    <!-- Pillar glass catchlight -->
+    <path android:pathData="M52.4,48.0 H53.9 V55.2 H52.4 Z"
+          android:fillColor="#80FFFFFF"/>
+
+    <!-- Base line -->
+    <path android:pathData="M32.4,70.2 H75.6 V71.64 H32.4 Z"
+          android:fillColor="#424242"/>
+
+</vector>
