@@ -6,9 +6,9 @@
 
 ## Panorama Secure Access
 
-[![Downloads](https://img.shields.io/github/downloads/WENSHAO521/FlClash-/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/FlClash-/releases/)
-[![Last Version](https://img.shields.io/github/release/WENSHAO521/FlClash-/all.svg?style=flat-square)](https://github.com/WENSHAO521/FlClash-/releases/)
-[![License](https://img.shields.io/github/license/WENSHAO521/FlClash-?style=flat-square)](LICENSE)
+[![Downloads](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access/releases/)
+[![Last Version](https://img.shields.io/github/release/WENSHAO521/panorama-secure-access/all.svg?style=flat-square)](https://github.com/WENSHAO521/panorama-secure-access/releases/)
+[![License](https://img.shields.io/github/license/WENSHAO521/panorama-secure-access?style=flat-square)](LICENSE)
 
 A multi-platform secure proxy client built by **Panorama Scholarly Group (PSG)**, based on [ClashMeta](https://github.com/MetaCubeX/mihomo). Simple to use, open-source, and ad-free.
 
@@ -25,7 +25,7 @@ Official website: [panorama-sg.com](https://panorama-sg.com/)
 
 ## Download
 
-Get the latest release from [GitHub Releases](https://github.com/WENSHAO521/FlClash-/releases).
+Get the latest release from [GitHub Releases](https://github.com/WENSHAO521/panorama-secure-access/releases).
 
 | Platform | File |
 |---|---|
@@ -61,7 +61,7 @@ com.follow.clash.action.TOGGLE
 
 1. Clone with submodules:
    ```bash
-   git clone --recurse-submodules https://github.com/WENSHAO521/FlClash-
+   git clone --recurse-submodules https://github.com/WENSHAO521/panorama-secure-access
    cd FlClash-
    ```
 

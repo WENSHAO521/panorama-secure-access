@@ -6,9 +6,9 @@
 
 ## Panorama Secure Access
 
-[![Downloads](https://img.shields.io/github/downloads/WENSHAO521/FlClash-/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/FlClash-/releases/)
-[![Last Version](https://img.shields.io/github/release/WENSHAO521/FlClash-/all.svg?style=flat-square)](https://github.com/WENSHAO521/FlClash-/releases/)
-[![License](https://img.shields.io/github/license/WENSHAO521/FlClash-?style=flat-square)](LICENSE)
+[![Downloads](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access/releases/)
+[![Last Version](https://img.shields.io/github/release/WENSHAO521/panorama-secure-access/all.svg?style=flat-square)](https://github.com/WENSHAO521/panorama-secure-access/releases/)
+[![License](https://img.shields.io/github/license/WENSHAO521/panorama-secure-access?style=flat-square)](LICENSE)
 
 **Panorama Scholarly Group (PSG)** 出品的多平台安全代理客户端，基于 [ClashMeta](https://github.com/MetaCubeX/mihomo)，简单易用，开源无广告。
 
@@ -25,7 +25,7 @@
 
 ## 下载
 
-前往 [GitHub Releases](https://github.com/WENSHAO521/FlClash-/releases) 下载最新版本。
+前往 [GitHub Releases](https://github.com/WENSHAO521/panorama-secure-access/releases) 下载最新版本。
 
 | 平台 | 文件 |
 |---|---|
@@ -61,7 +61,7 @@ com.follow.clash.action.TOGGLE
 
 1. 克隆仓库（包含子模块）：
    ```bash
-   git clone --recurse-submodules https://github.com/WENSHAO521/FlClash-
+   git clone --recurse-submodules https://github.com/WENSHAO521/panorama-secure-access
    cd FlClash-
    ```
 
