@@ -4,129 +4,95 @@
 
 </div>
 
-## FlClash
+## Panorama Secure Access
 
-[![Downloads](https://img.shields.io/github/downloads/chen08209/FlClash/total?style=flat-square&logo=github)](https://github.com/chen08209/FlClash/releases/)[![Last Version](https://img.shields.io/github/release/chen08209/FlClash/all.svg?style=flat-square)](https://github.com/chen08209/FlClash/releases/)[![License](https://img.shields.io/github/license/chen08209/FlClash?style=flat-square)](LICENSE)
+[![Downloads](https://img.shields.io/github/downloads/WENSHAO521/FlClash-/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/FlClash-/releases/)
+[![Last Version](https://img.shields.io/github/release/WENSHAO521/FlClash-/all.svg?style=flat-square)](https://github.com/WENSHAO521/FlClash-/releases/)
+[![License](https://img.shields.io/github/license/WENSHAO521/FlClash-?style=flat-square)](LICENSE)
 
-[![Channel](https://img.shields.io/badge/Telegram-Channel-blue?style=flat-square&logo=telegram)](https://t.me/FlClash)
+A multi-platform secure proxy client built by **Publishing Society Group (PSG)**, based on [ClashMeta](https://github.com/MetaCubeX/mihomo). Simple to use, open-source, and ad-free.
 
-A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.
-
-on Desktop:
-<p style="text-align: center;">
-    <img alt="desktop" src="snapshots/desktop.gif">
-</p>
-
-on Mobile:
-<p style="text-align: center;">
-    <img alt="mobile" src="snapshots/mobile.gif">
-</p>
+Official website: [panorama-sg.com](https://panorama-sg.com/)
 
 ## Features
 
-✈️ Multi-platform: Android, Windows, macOS and Linux
-
-💻 Adaptive multiple screen sizes, Multiple color themes available
-
-💡 Based on Material You Design, [Surfboard](https://github.com/getsurfboard/surfboard)-like UI
-
-☁️ Supports data sync via WebDAV
-
-✨ Support subscription link, Dark mode
-
-## Use
-
-### Linux
-
-⚠️ Make sure to install the following dependencies before using them
-
-   ```bash
-    sudo apt-get install libayatana-appindicator3-dev
-    sudo apt-get install libkeybinder-3.0-dev
-   ```
-
-### Android
-
-Support the following actions
-
-   ```bash
-    com.follow.clash.action.START
-    
-    com.follow.clash.action.STOP
-    
-    com.follow.clash.action.TOGGLE
-   ```
+- **Multi-platform** — Android, Windows, macOS and Linux
+- **Adaptive UI** — Responsive layout for all screen sizes, multiple color themes
+- **Material You** — Clean, modern design inspired by [Surfboard](https://github.com/getsurfboard/surfboard)
+- **WebDAV Sync** — Sync profiles and settings across devices
+- **Subscription support** — Import proxy subscriptions with one click
+- **Dark mode** — Full dark/light theme support
 
 ## Download
 
-<a href="https://chen08209.github.io/FlClash-fdroid-repo/repo?fingerprint=789D6D32668712EF7672F9E58DEEB15FBD6DCEEC5AE7A4371EA72F2AAE8A12FD"><img alt="Get it on F-Droid" src="snapshots/get-it-on-fdroid.svg" width="200px"/></a> <a href="https://github.com/chen08209/FlClash/releases"><img alt="Get it on GitHub" src="snapshots/get-it-on-github.svg" width="200px"/></a>
+Get the latest release from [GitHub Releases](https://github.com/WENSHAO521/FlClash-/releases).
+
+| Platform | File |
+|---|---|
+| Android | `PSA-{version}-android-arm64-v8a.apk` |
+| Windows (x64) | `PSA-{version}-windows-amd64-setup.exe` |
+| Windows (ARM) | `PSA-{version}-windows-arm64-setup.exe` |
+| macOS (Intel) | `PSA-{version}-macos-amd64.dmg` |
+| macOS (Apple Silicon) | `PSA-{version}-macos-arm64.dmg` |
+| Linux (x64) | `PSA-{version}-linux-amd64.AppImage` |
+
+## Usage
+
+### Linux
+
+Install required system dependencies before first run:
+
+```bash
+sudo apt-get install libayatana-appindicator3-dev
+sudo apt-get install libkeybinder-3.0-dev
+```
+
+### Android
+
+The following broadcast intents are supported for automation:
+
+```
+com.follow.clash.action.START
+com.follow.clash.action.STOP
+com.follow.clash.action.TOGGLE
+```
 
 ## Build
 
-1. Update submodules
+1. Clone with submodules:
    ```bash
-   git submodule update --init --recursive
+   git clone --recurse-submodules https://github.com/WENSHAO521/FlClash-
+   cd FlClash-
    ```
 
-2. Install `Flutter` and `Golang` environment
+2. Install [Flutter](https://flutter.dev/docs/get-started/install) and [Go](https://golang.org/dl/) (1.24+)
 
-3. Build Application
+3. Build for your target platform:
 
-    - android
+   **Android**
+   ```bash
+   # Install Android SDK and NDK (r28c), set ANDROID_NDK
+   dart setup.dart android
+   ```
 
-        1. Install `Android SDK`, `Android NDK`
+   **Windows**
+   ```bash
+   # Requires GCC and Inno Setup
+   dart setup.dart windows
+   ```
 
-        2. Set `ANDROID_NDK` environment variable
+   **Linux**
+   ```bash
+   # Dependencies are installed automatically, or manually:
+   sudo apt-get install -y libayatana-appindicator3-dev libkeybinder-3.0-dev
+   dart setup.dart linux
+   ```
 
-        3. Run build script
+   **macOS**
+   ```bash
+   dart setup.dart macos
+   ```
 
-           ```bash
-           dart setup.dart android
-           ```
+## License
 
-    - windows
-
-        1. Requires a Windows client
-
-        2. Install `GCC`, `Inno Setup`
-
-        3. Run build script
-
-           ```bash
-           dart setup.dart windows
-           ```
-
-    - linux
-
-        1. Requires a Linux client
-
-        2. Dependencies are auto-installed by setup script, or manually:
-           ```bash
-           sudo apt-get install -y libayatana-appindicator3-dev libkeybinder-3.0-dev
-           ```
-
-        3. Run build script
-
-           ```bash
-           dart setup.dart linux
-           ```
-
-    - macOS
-
-        1. Requires a macOS client
-
-        2. Run build script
-
-           ```bash
-           dart setup.dart macos
-           ```
-
-## Star
-
-The easiest way to support developers is to click on the star (⭐) at the top of the page.
-
-<p style="text-align: center;">
-    <a href="https://api.star-history.com/svg?repos=chen08209/FlClash&Date">
-        <img alt="start" width=50% src="https://api.star-history.com/svg?repos=chen08209/FlClash&Date"/>
-    </a>
-</p>
+[GPL-3.0](LICENSE) — Publishing Society Group
