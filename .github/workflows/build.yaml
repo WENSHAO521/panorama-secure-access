@@ -136,6 +136,18 @@ jobs:
           flutter --version
           flutter pub get
 
+      - name: Install appimagetool (pre-extracted, no FUSE required)
+        if: matrix.platform == 'linux' && matrix.arch == 'amd64'
+        run: |
+          mkdir -p /tmp/appimagetool-work
+          cd /tmp/appimagetool-work
+          wget -q -O appimagetool.AppImage \
+            https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool.AppImage
+          ./appimagetool.AppImage --appimage-extract
+          sudo mv squashfs-root /opt/appimagetool
+          sudo ln -sf /opt/appimagetool/AppRun /usr/local/bin/appimagetool
+
       - name: Setup
         env:
           APPIMAGE_EXTRACT_AND_RUN: 1
