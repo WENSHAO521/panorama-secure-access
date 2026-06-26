@@ -149,9 +149,16 @@ jobs:
           sudo ln -sf /opt/appimagetool/AppRun /usr/local/bin/appimagetool
 
       - name: Setup
+        shell: bash
         env:
           APPIMAGE_EXTRACT_AND_RUN: 1
-        run: dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} -v
+        run: |
+          TARGETS="${{ matrix.platform == 'linux' && matrix.arch == 'amd64' && 'deb' || '' }}"
+          if [ -n "$TARGETS" ]; then
+            dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} --targets "$TARGETS" -v
+          else
+            dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} -v
+          fi
 
       - name: Upload
         uses: actions/upload-artifact@v4
