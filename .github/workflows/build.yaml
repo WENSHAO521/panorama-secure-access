@@ -161,12 +161,7 @@ jobs:
         env:
           APPIMAGE_EXTRACT_AND_RUN: 1
         run: |
-          TARGETS="${{ matrix.platform == 'linux' && matrix.arch == 'amd64' && 'deb' || '' }}"
-          if [ -n "$TARGETS" ]; then
-            dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} --targets "$TARGETS" -v
-          else
-            dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} -v
-          fi
+          dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} -v
 
       - name: Upload
         uses: actions/upload-artifact@v4

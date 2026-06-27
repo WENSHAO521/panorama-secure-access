@@ -1,3 +1,11 @@
+## v2.0.0
+
+- 正式发布 Panorama Secure Access 2.0，基于最新 ClashMeta (mihomo) 核心
+- 全平台支持：Android、Windows (x64/ARM64)、macOS (Intel/Apple Silicon)、Linux (x64/ARM64)
+- 品牌全面升级为 Panorama Scholarly Group (PSG) 设计语言
+- Material You 自适应界面，支持动态取色
+- 修复 CI 全平台构建流程（Go 核心权限、CocoaPods BOM 解析、子模块依赖）
+
 ## v1.0.8
 
 - 修复：统一四端 LOGO（macOS / Windows / Android Play Store 均替换为 PSG 黑底白字设计，此前仍显示旧版 FlClash 蓝色图标）
