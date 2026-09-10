@@ -158,7 +158,9 @@ jobs:
           $installer = Join-Path $env:RUNNER_TEMP 'innosetup-6.7.3.exe'
           Invoke-WebRequest -Uri 'https://github.com/jrsoftware/issrc/releases/download/is-6_7_3/innosetup-6.7.3.exe' -OutFile $installer
           Start-Process -FilePath $installer -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/SP-' -Wait
-          & 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' | Select-String 'Inno Setup'
+          $iscc = 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe'
+          if (-not (Test-Path $iscc)) { throw "ISCC.exe not found at $iscc after install" }
+          Write-Output "Installed: $((Get-Item $iscc).VersionInfo.FileVersion)"
 
       - name: Setup NDK
         if: startsWith(matrix.platform,'android')
