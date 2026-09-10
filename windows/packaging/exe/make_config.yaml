@@ -30,7 +30,17 @@ output_base_file_name: FlClash.exe
 # constant prefix; MakeExeConfig uses this value verbatim with no implicit
 # Program-Files prefixing when set.
 install_dir_name: '{autopf64}\Panorama Secure Access'
-setup_icon_file: ..\windows\runner\resources\app_icon.ico
+# Unlike locales[].file below, MakeExeConfig.fromJson joins this value onto
+# `Directory.current` (the repo root that `dart setup.dart windows` runs
+# from) rather than leaving it for Inno Setup to resolve relative to the
+# generated .iss's own location — so this must be relative to the repo
+# root, not to this make_config.yaml file or to dist/. A leading `..\`
+# here (as if relative to dist/, one level below repo root) overshoots
+# past the repo root once GitHub Actions' checkout path is on the runner
+# (D:\a\<repo>\<repo>\...), producing a SetupIconFile that points outside
+# the checkout entirely and failing ISCC with a cryptic "Updating icons
+# (Setup.e32): The system cannot find the path specified."
+setup_icon_file: windows\runner\resources\app_icon.ico
 locales:
   - lang: zh
     file: ..\windows\packaging\exe\ChineseSimplified.isl
