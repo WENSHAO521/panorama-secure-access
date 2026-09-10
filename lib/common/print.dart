@@ -1,8 +1,16 @@
+import 'dart:async';
+
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/state.dart';
 import 'package:flutter/material.dart';
+
+/// A timed-out core call is an expected liveness hiccup, not a real
+/// failure, so it's logged quietly instead of as a warning.
+LogLevel coreFailureLogLevel(Object? error) {
+  return error is TimeoutException ? LogLevel.debug : LogLevel.warning;
+}
 
 class CommonPrint {
   static CommonPrint? _instance;
