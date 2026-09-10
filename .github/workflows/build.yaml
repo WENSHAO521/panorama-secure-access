@@ -178,6 +178,20 @@ jobs:
       - name: Setup
         run: dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} -v
 
+      - name: Dump generated .iss on failure (Windows)
+        # A failed ISCC compile leaves the generated .iss behind (it's only
+        # deleted after a successful compile) -- print it so we can see
+        # exactly what setup.dart/flutter_distributor actually generated,
+        # instead of guessing from a hand-reconstructed local repro.
+        if: failure() && startsWith(matrix.platform,'windows')
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path dist -Filter *.iss -ErrorAction SilentlyContinue | ForEach-Object {
+            Write-Output "===== $($_.FullName) ====="
+            Get-Content -Raw -Encoding UTF8 $_.FullName
+            Write-Output "===== end ====="
+          }
+
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
