@@ -12,16 +12,19 @@ class Picker {
   }
 
   Future<String?> saveFile(String fileName, Uint8List bytes) async {
-    final path = await FilePicker.saveFile(
+    final uri = await FilePicker.saveFile(
       fileName: fileName,
       initialDirectory: await appPath.downloadDirPath,
       bytes: bytes,
     );
-    if (!system.isAndroid && path != null) {
-      final file = File(path);
+    if (uri == null) {
+      return null;
+    }
+    if (!system.isAndroid) {
+      final file = File(uri.toFilePath());
       await file.safeWriteAsBytes(bytes);
     }
-    return path;
+    return uri.toString();
   }
 
   Future<String?> saveFileWithPath(String fileName, String localPath) async {
@@ -30,13 +33,13 @@ class Picker {
       await localFile.create(recursive: true);
     }
     final bytes = await localFile.readAsBytes();
-    final path = await FilePicker.saveFile(
+    final uri = await FilePicker.saveFile(
       fileName: fileName,
       initialDirectory: await appPath.downloadDirPath,
       bytes: bytes,
     );
     await localFile.safeDelete();
-    return path;
+    return uri?.toString();
   }
 
   Future<String?> pickerConfigQRCode() async {
