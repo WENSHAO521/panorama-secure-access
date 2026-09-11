@@ -28,6 +28,8 @@
   "ja": "Japanese",
   "ru": "Russian",
   "zh_CN": "Simplified Chinese",
+  "zh_TW": "Traditional Chinese",
+  "ko": "Korean",
   "theme": "Theme",
   "themeDesc": "Set dark mode,adjust the color",
   "override": "Override",

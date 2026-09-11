@@ -354,6 +354,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "justNow": MessageLookupByLibrary.simpleMessage("刚刚"),
     "keepAliveIntervalDesc": MessageLookupByLibrary.simpleMessage("TCP保持活动间隔"),
     "key": MessageLookupByLibrary.simpleMessage("键"),
+    "ko": MessageLookupByLibrary.simpleMessage("韩语"),
     "language": MessageLookupByLibrary.simpleMessage("语言"),
     "layout": MessageLookupByLibrary.simpleMessage("布局"),
     "light": MessageLookupByLibrary.simpleMessage("浅色"),
@@ -743,5 +744,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名单模式"),
     "yearsAgo": m25,
     "zh_CN": MessageLookupByLibrary.simpleMessage("中文简体"),
+    "zh_TW": MessageLookupByLibrary.simpleMessage("中文繁体"),
   };
 }

@@ -402,6 +402,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "TCPキープアライブ間隔",
     ),
     "key": MessageLookupByLibrary.simpleMessage("キー"),
+    "ko": MessageLookupByLibrary.simpleMessage("韓国語"),
     "language": MessageLookupByLibrary.simpleMessage("言語"),
     "layout": MessageLookupByLibrary.simpleMessage("レイアウト"),
     "light": MessageLookupByLibrary.simpleMessage("ライト"),
@@ -855,5 +856,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
     "yearsAgo": m25,
     "zh_CN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
+    "zh_TW": MessageLookupByLibrary.simpleMessage("繁体字中国語"),
   };
 }

@@ -533,6 +533,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Интервал поддержания TCP-соединения",
     ),
     "key": MessageLookupByLibrary.simpleMessage("Ключ"),
+    "ko": MessageLookupByLibrary.simpleMessage("Корейский"),
     "language": MessageLookupByLibrary.simpleMessage("Язык"),
     "layout": MessageLookupByLibrary.simpleMessage("Макет"),
     "light": MessageLookupByLibrary.simpleMessage("Светлый"),
@@ -1126,5 +1127,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "yearsAgo": m25,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Упрощенный китайский"),
+    "zh_TW": MessageLookupByLibrary.simpleMessage("Традиционный китайский"),
   };
 }

@@ -514,6 +514,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Tcp keep alive interval",
     ),
     "key": MessageLookupByLibrary.simpleMessage("Key"),
+    "ko": MessageLookupByLibrary.simpleMessage("Korean"),
     "language": MessageLookupByLibrary.simpleMessage("Language"),
     "layout": MessageLookupByLibrary.simpleMessage("Layout"),
     "light": MessageLookupByLibrary.simpleMessage("Light"),
@@ -1059,5 +1060,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
     "yearsAgo": m25,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
+    "zh_TW": MessageLookupByLibrary.simpleMessage("Traditional Chinese"),
   };
 }

@@ -239,6 +239,21 @@ class AppLocalizations {
     );
   }
 
+  /// `Traditional Chinese`
+  String get zh_TW {
+    return Intl.message(
+      'Traditional Chinese',
+      name: 'zh_TW',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Korean`
+  String get ko {
+    return Intl.message('Korean', name: 'ko', desc: '', args: []);
+  }
+
   /// `Theme`
   String get theme {
     return Intl.message('Theme', name: 'theme', desc: '', args: []);
@@ -4522,8 +4537,10 @@ class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
       Locale.fromSubtags(languageCode: 'ja'),
+      Locale.fromSubtags(languageCode: 'ko'),
       Locale.fromSubtags(languageCode: 'ru'),
       Locale.fromSubtags(languageCode: 'zh', countryCode: 'CN'),
+      Locale.fromSubtags(languageCode: 'zh', countryCode: 'TW'),
     ];
   }
 
