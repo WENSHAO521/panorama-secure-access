@@ -1,3 +1,51 @@
+## v3.3.17
+
+- Bump version to 3.3.17
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Drop OpenContainer for Tools sub-page navigation; push like every other page
+
+- The AmbientBackground fix in the previous commit didn't fix the
+
+- Android flash - it made it more visible. OpenContainer's own code has
+
+- been unchanged since v3.3.12, so the flash was never really about
+
+- what color/background sits behind it; it's a structural issue in the
+
+- animations package itself. OpenContainer's buildPage swaps to a
+
+- completely different widget tree the instant its animation completes
+
+- (mid-transition: a FittedBox-scaled preview inside a scrim Container;
+
+- settled: a plain Material) - an abrupt rebuild that can drop a frame
+
+- on Android, and that dropped frame has nothing to paint but the bare
+
+- window colour. Making openColor/the destination transparent (previous
+
+- commit) turned that into a stark white pop against a colorful
+
+- gradient instead of a same-toned blip, which is why it got worse
+
+- rather than better.
+
+- Mobile now pushes the destination page through BaseNavigator (the
+
+- same SharedAxisTransition + outside-the-animation AmbientBackground
+
+- every other page in the app already uses, fixed in fe5348e) instead
+
+- of OpenContainer's container-transform. No structural tree swap, no
+
+- flash. Desktop and debug builds are unaffected - they already used
+
+- showExtend, never OpenContainer.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
 ## v3.3.16
 
 - Bump version to 3.3.16
