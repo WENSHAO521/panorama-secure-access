@@ -295,15 +295,23 @@ class CommonScaffoldState extends State<CommonScaffold> {
                             sigmaX: GlassTokens.blurChrome,
                             sigmaY: GlassTokens.blurChrome,
                           ),
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: context.colorScheme.surface.withValues(
-                                alpha: GlassTokens.opacityFor(
-                                  GlassSurfaceType.chrome,
-                                  context.colorScheme.brightness,
+                          child: Stack(
+                            children: [
+                              DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: context.colorScheme.surface
+                                      .withValues(
+                                        alpha: GlassTokens.opacityFor(
+                                          GlassSurfaceType.chrome,
+                                          context.colorScheme.brightness,
+                                        ),
+                                      ),
                                 ),
                               ),
-                            ),
+                              const Positioned.fill(
+                                child: IgnorePointer(child: GlassSheen()),
+                              ),
+                            ],
                           ),
                         ),
                       ),

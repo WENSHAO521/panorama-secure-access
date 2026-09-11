@@ -242,7 +242,7 @@ class GlassSurface extends StatelessWidget {
         borderSide ??
         (showBorder ? GlassTokens.borderSideFor(colorScheme) : BorderSide.none);
     final tintedShape = shape.copyWith(side: resolvedBorderSide);
-    final surface = DecoratedBox(
+    final content = DecoratedBox(
       decoration: ShapeDecoration(
         shape: tintedShape,
         color: baseColor.withValues(alpha: resolvedOpacity),
@@ -250,6 +250,19 @@ class GlassSurface extends StatelessWidget {
       ),
       child: child,
     );
+    // Every glass surface but `repeated` carries a top-edge sheen — the
+    // light-catching highlight "Liquid Glass" surfaces always have. Skipped
+    // for `repeated` per the class doc: it's meant to read as a lightweight
+    // control repeated dozens of times, not a mini glass panel competing
+    // for attention.
+    final surface = type == GlassSurfaceType.repeated
+        ? content
+        : Stack(
+            children: [
+              content,
+              const Positioned.fill(child: IgnorePointer(child: GlassSheen())),
+            ],
+          );
     if (resolvedBlur <= 0) {
       return ClipPath(
         clipper: ShapeBorderClipper(shape: shape),
@@ -261,6 +274,39 @@ class GlassSurface extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: resolvedBlur, sigmaY: resolvedBlur),
         child: surface,
+      ),
+    );
+  }
+}
+
+/// The soft top-edge highlight every non-[GlassSurfaceType.repeated]
+/// [GlassSurface] carries — light catching a curved glass surface, the way
+/// Apple's "Liquid Glass" material always does. Cheap: one gradient, no
+/// extra [BackdropFilter], painted above [GlassSurface]'s own tint and
+/// clipped by the same shape.
+///
+/// Public because the app's two hand-rolled chrome surfaces — the AppBar
+/// and the bottom [NavigationBar] (both blur manually instead of going
+/// through [GlassSurface], since neither is a clipped/shaped panel) — apply
+/// this same highlight themselves for a consistent look across every glass
+/// surface in the app.
+class GlassSheen extends StatelessWidget {
+  const GlassSheen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = context.colorScheme.brightness == Brightness.dark;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: const [0.0, 0.5],
+          colors: [
+            Colors.white.withValues(alpha: isDark ? 0.10 : 0.22),
+            Colors.white.withValues(alpha: 0),
+          ],
+        ),
       ),
     );
   }

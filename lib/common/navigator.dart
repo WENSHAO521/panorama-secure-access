@@ -62,21 +62,24 @@ class CommonDesktopRoute<T> extends PageRoute<T> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    // Each pushed page gets its own AmbientBackground rather than relying on
-    // the one painted at the app shell root (see HomePage) showing through —
-    // with a transparent Scaffold and a non-opaque route, gaps between glass
-    // surfaces used to expose whatever page was mounted underneath instead
-    // of just the ambient gradient.
-    final Widget result = Stack(
-      children: [
-        const Positioned.fill(child: AmbientBackground()),
-        builder(context),
-      ],
-    );
+    // AmbientBackground must sit outside the FadeTransition, not inside it.
+    // Because this route is opaque, Flutter stops painting whatever sits
+    // behind it as soon as it's pushed — it doesn't wait for the transition
+    // to finish. If the background were part of the faded subtree, the very
+    // first frames (animation value near 0) would paint neither the old
+    // route (offstaged already) nor the new one (still near-transparent),
+    // flashing the bare window colour. Keeping it outside means this route
+    // paints a fully opaque backdrop from frame one; only the page content
+    // on top fades in.
     return Semantics(
       scopesRoute: true,
       explicitChildNodes: true,
-      child: FadeTransition(opacity: animation, child: result),
+      child: Stack(
+        children: [
+          const Positioned.fill(child: AmbientBackground()),
+          FadeTransition(opacity: animation, child: builder(context)),
+        ],
+      ),
     );
   }
 
@@ -118,26 +121,27 @@ class CommonRoute<T> extends PageRoute<T> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    // See CommonDesktopRoute.buildPage: without its own AmbientBackground, a
-    // transparent Scaffold on a non-opaque route let gaps between glass
-    // surfaces expose whatever page was mounted underneath — here, HomePage
-    // itself (proxy list, nav bar, etc.) — instead of just the ambient
-    // gradient.
-    final Widget result = Stack(
-      children: [
-        const Positioned.fill(child: AmbientBackground()),
-        builder(context),
-      ],
-    );
+    // See CommonDesktopRoute.buildPage: AmbientBackground must stay outside
+    // the SharedAxisTransition. This route is opaque, so Flutter stops
+    // painting HomePage underneath as soon as this route is pushed, not
+    // once the transition settles — if the background were inside the
+    // transition too, the near-transparent early frames would show neither
+    // page and flash the bare window colour. Keeping it outside means this
+    // route is fully opaque from frame one; only the page content slides in.
     return Semantics(
       scopesRoute: true,
       explicitChildNodes: true,
-      child: SharedAxisTransition(
-        animation: animation,
-        secondaryAnimation: secondaryAnimation,
-        transitionType: SharedAxisTransitionType.horizontal,
-        fillColor: Colors.transparent,
-        child: result,
+      child: Stack(
+        children: [
+          const Positioned.fill(child: AmbientBackground()),
+          SharedAxisTransition(
+            animation: animation,
+            secondaryAnimation: secondaryAnimation,
+            transitionType: SharedAxisTransitionType.horizontal,
+            fillColor: Colors.transparent,
+            child: builder(context),
+          ),
+        ],
       ),
     );
   }

@@ -538,6 +538,12 @@ List<Widget> generateSection({
 /// [GlassSurface] — one [BackdropFilter] for the whole group instead of one
 /// per row. Rows must paint fully transparent backgrounds themselves (plain
 /// [ListItem]s already do) so only the group's glass shows through.
+///
+/// Tools-page only for now: the continuous-corner shape and inset divider
+/// here are a bit more pronounced than [GlassSurface]'s own defaults
+/// elsewhere in the app. The frosted look itself (blur, opacity, top sheen)
+/// comes from [GlassSurface] and is shared with every other glass surface —
+/// AppBar chrome, dialogs, sheets, popups.
 Widget generateGlassSection({
   String? title,
   required Iterable<Widget> items,
@@ -546,8 +552,11 @@ Widget generateGlassSection({
   bool separated = true,
 }) {
   if (items.isEmpty) return const SizedBox.shrink();
+  final shape = RoundedSuperellipseBorder(
+    borderRadius: BorderRadius.circular(24),
+  );
   final genItems = separated
-      ? items.separated(const Divider(height: 0))
+      ? items.separated(const Divider(height: 0, indent: 56))
       : items;
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -563,10 +572,15 @@ Widget generateGlassSection({
                 : listHeaderPadding,
           ),
         GlassSurface(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+          shape: shape,
+          // GlassSurface's own DecoratedBox paints a background colour
+          // directly above these rows; without a Material in between,
+          // ListTile has no Material to paint its ink splash/highlight on
+          // and taps give no visible feedback.
+          child: Material(
+            type: MaterialType.transparency,
+            child: Column(children: [...genItems]),
           ),
-          child: Column(children: [...genItems]),
         ),
       ],
     ),

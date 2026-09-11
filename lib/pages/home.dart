@@ -43,22 +43,29 @@ class HomePage extends StatelessWidget {
                         sigmaX: GlassTokens.blurChrome,
                         sigmaY: GlassTokens.blurChrome,
                       ),
-                      child: NavigationBarTheme(
-                        data: _NavigationBarDefaultsM3(context),
-                        child: NavigationBar(
-                          destinations: navigationItems
-                              .map(
-                                (e) => NavigationDestination(
-                                  icon: e.icon,
-                                  label: Intl.message(e.label.name),
-                                ),
-                              )
-                              .toList(),
-                          onDestinationSelected: (index) {
-                            _handleToPage(navigationItems[index].label);
-                          },
-                          selectedIndex: currentIndex,
-                        ),
+                      child: Stack(
+                        children: [
+                          NavigationBarTheme(
+                            data: _NavigationBarDefaultsM3(context),
+                            child: NavigationBar(
+                              destinations: navigationItems
+                                  .map(
+                                    (e) => NavigationDestination(
+                                      icon: e.icon,
+                                      label: Intl.message(e.label.name),
+                                    ),
+                                  )
+                                  .toList(),
+                              onDestinationSelected: (index) {
+                                _handleToPage(navigationItems[index].label);
+                              },
+                              selectedIndex: currentIndex,
+                            ),
+                          ),
+                          const Positioned.fill(
+                            child: IgnorePointer(child: GlassSheen()),
+                          ),
+                        ],
                       ),
                     ),
                   );
