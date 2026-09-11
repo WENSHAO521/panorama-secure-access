@@ -1,3 +1,65 @@
+## v3.3.19
+
+- Bump version to 3.3.19
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Rewrite the disclaimer with a more professional, on-brand tone
+
+- Restructures disclaimerDesc (en/zh_CN/ja/ru) from one dense run-on
+
+- paragraph into clearly separated statements - scope of use, no
+
+- warranty, user responsibility, limitation of liability - opening with
+
+- a brand-voiced line instead of jumping straight into legal boilerplate.
+
+- The legal substance is unchanged (internal testing/education only, no
+
+- commercial use, "AS IS", user bears the risk, liability capped to the
+
+- extent the law allows) across all four languages.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+## v3.3.18
+
+- Bump version to 3.3.18
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Adopt Inter as the app-wide font; brand-tint the desktop sidebar glass
+
+- Bundles Inter (SIL Open Font License, from Google Fonts' variable-font
+
+- release - one file covers every weight) as assets/fonts/Inter.ttf and
+
+- sets it as ThemeData.fontFamily, replacing the per-platform Material
+
+- default (Roboto/San Francisco/Segoe) for a consistent brand look
+
+- across desktop and mobile. Inter only covers Latin/Cyrillic/Greek -
+
+- CJK glyphs (zh/ja locales) fall through to the platform's system font
+
+- the same way they already render today, so this only changes Latin
+
+- text, numerals, and the en/ru locales.
+
+- Also brings the desktop NavigationRail's background (AppSidebarContainer
+
+- ._buildBackground in app_manager.dart) in line with the AppBar/bottom
+
+- NavigationBar/GlassSurface brand tint added earlier - it already blurred
+
+- and tinted with GlassSurfaceType.chrome opacity, it just predated
+
+- GlassTokens.tint() and was still using a flat neutral colour and a
+
+- hand-rolled border instead of the shared GlassTokens.borderSideFor().
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
 ## v3.3.17
 
 - Bump version to 3.3.17
