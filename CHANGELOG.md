@@ -1,3 +1,55 @@
+## v3.3.20
+
+- Bump version to 3.3.20
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Add Korean and Traditional Chinese locales
+
+- Two new supported languages: Korean (ko) - a fresh translation of
+
+- every string - and Traditional Chinese (zh_TW) - derived from the
+
+- complete zh_CN source via OpenCC's s2twp (Simplified-to-Traditional
+
+- with Taiwan phrasing) conversion, then hand-checked against common
+
+- mainland/Taiwan tech-terminology divergences (e.g. avoiding "質量"
+
+- where Taiwan usage means "品質"). The disclaimer's quotation marks
+
+- use Taiwan-standard 「」 brackets instead of the mainland-style
+
+- curly quotes carried over by the conversion.
+
+- Every existing locale (en/zh_CN/ja/ru) also gets translated display
+
+- names for these two new locales so the language picker shows correct
+
+- labels for them regardless of which language is currently active.
+
+- All six arb files now carry the same 556 keys with matching ICU
+
+- placeholders, verified programmatically before generating.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Translate leftover English strings in ja/ru locales
+
+- A batch of location-permission/battery-optimization/on-demand/exclude-SSID
+
+- strings had zh_CN and en translations but were never carried over to
+
+- Japanese and Russian - found by diffing every locale's values against
+
+- en.arb. ja is now fully translated; ru keeps Logcat/User-Agent in Latin
+
+- script deliberately, matching how SSID/Wi-Fi are already left
+
+- untranslated everywhere - they're technical proper nouns, not gaps.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
 ## v3.3.19
 
 - Bump version to 3.3.19
