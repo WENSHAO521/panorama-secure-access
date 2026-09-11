@@ -258,7 +258,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "disableUDP": MessageLookupByLibrary.simpleMessage("UDPを無効化"),
     "disclaimer": MessageLookupByLibrary.simpleMessage("免責事項"),
     "disclaimerDesc": MessageLookupByLibrary.simpleMessage(
-      "本ソフトウェア（Panorama Secure Access）は Panorama Scholarly Group が制作したものであり、内部でのテストおよび学習目的にのみ使用してください。商用利用や公開配布を目的としたものではありません。本ソフトウェアは「現状のまま」提供され、明示または黙示を問わずいかなる保証もいたしません。本ソフトウェアの使用により生じるすべてのリスクおよび法的責任は利用者が負うものとし、利用者は自らの使用が所在地の法令に適合していることを確認する責任を負います。Panorama Scholarly Group およびその開発者は、本ソフトウェアの使用または使用不能により生じたいかなる直接的または間接的損害についても責任を負いません。",
+      "Panorama Secure Access をご利用いただきありがとうございます。\n\n本ソフトウェアは Panorama Scholarly Group が開発・保守しており、内部での機能テストおよび技術学習のみを目的としています。商用サービスとしての提供や公開配布は行っておりません。\n\n本ソフトウェアは「現状のまま」提供され、商品性、特定目的への適合性、権利の非侵害を含め、明示または黙示を問わずいかなる保証もいたしません。\n\nご利用前に、ご自身の利用方法が所在地の適用法令に適合していることをご確認ください。本ソフトウェアの使用または誤用により生じるあらゆるリスクおよび法的責任は、利用者ご自身が負うものとします。\n\n法令上許容される最大限の範囲において、Panorama Scholarly Group およびその開発者は、本ソフトウェアの使用または使用不能により生じるいかなる直接的、間接的、付随的または結果的損害についても責任を負いません。",
     ),
     "disconnected": MessageLookupByLibrary.simpleMessage("切断済み"),
     "discoverNewVersion": MessageLookupByLibrary.simpleMessage("新バージョンを発見"),
@@ -268,6 +268,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage("通過させますか？"),
     "domain": MessageLookupByLibrary.simpleMessage("ドメイン"),
     "download": MessageLookupByLibrary.simpleMessage("ダウンロード"),
+    "downloadUpdateFailed": MessageLookupByLibrary.simpleMessage(
+      "ダウンロードに失敗しました。もう一度お試しください",
+    ),
+    "downloadingUpdate": MessageLookupByLibrary.simpleMessage("更新をダウンロード中..."),
     "edit": MessageLookupByLibrary.simpleMessage("編集"),
     "editGlobalRules": MessageLookupByLibrary.simpleMessage("グローバルルールを編集"),
     "editProxy": MessageLookupByLibrary.simpleMessage("プロキシを編集"),
@@ -341,10 +345,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "global": MessageLookupByLibrary.simpleMessage("グローバル"),
     "go": MessageLookupByLibrary.simpleMessage("移動"),
     "goDownload": MessageLookupByLibrary.simpleMessage("ダウンロードへ"),
-    "downloadingUpdate": MessageLookupByLibrary.simpleMessage("更新をダウンロード中..."),
-    "downloadUpdateFailed": MessageLookupByLibrary.simpleMessage(
-      "ダウンロードに失敗しました。もう一度お試しください",
-    ),
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage("スクリプト設定に移動"),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage("変更をキャッシュしますか？"),
     "hideFromList": MessageLookupByLibrary.simpleMessage("リストから隠す"),

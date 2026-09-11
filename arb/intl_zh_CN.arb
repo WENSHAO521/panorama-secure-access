@@ -242,7 +242,7 @@
   "action_proxy": "系统代理",
   "action_tun": "虚拟网卡",
   "disclaimer": "免责声明",
-  "disclaimerDesc": "本软件（Panorama Secure Access）由 Panorama Scholarly Group 出品，仅供内部人员测试与学习使用，不用于任何商业用途或公开传播。本软件按“原样”提供，不附带任何明示或默示的担保。使用者应自行承担因使用本软件而产生的一切风险及法律责任，并确保其使用行为符合所在地区的法律法规。Panorama Scholarly Group 及其开发者对因使用或无法使用本软件而导致的任何直接或间接损失不承担任何责任。",
+  "disclaimerDesc": "感谢您使用 Panorama Secure Access。\n\n本软件由 Panorama Scholarly Group 开发与维护，仅面向内部人员用于功能测试与技术学习，不作为商业服务提供，也不用于公开传播。\n\n本软件按“现状”提供，不附带任何形式的明示或默示担保，包括但不限于对适销性、特定用途适用性及不侵权的默示担保。\n\n在使用本软件前，您应自行确认所属用途符合所在地区适用的法律法规；因使用或不当使用本软件而产生的一切风险及法律责任，均由您自行承担。\n\n在法律允许的最大范围内，Panorama Scholarly Group 及其开发者不对因使用或无法使用本软件而导致的任何直接、间接、附带或衍生损失承担责任。",
   "agree": "同意",
   "hotkeyManagement": "快捷键管理",
   "hotkeyManagementDesc": "使用键盘控制应用程序",

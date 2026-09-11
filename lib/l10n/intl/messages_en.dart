@@ -328,7 +328,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "disableUDP": MessageLookupByLibrary.simpleMessage("Disable UDP"),
     "disclaimer": MessageLookupByLibrary.simpleMessage("Disclaimer"),
     "disclaimerDesc": MessageLookupByLibrary.simpleMessage(
-      "This software (Panorama Secure Access) is produced by Panorama Scholarly Group for internal testing and educational use only, and is not intended for any commercial use or public distribution. The software is provided \"AS IS\", without warranty of any kind, express or implied. Users are solely responsible for any risks and legal liabilities arising from their use of this software, and must ensure such use complies with all applicable local laws and regulations. Panorama Scholarly Group and its developers assume no liability for any direct or indirect damages resulting from the use, or inability to use, this software.",
+      "Thank you for using Panorama Secure Access.\n\nThis software is developed and maintained by Panorama Scholarly Group for internal functional testing and technical education only. It is not offered as a commercial service and is not intended for public distribution.\n\nThe software is provided \"AS IS\", without warranty of any kind, express or implied, including but not limited to the implied warranties of merchantability, fitness for a particular purpose, and non-infringement.\n\nBefore using this software, you are responsible for confirming that your intended use complies with all laws and regulations applicable in your jurisdiction. Any risk and legal liability arising from your use or misuse of this software rests solely with you.\n\nTo the fullest extent permitted by law, Panorama Scholarly Group and its developers accept no liability for any direct, indirect, incidental, or consequential damages arising from the use of, or inability to use, this software.",
     ),
     "disconnected": MessageLookupByLibrary.simpleMessage("Disconnected"),
     "discoverNewVersion": MessageLookupByLibrary.simpleMessage(
@@ -344,6 +344,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "domain": MessageLookupByLibrary.simpleMessage("Domain"),
     "download": MessageLookupByLibrary.simpleMessage("Download"),
+    "downloadUpdateFailed": MessageLookupByLibrary.simpleMessage(
+      "Download failed, please try again",
+    ),
+    "downloadingUpdate": MessageLookupByLibrary.simpleMessage(
+      "Downloading update...",
+    ),
     "edit": MessageLookupByLibrary.simpleMessage("Edit"),
     "editGlobalRules": MessageLookupByLibrary.simpleMessage(
       "Edit global rules",
@@ -429,12 +435,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "global": MessageLookupByLibrary.simpleMessage("Global"),
     "go": MessageLookupByLibrary.simpleMessage("Go"),
     "goDownload": MessageLookupByLibrary.simpleMessage("Go to download"),
-    "downloadingUpdate": MessageLookupByLibrary.simpleMessage(
-      "Downloading update...",
-    ),
-    "downloadUpdateFailed": MessageLookupByLibrary.simpleMessage(
-      "Download failed, please try again",
-    ),
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage(
       "Go to configure script",
     ),

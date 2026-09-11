@@ -335,7 +335,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Отказ от ответственности",
     ),
     "disclaimerDesc": MessageLookupByLibrary.simpleMessage(
-      "Данное программное обеспечение (Panorama Secure Access) создано Panorama Scholarly Group исключительно для внутреннего тестирования и обучения и не предназначено для коммерческого использования или публичного распространения. Программное обеспечение предоставляется «как есть», без каких-либо гарантий, явных или подразумеваемых. Пользователь несёт полную ответственность за любые риски и юридические последствия, связанные с использованием данного программного обеспечения, и обязан убедиться в соответствии такого использования законодательству своего региона. Panorama Scholarly Group и её разработчики не несут ответственности за любые прямые или косвенные убытки, возникшие в результате использования или невозможности использования данного программного обеспечения.",
+      "Благодарим вас за использование Panorama Secure Access.\n\nДанное программное обеспечение разрабатывается и поддерживается Panorama Scholarly Group исключительно для внутреннего функционального тестирования и технического обучения. Оно не предоставляется в качестве коммерческой услуги и не предназначено для публичного распространения.\n\nПрограммное обеспечение предоставляется «как есть», без каких-либо гарантий, явных или подразумеваемых, включая гарантии товарной пригодности, соответствия определённой цели и отсутствия нарушений прав третьих лиц.\n\nПеред использованием вы обязаны убедиться, что ваше использование соответствует законодательству, применимому в вашей юрисдикции. Любые риски и юридическая ответственность, связанные с использованием или неправомерным использованием данного программного обеспечения, лежат исключительно на вас.\n\nВ максимально допустимой законом степени Panorama Scholarly Group и её разработчики не несут ответственности за любые прямые, косвенные, случайные или косвенные убытки, возникшие в результате использования или невозможности использования данного программного обеспечения.",
     ),
     "disconnected": MessageLookupByLibrary.simpleMessage("Отключено"),
     "discoverNewVersion": MessageLookupByLibrary.simpleMessage(
@@ -351,6 +351,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "domain": MessageLookupByLibrary.simpleMessage("Домен"),
     "download": MessageLookupByLibrary.simpleMessage("Скачивание"),
+    "downloadUpdateFailed": MessageLookupByLibrary.simpleMessage(
+      "Загрузка не удалась, попробуйте снова",
+    ),
+    "downloadingUpdate": MessageLookupByLibrary.simpleMessage(
+      "Загрузка обновления...",
+    ),
     "edit": MessageLookupByLibrary.simpleMessage("Редактировать"),
     "editGlobalRules": MessageLookupByLibrary.simpleMessage(
       "Редактировать глобальные правила",
@@ -444,12 +450,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "global": MessageLookupByLibrary.simpleMessage("Глобальный"),
     "go": MessageLookupByLibrary.simpleMessage("Перейти"),
     "goDownload": MessageLookupByLibrary.simpleMessage("Перейти к загрузке"),
-    "downloadingUpdate": MessageLookupByLibrary.simpleMessage(
-      "Загрузка обновления...",
-    ),
-    "downloadUpdateFailed": MessageLookupByLibrary.simpleMessage(
-      "Загрузка не удалась, попробуйте снова",
-    ),
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage(
       "Перейти к настройке скрипта",
     ),
