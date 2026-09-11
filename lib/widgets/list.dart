@@ -1,4 +1,3 @@
-import 'package:animations/animations.dart';
 import 'package:collection/collection.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -303,58 +302,40 @@ class ListItem<T> extends StatelessWidget {
       final openDelegate = delegate as OpenDelegate;
       final child = openDelegate.widget;
       final onChanged = openDelegate.onChanged;
-      return OpenContainer<T>(
-        // Both transparent: OpenContainer's own Material would otherwise
-        // paint an opaque flat colour (colorScheme.surface) behind the
-        // destination page. Its route is opaque, so once the transition
-        // settles Flutter stops painting whatever is behind it — with a
-        // solid openColor that flat colour is all that's left, instead of
-        // the app's AmbientBackground. openBuilder below paints that
-        // background itself so the destination page looks like every other
-        // page in the app instead of flashing a plain surface colour.
-        closedColor: Colors.transparent,
-        openColor: Colors.transparent,
-        closedElevation: 0,
-        openElevation: 0,
-        openShape: const RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.zero,
-        ),
-        closedShape: const RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.zero,
-        ),
-        closedBuilder: (context, action) {
-          Future<void> openAction() async {
-            final isMobile = globalState.container.read(isMobileViewProvider);
-            if (!isMobile || kDebugMode) {
-              final res = await showExtend(
-                context,
-                props: ExtendProps(
-                  blur: openDelegate.blur,
-                  maxWidth: openDelegate.maxWidth,
-                  forceFull: openDelegate.forceFull,
-                ),
-                builder: (_) {
-                  return child;
-                },
-              );
-              if (onChanged != null) {
-                onChanged(res);
-              }
-              return;
+      return _buildListTile(
+        onTap: () async {
+          final isMobile = globalState.container.read(isMobileViewProvider);
+          // Mobile pushes through the app's standard route instead of the
+          // animations package's OpenContainer container-transform. That
+          // widget swaps to a structurally different widget tree the instant
+          // its animation completes (mid-transition it's a scaled FittedBox
+          // inside a scrim Container; once done it's a plain Material) — on
+          // Android that abrupt rebuild could drop a frame and flash the
+          // bare window colour before the destination page painted. Pushing
+          // through BaseNavigator (the same AmbientBackground-safe
+          // SharedAxisTransition every other page in the app uses) has no
+          // such swap and doesn't flash.
+          if (isMobile && !kDebugMode) {
+            final res = await BaseNavigator.push<T>(context, child);
+            if (onChanged != null) {
+              onChanged(res);
             }
-            action();
+            return;
           }
-
-          return _buildListTile(onTap: openAction);
-        },
-        onClosed: onChanged,
-        openBuilder: (_, action) {
-          return Stack(
-            children: [
-              const Positioned.fill(child: AmbientBackground()),
-              child,
-            ],
+          final res = await showExtend(
+            context,
+            props: ExtendProps(
+              blur: openDelegate.blur,
+              maxWidth: openDelegate.maxWidth,
+              forceFull: openDelegate.forceFull,
+            ),
+            builder: (_) {
+              return child;
+            },
           );
+          if (onChanged != null) {
+            onChanged(res);
+          }
         },
       );
     }
