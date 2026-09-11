@@ -64,6 +64,13 @@ class ApplicationState extends ConsumerState<Application> {
     );
     return ThemeData(
       useMaterial3: true,
+      // Inter (OFL-licensed, bundled in assets/fonts/) instead of the
+      // Material default (Roboto/San Francisco/Segoe depending on
+      // platform) for a consistent brand look across desktop and mobile.
+      // Only covers Latin/Cyrillic/Greek — CJK glyphs (zh/ja locales) fall
+      // through to the platform's system font automatically, the same way
+      // they already render today.
+      fontFamily: 'Inter',
       pageTransitionsTheme: _pageTransitionsTheme,
       // Transparent so every Scaffold reveals the AmbientBackground
       // painted once behind the app shell (see HomePage) instead of
