@@ -1,3 +1,383 @@
+## v3.3.13
+
+- Fix Windows installer SetupIconFile path (root cause of icon-embed failure)
+
+- The generated .iss dumped by the new failure-debug step showed the real
+
+- bug: SetupIconFile resolved to
+
+-   D:\a\panorama-secure-access\panorama-secure-access\..\windows\runner\resources\app_icon.ico
+
+- MakeExeConfig.fromJson (flutter_distributor fork) joins make_config.yaml's
+
+- setup_icon_file onto Directory.current -- the repo root `dart setup.dart
+
+- windows` runs from -- rather than leaving it for Inno Setup to resolve
+
+- relative to the generated .iss's own location the way locales[].file
+
+- does. With a leading `..\` (written as if relative to dist/, one level
+
+- below repo root) and GitHub Actions' standard doubly-nested checkout
+
+- path (D:\a\<repo>\<repo>\...), that overshoots past the repo root
+
+- entirely, landing on a directory that doesn't exist. Reproduced the
+
+- exact "Updating icons (Setup.e32): The system cannot find the path
+
+- specified" error locally by compiling that literal absolute path, and
+
+- confirmed the fix (dropping the `..\`, since the join already adds the
+
+- repo root) resolves to the real file.
+
+- This was never about the Inno Setup version -- revert the version-pin
+
+- workaround from the previous two commits, it was chasing the wrong
+
+- lead. Keep the .iss dump-on-failure step; it's what surfaced the real
+
+- path.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Dump generated .iss content on Windows packaging failure for debugging
+
+- Pinning Inno Setup to 6.7.3 (previous commit) did not fix the "Updating
+
+- icons (Setup.e32): The system cannot find the path specified" failure
+
+- -- CI confirmed it's actually running 6.7.3 now and still hits the
+
+- identical error, which rules out the runner's preinstalled ISCC version
+
+- as the cause. A local repro with a hand-reconstructed .iss (matching
+
+- make_config.yaml's values) compiles fine under 6.7.3, so something
+
+- about the real generated file differs from that reconstruction. Add a
+
+- failure-only step that prints the actual generated dist/*.iss (it's
+
+- left behind on a failed compile, only deleted after success) so the
+
+- real content can be inspected directly instead of guessed at.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Fix Inno Setup install-verification step exiting non-zero
+
+- ISCC.exe with no arguments prints its usage banner and exits 1 by
+
+- design (it's a CLI tool, not a --version flag) -- calling it bare to
+
+- confirm the install failed the step before the actual build even
+
+- started. Check the file exists and read its version from the binary's
+
+- own metadata instead of executing it.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Pin Inno Setup to 6.7.3 in CI to fix Windows packaging failure
+
+- Both Windows build jobs (amd64, arm64) fail identically at "Updating
+
+- icons (Setup.e32)" with "Error on line 15 ...: The system cannot find
+
+- the path specified" while ISCC embeds SetupIconFile into the installer
+
+- stub. Our packaging config, the .iss template, and app_icon.ico are
+
+- byte-for-byte unchanged since the last Windows build that succeeded
+
+- (v3.3.12, Aug 21), and diffing the flutter_distributor fork's exe/Inno
+
+- Setup packaging code between then and the commit CI resolves now shows
+
+- no relevant change either (setup.dart floats on `--git-ref FlClash`,
+
+- so CI silently picks up whatever's newest on that branch, but the exe
+
+- maker path is untouched). That leaves the runner image's preinstalled
+
+- Inno Setup itself (6.7.1) as the moving part.
+
+- Reproduced the real make_config.yaml + app_icon.ico locally: it fails
+
+- under whatever combination the CI runner has, but compiles cleanly
+
+- under a fresh Inno Setup 6.7.3 install. Add a step that downloads and
+
+- silently installs 6.7.3 over the runner's preinstalled copy before
+
+- packaging, so Windows builds don't depend on whichever Inno Setup
+
+- version happens to ship on the image.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Fix libc version conflict in services/helper Cargo.lock
+
+- The previous dependency bump (342c421) hand-edited Cargo.lock without
+
+- a cargo toolchain and missed that tokio 1.43.1 tightened its own libc
+
+- requirement, leaving it unsatisfiable against the locked backtrace/libc
+
+- pair. This breaks MSBuild's cargo invocation on Windows (both amd64 and
+
+- arm64) with "failed to select a version for `libc`", which is what
+
+- failed CI on v3.3.13. Resolved properly via `cargo update -p libc`
+
+- (0.2.167 -> 0.2.189) and verified the full dependency graph now
+
+- compiles (only local failure left is a missing MSVC linker on this
+
+- machine, unrelated to the fix).
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Bump version to 3.3.13
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Upgrade same-major-version dependencies (flutter pub upgrade)
+
+- 81 packages moved to newer, semver-compatible versions already
+
+- permitted by their existing pubspec.yaml caret constraints - this was
+
+- just pubspec.lock being stale, no constraint changes needed except
+
+- adding cross_file (see below).
+
+- file_picker landed a breaking change within its 12.x beta series
+
+- (FilePicker.saveFile/getDirectoryPath now return Uri instead of
+
+- String, since a saved/picked file may be behind a content://, http(s)://,
+
+- data:, or blob: URI depending on platform, not just a local file path).
+
+- Fixed lib/common/picker.dart to convert the Uri appropriately (only
+
+- non-Android platforms ever construct a File from the result, so only
+
+- that branch needs toFilePath(); everywhere else just needs the
+
+- string form for a null check) and rewrote test/common/picker_test.dart's
+
+- PlatformFile construction against the new abstract base class shape
+
+- (uri/xFile-based now, was a plain data constructor) - added cross_file
+
+- as a dev_dependency since the test needs XFile directly.
+
+- Verified with `flutter analyze` (0 issues) and `flutter test` (441
+
+- tests, same single pre-existing NetworkDetection failure as on
+
+- unmodified origin/main).
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Bump animations 2.1.1->3.0.0 and dynamic_color 1.8.1->2.1.0
+
+- Both were capped below their latest major by the pubspec.yaml caret
+
+- constraint. Checked first: our usage is only the long-stable API
+
+- surface (SharedAxisTransition, PageTransitionSwitcher,
+
+- FadeThroughTransition, OpenContainer, DynamicColorPlugin.getCorePalette),
+
+- none of which changed shape in either package's 3.0.0/2.0.0 release.
+
+- Both packages' changelogs describe their major bump as "migrate to
+
+- material_ui" internally - this pulls in material_ui 1.2.0 and
+
+- cupertino_ui 1.0.2 as new transitive deps (visible in the pubspec.lock
+
+- diff), but we don't call into either package ourselves, so this is
+
+- purely an internal implementation swap inside animations/dynamic_color.
+
+- Verified with `flutter analyze` (0 issues) and `flutter test` (441
+
+- tests, same single pre-existing NetworkDetection failure as on
+
+- unmodified origin/main, unrelated to this change).
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Fix compile errors left by the icon-loading/polling cherry-pick
+
+- flutter analyze wasn't available when be132b5 was merged (no Flutter
+
+- SDK in that environment); with a real toolchain now on hand it reports
+
+- 12 errors, all from pieces the cherry-picked commit (903e2b8) assumed
+
+- were already present from other upstream commits we didn't merge:
+
+- - coreFailureLogLevel(): used by connections.dart/memory_info.dart but
+
+-   only ever defined in upstream's lib/core/method.dart, which doesn't
+
+-   exist in this fork's lib/core/ layout. Added a small self-contained
+
+-   version to lib/common/print.dart instead of porting that file -
+
+-   upstream's version also branches on CoreMethodException, a type this
+
+-   fork's core layer doesn't have.
+
+- - PageActivityScope: read by ActivePollingMixin.didChangeDependencies
+
+-   but never defined here. Ported the InheritedWidget itself (it
+
+-   defaults isActiveOf() to true with no ancestor, so this is a no-op
+
+-   everywhere until something actually wraps a subtree in it - not
+
+-   wiring that up in home.dart to avoid touching page-navigation
+
+-   structure this fork has customized).
+
+- - lib/views/dashboard/widgets/memory_info.dart imported a nonexistent
+
+-   lib/core/method.dart for nothing it actually used - dropped.
+
+- - test/plugins/app_test.dart covered App.didCrashOnPreviousExecution(),
+
+-   which upstream backs with FirebaseCrashlytics.didCrashOnPreviousExecution()
+
+-   on the Android side. That's a third-party crash-reporting SDK this
+
+-   fork doesn't currently pull in, and adding it isn't something to do
+
+-   as a side effect of an icon-loading fix. Removed the 3 tests
+
+-   covering that method; kept the icon-cache tests it was bundled with.
+
+- Verified with `flutter analyze` (0 issues) and `flutter test` (441
+
+- tests, only 1 failure - NetworkDetection's stale-check-cancellation
+
+- test in test/providers/app_test.dart, unrelated file, unrelated to
+
+- anything in this session's changes, still failing the same way on
+
+- plain origin/main).
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Update vendored Mihomo core from a Jul-2026 snapshot to the v0.8.97 line
+
+- The core/Clash.Meta submodule was pinned to commit 80362fc (chen08209's
+
+- FlClash branch, committer date 2026-07-01). That branch itself hasn't
+
+- moved, but the fork's per-release branches have: the tip of
+
+- feature/FlClash/release/v0.8.97 (70f0570, committer date 2026-08-23) is
+
+- 216 commits and 300 files ahead of our pin on the same fork lineage, and
+
+- carries newer metacubex/quic-go (0.61.1, was 0.59.1) and metacubex/gvisor
+
+- (2026-08-10, was 2025-12-27) snapshots plus whatever upstream mihomo
+
+- protocol/perf work landed in between.
+
+- Repointed .gitmodules at that branch and re-ran `go mod tidy` for
+
+- core/go.mod + core/go.sum. Verified with `go build ./...` and
+
+- `go vet ./...` for both the core wrapper module and the Clash.Meta
+
+- submodule itself (both clean, exit 0) - this is a version bump within
+
+- the same maintained fork lineage, not a hand re-applied patch set.
+
+- Not verified: the submodule's own `go test ./...` (still running,
+
+- proxy/network-facing test suites are slow and some may need real
+
+- sockets/TUN this sandbox can't provide) and actual runtime behavior -
+
+- no way to exercise the VPN/TUN path here. Recommend running the app
+
+- locally before shipping a release off this core.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Bump vulnerable Rust deps flagged by Dependabot (tokio, bytes, rand)
+
+- No cargo toolchain available in this environment, so these were
+
+- resolved by hand against the crates.io sparse index instead of
+
+- `cargo update`: for each bump, compared the target version's
+
+- dependency requirements against what's already pinned in the lockfile
+
+- to confirm the resolved dependency graph doesn't actually change, then
+
+- swapped in the real published checksum. Recommend a local `cargo
+
+- check` as a final sanity pass.
+
+- - services/helper/Cargo.lock: bytes 1.9.0 -> 1.11.1 (GHSA-434x-w66g-qw3r,
+
+-   BytesMut::reserve integer overflow), rand 0.8.5 -> 0.8.6
+
+-   (GHSA-cq8v-f236-94qc), tokio 1.41.1 -> 1.43.1 and its tokio-macros
+
+-   dependency 2.4.0 -> 2.5.0 to satisfy tokio 1.43.1's ~2.5.0 requirement
+
+-   (GHSA-rr8g-9fpq-6wmg, broadcast channel Sync unsoundness)
+
+- - plugins/rust_api/rust/Cargo.lock: tokio 1.34.0 -> 1.38.2 (same GHSA)
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Optimize package icon loading and connections polling
+
+- (cherry picked from commit 903e2b88799915349941b79c125593fd39bc171f)
+
+- Conflicts resolved manually against this fork's connections/memory-info
+
+- polling refactor and TV-icon cherry-pick; no upstream branding assets
+
+- included.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Fix TV launcher icon branding after upstream cherry-pick
+
+- The cherry-picked commit (9a99897) added FlClash's own wing-logo
+
+- artwork for the new mipmap-television-* / ic_launcher_foreground_tv
+
+- assets, which conflicts with this fork's rebrand (fed83db). Repoint
+
+- the TV adaptive icon at our existing ic_launcher_foreground PNGs
+
+- instead of the upstream vector, and drop the legacy pre-API26 webp
+
+- fallbacks that still carried the original logo.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Optimize Android TV launcher icon
+
+- (cherry picked from commit 9a99897864850e77a75ce0ee0d45a0053ebff4fb)
+
 ## v3.3.12
 
 - Bump version to 3.3.12
