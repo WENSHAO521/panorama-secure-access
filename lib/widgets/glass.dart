@@ -71,6 +71,35 @@ abstract final class GlassTokens {
   static const double lightRepeatedOpacity = 0.18;
   static const double darkRepeatedOpacity = 0.14;
 
+  // How much of the theme's ColorScheme.primary is mixed into a glass
+  // surface's base colour before opacity is applied. This is what makes the
+  // frosted panels read as *this app's* glass rather than generic
+  // grey-tinted blur — the hue always follows the active primary color
+  // (default brand violet, a user-picked accent, or Material You dynamic
+  // color), so it stays consistent with whatever the rest of the UI is
+  // themed with. Kept low: enough to tint, not enough to fight the content
+  // drawn on top of the surface for attention.
+  static const double lightTintChrome = 0.05;
+  static const double darkTintChrome = 0.10;
+
+  static const double lightTintPanel = 0.05;
+  static const double darkTintPanel = 0.09;
+
+  static const double lightTintModal = 0.07;
+  static const double darkTintModal = 0.11;
+
+  static const double lightTintFloating = 0.06;
+  static const double darkTintFloating = 0.10;
+
+  // Kept lowest: this type repeats dozens of times in one scroll view
+  // (proxy cards), so a strong tint would compound into a muddy wash.
+  static const double lightTintRepeated = 0.03;
+  static const double darkTintRepeated = 0.05;
+
+  // How much of primary is mixed into the neutral outlineVariant border —
+  // a faint brand-coloured edge instead of a plain grey hairline.
+  static const double borderTintStrength = 0.30;
+
   static const double lightBorderOpacity = 0.28;
   static const double darkBorderOpacity = 0.12;
 
@@ -120,13 +149,43 @@ abstract final class GlassTokens {
       ? darkModalBarrierOpacity
       : lightModalBarrierOpacity;
 
-  /// The subtle outlineVariant stroke shared by every glass surface's
-  /// default border and by [glassInputDecoration] — one formula, so the two
-  /// can't drift out of sync.
+  static double tintFor(GlassSurfaceType type, Brightness brightness) {
+    final isDark = brightness == Brightness.dark;
+    return switch (type) {
+      GlassSurfaceType.chrome => isDark ? darkTintChrome : lightTintChrome,
+      GlassSurfaceType.panel => isDark ? darkTintPanel : lightTintPanel,
+      GlassSurfaceType.modal => isDark ? darkTintModal : lightTintModal,
+      GlassSurfaceType.floating =>
+        isDark ? darkTintFloating : lightTintFloating,
+      GlassSurfaceType.repeated =>
+        isDark ? darkTintRepeated : lightTintRepeated,
+    };
+  }
+
+  /// Mixes [ColorScheme.primary] into [base] for the given [type]/brightness
+  /// — the brand-tinted fill every glass surface uses instead of a flat
+  /// neutral tone. Callers still apply their own opacity afterwards.
+  static Color tint(
+    Color base,
+    ColorScheme colorScheme,
+    GlassSurfaceType type,
+  ) {
+    return Color.lerp(
+      base,
+      colorScheme.primary,
+      tintFor(type, colorScheme.brightness),
+    )!;
+  }
+
+  /// The subtle brand-tinted stroke shared by every glass surface's default
+  /// border and by [glassInputDecoration] — one formula, so the two can't
+  /// drift out of sync.
   static BorderSide borderSideFor(ColorScheme colorScheme) => BorderSide(
-    color: colorScheme.outlineVariant.withValues(
-      alpha: borderOpacityFor(colorScheme.brightness),
-    ),
+    color: Color.lerp(
+      colorScheme.outlineVariant,
+      colorScheme.primary,
+      borderTintStrength,
+    )!.withValues(alpha: borderOpacityFor(colorScheme.brightness)),
   );
 }
 
@@ -234,6 +293,7 @@ class GlassSurface extends StatelessWidget {
     final colorScheme = context.colorScheme;
     final brightness = colorScheme.brightness;
     final baseColor = color ?? colorScheme.surfaceContainer;
+    final brandTintedColor = GlassTokens.tint(baseColor, colorScheme, type);
     final resolvedOpacity = opacity ?? GlassTokens.opacityFor(type, brightness);
     final resolvedBlur = (type == GlassSurfaceType.repeated)
         ? 0.0
@@ -242,27 +302,14 @@ class GlassSurface extends StatelessWidget {
         borderSide ??
         (showBorder ? GlassTokens.borderSideFor(colorScheme) : BorderSide.none);
     final tintedShape = shape.copyWith(side: resolvedBorderSide);
-    final content = DecoratedBox(
+    final surface = DecoratedBox(
       decoration: ShapeDecoration(
         shape: tintedShape,
-        color: baseColor.withValues(alpha: resolvedOpacity),
+        color: brandTintedColor.withValues(alpha: resolvedOpacity),
         shadows: boxShadow,
       ),
       child: child,
     );
-    // Every glass surface but `repeated` carries a top-edge sheen — the
-    // light-catching highlight "Liquid Glass" surfaces always have. Skipped
-    // for `repeated` per the class doc: it's meant to read as a lightweight
-    // control repeated dozens of times, not a mini glass panel competing
-    // for attention.
-    final surface = type == GlassSurfaceType.repeated
-        ? content
-        : Stack(
-            children: [
-              content,
-              const Positioned.fill(child: IgnorePointer(child: GlassSheen())),
-            ],
-          );
     if (resolvedBlur <= 0) {
       return ClipPath(
         clipper: ShapeBorderClipper(shape: shape),
@@ -274,39 +321,6 @@ class GlassSurface extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: resolvedBlur, sigmaY: resolvedBlur),
         child: surface,
-      ),
-    );
-  }
-}
-
-/// The soft top-edge highlight every non-[GlassSurfaceType.repeated]
-/// [GlassSurface] carries — light catching a curved glass surface, the way
-/// Apple's "Liquid Glass" material always does. Cheap: one gradient, no
-/// extra [BackdropFilter], painted above [GlassSurface]'s own tint and
-/// clipped by the same shape.
-///
-/// Public because the app's two hand-rolled chrome surfaces — the AppBar
-/// and the bottom [NavigationBar] (both blur manually instead of going
-/// through [GlassSurface], since neither is a clipped/shaped panel) — apply
-/// this same highlight themselves for a consistent look across every glass
-/// surface in the app.
-class GlassSheen extends StatelessWidget {
-  const GlassSheen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = context.colorScheme.brightness == Brightness.dark;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: const [0.0, 0.5],
-          colors: [
-            Colors.white.withValues(alpha: isDark ? 0.10 : 0.22),
-            Colors.white.withValues(alpha: 0),
-          ],
-        ),
       ),
     );
   }
@@ -342,9 +356,14 @@ InputDecoration glassInputDecoration(
     contentPadding: contentPadding,
     alignLabelWithHint: alignLabelWithHint,
     filled: true,
-    fillColor: colorScheme.surfaceContainer.withValues(
-      alpha: GlassTokens.opacityFor(GlassSurfaceType.panel, brightness),
-    ),
+    fillColor:
+        GlassTokens.tint(
+          colorScheme.surfaceContainer,
+          colorScheme,
+          GlassSurfaceType.panel,
+        ).withValues(
+          alpha: GlassTokens.opacityFor(GlassSurfaceType.panel, brightness),
+        ),
     border: OutlineInputBorder(
       borderRadius: borderRadius,
       borderSide: borderSide,

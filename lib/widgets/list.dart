@@ -304,13 +304,16 @@ class ListItem<T> extends StatelessWidget {
       final child = openDelegate.widget;
       final onChanged = openDelegate.onChanged;
       return OpenContainer<T>(
-        // Transparent so the row reads through to whatever sits behind it
-        // (the settings-group glass panel, or AmbientBackground directly)
-        // instead of the container-transform package painting its own
-        // opaque Material behind every row at rest. Only the destination
-        // page (openColor) needs to be a real solid surface.
+        // Both transparent: OpenContainer's own Material would otherwise
+        // paint an opaque flat colour (colorScheme.surface) behind the
+        // destination page. Its route is opaque, so once the transition
+        // settles Flutter stops painting whatever is behind it — with a
+        // solid openColor that flat colour is all that's left, instead of
+        // the app's AmbientBackground. openBuilder below paints that
+        // background itself so the destination page looks like every other
+        // page in the app instead of flashing a plain surface colour.
         closedColor: Colors.transparent,
-        openColor: context.colorScheme.surface,
+        openColor: Colors.transparent,
         closedElevation: 0,
         openElevation: 0,
         openShape: const RoundedSuperellipseBorder(
@@ -346,7 +349,12 @@ class ListItem<T> extends StatelessWidget {
         },
         onClosed: onChanged,
         openBuilder: (_, action) {
-          return child;
+          return Stack(
+            children: [
+              const Positioned.fill(child: AmbientBackground()),
+              child,
+            ],
+          );
         },
       );
     }
@@ -538,12 +546,6 @@ List<Widget> generateSection({
 /// [GlassSurface] — one [BackdropFilter] for the whole group instead of one
 /// per row. Rows must paint fully transparent backgrounds themselves (plain
 /// [ListItem]s already do) so only the group's glass shows through.
-///
-/// Tools-page only for now: the continuous-corner shape and inset divider
-/// here are a bit more pronounced than [GlassSurface]'s own defaults
-/// elsewhere in the app. The frosted look itself (blur, opacity, top sheen)
-/// comes from [GlassSurface] and is shared with every other glass surface —
-/// AppBar chrome, dialogs, sheets, popups.
 Widget generateGlassSection({
   String? title,
   required Iterable<Widget> items,
@@ -552,11 +554,8 @@ Widget generateGlassSection({
   bool separated = true,
 }) {
   if (items.isEmpty) return const SizedBox.shrink();
-  final shape = RoundedSuperellipseBorder(
-    borderRadius: BorderRadius.circular(24),
-  );
   final genItems = separated
-      ? items.separated(const Divider(height: 0, indent: 56))
+      ? items.separated(const Divider(height: 0))
       : items;
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -572,15 +571,10 @@ Widget generateGlassSection({
                 : listHeaderPadding,
           ),
         GlassSurface(
-          shape: shape,
-          // GlassSurface's own DecoratedBox paints a background colour
-          // directly above these rows; without a Material in between,
-          // ListTile has no Material to paint its ink splash/highlight on
-          // and taps give no visible feedback.
-          child: Material(
-            type: MaterialType.transparency,
-            child: Column(children: [...genItems]),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
+          child: Column(children: [...genItems]),
         ),
       ],
     ),

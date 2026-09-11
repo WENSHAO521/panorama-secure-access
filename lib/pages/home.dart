@@ -43,29 +43,22 @@ class HomePage extends StatelessWidget {
                         sigmaX: GlassTokens.blurChrome,
                         sigmaY: GlassTokens.blurChrome,
                       ),
-                      child: Stack(
-                        children: [
-                          NavigationBarTheme(
-                            data: _NavigationBarDefaultsM3(context),
-                            child: NavigationBar(
-                              destinations: navigationItems
-                                  .map(
-                                    (e) => NavigationDestination(
-                                      icon: e.icon,
-                                      label: Intl.message(e.label.name),
-                                    ),
-                                  )
-                                  .toList(),
-                              onDestinationSelected: (index) {
-                                _handleToPage(navigationItems[index].label);
-                              },
-                              selectedIndex: currentIndex,
-                            ),
-                          ),
-                          const Positioned.fill(
-                            child: IgnorePointer(child: GlassSheen()),
-                          ),
-                        ],
+                      child: NavigationBarTheme(
+                        data: _NavigationBarDefaultsM3(context),
+                        child: NavigationBar(
+                          destinations: navigationItems
+                              .map(
+                                (e) => NavigationDestination(
+                                  icon: e.icon,
+                                  label: Intl.message(e.label.name),
+                                ),
+                              )
+                              .toList(),
+                          onDestinationSelected: (index) {
+                            _handleToPage(navigationItems[index].label);
+                          },
+                          selectedIndex: currentIndex,
+                        ),
                       ),
                     ),
                   );
@@ -237,9 +230,17 @@ class _NavigationBarDefaultsM3 extends NavigationBarThemeData {
   late final TextTheme _textTheme = Theme.of(context).textTheme;
 
   @override
-  Color? get backgroundColor => _colors.surfaceContainer.withValues(
-    alpha: GlassTokens.opacityFor(GlassSurfaceType.chrome, _colors.brightness),
-  );
+  Color? get backgroundColor =>
+      GlassTokens.tint(
+        _colors.surfaceContainer,
+        _colors,
+        GlassSurfaceType.chrome,
+      ).withValues(
+        alpha: GlassTokens.opacityFor(
+          GlassSurfaceType.chrome,
+          _colors.brightness,
+        ),
+      );
 
   @override
   Color? get shadowColor => Colors.transparent;
