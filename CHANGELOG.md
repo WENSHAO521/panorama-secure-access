@@ -1,3 +1,49 @@
+## v3.3.15
+
+- Bump version to 3.3.15
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Fix Tools page-transition white flash; add Liquid Glass sheen globally
+
+- CommonRoute/CommonDesktopRoute painted AmbientBackground inside the
+
+- push transition's Fade/SharedAxis animation. Since both routes are
+
+- opaque, Flutter stops painting whatever sits behind them as soon as
+
+- they're pushed, not once the transition settles - so the first frames
+
+- (animation value near 0) painted neither the old route nor the new
+
+- one, flashing the bare window colour. Moving AmbientBackground outside
+
+- the animated subtree makes each route fully opaque from frame one.
+
+- Also adds a subtle top-edge "sheen" highlight - the light-catching
+
+- look of Apple's Liquid Glass material - built into the shared
+
+- GlassSurface widget (skipped for the repeated type used by proxy list
+
+- cards, to avoid extra paint cost there) plus the two hand-rolled glass
+
+- surfaces that don't go through GlassSurface: the AppBar chrome and the
+
+- bottom NavigationBar. Cascades to every existing glass surface in the
+
+- app (dialogs, popups, sheets, Tools settings panels) with no per-call
+
+- edits needed.
+
+- Adds a temporary, manually-triggered CI workflow (preview-windows.yaml)
+
+- to build just the Windows target on a GitHub-hosted runner, since this
+
+- machine has no local Visual Studio install for `flutter run -d windows`.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
 ## v3.3.13
 
 - Fix Windows installer SetupIconFile path (root cause of icon-embed failure)
