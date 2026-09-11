@@ -1,3 +1,67 @@
+## v3.3.16
+
+- Bump version to 3.3.16
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Fix Android Tools-page white flash; replace Liquid Glass sheen with brand-tinted glass
+
+- The white flash on Android when opening a Tools sub-page (Theme,
+
+- Backup, Language, etc.) wasn't in CommonRoute/CommonDesktopRoute
+
+- (already fixed) - ListItem.open funnels mobile navigation through
+
+- OpenContainer (container_transform) instead, a separate code path
+
+- that fix never touched. OpenContainer's openColor was a flat
+
+- colorScheme.surface, and since its route is opaque, once the
+
+- transition settles Flutter stops painting anything behind it - so
+
+- the destination page sat on a plain surface-toned screen instead of
+
+- the app's gradient AmbientBackground, reading as a flash. Both
+
+- closedColor/openColor are now transparent and openBuilder paints its
+
+- own AmbientBackground behind the destination widget, matching every
+
+- other route in the app.
+
+- Also drops the "Liquid Glass" top-edge sheen highlight added
+
+- alongside that fix - it read as an Apple-style effect that didn't
+
+- fit the app. In its place, GlassSurface/GlassTokens now mix a small
+
+- amount of the theme's ColorScheme.primary into every glass panel's
+
+- fill and border instead of a flat grey tint (GlassTokens.tint()),
+
+- cascading to dialogs, sheets, popups, proxy cards, the AppBar, and
+
+- the bottom NavigationBar. The tint follows whatever primary color is
+
+- active - default brand violet, a user-picked accent, or Material You
+
+- dynamic color - so the frosted-glass look stays consistent with the
+
+- rest of the theme without borrowing another platform's visual
+
+- signature.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Remove the Windows-only preview workflow
+
+- Unneeded now that we're going through the normal all-platform tagged
+
+- release build instead.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
 ## v3.3.15
 
 - Bump version to 3.3.15
