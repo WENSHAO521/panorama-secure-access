@@ -1,3 +1,45 @@
+## v3.3.21
+
+## v3.3.21-beta.2
+
+- Drop hyphen from pubspec version for beta build
+
+- The Linux amd64 job's rpm target writes the pubspec version straight
+
+- into the .spec file's Version field, which the RPM format forbids
+
+- hyphens in. 3.3.21-beta.1 broke rpmbuild there while every other
+
+- target (deb, AppImage, and every other platform) built fine. The
+
+- beta/prerelease marker only needs to live in the git tag name, since
+
+- that's what build.yaml's IS_STABLE check reads.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+## v3.3.21-beta.1
+
+- Bump version to 3.3.21-beta.1
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Animate main navigation switch on all platforms
+
+- Desktop always jumped between nav destinations with zero transition
+
+- (isMobile gate on the animate branch), while mobile only animated with
+
+- a flat linear slide. Both now animate with the same iOS-style
+
+- fastEaseInToSlowEaseOut curve CommonPageTransition already uses for
+
+- pushed routes, plus a cross-fade so the incoming page settles in
+
+- instead of just panning.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
 ## v3.3.20
 
 - Bump version to 3.3.20
