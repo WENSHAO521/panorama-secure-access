@@ -137,6 +137,12 @@ class _HomePageView extends ConsumerStatefulWidget {
   ConsumerState createState() => _HomePageViewState();
 }
 
+// Mirrors the curve CommonPageTransition uses for the app's iOS-style push
+// routes (see lib/common/navigator.dart), so the main navigation switch
+// reads as the same "settle in place" motion instead of a linear slide.
+const _kPageTransitionDuration = Duration(milliseconds: 320);
+const _kPageTransitionCurve = Curves.fastEaseInToSlowEaseOut;
+
 class _HomePageViewState extends ConsumerState<_HomePageView> {
   late PageController _pageController;
 
@@ -178,12 +184,11 @@ class _HomePageViewState extends ConsumerState<_HomePageView> {
       return;
     }
     final isAnimateToPage = ref.read(appSettingProvider).isAnimateToPage;
-    final isMobile = ref.read(isMobileViewProvider);
-    if (isAnimateToPage && isMobile && !ignoreAnimateTo) {
+    if (isAnimateToPage && !ignoreAnimateTo) {
       await _pageController.animateToPage(
         index,
-        duration: kTabScrollDuration,
-        curve: Curves.easeOut,
+        duration: _kPageTransitionDuration,
+        curve: _kPageTransitionCurve,
       );
     } else {
       _pageController.jumpToPage(index);
@@ -211,7 +216,22 @@ class _HomePageViewState extends ConsumerState<_HomePageView> {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: itemCount,
       itemBuilder: (context, index) {
-        return widget.pageBuilder(context, index);
+        return AnimatedBuilder(
+          animation: _pageController,
+          builder: (context, child) {
+            // Cross-fades the incoming/outgoing pages on top of the
+            // PageView's built-in slide, so a nav switch reads as settling
+            // into place (iOS/Samsung style) rather than a flat pan.
+            double page = index.toDouble();
+            if (_pageController.hasClients &&
+                _pageController.position.haveDimensions) {
+              page = _pageController.page ?? page;
+            }
+            final opacity = 1 - (page - index).abs().clamp(0.0, 1.0);
+            return Opacity(opacity: opacity, child: child);
+          },
+          child: widget.pageBuilder(context, index),
+        );
       },
     );
   }
