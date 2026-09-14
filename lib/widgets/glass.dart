@@ -141,8 +141,9 @@ abstract final class GlassTokens {
   // Medium/Large/Modal above are unchanged and still govern every call
   // site that already used them. radiusButton is wired into the app-wide
   // button theme (application.dart) and the nav indicator shape below;
-  // radiusInput/Card/Panel/Sidebar/CommandPalette are not yet consumed
-  // anywhere.
+  // radiusCard is wired into CommonCard's default and SettingsBlock
+  // (widgets/card.dart); radiusInput/Panel/Sidebar/CommandPalette are not
+  // yet consumed anywhere.
   static const double radiusButton = 10;
   static const double radiusInput = 10;
   static const double radiusCard = 16;
