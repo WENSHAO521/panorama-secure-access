@@ -34,8 +34,11 @@ enum GlassSurfaceType {
   /// side sheet.
   modal,
 
-  /// A transient overlay that isn't modal but still floats above content:
-  /// popup menus, toasts.
+  /// A transient overlay that isn't modal but still floats above content.
+  /// Currently unused — popup menus and toasts, its original occupants,
+  /// were promoted to [crystal] (see that value's doc). Kept as a token
+  /// for a future surface that wants floating-tier treatment without
+  /// reaching all the way to crystal.
   floating,
 
   /// A surface that repeats many times in one scroll view (proxy cards,
@@ -45,13 +48,14 @@ enum GlassSurfaceType {
   /// near-opaque block.
   repeated,
 
-  /// The top of the glass hierarchy: Command Palette, Context Menu,
-  /// Popover, Color/Date Picker, Tooltip — surfaces that float highest and
-  /// appear one at a time, never stacked or repeated. Highest blur/opacity
-  /// of any role and the only type that paints a directional edge
-  /// highlight ([GlassSurface] adds it automatically). Reserve this for
-  /// the handful of components that are genuinely the top layer; using it
-  /// everywhere defeats the hierarchy it exists to express.
+  /// The top of the glass hierarchy: Command Palette, Context Menu
+  /// (`CommonPopupMenu`), Popover, Toast (`StatusManager`'s message
+  /// surface), Color/Date Picker, Tooltip — surfaces that float highest
+  /// and appear one at a time, never stacked or repeated. Highest
+  /// blur/opacity of any role and the only type that paints a directional
+  /// edge highlight ([GlassSurface] adds it automatically). Reserve this
+  /// for the handful of components that are genuinely the top layer; using
+  /// it everywhere defeats the hierarchy it exists to express.
   crystal,
 }
 
@@ -133,9 +137,12 @@ abstract final class GlassTokens {
   static const double radiusModal = 26;
 
   // Named scale for the components the "Soft Crystal Glass" spec covers
-  // that don't yet have a dedicated radius token above. Additive only —
-  // radiusSmall/Medium/Large/Modal above are unchanged and still govern
-  // every existing call site; nothing here is wired in yet.
+  // that don't yet have a dedicated radius token above. radiusSmall/
+  // Medium/Large/Modal above are unchanged and still govern every call
+  // site that already used them. radiusButton is wired into the app-wide
+  // button theme (application.dart) and the nav indicator shape below;
+  // radiusInput/Card/Panel/Sidebar/CommandPalette are not yet consumed
+  // anywhere.
   static const double radiusButton = 10;
   static const double radiusInput = 10;
   static const double radiusCard = 16;
@@ -186,6 +193,43 @@ abstract final class GlassTokens {
 
   static ShapeBorder get navIndicatorShape =>
       RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusButton));
+
+  // Ambient shadow for the modal (Dialog/BottomSheet/side sheet) and
+  // crystal (Command Palette/Context Menu/Popover/Toast) tiers — large and
+  // soft, never a tight Material elevation shadow. Deliberately not
+  // wired into [GlassSurface]'s default rendering: chrome/panel/repeated
+  // surfaces are flush with the shell or repeat dozens of times, and
+  // don't want a shadow at all. Callers pass these explicitly via the
+  // `boxShadow` parameter.
+  static List<BoxShadow> modalShadowFor(Brightness brightness) => [
+    BoxShadow(
+      color: Colors.black.withValues(
+        alpha: brightness == Brightness.dark ? 0.38 : 0.10,
+      ),
+      blurRadius: 60,
+      offset: const Offset(0, 22),
+    ),
+  ];
+
+  static List<BoxShadow> crystalShadowFor(Brightness brightness) => [
+    BoxShadow(
+      color: Colors.black.withValues(
+        alpha: brightness == Brightness.dark ? 0.42 : 0.14,
+      ),
+      blurRadius: 70,
+      offset: const Offset(0, 24),
+    ),
+  ];
+
+  // "If the background is complex, automatically raise glass opacity" —
+  // MediaQuery.highContrast (Increase Contrast on iOS/macOS, equivalent
+  // accessibility settings elsewhere) means whatever is behind a glass
+  // surface can't be trusted to give the content on top of it enough
+  // contrast, so every [GlassSurface] pulls its opacity most of the way to
+  // fully opaque rather than trying to individually verify contrast against
+  // an arbitrary, possibly-busy background.
+  static double boostOpacityForHighContrast(double opacity) =>
+      (opacity + (1 - opacity) * 0.6).clamp(0.0, 1.0);
 
   static double blurFor(GlassSurfaceType type) => switch (type) {
     GlassSurfaceType.chrome => blurChrome,
@@ -270,8 +314,9 @@ abstract final class GlassTokens {
 /// [type] drives the default blur/opacity/border via [GlassTokens] — pass
 /// `color`/`opacity`/`blurSigma` only to override a specific surface's look,
 /// not as the normal way to configure one. Prefer the named constructors
-/// ([GlassSurface.chrome], [.panel], [.modal], [.floating], [.repeated])
-/// over the generic constructor so the role is obvious at the call site.
+/// ([GlassSurface.chrome], [.panel], [.modal], [.floating], [.repeated],
+/// [.crystal]) over the generic constructor so the role is obvious at the
+/// call site.
 ///
 /// Blur is real (a [BackdropFilter]) for surfaces that only ever appear once
 /// on screen at a time — the top bar, the nav rail/bar, dialogs, settings
@@ -386,7 +431,11 @@ class GlassSurface extends StatelessWidget {
     final brightness = colorScheme.brightness;
     final baseColor = color ?? colorScheme.surfaceContainer;
     final brandTintedColor = GlassTokens.tint(baseColor, colorScheme, type);
-    final resolvedOpacity = opacity ?? GlassTokens.opacityFor(type, brightness);
+    final highContrast = MediaQuery.maybeOf(context)?.highContrast ?? false;
+    final baseOpacity = opacity ?? GlassTokens.opacityFor(type, brightness);
+    final resolvedOpacity = highContrast
+        ? GlassTokens.boostOpacityForHighContrast(baseOpacity)
+        : baseOpacity;
     final resolvedBlur = (type == GlassSurfaceType.repeated)
         ? 0.0
         : (blurSigma ?? GlassTokens.blurFor(type));

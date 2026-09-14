@@ -87,6 +87,7 @@ class CommonDialog extends ConsumerWidget {
             borderRadius: BorderRadius.circular(24),
           ),
           color: backgroundColor ?? context.colorScheme.surfaceContainerHigh,
+          boxShadow: GlassTokens.modalShadowFor(context.colorScheme.brightness),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             // Forces title/content/actions to the same width (the

@@ -82,7 +82,8 @@ class CommonPopupRoute<T> extends PopupRoute<T> {
   }
 
   @override
-  Duration get transitionDuration => const Duration(milliseconds: 250);
+  Duration get transitionDuration =>
+      reducedMotionDuration(const Duration(milliseconds: 250));
 }
 
 class PopupController extends ValueNotifier<bool> {
@@ -211,10 +212,10 @@ class CommonPopupMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassSurface.floating(
+    return GlassSurface.crystal(
       shape: RoundedSuperellipseBorder(borderRadius: BorderRadius.circular(14)),
       color: context.colorScheme.surfaceContainer,
-      boxShadow: kElevationToShadow[12],
+      boxShadow: GlassTokens.crystalShadowFor(context.colorScheme.brightness),
       child: IntrinsicWidth(
         child: _CommonPopupMenuItems(
           items: items,
