@@ -34,8 +34,11 @@ enum GlassSurfaceType {
   /// side sheet.
   modal,
 
-  /// A transient overlay that isn't modal but still floats above content:
-  /// popup menus, toasts.
+  /// A transient overlay that isn't modal but still floats above content.
+  /// Currently unused — popup menus and toasts, its original occupants,
+  /// were promoted to [crystal] (see that value's doc). Kept as a token
+  /// for a future surface that wants floating-tier treatment without
+  /// reaching all the way to crystal.
   floating,
 
   /// A surface that repeats many times in one scroll view (proxy cards,
@@ -44,6 +47,16 @@ enum GlassSurfaceType {
   /// opacity so nesting one inside a panel/modal doesn't compound into a
   /// near-opaque block.
   repeated,
+
+  /// The top of the glass hierarchy: Command Palette, Context Menu
+  /// (`CommonPopupMenu`), Popover, Toast (`StatusManager`'s message
+  /// surface), Color/Date Picker, Tooltip — surfaces that float highest
+  /// and appear one at a time, never stacked or repeated. Highest
+  /// blur/opacity of any role and the only type that paints a directional
+  /// edge highlight ([GlassSurface] adds it automatically). Reserve this
+  /// for the handful of components that are genuinely the top layer; using
+  /// it everywhere defeats the hierarchy it exists to express.
+  crystal,
 }
 
 /// Calibrated glass values per [GlassSurfaceType] and [Brightness]. Read
@@ -55,6 +68,7 @@ abstract final class GlassTokens {
   static const double blurModal = 24;
   static const double blurFloating = 22;
   static const double blurRepeated = 0;
+  static const double blurCrystal = 36;
 
   static const double lightChromeOpacity = 0.38;
   static const double darkChromeOpacity = 0.52;
@@ -70,6 +84,9 @@ abstract final class GlassTokens {
 
   static const double lightRepeatedOpacity = 0.18;
   static const double darkRepeatedOpacity = 0.14;
+
+  static const double lightCrystalOpacity = 0.68;
+  static const double darkCrystalOpacity = 0.74;
 
   // How much of the theme's ColorScheme.primary is mixed into a glass
   // surface's base colour before opacity is applied. This is what makes the
@@ -96,6 +113,9 @@ abstract final class GlassTokens {
   static const double lightTintRepeated = 0.03;
   static const double darkTintRepeated = 0.05;
 
+  static const double lightTintCrystal = 0.07;
+  static const double darkTintCrystal = 0.12;
+
   // How much of primary is mixed into the neutral outlineVariant border —
   // a faint brand-coloured edge instead of a plain grey hairline.
   static const double borderTintStrength = 0.30;
@@ -116,12 +136,111 @@ abstract final class GlassTokens {
   static const double radiusLarge = 22;
   static const double radiusModal = 26;
 
+  // Named scale for the components the "Soft Crystal Glass" spec covers
+  // that don't yet have a dedicated radius token above. radiusSmall/
+  // Medium/Large/Modal above are unchanged and still govern every call
+  // site that already used them. radiusButton is wired into the app-wide
+  // button theme (application.dart) and the nav indicator shape below;
+  // radiusCard is wired into CommonCard's default and SettingsBlock
+  // (widgets/card.dart); radiusInput is wired into glassInputDecoration
+  // below (replacing radiusMedium, now unused like radiusSmall/Large/
+  // Modal above — none of those four were ever consumed anywhere in the
+  // app). Panel/Sidebar/CommandPalette are not yet consumed anywhere.
+  static const double radiusButton = 10;
+  static const double radiusInput = 10;
+  static const double radiusCard = 16;
+  static const double radiusPanel = 18;
+  static const double radiusSidebar = 20;
+  static const double radiusCommandPalette = 24;
+
+  // Motion scale for the same spec. hoverDuration/modalMotionDuration are
+  // new; panelMotionDuration intentionally matches the app's existing
+  // `midDuration` (lib/common/constant.dart) rather than introducing a
+  // second 200ms constant.
+  static const Duration hoverDuration = Duration(milliseconds: 150);
+  static const Duration panelMotionDuration = Duration(milliseconds: 200);
+  static const Duration modalMotionDuration = Duration(milliseconds: 240);
+  static const double maxHoverScale = 1.01;
+
+  // Directional edge highlight for GlassSurfaceType.crystal — a 1px
+  // gradient border weighted top/top-left/left, fading out by the
+  // bottom-right corner, like light grazing across a glass edge rather
+  // than a glowing outline. Only [GlassSurfaceType.crystal] paints this;
+  // every other type keeps its plain [borderSideFor] hairline.
+  static const double lightEdgeHighlightOpacity = 0.55;
+  static const double darkEdgeHighlightOpacity = 0.16;
+
+  static Color edgeHighlightColorFor(Brightness brightness) => Colors.white
+      .withValues(
+        alpha: brightness == Brightness.dark
+            ? darkEdgeHighlightOpacity
+            : lightEdgeHighlightOpacity,
+      );
+
+  // Selected-state fill for a nav item (sidebar rail destination, bottom
+  // nav destination): a soft primary-tinted wash instead of a solid
+  // ColorScheme.secondaryContainer pill, per the "don't mark active with a
+  // large colour block" rule — inner highlight, not paint. Shared by
+  // NavigationBar (mobile) and NavigationRail (desktop/laptop) so both
+  // read as the same material.
+  static const double lightNavIndicatorOpacity = 0.14;
+  static const double darkNavIndicatorOpacity = 0.20;
+
+  static Color navIndicatorColorFor(ColorScheme colorScheme) => colorScheme
+      .primary
+      .withValues(
+        alpha: colorScheme.brightness == Brightness.dark
+            ? darkNavIndicatorOpacity
+            : lightNavIndicatorOpacity,
+      );
+
+  static ShapeBorder get navIndicatorShape =>
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusButton));
+
+  // Ambient shadow for the modal (Dialog/BottomSheet/side sheet) and
+  // crystal (Command Palette/Context Menu/Popover/Toast) tiers — large and
+  // soft, never a tight Material elevation shadow. Deliberately not
+  // wired into [GlassSurface]'s default rendering: chrome/panel/repeated
+  // surfaces are flush with the shell or repeat dozens of times, and
+  // don't want a shadow at all. Callers pass these explicitly via the
+  // `boxShadow` parameter.
+  static List<BoxShadow> modalShadowFor(Brightness brightness) => [
+    BoxShadow(
+      color: Colors.black.withValues(
+        alpha: brightness == Brightness.dark ? 0.38 : 0.10,
+      ),
+      blurRadius: 60,
+      offset: const Offset(0, 22),
+    ),
+  ];
+
+  static List<BoxShadow> crystalShadowFor(Brightness brightness) => [
+    BoxShadow(
+      color: Colors.black.withValues(
+        alpha: brightness == Brightness.dark ? 0.42 : 0.14,
+      ),
+      blurRadius: 70,
+      offset: const Offset(0, 24),
+    ),
+  ];
+
+  // "If the background is complex, automatically raise glass opacity" —
+  // MediaQuery.highContrast (Increase Contrast on iOS/macOS, equivalent
+  // accessibility settings elsewhere) means whatever is behind a glass
+  // surface can't be trusted to give the content on top of it enough
+  // contrast, so every [GlassSurface] pulls its opacity most of the way to
+  // fully opaque rather than trying to individually verify contrast against
+  // an arbitrary, possibly-busy background.
+  static double boostOpacityForHighContrast(double opacity) =>
+      (opacity + (1 - opacity) * 0.6).clamp(0.0, 1.0);
+
   static double blurFor(GlassSurfaceType type) => switch (type) {
     GlassSurfaceType.chrome => blurChrome,
     GlassSurfaceType.panel => blurPanel,
     GlassSurfaceType.modal => blurModal,
     GlassSurfaceType.floating => blurFloating,
     GlassSurfaceType.repeated => blurRepeated,
+    GlassSurfaceType.crystal => blurCrystal,
   };
 
   static double opacityFor(GlassSurfaceType type, Brightness brightness) {
@@ -135,6 +254,8 @@ abstract final class GlassTokens {
         isDark ? darkFloatingOpacity : lightFloatingOpacity,
       GlassSurfaceType.repeated =>
         isDark ? darkRepeatedOpacity : lightRepeatedOpacity,
+      GlassSurfaceType.crystal =>
+        isDark ? darkCrystalOpacity : lightCrystalOpacity,
     };
   }
 
@@ -159,6 +280,8 @@ abstract final class GlassTokens {
         isDark ? darkTintFloating : lightTintFloating,
       GlassSurfaceType.repeated =>
         isDark ? darkTintRepeated : lightTintRepeated,
+      GlassSurfaceType.crystal =>
+        isDark ? darkTintCrystal : lightTintCrystal,
     };
   }
 
@@ -194,8 +317,9 @@ abstract final class GlassTokens {
 /// [type] drives the default blur/opacity/border via [GlassTokens] — pass
 /// `color`/`opacity`/`blurSigma` only to override a specific surface's look,
 /// not as the normal way to configure one. Prefer the named constructors
-/// ([GlassSurface.chrome], [.panel], [.modal], [.floating], [.repeated])
-/// over the generic constructor so the role is obvious at the call site.
+/// ([GlassSurface.chrome], [.panel], [.modal], [.floating], [.repeated],
+/// [.crystal]) over the generic constructor so the role is obvious at the
+/// call site.
 ///
 /// Blur is real (a [BackdropFilter]) for surfaces that only ever appear once
 /// on screen at a time — the top bar, the nav rail/bar, dialogs, settings
@@ -288,13 +412,33 @@ class GlassSurface extends StatelessWidget {
   }) : type = GlassSurfaceType.repeated,
        blurSigma = 0;
 
+  /// Command Palette, Context Menu, Popover, Color/Date Picker, Tooltip —
+  /// the top of the glass hierarchy. Also paints the directional edge
+  /// highlight described on [GlassSurfaceType.crystal]; pass
+  /// `showBorder: false` to suppress both the hairline and the highlight.
+  const GlassSurface.crystal({
+    super.key,
+    required this.child,
+    this.shape = const RoundedRectangleBorder(),
+    this.color,
+    this.opacity,
+    this.blurSigma,
+    this.borderSide,
+    this.showBorder = true,
+    this.boxShadow,
+  }) : type = GlassSurfaceType.crystal;
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
     final brightness = colorScheme.brightness;
     final baseColor = color ?? colorScheme.surfaceContainer;
     final brandTintedColor = GlassTokens.tint(baseColor, colorScheme, type);
-    final resolvedOpacity = opacity ?? GlassTokens.opacityFor(type, brightness);
+    final highContrast = MediaQuery.maybeOf(context)?.highContrast ?? false;
+    final baseOpacity = opacity ?? GlassTokens.opacityFor(type, brightness);
+    final resolvedOpacity = highContrast
+        ? GlassTokens.boostOpacityForHighContrast(baseOpacity)
+        : baseOpacity;
     final resolvedBlur = (type == GlassSurfaceType.repeated)
         ? 0.0
         : (blurSigma ?? GlassTokens.blurFor(type));
@@ -310,20 +454,63 @@ class GlassSurface extends StatelessWidget {
       ),
       child: child,
     );
-    if (resolvedBlur <= 0) {
-      return ClipPath(
-        clipper: ShapeBorderClipper(shape: shape),
-        child: surface,
-      );
+    final clipped = resolvedBlur <= 0
+        ? ClipPath(clipper: ShapeBorderClipper(shape: shape), child: surface)
+        : ClipPath(
+            clipper: ShapeBorderClipper(shape: shape),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: resolvedBlur,
+                sigmaY: resolvedBlur,
+              ),
+              child: surface,
+            ),
+          );
+    if (type != GlassSurfaceType.crystal || !showBorder) {
+      return clipped;
     }
-    return ClipPath(
-      clipper: ShapeBorderClipper(shape: shape),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: resolvedBlur, sigmaY: resolvedBlur),
-        child: surface,
+    return CustomPaint(
+      foregroundPainter: _CrystalEdgePainter(
+        shape: shape,
+        color: GlassTokens.edgeHighlightColorFor(brightness),
       ),
+      child: clipped,
     );
   }
+}
+
+/// Paints [GlassSurfaceType.crystal]'s directional edge highlight: a 1px
+/// stroke along the surface's own shape, brightest at the top-left corner
+/// and fading to nothing by the bottom-right — light grazing a glass edge,
+/// not a glowing outline. Kept as a foreground painter (rather than a
+/// second [BorderSide]) because [OutlinedBorder]/[ShapeDecoration] can't
+/// express a gradient stroke on their own.
+class _CrystalEdgePainter extends CustomPainter {
+  final OutlinedBorder shape;
+  final Color color;
+
+  const _CrystalEdgePainter({required this.shape, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    final path = shape.getOuterPath(rect);
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..shader =
+          LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [color, color.withValues(alpha: 0)],
+            stops: const [0.0, 0.7],
+          ).createShader(rect);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _CrystalEdgePainter oldDelegate) =>
+      oldDelegate.shape != shape || oldDelegate.color != color;
 }
 
 /// Opt-in glass styling for a [TextField]/[TextFormField] that's meant to
@@ -344,7 +531,7 @@ InputDecoration glassInputDecoration(
 }) {
   final colorScheme = context.colorScheme;
   final brightness = colorScheme.brightness;
-  final borderRadius = BorderRadius.circular(GlassTokens.radiusMedium);
+  final borderRadius = BorderRadius.circular(GlassTokens.radiusInput);
   final borderSide = GlassTokens.borderSideFor(colorScheme);
   return InputDecoration(
     labelText: labelText,

@@ -321,6 +321,7 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
           borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
         color: glassColor,
+        boxShadow: GlassTokens.modalShadowFor(colorScheme.brightness),
         child: SafeArea(
           top: false,
           child: Column(

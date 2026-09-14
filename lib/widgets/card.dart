@@ -233,7 +233,7 @@ class CommonCard extends StatelessWidget {
     final cardShape =
         shape ??
         RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(radius ?? 14),
+          borderRadius: BorderRadius.circular(radius ?? GlassTokens.radiusCard),
         );
 
     final card = switch (type == CommonCardType.filled) {
@@ -339,7 +339,7 @@ class SettingsBlock extends StatelessWidget {
           InfoHeader(info: Info(label: title)),
           GlassSurface.panel(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(GlassTokens.radiusCard),
             ),
             color: context.colorScheme.surfaceContainer,
             child: Column(children: settings),

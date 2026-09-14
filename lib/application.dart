@@ -62,6 +62,15 @@ class ApplicationState extends ConsumerState<Application> {
         alpha: GlassTokens.borderOpacityFor(brightness),
       ),
     );
+    // Material 3's own default button shape is a full StadiumBorder pill —
+    // fine for chips/segmented controls/status pills, but every
+    // Filled/Outlined/Elevated/TextButton in the app inherits it too,
+    // which is the "don't make every button a pill" rule the design spec
+    // calls out. One shared shape at the theme level fixes every button
+    // app-wide instead of passing `shape:` at each of the ~24 call sites.
+    final buttonShape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(GlassTokens.radiusButton),
+    );
     return ThemeData(
       useMaterial3: true,
       // Inter (OFL-licensed, bundled in assets/fonts/) instead of the
@@ -106,6 +115,18 @@ class ApplicationState extends ConsumerState<Application> {
         color: colorScheme.outlineVariant.withValues(
           alpha: GlassTokens.dividerOpacityFor(brightness),
         ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(shape: buttonShape),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(shape: buttonShape),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(shape: buttonShape),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(shape: buttonShape),
       ),
     );
   }

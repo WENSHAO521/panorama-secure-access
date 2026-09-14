@@ -37,6 +37,25 @@ const commonSharedXPageTransitions = SharedAxisPageTransitionsBuilder(
   fillColor: Colors.transparent,
 );
 
+/// `prefers-reduced-motion` support for the app's own custom route/popup
+/// transitions, which — unlike Flutter's built-in widgets — don't consult
+/// [MediaQueryData.disableAnimations] on their own. [PageRoute] duration
+/// getters have no [BuildContext] parameter, so this reads the navigator's
+/// own context (the same pattern already used by
+/// `ApplicationState.initState`) rather than threading one through; a
+/// route pushed before the first frame (context still null) just keeps its
+/// normal duration; this cannot fail, only run once with the default. Only
+/// covers page and popup-menu transitions, not every `Animated*` micro-
+/// interaction in the app — see the durations in `common/constant.dart` for
+/// the rest.
+Duration reducedMotionDuration(Duration duration) {
+  final context = globalState.navigatorKey.currentContext;
+  if (context != null && (MediaQuery.maybeOf(context)?.disableAnimations ?? false)) {
+    return Duration.zero;
+  }
+  return duration;
+}
+
 class CommonDesktopRoute<T> extends PageRoute<T> {
   final Widget Function(BuildContext context) builder;
 
@@ -87,10 +106,12 @@ class CommonDesktopRoute<T> extends PageRoute<T> {
   bool get maintainState => true;
 
   @override
-  Duration get transitionDuration => const Duration(milliseconds: 200);
+  Duration get transitionDuration =>
+      reducedMotionDuration(const Duration(milliseconds: 200));
 
   @override
-  Duration get reverseTransitionDuration => const Duration(milliseconds: 200);
+  Duration get reverseTransitionDuration =>
+      reducedMotionDuration(const Duration(milliseconds: 200));
 }
 
 class CommonRoute<T> extends PageRoute<T> {
@@ -147,10 +168,12 @@ class CommonRoute<T> extends PageRoute<T> {
   }
 
   @override
-  Duration get transitionDuration => const Duration(milliseconds: 300);
+  Duration get transitionDuration =>
+      reducedMotionDuration(const Duration(milliseconds: 300));
 
   @override
-  Duration get reverseTransitionDuration => const Duration(milliseconds: 300);
+  Duration get reverseTransitionDuration =>
+      reducedMotionDuration(const Duration(milliseconds: 300));
 }
 
 final Animatable<Offset> _kRightMiddleTween = Tween<Offset>(

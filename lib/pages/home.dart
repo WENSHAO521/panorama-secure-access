@@ -273,20 +273,25 @@ class _NavigationBarDefaultsM3 extends NavigationBarThemeData {
     return WidgetStateProperty.resolveWith((Set<WidgetState> states) {
       return IconThemeData(
         size: 24.0,
+        // Was onSecondaryContainer, paired with the old solid
+        // secondaryContainer indicator pill. The indicator is now a soft
+        // primary-tinted wash (GlassTokens.navIndicatorColorFor), so the
+        // selected icon follows suit instead of pairing with a container
+        // colour that's no longer what's actually behind it.
         color: states.contains(WidgetState.disabled)
             ? _colors.onSurfaceVariant.opacity38
             : states.contains(WidgetState.selected)
-            ? _colors.onSecondaryContainer
+            ? _colors.primary
             : _colors.onSurfaceVariant,
       );
     });
   }
 
   @override
-  Color? get indicatorColor => _colors.secondaryContainer;
+  Color? get indicatorColor => GlassTokens.navIndicatorColorFor(_colors);
 
   @override
-  ShapeBorder? get indicatorShape => const StadiumBorder();
+  ShapeBorder? get indicatorShape => GlassTokens.navIndicatorShape;
 
   @override
   WidgetStateProperty<TextStyle?>? get labelTextStyle {
