@@ -167,6 +167,26 @@ abstract final class GlassTokens {
             : lightEdgeHighlightOpacity,
       );
 
+  // Selected-state fill for a nav item (sidebar rail destination, bottom
+  // nav destination): a soft primary-tinted wash instead of a solid
+  // ColorScheme.secondaryContainer pill, per the "don't mark active with a
+  // large colour block" rule — inner highlight, not paint. Shared by
+  // NavigationBar (mobile) and NavigationRail (desktop/laptop) so both
+  // read as the same material.
+  static const double lightNavIndicatorOpacity = 0.14;
+  static const double darkNavIndicatorOpacity = 0.20;
+
+  static Color navIndicatorColorFor(ColorScheme colorScheme) => colorScheme
+      .primary
+      .withValues(
+        alpha: colorScheme.brightness == Brightness.dark
+            ? darkNavIndicatorOpacity
+            : lightNavIndicatorOpacity,
+      );
+
+  static ShapeBorder get navIndicatorShape =>
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusButton));
+
   static double blurFor(GlassSurfaceType type) => switch (type) {
     GlassSurfaceType.chrome => blurChrome,
     GlassSurfaceType.panel => blurPanel,

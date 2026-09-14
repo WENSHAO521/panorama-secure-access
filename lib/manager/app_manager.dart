@@ -240,6 +240,10 @@ class AppSidebarContainer extends ConsumerWidget {
                             scrollable: true,
                             minExtendedWidth: 200,
                             backgroundColor: Colors.transparent,
+                            indicatorColor: GlassTokens.navIndicatorColorFor(
+                              context.colorScheme,
+                            ),
+                            indicatorShape: GlassTokens.navIndicatorShape,
                             selectedLabelTextStyle: context
                                 .textTheme
                                 .labelLarge!
