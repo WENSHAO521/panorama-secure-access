@@ -1,3 +1,237 @@
+## v3.3.22
+
+- Bump version to 3.3.22
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Claude-Session: https://claude.ai/code/session_01NNWYhQat7nCYAiYcJVhyjA
+
+- Wire glassInputDecoration radius to the token scale (Soft Crystal Glass, phase 7)
+
+- The shared glass-styled input decoration (used across profiles/edit,
+
+- config/general, backup_and_restore, pages/editor, widgets/input) was
+
+- using radiusMedium (16, one of the four original radius tokens that
+
+- turned out to have zero call sites anywhere in the app). Switches it to
+
+- radiusInput (10), matching the spec's "Input: 10px" entry in the radius
+
+- scale - the same bucket as buttons, already wired in phase 4.
+
+- Surveyed the remaining scattered BorderRadius.circular(...) values
+
+- across the app for further consolidation candidates: the rest are
+
+- either genuinely one-off/context-specific (a color-picker canvas in
+
+- widgets/palette.dart, a title-bar decoration, a couple of screen-local
+
+- decorations) rather than a shared component class, or dead code
+
+- (CommonModal, referenced only from a commented-out block in
+
+- common/navigator.dart) - not touching either, since blindly renumbering
+
+- one-off widgets isn't the same thing as applying a design token.
+
+- Verified with the actual toolchain: flutter analyze --no-fatal-infos
+
+- reports zero issues, flutter test --reporter expanded passes all 442
+
+- tests.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Claude-Session: https://claude.ai/code/session_01NNWYhQat7nCYAiYcJVhyjA
+
+- Wire CommonCard/SettingsBlock radius to the token scale (Soft Crystal Glass, phase 6)
+
+- CommonCard (the generic card used for proxy cards, provider lists, etc.)
+
+- defaulted to a hand-picked radius of 14 when no explicit radius was
+
+- passed; SettingsBlock (a GlassSurfaceType.panel per that type's own doc
+
+- comment - "a settings block, a low-count card group") used a hardcoded
+
+- 12. Neither consumed GlassTokens.radiusCard (16), introduced in phase 1
+
+- but unused until now. Both now use it - only call sites that don't
+
+- already pass an explicit radius are affected.
+
+- Verified with the actual toolchain (Flutter 3.44.4 / Dart 3.12.2,
+
+- matching CI's pinned version): flutter analyze --no-fatal-infos reports
+
+- zero issues, flutter test --reporter expanded passes all 442 tests.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Claude-Session: https://claude.ai/code/session_01NNWYhQat7nCYAiYcJVhyjA
+
+- Complete Soft Crystal Glass rollout: phases 3-5 (floating layer, controls, a11y)
+
+- Phase 3 - floating layer to Crystal tier:
+
+- - CommonPopupMenu (context menu) and the StatusManager toast both move
+
+-   GlassSurfaceType.floating -> .crystal, replacing their flat Material
+
+-   elevation shadows (kElevationToShadow) with the new soft/large
+
+-   GlassTokens.crystalShadowFor.
+
+- - CommonDialog and the bottom-sheet modal (widgets/sheet.dart) had no
+
+-   shadow at all - both are GlassSurfaceType.modal per that type's own doc
+
+-   comment (Dialog/BottomSheet/side sheet), so both get the same new
+
+-   GlassTokens.modalShadowFor.
+
+- - GlassSurfaceType.floating's doc comment is corrected: it has zero call
+
+-   sites now that its two former occupants moved to crystal, kept as a
+
+-   token for future use rather than removed.
+
+- Phase 4 - controls:
+
+- - Material 3's default button shape is a full StadiumBorder pill. Every
+
+-   Filled/Outlined/Elevated/TextButton in the app inherited it (no
+
+-   button-shape theme existed at all), which is the "don't make every
+
+-   button a pill" rule the spec calls out. Fixed once at the ThemeData
+
+-   level (GlassTokens.radiusButton, 10px) instead of touching the ~24
+
+-   individual call sites - every button in the app gets it automatically,
+
+-   explicit per-call-site shapes are unaffected (widget style still wins
+
+-   over theme).
+
+- - CommonTabBar (the actual segmented-control widget) turned out to have
+
+-   zero call sites anywhere in the app - nothing currently renders a
+
+-   segmented control, so there was nothing live to restyle; left untouched
+
+-   rather than modifying unused custom RenderObject internals I can't
+
+-   visually verify.
+
+- - Input focus state (glassInputDecoration) was reviewed: already a
+
+-   restrained 1.2px primary-colored border, no heavy outline/glow to fix.
+
+-   A true soft halo ring isn't expressible through InputDecoration alone
+
+-   and would need a stateful focus-listening wrapper across 5 call sites -
+
+-   left alone rather than guessing at that without a way to check it.
+
+- Phase 5 - accessibility and performance:
+
+- - prefers-reduced-motion: PageRoute duration getters have no BuildContext
+
+-   parameter, so a new reducedMotionDuration() helper (common/navigator.dart)
+
+-   reads MediaQuery.disableAnimations off globalState.navigatorKey's own
+
+-   context, the same pattern ApplicationState.initState already uses.
+
+-   Wired into CommonRoute/CommonDesktopRoute (every page transition) and
+
+-   CommonPopupRoute (context-menu transition) - the app's two most
+
+-   consistently-triggered motion surfaces. Does not cover every Animated*
+
+-   micro-interaction in the app; that would mean threading this through
+
+-   dozens of call sites individually.
+
+- - prefers-contrast: GlassSurface.build() now reads MediaQuery.highContrast
+
+-   and pulls opacity most of the way to fully opaque when set
+
+-   (GlassTokens.boostOpacityForHighContrast), self-contained in the one
+
+-   widget every glass surface already goes through.
+
+- - Blur-layer budget (section 25's 2-3 layer guidance): audited, not
+
+-   changed. Worst case found - sidebar + topbar + an open dialog + a
+
+-   crystal popup opened from within it - is 4 simultaneous BackdropFilters,
+
+-   over budget. No safe fix identified that doesn't risk visibly changing
+
+-   chrome behavior while a modal is open, so flagging it rather than
+
+-   guessing at a remediation.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Claude-Session: https://claude.ai/code/session_01NNWYhQat7nCYAiYcJVhyjA
+
+- Tune nav-item active state to a soft glass wash (Soft Crystal Glass, phase 2)
+
+- Both nav surfaces (mobile bottom NavigationBar, desktop/laptop
+
+- NavigationRail) marked the selected destination with a full-opacity
+
+- ColorScheme.secondaryContainer stadium pill - a "large colour block" for
+
+- active state, which the design-system spec explicitly avoids in favour of
+
+- a soft inner-highlight wash. Adds GlassTokens.navIndicatorColorFor (a
+
+- primary-tinted fill at 14%/20% light/dark) and GlassTokens.navIndicatorShape
+
+- (10px rounded rect, not a full pill), wired into both surfaces identically
+
+- so they read as the same material.
+
+- The bottom nav's selected-icon colour (onSecondaryContainer) was paired
+
+- with the old solid pill and would have read wrong against the new
+
+- translucent wash, so it moves to ColorScheme.primary to match.
+
+- Sidebar and topbar chrome themselves are unchanged: both are already
+
+- edge-to-edge frosted panels (no floating inset/rounded corners), one of
+
+- the two valid patterns the spec allows - no layout or state touched.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Claude-Session: https://claude.ai/code/session_01NNWYhQat7nCYAiYcJVhyjA
+
+- Add Crystal glass tier and radius/motion token scale (Soft Crystal Glass spec, phase 1)
+
+- Additive-only token layer for the Soft Crystal Glass design-system spec:
+
+- a new GlassSurfaceType.crystal (Command Palette/Popover/Context Menu tier)
+
+- with its own blur/opacity/tint values and a directional edge-highlight
+
+- painter, plus the named radius and motion scales from the spec's token
+
+- tables. Nothing existing is renamed or re-valued, and no call site uses
+
+- the new type yet, so this changes no rendered UI.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Claude-Session: https://claude.ai/code/session_01NNWYhQat7nCYAiYcJVhyjA
+
 ## v3.3.21
 
 ## v3.3.21-beta.2
