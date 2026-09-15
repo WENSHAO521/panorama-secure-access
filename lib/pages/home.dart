@@ -226,7 +226,20 @@ class _HomePageViewState extends ConsumerState<_HomePageView> {
             final opacity = 1 - (page - index).abs().clamp(0.0, 1.0);
             return Opacity(opacity: opacity, child: child);
           },
-          child: widget.pageBuilder(context, index),
+          // Opacity without a RepaintBoundary directly under it makes
+          // Flutter repaint the *entire* child subtree from scratch on
+          // every single animation frame — every blurred AppBar, every
+          // glass panel on the page — just to blend a changing alpha,
+          // instead of caching one rasterized layer and cheaply
+          // re-blending it. With this page now carrying more
+          // BackdropFilter-adjacent layers than the old flat glass did,
+          // that per-frame full repaint is exactly what a page switch
+          // feeling janky looks like. The boundary sits *inside* Opacity
+          // (not around the whole AnimatedBuilder, which PageView already
+          // adds automatically and which doesn't help here) so the page's
+          // pixels get cached once and the fade only ever costs a
+          // compositor-side alpha blend.
+          child: RepaintBoundary(child: widget.pageBuilder(context, index)),
         );
       },
     );
