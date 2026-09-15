@@ -41,9 +41,12 @@ class CommonPopupRoute<T> extends PopupRoute<T> {
     Widget child,
   ) {
     const align = Alignment.topRight;
+    // Curves.easeOutBack used to drive this (a slight overshoot on open) —
+    // switched to the shared Liquid Glass curve: "smooth, settled,
+    // precise", no bounce/overshoot anywhere in the material system.
     final curveAnimation = animation
         .drive(Tween(begin: 0.0, end: 1.0))
-        .drive(CurveTween(curve: Curves.easeOutBack));
+        .drive(CurveTween(curve: GlassTokens.materialTransitionCurve));
     return SafeArea(
       child: ValueListenableBuilder(
         valueListenable: offsetNotifier,
@@ -82,8 +85,9 @@ class CommonPopupRoute<T> extends PopupRoute<T> {
   }
 
   @override
-  Duration get transitionDuration =>
-      reducedMotionDuration(const Duration(milliseconds: 250));
+  Duration get transitionDuration => reducedMotionDuration(
+    GlassTokens.animationDurationFor(GlassSurfaceType.crystal),
+  );
 }
 
 class PopupController extends ValueNotifier<bool> {

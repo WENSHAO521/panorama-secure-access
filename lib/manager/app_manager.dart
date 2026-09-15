@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
@@ -163,31 +162,9 @@ class AppSidebarContainer extends ConsumerWidget {
     required BuildContext context,
     required Widget child,
   }) {
-    final colorScheme = context.colorScheme;
-    return ClipRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: GlassTokens.blurChrome,
-          sigmaY: GlassTokens.blurChrome,
-        ),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color:
-                GlassTokens.tint(
-                  colorScheme.surfaceContainer,
-                  colorScheme,
-                  GlassSurfaceType.chrome,
-                ).withValues(
-                  alpha: GlassTokens.opacityFor(
-                    GlassSurfaceType.chrome,
-                    colorScheme.brightness,
-                  ),
-                ),
-            border: Border(right: GlassTokens.borderSideFor(colorScheme)),
-          ),
-          child: Material(color: Colors.transparent, child: child),
-        ),
-      ),
+    return LiquidGlassChrome(
+      edge: LiquidGlassChromeEdge.right,
+      child: Material(color: Colors.transparent, child: child),
     );
   }
 
@@ -256,6 +233,9 @@ class AppSidebarContainer extends ConsumerWidget {
                                 .map(
                                   (e) => NavigationRailDestination(
                                     icon: e.icon,
+                                    selectedIcon: LiquidGlassSelectedIcon(
+                                      icon: e.icon,
+                                    ),
                                     label: Text(Intl.message(e.label.name)),
                                   ),
                                 )

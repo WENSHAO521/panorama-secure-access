@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/manager/app_manager.dart';
@@ -37,28 +35,26 @@ class HomePage extends StatelessWidget {
                   final isMobile = state.viewMode == ViewMode.mobile;
                   final navigationItems = state.navigationItems;
                   final currentIndex = state.currentIndex;
-                  final bottomNavigationBar = ClipRect(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(
-                        sigmaX: GlassTokens.blurChrome,
-                        sigmaY: GlassTokens.blurChrome,
-                      ),
-                      child: NavigationBarTheme(
-                        data: _NavigationBarDefaultsM3(context),
-                        child: NavigationBar(
-                          destinations: navigationItems
-                              .map(
-                                (e) => NavigationDestination(
+                  final bottomNavigationBar = LiquidGlassChrome(
+                    edge: LiquidGlassChromeEdge.top,
+                    child: NavigationBarTheme(
+                      data: _NavigationBarDefaultsM3(context),
+                      child: NavigationBar(
+                        destinations: navigationItems
+                            .map(
+                              (e) => NavigationDestination(
+                                icon: e.icon,
+                                selectedIcon: LiquidGlassSelectedIcon(
                                   icon: e.icon,
-                                  label: Intl.message(e.label.name),
                                 ),
-                              )
-                              .toList(),
-                          onDestinationSelected: (index) {
-                            _handleToPage(navigationItems[index].label);
-                          },
-                          selectedIndex: currentIndex,
-                        ),
+                                label: Intl.message(e.label.name),
+                              ),
+                            )
+                            .toList(),
+                        onDestinationSelected: (index) {
+                          _handleToPage(navigationItems[index].label);
+                        },
+                        selectedIndex: currentIndex,
                       ),
                     ),
                   );
@@ -249,18 +245,12 @@ class _NavigationBarDefaultsM3 extends NavigationBarThemeData {
   late final ColorScheme _colors = Theme.of(context).colorScheme;
   late final TextTheme _textTheme = Theme.of(context).textTheme;
 
+  // Transparent: the surrounding LiquidGlassChrome (see HomePage) now owns
+  // the blur/tint/illumination/edge — painting a second, flat-color fill
+  // here would sit on top of that layered material and flatten it back
+  // into a plain tinted rectangle.
   @override
-  Color? get backgroundColor =>
-      GlassTokens.tint(
-        _colors.surfaceContainer,
-        _colors,
-        GlassSurfaceType.chrome,
-      ).withValues(
-        alpha: GlassTokens.opacityFor(
-          GlassSurfaceType.chrome,
-          _colors.brightness,
-        ),
-      );
+  Color? get backgroundColor => Colors.transparent;
 
   @override
   Color? get shadowColor => Colors.transparent;

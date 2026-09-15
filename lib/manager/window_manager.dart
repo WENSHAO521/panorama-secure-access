@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -256,22 +255,11 @@ class _WindowHeaderState extends State<WindowHeader> {
               onDoubleTap: () {
                 _updateMaximized();
               },
-              child: ClipRect(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: GlassTokens.blurChrome,
-                    sigmaY: GlassTokens.blurChrome,
-                  ),
-                  child: Container(
-                    color: context.colorScheme.surface.withValues(
-                      alpha: GlassTokens.opacityFor(
-                        GlassSurfaceType.chrome,
-                        context.colorScheme.brightness,
-                      ),
-                    ),
-                    alignment: Alignment.centerLeft,
-                    height: kHeaderHeight,
-                  ),
+              child: SizedBox(
+                height: kHeaderHeight,
+                child: LiquidGlassChrome(
+                  color: context.colorScheme.surface,
+                  edge: LiquidGlassChromeEdge.bottom,
                 ),
               ),
             ),

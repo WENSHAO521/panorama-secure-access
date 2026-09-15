@@ -82,7 +82,7 @@ class InfoHeader extends StatelessWidget {
   }
 }
 
-class CommonCard extends StatelessWidget {
+class CommonCard extends StatefulWidget {
   const CommonCard({
     super.key,
     bool? isSelected,
@@ -111,6 +111,30 @@ class CommonCard extends StatelessWidget {
   final CommonCardType type;
   final double? radius;
   final OutlinedBorder? shape;
+
+  @override
+  State<CommonCard> createState() => _CommonCardState();
+}
+
+class _CommonCardState extends State<CommonCard> {
+  // Shared with the FilledButton/OutlinedButton below via `statesController:`
+  // so the hover/press micro-interaction painted by _LiquidCardInteraction
+  // (edge/specular boost on hover, tiny material compression on press) can
+  // read the exact same state the button itself reacts to, instead of
+  // duplicating hover/press detection with a second MouseRegion/GestureDetector.
+  final _statesController = WidgetStatesController();
+
+  @override
+  void dispose() {
+    _statesController.dispose();
+    super.dispose();
+  }
+
+  bool get isSelected => widget.isSelected;
+
+  bool get isError => widget.isError;
+
+  CommonCardType get type => widget.type;
 
   BorderSide _buildBorderSide(BuildContext context, Set<WidgetState> states) {
     final colorScheme = context.colorScheme;
@@ -208,41 +232,44 @@ class CommonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var childWidget = child;
+    var childWidget = widget.child;
 
-    if (info != null) {
+    if (widget.info != null) {
       childWidget = Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           InfoHeader(
             padding: baseInfoEdgeInsets.copyWith(bottom: 0),
-            info: info!,
+            info: widget.info!,
           ),
-          Flexible(flex: 1, child: child),
+          Flexible(flex: 1, child: widget.child),
         ],
       );
     }
 
-    if (selectWidget != null && isSelected) {
+    if (widget.selectWidget != null && isSelected) {
       final List<Widget> children = [];
       children.add(childWidget);
-      children.add(Positioned.fill(child: selectWidget!));
+      children.add(Positioned.fill(child: widget.selectWidget!));
       childWidget = Stack(children: children);
     }
 
     final cardShape =
-        shape ??
+        widget.shape ??
         RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(radius ?? GlassTokens.radiusCard),
+          borderRadius: BorderRadius.circular(
+            widget.radius ?? GlassTokens.radiusCard,
+          ),
         );
 
     final card = switch (type == CommonCardType.filled) {
       true => FilledButton(
-        onLongPress: onLongPress,
+        onLongPress: widget.onLongPress,
+        statesController: _statesController,
         clipBehavior: Clip.antiAlias,
         style:
             FilledButton.styleFrom(
-              padding: padding ?? EdgeInsets.zero,
+              padding: widget.padding ?? EdgeInsets.zero,
               shape: cardShape,
               iconSize: 20,
               iconColor: _buildIconColor(context),
@@ -255,15 +282,16 @@ class CommonCard extends StatelessWidget {
                 (states) => _buildBorderSide(context, states),
               ),
             ),
-        onPressed: onPressed,
+        onPressed: widget.onPressed,
         child: childWidget,
       ),
       false => OutlinedButton(
-        onLongPress: onLongPress,
+        onLongPress: widget.onLongPress,
+        statesController: _statesController,
         clipBehavior: Clip.antiAlias,
         style:
             OutlinedButton.styleFrom(
-              padding: padding ?? EdgeInsets.zero,
+              padding: widget.padding ?? EdgeInsets.zero,
               shape: cardShape,
               iconSize: 20,
               iconColor: _buildIconColor(context),
@@ -275,7 +303,7 @@ class CommonCard extends StatelessWidget {
                 (states) => _buildBorderSide(context, states),
               ),
             ),
-        onPressed: onPressed,
+        onPressed: widget.onPressed,
         child: childWidget,
       ),
     };
@@ -301,10 +329,122 @@ class CommonCard extends StatelessWidget {
       child: card,
     );
 
-    return switch (enterAnimated) {
-      true => FadeScaleEnterBox(child: glassCard),
-      false => glassCard,
+    // The material-response layer: a tiny press compression plus a hover
+    // edge/specular boost, both driven by the same WidgetStatesController
+    // the button above already updates — no second hover/press detector,
+    // no BackdropFilter, no per-frame repaint, so this stays cheap even
+    // when dozens of these are on screen (proxy grids, provider lists).
+    final interactiveCard = _LiquidCardInteraction(
+      statesController: _statesController,
+      shape: cardShape,
+      child: glassCard,
+    );
+
+    return switch (widget.enterAnimated) {
+      true => FadeScaleEnterBox(child: interactiveCard),
+      false => interactiveCard,
     };
+  }
+}
+
+/// CommonCard's hover/press material response. Listens to the same
+/// [WidgetStatesController] the card's FilledButton/OutlinedButton reacts
+/// to (via `statesController:`) instead of adding a second
+/// MouseRegion/GestureDetector, and only ever repaints this one card when
+/// its own state changes — never the list/grid it sits in.
+///
+/// Pressed: a ~1% [AnimatedScale] compression (bounded to the
+/// spec's 0.985–0.995 band via [GlassTokens.pressedScale]) — material
+/// tension, not a bouncy button.
+/// Hovered (desktop only — mobile never emits a hover state): a static,
+/// low-opacity directional gradient over the card's own shape, standing
+/// in for "edge/specular increases" without giving every repeated card its
+/// own [CustomPainter] or pointer-tracked specular layer the way
+/// [GlassSurfaceType.crystal]/[GlassSurfaceType.modal] surfaces get.
+class _LiquidCardInteraction extends StatefulWidget {
+  final WidgetStatesController statesController;
+  final OutlinedBorder shape;
+  final Widget child;
+
+  const _LiquidCardInteraction({
+    required this.statesController,
+    required this.shape,
+    required this.child,
+  });
+
+  @override
+  State<_LiquidCardInteraction> createState() =>
+      _LiquidCardInteractionState();
+}
+
+class _LiquidCardInteractionState extends State<_LiquidCardInteraction> {
+  @override
+  void initState() {
+    super.initState();
+    widget.statesController.addListener(_onStatesChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant _LiquidCardInteraction oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.statesController != widget.statesController) {
+      oldWidget.statesController.removeListener(_onStatesChanged);
+      widget.statesController.addListener(_onStatesChanged);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.statesController.removeListener(_onStatesChanged);
+    super.dispose();
+  }
+
+  void _onStatesChanged() => setState(() {});
+
+  @override
+  Widget build(BuildContext context) {
+    final states = widget.statesController.value;
+    final reducedMotion = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+    final isPressed = !reducedMotion && states.contains(WidgetState.pressed);
+    final isHovered =
+        !reducedMotion &&
+        (states.contains(WidgetState.hovered) ||
+            states.contains(WidgetState.focused));
+    final brightness = context.colorScheme.brightness;
+    return AnimatedScale(
+      scale: isPressed ? GlassTokens.pressedScale : 1.0,
+      duration: GlassTokens.pressDuration,
+      curve: GlassTokens.materialTransitionCurve,
+      child: Stack(
+        children: [
+          widget.child,
+          Positioned.fill(
+            child: IgnorePointer(
+              child: AnimatedOpacity(
+                opacity: isHovered ? 1 : 0,
+                duration: GlassTokens.hoverDuration,
+                curve: GlassTokens.materialTransitionCurve,
+                child: DecoratedBox(
+                  decoration: ShapeDecoration(
+                    shape: widget.shape,
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(
+                          alpha: brightness == Brightness.dark ? 0.05 : 0.10,
+                        ),
+                        Colors.white.withValues(alpha: 0),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

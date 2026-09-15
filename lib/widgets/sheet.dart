@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/providers/app.dart';
@@ -391,23 +389,9 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
       titleSpacing: 16,
       title: Text(widget.title, overflow: TextOverflow.ellipsis),
       actions: genActions(!suffixPop ? actions : [?popButton]),
-      flexibleSpace: ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: GlassTokens.blurChrome,
-            sigmaY: GlassTokens.blurChrome,
-          ),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: glassColor.withValues(
-                alpha: GlassTokens.opacityFor(
-                  GlassSurfaceType.chrome,
-                  colorScheme.brightness,
-                ),
-              ),
-            ),
-          ),
-        ),
+      flexibleSpace: LiquidGlassChrome(
+        color: glassColor,
+        edge: LiquidGlassChromeEdge.bottom,
       ),
     );
     return CommonScaffold(appBar: appBar, body: widget.body);
