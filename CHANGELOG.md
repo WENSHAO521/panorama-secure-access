@@ -1,3 +1,75 @@
+## v3.3.23
+
+- Fix compile errors from the Liquid Glass engine rewrite
+
+- The previous rewrite of lib/widgets/glass.dart dropped
+
+- GlassTokens.blurFor/opacityFor (still consumed by
+
+- application.dart/scaffold.dart/sheet.dart/proxies/tab.dart) and used
+
+- ValueListenable without importing package:flutter/foundation.dart.
+
+- Verified this time by actually fetching a Flutter SDK, running
+
+- `flutter analyze` (clean, 0 issues) and the full `flutter test` suite
+
+- (442/442 passing, including CommonDialog's overflow/responsive-width
+
+- tests which exercise GlassSurface.modal's new compositor), and
+
+- `dart format`.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Claude-Session: https://claude.ai/code/session_01PuHYzj7nWfTYG5mr9gQ47t
+
+- Upgrade glass material engine to Panorama Liquid Glass
+
+- Rebuilds lib/widgets/glass.dart's material engine in place while
+
+- preserving every existing public API (GlassSurfaceType, GlassSurface's
+
+- named constructors, glassInputDecoration, AmbientBackground): each
+
+- non-repeated glass surface now composites internal illumination, a
+
+- pointer-responsive specular highlight, and a directional two-tone edge
+
+- (bright near rim + dim far rim, optical thickness instead of a flat
+
+- hairline) instead of a flat tinted blur, with crystal-tier surfaces
+
+- adding micro-lensing and a static noise texture. All new tokens are
+
+- per-GlassSurfaceType and per-Brightness, gated by a
+
+- LiquidGlassPerformancePolicy that drops the dynamic layers under
+
+- reduced-motion/high-contrast and never runs them on repeated surfaces
+
+- (proxy/provider cards) to protect scroll performance.
+
+- Consolidates five hand-rolled BackdropFilter+tint blocks (window
+
+- title bar, AppBar, side-sheet AppBar, mobile bottom nav, desktop
+
+- sidebar) into one new LiquidGlassChrome primitive, adds a
+
+- glass-within-glass treatment for the selected nav icon
+
+- (LiquidGlassSelectedIcon), gives CommonCard a shared-state hover/press
+
+- material response without adding per-item blur or pointer tracking,
+
+- and recalibrates AmbientBackground toward a quieter, more spatial
+
+- ambient field.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Claude-Session: https://claude.ai/code/session_01PuHYzj7nWfTYG5mr9gQ47t
+
 ## v3.3.22
 
 - Bump version to 3.3.22
