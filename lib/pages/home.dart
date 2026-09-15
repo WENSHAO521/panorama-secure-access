@@ -211,36 +211,22 @@ class _HomePageViewState extends ConsumerState<_HomePageView> {
       controller: _pageController,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: itemCount,
+      // Bottom-tab switching used to layer a custom Opacity cross-fade on
+      // top of PageView's own slide, to read as "settling into place"
+      // rather than a flat pan. Even fully cached behind a RepaintBoundary
+      // (still kept below — pages can repaint for reasons unrelated to
+      // this transition, e.g. live traffic stats), an Opacity layer still
+      // costs a real alpha-blend composite of a full glass-heavy page on
+      // every animation frame, on top of whatever cost the page's own
+      // BackdropFilters already carry. PageView's built-in slide is a
+      // pure position transform — the compositor moves an already-
+      // rasterized layer, no blending, no re-sampling, about as cheap as
+      // GPU work gets — so tab switching now relies on that alone.
+      // Quieter than the old settle-in-place read, but this is a
+      // performance-over-decoration tradeoff made deliberately, not an
+      // oversight: item "Performance before visual excess".
       itemBuilder: (context, index) {
-        return AnimatedBuilder(
-          animation: _pageController,
-          builder: (context, child) {
-            // Cross-fades the incoming/outgoing pages on top of the
-            // PageView's built-in slide, so a nav switch reads as settling
-            // into place (iOS/Samsung style) rather than a flat pan.
-            double page = index.toDouble();
-            if (_pageController.hasClients &&
-                _pageController.position.haveDimensions) {
-              page = _pageController.page ?? page;
-            }
-            final opacity = 1 - (page - index).abs().clamp(0.0, 1.0);
-            return Opacity(opacity: opacity, child: child);
-          },
-          // Opacity without a RepaintBoundary directly under it makes
-          // Flutter repaint the *entire* child subtree from scratch on
-          // every single animation frame — every blurred AppBar, every
-          // glass panel on the page — just to blend a changing alpha,
-          // instead of caching one rasterized layer and cheaply
-          // re-blending it. With this page now carrying more
-          // BackdropFilter-adjacent layers than the old flat glass did,
-          // that per-frame full repaint is exactly what a page switch
-          // feeling janky looks like. The boundary sits *inside* Opacity
-          // (not around the whole AnimatedBuilder, which PageView already
-          // adds automatically and which doesn't help here) so the page's
-          // pixels get cached once and the fade only ever costs a
-          // compositor-side alpha blend.
-          child: RepaintBoundary(child: widget.pageBuilder(context, index)),
-        );
+        return RepaintBoundary(child: widget.pageBuilder(context, index));
       },
     );
   }
