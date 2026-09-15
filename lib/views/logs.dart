@@ -140,18 +140,14 @@ class _LogsViewState extends ConsumerState<LogsView> {
               label: appLocalizations.nullTip(appLocalizations.logs),
             );
           }
-          final items = logs
-              .map<Widget>(
-                (log) => LogItem(
-                  key: Key(log.dateTime),
-                  log: log,
-                  onClick: (value) {
-                    context.commonScaffoldState?.addKeyword(value);
-                  },
-                ),
-              )
-              .separated(const Divider(height: 0))
-              .toList();
+          // Built on demand per index below (log rows on even indices,
+          // dividers on odd ones) instead of eagerly mapping every log line
+          // into a Widget up front: with FixedList(500) backing logsProvider
+          // and this rebuilding on every throttled log update (commonDuration
+          // = 300ms) while logs are streaming in, eagerly building could mean
+          // up to ~500 LogItems — each rendering a SelectableText — every
+          // 300ms regardless of how many rows are actually visible.
+          final itemCount = logs.length * 2 - 1;
           return Align(
             alignment: Alignment.topCenter,
             child: ScrollToEndBox(
@@ -171,9 +167,19 @@ class _LogsViewState extends ConsumerState<LogsView> {
                   shrinkWrap: true,
                   controller: _scrollController,
                   itemBuilder: (_, index) {
-                    return items[index];
+                    if (index.isOdd) {
+                      return const Divider(height: 0);
+                    }
+                    final log = logs[index ~/ 2];
+                    return LogItem(
+                      key: Key(log.dateTime),
+                      log: log,
+                      onClick: (value) {
+                        context.commonScaffoldState?.addKeyword(value);
+                      },
+                    );
                   },
-                  itemCount: items.length,
+                  itemCount: itemCount,
                 ),
               ),
             ),
