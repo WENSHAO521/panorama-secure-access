@@ -1,3 +1,93 @@
+## v3.3.24
+
+- Fix page-switch jank: cache pages as layers during transitions
+
+- All three of the app's page-transition paths animate Opacity/fade/
+
+- slide/scale directly around the incoming or outgoing page, with no
+
+- RepaintBoundary between the animation and the page content. Without
+
+- one, Flutter can't cache the page as a rasterized layer and cheaply
+
+- re-blend it each frame — it has to fully repaint the entire page,
+
+- including every BackdropFilter-blurred glass surface on it, on every
+
+- single animation frame of the transition. That's the textbook cause
+
+- of a page switch feeling janky, and it got more expensive as the
+
+- Liquid Glass upgrade gave more surfaces per page their own
+
+- illumination/specular/edge layers on top of the existing blur.
+
+- Added RepaintBoundary directly under the animating widget (not around
+
+- it — that's what PageView/Navigator already do automatically, and it
+
+- doesn't help) in all three paths:
+
+- - _HomePageView's Opacity cross-fade for bottom-tab switching
+
+-   (pages/home.dart)
+
+- - CommonRoute/CommonDesktopRoute's FadeTransition/SharedAxisTransition
+
+-   for BaseNavigator.push (common/navigator.dart)
+
+- - commonSharedXPageTransitions, the app-wide default
+
+-   MaterialPageRoute/MaterialPage transition set for every platform —
+
+-   a faithful copy of package:animations' own
+
+-   SharedAxisPageTransitionsBuilder with the same boundary added, since
+
+-   its buildTransitions can't otherwise be reached to inject one
+
+-   (common/navigator.dart)
+
+- Verified with `flutter analyze` (0 issues) and the full `flutter test`
+
+- suite (442/442 passing).
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Claude-Session: https://claude.ai/code/session_01PuHYzj7nWfTYG5mr9gQ47t
+
+- Skip desktop-only glass overhead on mobile to fix scroll jank
+
+- allowInteractiveSpecular mounted a MouseRegion/LayoutBuilder/
+
+- ValueListenableBuilder tracking chain on every non-repeated glass
+
+- surface (every dialog, popup, settings panel) regardless of platform,
+
+- and CommonCard's hover overlay (a Stack + AnimatedOpacity +
+
+- DecoratedBox with a gradient shape) was built and laid out for every
+
+- card in every proxy/provider list even though touch never sets
+
+- WidgetState.hovered. Neither is reachable without a mouse, so on
+
+- mobile both were pure widget/layout cost with no visual effect ever —
+
+- paid on every list item, on every screen, which is exactly where a
+
+- user would feel it as jank. Both now gate on system.isDesktop; desktop
+
+- hover/specular behavior is unchanged.
+
+- Verified with `flutter analyze` (0 issues) and the full `flutter test`
+
+- suite (442/442 passing).
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Claude-Session: https://claude.ai/code/session_01PuHYzj7nWfTYG5mr9gQ47t
+
 ## v3.3.23
 
 - Fix compile errors from the Liquid Glass engine rewrite
