@@ -677,6 +677,56 @@ abstract final class LiquidGlassPerformancePolicy {
   /// [GlassSurfaceType.crystal]'s doc.
   static bool allowMicroDetail(BuildContext context, GlassSurfaceType type) =>
       type == GlassSurfaceType.crystal && allowSpecular(context, type);
+
+  /// Whether [type] should drop its [BackdropFilter] blur entirely while
+  /// [GlassScrollPerformance] reports an active scroll gesture underneath
+  /// it. Only panel/floating: those are the tiers that realistically sit
+  /// *inside* a scrolling body (a settings page's `generateGlassSection`
+  /// groups, a dashboard's stat panels) and, unlike
+  /// [GlassSurfaceType.repeated], aren't blur-free by default — two or
+  /// three of them stacked in one `ListView` means two or three separate,
+  /// expensive backdrop re-samples every single scroll frame, which is a
+  /// well-known, serious source of scroll jank regardless of how cheap any
+  /// one blur pass is on its own. Chrome (pinned, not part of the
+  /// scrolling body), modal/crystal (routes/overlays, never a scroll
+  /// child) and repeated (never blurs anyway) are unaffected.
+  static bool allowBlurWhileScrolling(
+    BuildContext context,
+    GlassSurfaceType type,
+  ) {
+    if (type != GlassSurfaceType.panel && type != GlassSurfaceType.floating) {
+      return true;
+    }
+    return !GlassScrollPerformance.isScrolling(context);
+  }
+}
+
+/// Tracks "is some scrollable inside this subtree actively moving right
+/// now" (drag or fling, debounced past brief pauses — see
+/// `CommonScaffold`'s `_handleScrollNotification`, the one place that
+/// currently drives this) and exposes it to descendants via
+/// [InheritedNotifier] so [GlassSurface] can read it without every caller
+/// having to thread a flag through. Reading it (see [isScrolling]) makes
+/// the calling widget a dependent that rebuilds when scrolling starts or
+/// stops — twice per gesture, not once per frame, since the notifier's
+/// value only flips at those two moments.
+///
+/// Absence is meaningful, not an error: a [GlassSurface] with no
+/// [GlassScrollPerformance] ancestor (a dialog, a popup, anything outside
+/// a `CommonScaffold` body) simply always blurs, which is correct — this
+/// mechanism only exists to protect surfaces that can end up scrolling.
+class GlassScrollPerformance extends InheritedNotifier<ValueNotifier<bool>> {
+  const GlassScrollPerformance({
+    super.key,
+    required ValueNotifier<bool> isScrolling,
+    required super.child,
+  }) : super(notifier: isScrolling);
+
+  static bool isScrolling(BuildContext context) {
+    final scope = context
+        .dependOnInheritedWidgetOfExactType<GlassScrollPerformance>();
+    return scope?.notifier?.value ?? false;
+  }
 }
 
 /// A translucent, layered-optical-material surface that optionally blurs
@@ -827,10 +877,22 @@ class GlassSurface extends StatelessWidget {
       refraction * 0.15,
     )!;
     final baseOpacity = opacity ?? GlassTokens.opacityFor(type, brightness);
+    // A blurred surface that just dropped its blur mid-scroll (see
+    // allowBlurWhileScrolling below) still needs to read as "glass, just
+    // momentarily still" rather than a flatter, more see-through panel —
+    // boosted the same way high contrast boosts opacity, for the same
+    // reason: replacing an optical effect with a flat tint needs a touch
+    // more opacity to not look like a different, cheaper material.
+    final scrollBlurred = LiquidGlassPerformancePolicy.allowBlurWhileScrolling(
+      context,
+      type,
+    );
     final resolvedOpacity = highContrast
         ? GlassTokens.boostOpacityForHighContrast(baseOpacity)
+        : !scrollBlurred
+        ? GlassTokens.boostOpacityForHighContrast(baseOpacity)
         : baseOpacity;
-    final resolvedBlur = (type == GlassSurfaceType.repeated)
+    final resolvedBlur = (type == GlassSurfaceType.repeated || !scrollBlurred)
         ? 0.0
         : (blurSigma ?? GlassTokens.blurFor(type));
     final resolvedBorderSide =

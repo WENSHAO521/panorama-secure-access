@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
@@ -54,6 +56,17 @@ class CommonScaffoldState extends State<CommonScaffold> {
   final ValueNotifier<bool> _isFabExtendedNotifier = ValueNotifier(true);
   final ValueNotifier<List<String>> _keywordsNotifier = ValueNotifier([]);
   final _textController = TextEditingController();
+
+  // Feeds GlassScrollPerformance (widgets/glass.dart): while true, any
+  // panel/floating-tier GlassSurface inside `body` drops its BackdropFilter
+  // blur rather than re-sampling its backdrop every scroll frame — a page
+  // like Tools, whose settings groups each carry their own blur, would
+  // otherwise pay for several concurrent blur passes throughout the whole
+  // scroll gesture. _scrollSettleTimer debounces the flip back to false so
+  // a fling's natural pauses between ScrollUpdateNotifications don't
+  // flicker blur on and off before the scroll actually stops.
+  final ValueNotifier<bool> _isScrollingNotifier = ValueNotifier(false);
+  Timer? _scrollSettleTimer;
 
   bool get _isSearch {
     return _appBarState.value.searchState?.query != null;
@@ -161,7 +174,34 @@ class CommonScaffoldState extends State<CommonScaffold> {
     _textController.dispose();
     _isFabExtendedNotifier.dispose();
     _loadingNotifier.dispose();
+    _scrollSettleTimer?.cancel();
+    _isScrollingNotifier.dispose();
     super.dispose();
+  }
+
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (notification is UserScrollNotification) {
+      if (notification.direction == ScrollDirection.reverse) {
+        _isFabExtendedNotifier.value = false;
+      } else if (notification.direction == ScrollDirection.forward) {
+        _isFabExtendedNotifier.value = true;
+      }
+    }
+    if (notification is ScrollStartNotification ||
+        notification is ScrollUpdateNotification) {
+      _scrollSettleTimer?.cancel();
+      if (!_isScrollingNotifier.value) {
+        _isScrollingNotifier.value = true;
+      }
+    } else if (notification is ScrollEndNotification) {
+      _scrollSettleTimer?.cancel();
+      _scrollSettleTimer = Timer(const Duration(milliseconds: 150), () {
+        if (mounted) {
+          _isScrollingNotifier.value = false;
+        }
+      });
+    }
+    return true;
   }
 
   void addKeyword(String keyword) {
@@ -363,16 +403,12 @@ class CommonScaffoldState extends State<CommonScaffold> {
     );
     return Scaffold(
       appBar: _buildAppBar(backActionProvider?.backAction),
-      body: NotificationListener<UserScrollNotification>(
-        child: body,
-        onNotification: (notification) {
-          if (notification.direction == ScrollDirection.reverse) {
-            _isFabExtendedNotifier.value = false;
-          } else if (notification.direction == ScrollDirection.forward) {
-            _isFabExtendedNotifier.value = true;
-          }
-          return true;
-        },
+      body: NotificationListener<ScrollNotification>(
+        onNotification: _handleScrollNotification,
+        child: GlassScrollPerformance(
+          isScrolling: _isScrollingNotifier,
+          child: body,
+        ),
       ),
       resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
       backgroundColor: widget.backgroundColor,
