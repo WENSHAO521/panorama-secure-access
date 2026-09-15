@@ -660,6 +660,14 @@ abstract final class LiquidGlassPerformancePolicy {
     GlassSurfaceType type,
   ) {
     if (!allowSpecular(context, type)) return false;
+    // Desktop only: touch platforms never emit hover, so the
+    // MouseRegion/LayoutBuilder/ValueListenableBuilder tracking apparatus
+    // this gates would only ever sit idle there — real widget/layout cost
+    // for zero visual benefit, paid on every non-repeated glass surface
+    // (every dialog, every settings panel, every popup) on every mobile
+    // screen. A static specular (still rendered — see allowSpecular) costs
+    // nothing extra to keep.
+    if (!system.isDesktop) return false;
     final reducedMotion =
         MediaQuery.maybeOf(context)?.disableAnimations ?? false;
     return !reducedMotion;

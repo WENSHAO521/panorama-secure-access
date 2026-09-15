@@ -32,10 +32,47 @@ class BaseNavigator {
   // }
 }
 
-const commonSharedXPageTransitions = SharedAxisPageTransitionsBuilder(
-  transitionType: SharedAxisTransitionType.horizontal,
-  fillColor: Colors.transparent,
-);
+/// This is the app-wide default `MaterialPageRoute`/`MaterialPage`
+/// transition (set for every supported platform in
+/// `Application._pageTransitionsTheme`), so it fires on the large majority
+/// of in-app navigation — desktop's per-tab nested Navigator, Settings
+/// sub-screens, anywhere a plain `Navigator.push` happens. A faithful
+/// copy of `package:animations`' own [SharedAxisPageTransitionsBuilder]
+/// (its `buildTransitions` is exactly this one `SharedAxisTransition`
+/// call), except the incoming/outgoing page is wrapped in a
+/// [RepaintBoundary] first: [SharedAxisTransition] fades/slides/scales its
+/// child every animation frame, and without a boundary sitting directly
+/// under it, that means fully repainting the whole page — including every
+/// BackdropFilter-blurred glass surface on it — from scratch each frame
+/// instead of caching one rasterized layer and cheaply re-blending it.
+/// Same reasoning as the RepaintBoundary added in `CommonRoute`/
+/// `CommonDesktopRoute` below and in `_HomePageView`'s tab cross-fade
+/// (pages/home.dart) — this is the third and most-travelled of the app's
+/// three page-transition paths.
+class _RepaintBoundarySharedAxisPageTransitionsBuilder
+    extends PageTransitionsBuilder {
+  const _RepaintBoundarySharedAxisPageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T>? route,
+    BuildContext? context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    return SharedAxisTransition(
+      animation: animation,
+      secondaryAnimation: secondaryAnimation,
+      transitionType: SharedAxisTransitionType.horizontal,
+      fillColor: Colors.transparent,
+      child: RepaintBoundary(child: child),
+    );
+  }
+}
+
+const commonSharedXPageTransitions =
+    _RepaintBoundarySharedAxisPageTransitionsBuilder();
 
 /// `prefers-reduced-motion` support for the app's own custom route/popup
 /// transitions, which — unlike Flutter's built-in widgets — don't consult
@@ -50,7 +87,8 @@ const commonSharedXPageTransitions = SharedAxisPageTransitionsBuilder(
 /// the rest.
 Duration reducedMotionDuration(Duration duration) {
   final context = globalState.navigatorKey.currentContext;
-  if (context != null && (MediaQuery.maybeOf(context)?.disableAnimations ?? false)) {
+  if (context != null &&
+      (MediaQuery.maybeOf(context)?.disableAnimations ?? false)) {
     return Duration.zero;
   }
   return duration;
@@ -96,7 +134,15 @@ class CommonDesktopRoute<T> extends PageRoute<T> {
       child: Stack(
         children: [
           const Positioned.fill(child: AmbientBackground()),
-          FadeTransition(opacity: animation, child: builder(context)),
+          // RepaintBoundary directly under FadeTransition (not around it):
+          // without it, every glass-blurred surface on the incoming page
+          // gets fully repainted on every fade frame instead of being
+          // cached as one layer and cheaply re-blended — see the same fix
+          // in _HomePageView's tab cross-fade (pages/home.dart).
+          FadeTransition(
+            opacity: animation,
+            child: RepaintBoundary(child: builder(context)),
+          ),
         ],
       ),
     );
@@ -155,12 +201,19 @@ class CommonRoute<T> extends PageRoute<T> {
       child: Stack(
         children: [
           const Positioned.fill(child: AmbientBackground()),
+          // RepaintBoundary directly under the transition (not around it),
+          // same reasoning as CommonDesktopRoute above: SharedAxisTransition
+          // fades/slides/scales its child every frame, and without a
+          // boundary right there, that means fully repainting the whole
+          // incoming glass-heavy page each frame instead of blending one
+          // cached layer — this is the mobile push-navigation path, i.e.
+          // "opening a sub-page", not just the bottom-tab switch.
           SharedAxisTransition(
             animation: animation,
             secondaryAnimation: secondaryAnimation,
             transitionType: SharedAxisTransitionType.horizontal,
             fillColor: Colors.transparent,
-            child: builder(context),
+            child: RepaintBoundary(child: builder(context)),
           ),
         ],
       ),

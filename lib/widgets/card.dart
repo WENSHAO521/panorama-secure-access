@@ -406,6 +406,23 @@ class _LiquidCardInteractionState extends State<_LiquidCardInteraction> {
     final reducedMotion =
         MediaQuery.maybeOf(context)?.disableAnimations ?? false;
     final isPressed = !reducedMotion && states.contains(WidgetState.pressed);
+    // Press-compression applies on every platform (mobile included — see
+    // spec item 10), but the hover overlay below is desktop-only weight:
+    // touch never sets WidgetState.hovered, so on mobile that Stack +
+    // AnimatedOpacity + DecoratedBox(gradient) was being built and laid
+    // out — never painted, but never free either — for every single card
+    // in every proxy/provider list on every screen. Skipping construction
+    // entirely there (not just animating it to invisible) is what actually
+    // recovers that cost, since Flutter still has to build/layout a widget
+    // subtree even at opacity 0.
+    if (!system.isDesktop) {
+      return AnimatedScale(
+        scale: isPressed ? GlassTokens.pressedScale : 1.0,
+        duration: GlassTokens.pressDuration,
+        curve: GlassTokens.materialTransitionCurve,
+        child: widget.child,
+      );
+    }
     final isHovered =
         !reducedMotion &&
         (states.contains(WidgetState.hovered) ||
