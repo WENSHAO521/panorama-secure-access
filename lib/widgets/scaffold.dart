@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
@@ -289,28 +287,9 @@ class CommonScaffoldState extends State<CommonScaffold> {
                       surfaceTintColor: Colors.transparent,
                       elevation: 0,
                       scrolledUnderElevation: 0,
-                      flexibleSpace: ClipRect(
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(
-                            sigmaX: GlassTokens.blurChrome,
-                            sigmaY: GlassTokens.blurChrome,
-                          ),
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color:
-                                  GlassTokens.tint(
-                                    context.colorScheme.surface,
-                                    context.colorScheme,
-                                    GlassSurfaceType.chrome,
-                                  ).withValues(
-                                    alpha: GlassTokens.opacityFor(
-                                      GlassSurfaceType.chrome,
-                                      context.colorScheme.brightness,
-                                    ),
-                                  ),
-                            ),
-                          ),
-                        ),
+                      flexibleSpace: LiquidGlassChrome(
+                        color: context.colorScheme.surface,
+                        edge: LiquidGlassChromeEdge.bottom,
                       ),
                       leading: _buildLeading(backAction),
                       title: _buildTitle(state.searchState),
