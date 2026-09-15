@@ -1730,3 +1730,92 @@ class _AmbientField extends StatelessWidget {
     );
   }
 }
+
+/// Pre-compiles the specific shader/paint combinations every Liquid Glass
+/// surface uses — backdrop blur, linear/radial gradient fills, a
+/// gradient-shaded path stroke, all inside a clipped rounded rect — during
+/// app startup instead of the first time each combination actually appears
+/// on screen mid-interaction, which is most visibly the first visit to a
+/// tab or page holding a [GlassSurface] the user hasn't seen yet in this
+/// session. Skia — still the fallback renderer on Android devices/drivers
+/// that don't meet Impeller's Vulkan requirements, even though Impeller
+/// (which precompiles its own pipelines ahead of time and doesn't need
+/// this) is the modern default — compiles a shader program the first time
+/// it sees a new draw-operation shape, and that compilation can cost
+/// 100-200ms; see [ShaderWarmUp]'s own doc. Paying that once at launch,
+/// where a brief extra startup moment is expected and unremarkable, beats
+/// paying it mid-animation on a tab switch, which is exactly what reads as
+/// jank.
+///
+/// Registered via `PaintingBinding.shaderWarmUp` in `main()` — it only has
+/// an effect when set *before* `WidgetsFlutterBinding.ensureInitialized()`,
+/// since [PaintingBinding.initInstances] is what runs it. A no-op cost on
+/// Impeller (which doesn't consult this hook the same way and precompiles
+/// regardless), so this is safe to always register rather than trying to
+/// detect which renderer is active.
+class LiquidGlassShaderWarmUp extends ShaderWarmUp {
+  const LiquidGlassShaderWarmUp();
+
+  @override
+  Size get size => const Size(200, 200);
+
+  @override
+  Future<void> warmUpOnCanvas(Canvas canvas) async {
+    final rect = Offset.zero & size;
+    final rrect = RRect.fromRectAndRadius(rect, const Radius.circular(16));
+    final edgePath = Path()..addRRect(rrect);
+
+    // The backdrop blur every non-repeated GlassSurface and every
+    // LiquidGlassChrome bar applies — a saveLayer with a blur ImageFilter,
+    // the same operation RenderBackdropFilter performs internally.
+    canvas.saveLayer(rect, Paint());
+    canvas.clipRRect(rrect);
+    canvas.saveLayer(
+      rect,
+      Paint()..imageFilter = ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+    );
+    canvas.restore();
+
+    // The tinted body fill.
+    canvas.drawRRect(rrect, Paint()..color = const Color(0x33FFFFFF));
+
+    // Inner illumination (_LiquidInnerIllumination): a linear gradient fill.
+    canvas.drawRect(
+      rect,
+      Paint()
+        ..shader = const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0x33FFFFFF), Color(0x00FFFFFF)],
+        ).createShader(rect),
+    );
+
+    // Specular highlight + micro-lensing (_LiquidSpecularHighlight,
+    // _LiquidMicroLensing): a radial gradient fill.
+    canvas.drawRect(
+      rect,
+      Paint()
+        ..shader = const RadialGradient(
+          colors: [Color(0x33FFFFFF), Color(0x00FFFFFF)],
+        ).createShader(rect),
+    );
+
+    // Edge refraction (_LiquidEdgePainter): a gradient-shaded stroke along
+    // a rounded path — the operation most likely to be genuinely novel to
+    // Skia, since a gradient *stroke* (rather than fill) shader is far less
+    // common in typical Material UIs than the fills above.
+    canvas.drawPath(
+      edgePath,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1
+        ..shader = const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFFFFFFF), Color(0x00FFFFFF)],
+        ).createShader(rect),
+    );
+
+    canvas.restore();
+  }
+}
