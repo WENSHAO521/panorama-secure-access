@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// Panorama Liquid Glass Material System.
@@ -175,6 +176,31 @@ abstract final class GlassTokens {
   static const double radiusSidebar = 20;
   static const double radiusCommandPalette = 24;
 
+  static double blurFor(GlassSurfaceType type) => switch (type) {
+    GlassSurfaceType.chrome => blurChrome,
+    GlassSurfaceType.panel => blurPanel,
+    GlassSurfaceType.modal => blurModal,
+    GlassSurfaceType.floating => blurFloating,
+    GlassSurfaceType.repeated => blurRepeated,
+    GlassSurfaceType.crystal => blurCrystal,
+  };
+
+  static double opacityFor(GlassSurfaceType type, Brightness brightness) {
+    final isDark = brightness == Brightness.dark;
+    return switch (type) {
+      GlassSurfaceType.chrome =>
+        isDark ? darkChromeOpacity : lightChromeOpacity,
+      GlassSurfaceType.panel => isDark ? darkPanelOpacity : lightPanelOpacity,
+      GlassSurfaceType.modal => isDark ? darkModalOpacity : lightModalOpacity,
+      GlassSurfaceType.floating =>
+        isDark ? darkFloatingOpacity : lightFloatingOpacity,
+      GlassSurfaceType.repeated =>
+        isDark ? darkRepeatedOpacity : lightRepeatedOpacity,
+      GlassSurfaceType.crystal =>
+        isDark ? darkCrystalOpacity : lightCrystalOpacity,
+    };
+  }
+
   // ---------------------------------------------------------------------
   // Liquid Glass optical layer tokens — refraction, specular, edge, depth,
   // interaction, motion. Every value here is per-[GlassSurfaceType]
@@ -272,10 +298,8 @@ abstract final class GlassTokens {
     return switch (type) {
       GlassSurfaceType.chrome =>
         isDark ? darkRimLightChrome : lightRimLightChrome,
-      GlassSurfaceType.panel =>
-        isDark ? darkRimLightPanel : lightRimLightPanel,
-      GlassSurfaceType.modal =>
-        isDark ? darkRimLightModal : lightRimLightModal,
+      GlassSurfaceType.panel => isDark ? darkRimLightPanel : lightRimLightPanel,
+      GlassSurfaceType.modal => isDark ? darkRimLightModal : lightRimLightModal,
       GlassSurfaceType.floating =>
         isDark ? darkRimLightFloating : lightRimLightFloating,
       GlassSurfaceType.repeated => 0,
@@ -303,10 +327,8 @@ abstract final class GlassTokens {
     return switch (type) {
       GlassSurfaceType.chrome =>
         isDark ? darkSpecularChrome : lightSpecularChrome,
-      GlassSurfaceType.panel =>
-        isDark ? darkSpecularPanel : lightSpecularPanel,
-      GlassSurfaceType.modal =>
-        isDark ? darkSpecularModal : lightSpecularModal,
+      GlassSurfaceType.panel => isDark ? darkSpecularPanel : lightSpecularPanel,
+      GlassSurfaceType.modal => isDark ? darkSpecularModal : lightSpecularModal,
       GlassSurfaceType.floating =>
         isDark ? darkSpecularFloating : lightSpecularFloating,
       GlassSurfaceType.repeated => 0,
@@ -446,22 +468,21 @@ abstract final class GlassTokens {
   static const Duration modalMotionDuration = Duration(milliseconds: 240);
   static const Curve materialTransitionCurve = Curves.easeOutCubic;
 
-  static Duration animationDurationFor(GlassSurfaceType type) =>
-      switch (type) {
-        GlassSurfaceType.modal => modalMotionDuration,
-        GlassSurfaceType.crystal => const Duration(milliseconds: 220),
-        GlassSurfaceType.floating => const Duration(milliseconds: 200),
-        GlassSurfaceType.repeated => const Duration(milliseconds: 160),
-        _ => panelMotionDuration,
-      };
+  static Duration animationDurationFor(GlassSurfaceType type) => switch (type) {
+    GlassSurfaceType.modal => modalMotionDuration,
+    GlassSurfaceType.crystal => const Duration(milliseconds: 220),
+    GlassSurfaceType.floating => const Duration(milliseconds: 200),
+    GlassSurfaceType.repeated => const Duration(milliseconds: 160),
+    _ => panelMotionDuration,
+  };
 
   // ---------------------------------------------------------------------
   // Border / divider / accessibility / shadow (unchanged surface, some
   // now expressed in terms of the tokens above).
   // ---------------------------------------------------------------------
 
-  static Color edgeHighlightColorFor(Brightness brightness) => Colors.white
-      .withValues(
+  static Color edgeHighlightColorFor(Brightness brightness) =>
+      Colors.white.withValues(
         alpha: brightness == Brightness.dark
             ? darkEdgeRefractionCrystal
             : lightEdgeRefractionCrystal,
@@ -478,9 +499,8 @@ abstract final class GlassTokens {
   static const double lightNavIndicatorOpacity = 0.14;
   static const double darkNavIndicatorOpacity = 0.20;
 
-  static Color navIndicatorColorFor(ColorScheme colorScheme) => colorScheme
-      .primary
-      .withValues(
+  static Color navIndicatorColorFor(ColorScheme colorScheme) =>
+      colorScheme.primary.withValues(
         alpha: colorScheme.brightness == Brightness.dark
             ? darkNavIndicatorOpacity
             : lightNavIndicatorOpacity,
@@ -510,8 +530,7 @@ abstract final class GlassTokens {
         isDark ? darkTintFloating : lightTintFloating,
       GlassSurfaceType.repeated =>
         isDark ? darkTintRepeated : lightTintRepeated,
-      GlassSurfaceType.crystal =>
-        isDark ? darkTintCrystal : lightTintCrystal,
+      GlassSurfaceType.crystal => isDark ? darkTintCrystal : lightTintCrystal,
     };
   }
 
@@ -536,7 +555,11 @@ abstract final class GlassTokens {
   /// (which every surface must carry) and the much smaller environmental
   /// bleed (which only some tiers carry, at very low strength) can't be
   /// conflated into one magic-number blend.
-  static Color environmentTint(Color tinted, ColorScheme colorScheme, GlassSurfaceType type) {
+  static Color environmentTint(
+    Color tinted,
+    ColorScheme colorScheme,
+    GlassSurfaceType type,
+  ) {
     final strength = environmentTintStrengthFor(type);
     if (strength <= 0) return tinted;
     final environmentColor = Color.lerp(
@@ -564,7 +587,10 @@ abstract final class GlassTokens {
   // these explicitly via the `boxShadow` parameter. Built from
   // [materialDepthFor] so a tier's shadow strength tracks its declared
   // depth instead of being calibrated a second time by hand.
-  static List<BoxShadow> _shadowFor(GlassSurfaceType type, Brightness brightness) {
+  static List<BoxShadow> _shadowFor(
+    GlassSurfaceType type,
+    Brightness brightness,
+  ) {
     final depth = materialDepthFor(type);
     final isDark = brightness == Brightness.dark;
     return [
@@ -634,7 +660,8 @@ abstract final class LiquidGlassPerformancePolicy {
     GlassSurfaceType type,
   ) {
     if (!allowSpecular(context, type)) return false;
-    final reducedMotion = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+    final reducedMotion =
+        MediaQuery.maybeOf(context)?.disableAnimations ?? false;
     return !reducedMotion;
   }
 
@@ -808,10 +835,8 @@ class GlassSurface extends StatelessWidget {
       context,
       type,
     );
-    final allowInteractive = LiquidGlassPerformancePolicy.allowInteractiveSpecular(
-      context,
-      type,
-    );
+    final allowInteractive =
+        LiquidGlassPerformancePolicy.allowInteractiveSpecular(context, type);
     final allowMicroDetail = LiquidGlassPerformancePolicy.allowMicroDetail(
       context,
       type,
@@ -866,7 +891,10 @@ class GlassSurface extends StatelessWidget {
               child: RepaintBoundary(
                 child: CustomPaint(
                   painter: _LiquidNoisePainter(
-                    opacity: GlassTokens.surfaceNoiseOpacityFor(type, brightness),
+                    opacity: GlassTokens.surfaceNoiseOpacityFor(
+                      type,
+                      brightness,
+                    ),
                     color: brightness == Brightness.dark
                         ? Colors.white
                         : Colors.black,
@@ -879,7 +907,10 @@ class GlassSurface extends StatelessWidget {
       );
 
       final clipped = resolvedBlur <= 0
-          ? ClipPath(clipper: ShapeBorderClipper(shape: shape), child: surfaceStack)
+          ? ClipPath(
+              clipper: ShapeBorderClipper(shape: shape),
+              child: surfaceStack,
+            )
           : ClipPath(
               clipper: ShapeBorderClipper(shape: shape),
               child: BackdropFilter(
@@ -936,7 +967,9 @@ class GlassSurface extends StatelessWidget {
     // setState) means only the specular layer's own ValueListenableBuilder
     // — already isolated behind its own RepaintBoundary — repaints on
     // pointer move, not this wrapper or the content beside it.
-    return _LiquidPointerTracker(builder: (context, pointer) => composeSurface(pointer));
+    return _LiquidPointerTracker(
+      builder: (context, pointer) => composeSurface(pointer),
+    );
   }
 }
 
@@ -1103,7 +1136,11 @@ class _LiquidSpecularHighlight extends StatelessWidget {
             final strength = local == null
                 ? 0.0
                 : GlassTokens.interactionLightStrengthFor(type);
-            return _buildGradient(_focusFor(local, size), strength, baseOpacity);
+            return _buildGradient(
+              _focusFor(local, size),
+              strength,
+              baseOpacity,
+            );
           },
         );
       },
@@ -1132,7 +1169,10 @@ class _LiquidMicroLensing extends StatelessWidget {
           gradient: RadialGradient(
             center: const Alignment(0.15, -0.35),
             radius: 0.55,
-            colors: [color.withValues(alpha: opacity), color.withValues(alpha: 0)],
+            colors: [
+              color.withValues(alpha: opacity),
+              color.withValues(alpha: 0),
+            ],
           ),
         ),
       ),
@@ -1203,7 +1243,7 @@ class _LiquidEdgePainter extends CustomPainter {
     if (highlightIntensity <= 0 && rimIntensity <= 0) return;
     final rect = Offset.zero & size;
     final outerPath = shape.getOuterPath(rect);
-    final highlightColor = Colors.white;
+    const highlightColor = Colors.white;
     final rimColor = brightness == Brightness.dark
         ? Colors.black
         : Colors.black.withValues(alpha: 0.7);
@@ -1212,16 +1252,15 @@ class _LiquidEdgePainter extends CustomPainter {
       final rimPaint = Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1
-        ..shader =
-            LinearGradient(
-              begin: Alignment.bottomRight,
-              end: Alignment.topLeft,
-              colors: [
-                rimColor.withValues(alpha: rimIntensity),
-                rimColor.withValues(alpha: 0),
-              ],
-              stops: const [0.0, 0.65],
-            ).createShader(rect);
+        ..shader = LinearGradient(
+          begin: Alignment.bottomRight,
+          end: Alignment.topLeft,
+          colors: [
+            rimColor.withValues(alpha: rimIntensity),
+            rimColor.withValues(alpha: 0),
+          ],
+          stops: const [0.0, 0.65],
+        ).createShader(rect);
       canvas.drawPath(outerPath, rimPaint);
     }
 
@@ -1229,16 +1268,15 @@ class _LiquidEdgePainter extends CustomPainter {
       final highlightPaint = Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1
-        ..shader =
-            LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                highlightColor.withValues(alpha: highlightIntensity),
-                highlightColor.withValues(alpha: 0),
-              ],
-              stops: const [0.0, 0.7],
-            ).createShader(rect);
+        ..shader = LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            highlightColor.withValues(alpha: highlightIntensity),
+            highlightColor.withValues(alpha: 0),
+          ],
+          stops: const [0.0, 0.7],
+        ).createShader(rect);
       canvas.drawPath(outerPath, highlightPaint);
     }
 
@@ -1251,15 +1289,14 @@ class _LiquidEdgePainter extends CustomPainter {
     final innerPaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
-      ..shader =
-          LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.center,
-            colors: [
-              highlightColor.withValues(alpha: highlightIntensity * 0.45),
-              highlightColor.withValues(alpha: 0),
-            ],
-          ).createShader(innerRect);
+      ..shader = LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.center,
+        colors: [
+          highlightColor.withValues(alpha: highlightIntensity * 0.45),
+          highlightColor.withValues(alpha: 0),
+        ],
+      ).createShader(innerRect);
     canvas.drawPath(innerPath, innerPaint);
   }
 
@@ -1325,7 +1362,9 @@ class LiquidGlassChrome extends StatelessWidget {
         : baseOpacity;
     final opticalIntensity = highContrast ? 0.5 : 1.0;
     final fill = DecoratedBox(
-      decoration: BoxDecoration(color: tinted.withValues(alpha: resolvedOpacity)),
+      decoration: BoxDecoration(
+        color: tinted.withValues(alpha: resolvedOpacity),
+      ),
     );
     final illumination = _LiquidInnerIllumination(
       type: GlassSurfaceType.chrome,
@@ -1392,7 +1431,8 @@ class _ChromeEdgeRim extends StatelessWidget {
       alpha: (isDark ? 0.22 : 0.08) * intensity,
     );
     final isHorizontal =
-        edge == LiquidGlassChromeEdge.top || edge == LiquidGlassChromeEdge.bottom;
+        edge == LiquidGlassChromeEdge.top ||
+        edge == LiquidGlassChromeEdge.bottom;
     final gradient = LinearGradient(
       begin: isHorizontal ? Alignment.centerLeft : Alignment.topCenter,
       end: isHorizontal ? Alignment.centerRight : Alignment.bottomCenter,
@@ -1593,7 +1633,11 @@ class _AmbientField extends StatelessWidget {
   final double opacity;
   final double size;
 
-  const _AmbientField({required this.color, required this.opacity, this.size = 380});
+  const _AmbientField({
+    required this.color,
+    required this.opacity,
+    this.size = 380,
+  });
 
   @override
   Widget build(BuildContext context) {

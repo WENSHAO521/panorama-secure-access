@@ -373,8 +373,7 @@ class _LiquidCardInteraction extends StatefulWidget {
   });
 
   @override
-  State<_LiquidCardInteraction> createState() =>
-      _LiquidCardInteractionState();
+  State<_LiquidCardInteraction> createState() => _LiquidCardInteractionState();
 }
 
 class _LiquidCardInteractionState extends State<_LiquidCardInteraction> {
@@ -404,7 +403,8 @@ class _LiquidCardInteractionState extends State<_LiquidCardInteraction> {
   @override
   Widget build(BuildContext context) {
     final states = widget.statesController.value;
-    final reducedMotion = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+    final reducedMotion =
+        MediaQuery.maybeOf(context)?.disableAnimations ?? false;
     final isPressed = !reducedMotion && states.contains(WidgetState.pressed);
     final isHovered =
         !reducedMotion &&
