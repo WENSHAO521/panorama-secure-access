@@ -625,6 +625,32 @@ abstract final class GlassTokens {
       (opacity + (1 - opacity) * 0.6).clamp(0.0, 1.0);
 }
 
+/// Marks "a real, blurred glass surface already sits above this point in
+/// the tree" — Apple's Liquid Glass HIG is explicit that two translucent
+/// panes must never stack (a popover opened from inside a modal sheet,
+/// say): the top one would sample an already-blurred backdrop and blur it
+/// a second time, softening it past the point either surface was actually
+/// tuned for. [GlassSurface] and [LiquidGlassChrome] both check this on
+/// build and fall back to a flat tint instead of their own [BackdropFilter]
+/// when it reports true, then re-publish `blurred: true` for whatever they
+/// render underneath — so the flattening holds no matter how deep the
+/// nesting goes, without every call site having to know its own ancestry.
+class _GlassDepthScope extends InheritedWidget {
+  const _GlassDepthScope({required this.blurred, required super.child});
+
+  final bool blurred;
+
+  static bool hasBlurredAncestor(BuildContext context) {
+    final element = context
+        .getElementForInheritedWidgetOfExactType<_GlassDepthScope>();
+    return (element?.widget as _GlassDepthScope?)?.blurred ?? false;
+  }
+
+  @override
+  bool updateShouldNotify(_GlassDepthScope oldWidget) =>
+      blurred != oldWidget.blurred;
+}
+
 /// Centralises the "should this surface actually run its dynamic/expensive
 /// optical layers right now" decision, so [GlassSurface] and every other
 /// widget in this file ask one place instead of re-deriving the same
@@ -809,6 +835,12 @@ class GlassSurface extends StatelessWidget {
     final brightness = colorScheme.brightness;
     final mediaQuery = MediaQuery.maybeOf(context);
     final highContrast = mediaQuery?.highContrast ?? false;
+    final hasGlassAncestor = _GlassDepthScope.hasBlurredAncestor(context);
+    // A blurred ancestor means this surface would otherwise be a second
+    // BackdropFilter stacked on an already-blurred backdrop — see
+    // _GlassDepthScope's doc. Treat it like the `repeated` tier's own
+    // no-blur case rather than skip it silently.
+    final forcedFlat = hasGlassAncestor && type != GlassSurfaceType.repeated;
 
     final baseColor = color ?? colorScheme.surfaceContainer;
     // refractionStrengthFor: a small, tier-scaled lift toward a neutral
@@ -827,10 +859,15 @@ class GlassSurface extends StatelessWidget {
       refraction * 0.15,
     )!;
     final baseOpacity = opacity ?? GlassTokens.opacityFor(type, brightness);
-    final resolvedOpacity = highContrast
+    // Reuses the high-contrast curve for the same reason it exists there:
+    // pull opacity most of the way to opaque to compensate for the body
+    // losing the legibility a real blur would have given it, whether
+    // that's because the background is busy (high contrast) or because
+    // blur itself got skipped to avoid double-blurring (forcedFlat).
+    final resolvedOpacity = (highContrast || forcedFlat)
         ? GlassTokens.boostOpacityForHighContrast(baseOpacity)
         : baseOpacity;
-    final resolvedBlur = (type == GlassSurfaceType.repeated)
+    final resolvedBlur = (type == GlassSurfaceType.repeated || forcedFlat)
         ? 0.0
         : (blurSigma ?? GlassTokens.blurFor(type));
     final resolvedBorderSide =
@@ -960,9 +997,6 @@ class GlassSurface extends StatelessWidget {
       );
     }
 
-    if (!allowInteractive) {
-      return composeSurface(null);
-    }
     // The pointer tracker wraps the *entire* composed surface (content
     // included), not just the specular layer, and on purpose: Stack hit
     // testing stops at the first child that reports a hit (front to back),
@@ -975,8 +1009,18 @@ class GlassSurface extends StatelessWidget {
     // setState) means only the specular layer's own ValueListenableBuilder
     // — already isolated behind its own RepaintBoundary — repaints on
     // pointer move, not this wrapper or the content beside it.
-    return _LiquidPointerTracker(
-      builder: (context, pointer) => composeSurface(pointer),
+    final composed = allowInteractive
+        ? _LiquidPointerTracker(
+            builder: (context, pointer) => composeSurface(pointer),
+          )
+        : composeSurface(null);
+    // Re-publish for whatever this surface's own child tree builds below
+    // it (see _GlassDepthScope) — true once either this surface or an
+    // ancestor actually blurred, so a real GlassSurface/LiquidGlassChrome
+    // nested arbitrarily deep inside this one's `child` still flattens.
+    return _GlassDepthScope(
+      blurred: hasGlassAncestor || resolvedBlur > 0,
+      child: composed,
     );
   }
 }
@@ -1355,6 +1399,10 @@ class LiquidGlassChrome extends StatelessWidget {
     final colorScheme = context.colorScheme;
     final brightness = colorScheme.brightness;
     final highContrast = MediaQuery.maybeOf(context)?.highContrast ?? false;
+    // See _GlassDepthScope: a chrome bar built inside an already-blurred
+    // ancestor (a modal's flexibleSpace, say) skips its own BackdropFilter
+    // rather than double-blur that ancestor's backdrop.
+    final hasGlassAncestor = _GlassDepthScope.hasBlurredAncestor(context);
     final baseColor = color ?? colorScheme.surfaceContainer;
     final tinted = GlassTokens.environmentTint(
       GlassTokens.tint(baseColor, colorScheme, GlassSurfaceType.chrome),
@@ -1365,7 +1413,7 @@ class LiquidGlassChrome extends StatelessWidget {
       GlassSurfaceType.chrome,
       brightness,
     );
-    final resolvedOpacity = highContrast
+    final resolvedOpacity = (highContrast || hasGlassAncestor)
         ? GlassTokens.boostOpacityForHighContrast(baseOpacity)
         : baseOpacity;
     final opticalIntensity = highContrast ? 0.5 : 1.0;
@@ -1405,14 +1453,22 @@ class LiquidGlassChrome extends StatelessWidget {
               child!,
             ],
           );
-    return ClipRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: GlassTokens.blurChrome,
-          sigmaY: GlassTokens.blurChrome,
-        ),
-        child: stack,
-      ),
+    final content = hasGlassAncestor
+        ? stack
+        : BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: GlassTokens.blurChrome,
+              sigmaY: GlassTokens.blurChrome,
+            ),
+            child: stack,
+          );
+    // A chrome bar always reads as "inside glass" for whatever it hosts —
+    // its own actions, a search field, a popup menu anchored to it — so
+    // this publishes true unconditionally, whether the blur above is the
+    // real one or inherited from further up (see _GlassDepthScope).
+    return _GlassDepthScope(
+      blurred: true,
+      child: ClipRect(child: content),
     );
   }
 }

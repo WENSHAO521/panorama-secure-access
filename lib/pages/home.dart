@@ -133,11 +133,14 @@ class _HomePageView extends ConsumerStatefulWidget {
   ConsumerState createState() => _HomePageViewState();
 }
 
-// Mirrors the curve CommonPageTransition uses for the app's iOS-style push
-// routes (see lib/common/navigator.dart), so the main navigation switch
-// reads as the same "settle in place" motion instead of a linear slide.
-const _kPageTransitionDuration = Duration(milliseconds: 320);
-const _kPageTransitionCurve = Curves.fastEaseInToSlowEaseOut;
+// Matches upstream FlClash's tab-switch timing (kTabScrollDuration +
+// Curves.easeOut) rather than the app's iOS-style push-route curve — this
+// animation now only ever runs on mobile (see _toPage), where it competes
+// every frame with the bottom NavigationBar's always-on BackdropFilter
+// blur for GPU time, so it stays on the cheaper, well-trodden curve instead
+// of a bespoke one.
+const _kPageTransitionDuration = kTabScrollDuration;
+const _kPageTransitionCurve = Curves.easeOut;
 
 class _HomePageViewState extends ConsumerState<_HomePageView> {
   late PageController _pageController;
@@ -180,7 +183,14 @@ class _HomePageViewState extends ConsumerState<_HomePageView> {
       return;
     }
     final isAnimateToPage = ref.read(appSettingProvider).isAnimateToPage;
-    if (isAnimateToPage && !ignoreAnimateTo) {
+    // Upstream FlClash only animates this switch on mobile (a touch-driven
+    // tab bar reads naturally as a slide) and jumps instantly everywhere
+    // else. This fork had dropped the isMobile check, so every desktop
+    // nav-rail click paid for a 320ms slide+cross-fade over glass/blur-heavy
+    // pages instead of the instant switch users expect from mouse/keyboard
+    // navigation — that's the "switching feels laggy" regression.
+    final isMobile = ref.read(isMobileViewProvider);
+    if (isAnimateToPage && isMobile && !ignoreAnimateTo) {
       await _pageController.animateToPage(
         index,
         duration: _kPageTransitionDuration,
@@ -212,35 +222,19 @@ class _HomePageViewState extends ConsumerState<_HomePageView> {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: itemCount,
       itemBuilder: (context, index) {
-        return AnimatedBuilder(
-          animation: _pageController,
-          builder: (context, child) {
-            // Cross-fades the incoming/outgoing pages on top of the
-            // PageView's built-in slide, so a nav switch reads as settling
-            // into place (iOS/Samsung style) rather than a flat pan.
-            double page = index.toDouble();
-            if (_pageController.hasClients &&
-                _pageController.position.haveDimensions) {
-              page = _pageController.page ?? page;
-            }
-            final opacity = 1 - (page - index).abs().clamp(0.0, 1.0);
-            return Opacity(opacity: opacity, child: child);
-          },
-          // Opacity without a RepaintBoundary directly under it makes
-          // Flutter repaint the *entire* child subtree from scratch on
-          // every single animation frame — every blurred AppBar, every
-          // glass panel on the page — just to blend a changing alpha,
-          // instead of caching one rasterized layer and cheaply
-          // re-blending it. With this page now carrying more
-          // BackdropFilter-adjacent layers than the old flat glass did,
-          // that per-frame full repaint is exactly what a page switch
-          // feeling janky looks like. The boundary sits *inside* Opacity
-          // (not around the whole AnimatedBuilder, which PageView already
-          // adds automatically and which doesn't help here) so the page's
-          // pixels get cached once and the fade only ever costs a
-          // compositor-side alpha blend.
-          child: RepaintBoundary(child: widget.pageBuilder(context, index)),
-        );
+        // No manual cross-fade here (there used to be one, via
+        // AnimatedBuilder + Opacity tracking _pageController): this switch
+        // only ever animates on mobile now (see _toPage), where every one
+        // of its ~18 frames had to alpha-composite two full pages worth of
+        // BackdropFilter glass on top of the slide PageView already does
+        // for free. Upstream FlClash doesn't cross-fade this transition
+        // either — a plain slide reads fine and is the difference between
+        // this feeling instant and feeling laggy on real phones. The
+        // RepaintBoundary still earns its keep: it caches each page as one
+        // rasterized layer so the slide only ever costs a cheap
+        // compositor-side translate instead of repainting glass on every
+        // frame.
+        return RepaintBoundary(child: widget.pageBuilder(context, index));
       },
     );
   }
