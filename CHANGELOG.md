@@ -1,3 +1,5 @@
+## v3.3.25
+
 ## v3.3.24
 
 - Fix page-switch jank: cache pages as layers during transitions
