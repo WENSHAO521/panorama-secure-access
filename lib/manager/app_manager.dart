@@ -220,13 +220,15 @@ class AppSidebarContainer extends ConsumerWidget {
                           child: FittedBox(child: AppIcon()),
                         ),
                         const SizedBox(width: 10),
-                        Text(
-                          globalState.packageInfo.appName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: editorialSerif(
-                            size: 17,
-                            weight: FontWeight.w600,
+                        Expanded(
+                          child: Text(
+                            globalState.packageInfo.appName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: editorialSerif(
+                              size: 17,
+                              weight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ],

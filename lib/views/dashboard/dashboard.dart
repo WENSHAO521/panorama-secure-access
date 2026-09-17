@@ -141,14 +141,25 @@ class _StatusLine extends ConsumerWidget {
           ),
         ),
         const SizedBox(width: 16),
-        Text(
-          suspend
-              ? appLocalizations.suspended
-              : isStart
-              ? appLocalizations.connected
-              : appLocalizations.disconnected,
-          style: const TextStyle(fontSize: 12, color: EditorialPalette.muted),
-        ),
+        // Deliberately NOT reusing appLocalizations.connected/disconnected
+        // here — that's the headline's word for coreStatus, a different
+        // signal from isStart (the switch below), and the two can
+        // legitimately disagree (e.g. core still shutting down after the
+        // user flips the switch off). Showing uptime instead of a second,
+        // possibly-contradictory status word sidesteps that entirely.
+        if (isStart)
+          Consumer(
+            builder: (_, ref, _) {
+              final runTime = ref.watch(runTimeProvider);
+              return Text(
+                suspend ? appLocalizations.suspended : utils.getTimeText(runTime),
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: EditorialPalette.muted,
+                ),
+              );
+            },
+          ),
         const SizedBox(width: 8),
         Switch(
           value: isStart,
