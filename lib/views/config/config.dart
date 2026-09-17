@@ -8,9 +8,14 @@ class ConfigView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseScaffold(
-      title: context.appLocalizations.basicConfig,
-      body: generateListView(generalItems),
+    return Theme(
+      data: editorialLightTheme(context),
+      child: BaseScaffold(
+        flat: true,
+        backgroundColor: EditorialPalette.paper,
+        title: context.appLocalizations.basicConfig,
+        body: generateListView(generalItems),
+      ),
     );
   }
 }

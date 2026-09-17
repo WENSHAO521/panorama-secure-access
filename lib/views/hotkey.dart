@@ -5,6 +5,7 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/card.dart';
 import 'package:fl_clash/widgets/dialog.dart';
+import 'package:fl_clash/widgets/editorial.dart';
 import 'package:fl_clash/widgets/list.dart';
 import 'package:fl_clash/widgets/scaffold.dart';
 import 'package:flutter/material.dart';
@@ -40,34 +41,39 @@ class HotKeyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
-    return BaseScaffold(
-      title: appLocalizations.hotkeyManagement,
-      body: ListView.builder(
-        itemCount: HotAction.values.length,
-        itemBuilder: (_, index) {
-          final hotAction = HotAction.values[index];
-          return Consumer(
-            builder: (_, ref, _) {
-              final hotKeyAction = ref.watch(
-                getHotKeyActionProvider(hotAction),
-              );
-              return ListItem(
-                title: Text(IntlExt.actionMessage(hotAction.name)),
-                subtitle: Text(
-                  getSubtitle(context, hotKeyAction),
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    color: context.colorScheme.primary,
+    return Theme(
+      data: editorialLightTheme(context),
+      child: BaseScaffold(
+        flat: true,
+        backgroundColor: EditorialPalette.paper,
+        title: appLocalizations.hotkeyManagement,
+        body: ListView.builder(
+          itemCount: HotAction.values.length,
+          itemBuilder: (_, index) {
+            final hotAction = HotAction.values[index];
+            return Consumer(
+              builder: (_, ref, _) {
+                final hotKeyAction = ref.watch(
+                  getHotKeyActionProvider(hotAction),
+                );
+                return ListItem(
+                  title: Text(IntlExt.actionMessage(hotAction.name)),
+                  subtitle: Text(
+                    getSubtitle(context, hotKeyAction),
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: context.colorScheme.primary,
+                    ),
                   ),
-                ),
-                onTap: () {
-                  globalState.showCommonDialog(
-                    child: HotKeyRecorder(hotKeyAction: hotKeyAction),
-                  );
-                },
-              );
-            },
-          );
-        },
+                  onTap: () {
+                    globalState.showCommonDialog(
+                      child: HotKeyRecorder(hotKeyAction: hotKeyAction),
+                    );
+                  },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
@@ -135,6 +141,7 @@ class _HotKeyRecorderState extends ConsumerState<HotKeyRecorder> {
     if (currentHotkeyAction.key == null ||
         currentHotkeyAction.modifiers.isEmpty) {
       globalState.showMessage(
+        flat: true,
         title: appLocalizations.tip,
         message: TextSpan(text: appLocalizations.inputCorrectHotkey),
       );
@@ -150,6 +157,7 @@ class _HotKeyRecorderState extends ConsumerState<HotKeyRecorder> {
     );
     if (index != -1) {
       globalState.showMessage(
+        flat: true,
         title: appLocalizations.tip,
         message: TextSpan(text: appLocalizations.hotkeyConflict),
       );

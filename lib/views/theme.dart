@@ -38,7 +38,13 @@ class ThemeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
+    // Flat chrome only here (not the full editorialLightTheme wrap the
+    // rest of the redesign uses) — this screen's whole job is previewing
+    // the app's REAL seed/dark-mode colors, which a forced light
+    // ColorScheme would misrepresent.
     return BaseScaffold(
+      flat: true,
+      backgroundColor: EditorialPalette.paper,
       title: appLocalizations.theme,
       body: const CustomScrollView(
         slivers: [

@@ -104,49 +104,59 @@ class _ConnectionsViewState extends ConsumerState<ConnectionsView>
   @override
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
-    return CommonScaffold(
-      title: appLocalizations.connections,
-      onKeywordsUpdate: _onKeywordsUpdate,
-      searchState: AppBarSearchState(onSearch: _onSearch),
-      actions: _buildActions(),
-      body: ValueListenableBuilder<TrackerInfosState>(
-        valueListenable: _connectionsStateNotifier,
-        builder: (context, state, _) {
-          final connections = state.list;
-          if (connections.isEmpty) {
-            return NullStatus(
-              label: appLocalizations.nullTip(appLocalizations.connections),
-              illustration: const ConnectionEmptyIllustration(),
-            );
-          }
-          return SuperListView.separated(
-            controller: _scrollController,
-            itemCount: connections.length,
-            separatorBuilder: (_, _) => const Divider(height: 0),
-            itemBuilder: (_, index) {
-              final trackerInfo = connections[index];
-              return TrackerInfoItem(
-                key: Key(trackerInfo.id),
-                trackerInfo: trackerInfo,
-                onClickKeyword: (value) {
-                  context.commonScaffoldState?.addKeyword(value);
-                },
-                trailing: IconButton(
-                  padding: EdgeInsets.zero,
-                  visualDensity: VisualDensity.compact,
-                  style: IconButton.styleFrom(minimumSize: Size.zero),
-                  icon: const Icon(Icons.block),
-                  onPressed: () {
-                    _handleBlockConnection(trackerInfo.id);
-                  },
-                ),
-                detailTitle: appLocalizations.details(
-                  appLocalizations.connection,
-                ),
+    return Theme(
+      data: editorialLightTheme(context),
+      child: CommonScaffold(
+        flat: true,
+        backgroundColor: EditorialPalette.paper,
+        title: appLocalizations.connections,
+        actions: _buildActions(),
+        onKeywordsUpdate: _onKeywordsUpdate,
+        searchState: AppBarSearchState(onSearch: _onSearch),
+        // No opaque Container wrapper here (see CommonScaffold's own
+        // backgroundColor above for the paper fill) — a ColoredBox sitting
+        // between these rows and the Scaffold's Material ancestor hides
+        // ListTile's own ink/splash painting.
+        body: ValueListenableBuilder<TrackerInfosState>(
+          valueListenable: _connectionsStateNotifier,
+          builder: (context, state, _) {
+            final connections = state.list;
+            if (connections.isEmpty) {
+              return NullStatus(
+                label: appLocalizations.nullTip(appLocalizations.connections),
+                illustration: const ConnectionEmptyIllustration(),
               );
-            },
-          );
-        },
+            }
+            return SuperListView.separated(
+              controller: _scrollController,
+              itemCount: connections.length,
+              separatorBuilder: (_, _) =>
+                  const Divider(height: 0, color: EditorialPalette.hairline),
+              itemBuilder: (_, index) {
+                final trackerInfo = connections[index];
+                return TrackerInfoItem(
+                  key: Key(trackerInfo.id),
+                  trackerInfo: trackerInfo,
+                  onClickKeyword: (value) {
+                    context.commonScaffoldState?.addKeyword(value);
+                  },
+                  trailing: IconButton(
+                    padding: EdgeInsets.zero,
+                    visualDensity: VisualDensity.compact,
+                    style: IconButton.styleFrom(minimumSize: Size.zero),
+                    icon: const Icon(Icons.block),
+                    onPressed: () {
+                      _handleBlockConnection(trackerInfo.id);
+                    },
+                  ),
+                  detailTitle: appLocalizations.details(
+                    appLocalizations.connection,
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

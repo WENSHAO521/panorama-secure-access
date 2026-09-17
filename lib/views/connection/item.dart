@@ -44,7 +44,13 @@ class TrackerInfoItem extends ConsumerWidget {
     final title = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(trackerInfo.desc, style: context.textTheme.bodyLarge),
+        Text(
+          trackerInfo.desc,
+          style: context.textTheme.bodyLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: EditorialPalette.ink,
+          ),
+        ),
         // Row(
         //   mainAxisSize: MainAxisSize.max,
         //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -66,9 +72,7 @@ class TrackerInfoItem extends ConsumerWidget {
           _getSourceText(context, trackerInfo),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: context.textTheme.bodyMedium?.copyWith(
-            color: context.colorScheme.onSurfaceVariant,
-          ),
+          style: const TextStyle(fontSize: 13, color: EditorialPalette.muted),
         ),
       ],
     );
@@ -128,10 +132,20 @@ class TrackerInfoItem extends ConsumerWidget {
       onTap: () {
         showExtend(
           context,
+          props: const ExtendProps(
+            blur: false,
+            backgroundColor: EditorialPalette.paper,
+          ),
           builder: (_) {
-            return AdaptiveSheetScaffold(
-              body: TrackerInfoDetailView(trackerInfo: trackerInfo),
-              title: detailTitle,
+            // A pushed route doesn't inherit a Theme placed inside the
+            // calling screen's build() — wrap explicitly.
+            return Theme(
+              data: editorialLightTheme(context),
+              child: AdaptiveSheetScaffold(
+                flat: true,
+                body: TrackerInfoDetailView(trackerInfo: trackerInfo),
+                title: detailTitle,
+              ),
             );
           },
         );

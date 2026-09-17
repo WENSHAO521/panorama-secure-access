@@ -10,6 +10,7 @@ import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/dialog.dart';
+import 'package:fl_clash/widgets/editorial.dart';
 import 'package:fl_clash/widgets/fade_box.dart';
 import 'package:fl_clash/widgets/glass.dart';
 import 'package:fl_clash/widgets/input.dart';
@@ -76,6 +77,7 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
     );
     if (res != true) return;
     globalState.showMessage(
+      flat: true,
       title: appLocalizations.backup,
       message: TextSpan(text: appLocalizations.backupSuccess),
     );
@@ -100,6 +102,7 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
     );
     if (res != true) return;
     globalState.showMessage(
+      flat: true,
       title: appLocalizations.restore,
       message: TextSpan(text: appLocalizations.restoreSuccess),
     );
@@ -135,6 +138,7 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
     );
     if (res != true) return;
     globalState.showMessage(
+      flat: true,
       title: appLocalizations.backup,
       message: TextSpan(text: appLocalizations.backupSuccess),
     );
@@ -158,6 +162,7 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
     );
     if (res != true) return;
     globalState.showMessage(
+      flat: true,
       title: appLocalizations.restore,
       message: TextSpan(text: appLocalizations.restoreSuccess),
     );
@@ -205,144 +210,151 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
     final appLocalizations = context.appLocalizations;
     final dav = ref.watch(davSettingProvider);
     final isLoading = ref.watch(loadingProvider(LoadingTag.backup_restore));
-    return CommonScaffold(
-      isLoading: isLoading,
-      title: appLocalizations.backupAndRestore,
-      body: ListView(
-        children: [
-          ListHeader(title: appLocalizations.remote),
-          if (dav == null)
-            ListItem(
-              leading: const Icon(Icons.account_box),
-              title: Text(appLocalizations.noInfo),
-              subtitle: Text(appLocalizations.pleaseBindWebDAV),
-              trailing: FilledButton.tonal(
-                onPressed: () {
-                  _showAddWebDAV(dav);
-                },
-                child: Text(appLocalizations.bind),
-              ),
-            )
-          else ...[
-            ListItem(
-              leading: const Icon(Icons.account_box),
-              title: TooltipText(
-                text: Text(
-                  dav.user,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              subtitle: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(appLocalizations.connectivity),
-                    ValueListenableBuilder(
-                      valueListenable: _davConnection,
-                      builder: (_, isCompleter, _) {
-                        return Center(
-                          child: FadeThroughBox(
-                            child: isCompleter == null
-                                ? const SizedBox(
-                                    width: 12,
-                                    height: 12,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 1,
-                                    ),
-                                  )
-                                : Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: !isCompleter
-                                          ? context.colorScheme.error
-                                          : context.colorScheme.statusConnected,
-                                    ),
-                                    width: 12,
-                                    height: 12,
-                                  ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              trailing: FilledButton.tonal(
-                onPressed: () {
-                  _showAddWebDAV(dav);
-                },
-                child: Text(appLocalizations.edit),
-              ),
-            ),
-            const SizedBox(height: 4),
-            ListItem.input(
-              title: Text(appLocalizations.file),
-              subtitle: Text(dav.fileName),
-              delegate: InputDelegate(
-                title: appLocalizations.file,
-                value: dav.fileName,
-                resetValue: defaultDavFileName,
-                maxLength: TextInputLimits.fileName,
-                onChanged: (value) {
-                  _handleChange(value, ref);
-                },
-              ),
-            ),
-            ListItem(
-              onTap: () {
-                _backupOnWebDAV();
-              },
-              title: Text(appLocalizations.backup),
-              subtitle: Text(appLocalizations.remoteBackupDesc),
-            ),
-            ListItem(
-              onTap: () {
-                _handleRestoreOnWebDAV();
-              },
-              title: Text(appLocalizations.restore),
-              subtitle: Text(appLocalizations.restoreFromWebDAVDesc),
-            ),
-          ],
-          ListHeader(title: appLocalizations.local),
-          ListItem(
-            onTap: () {
-              _backupOnLocal();
-            },
-            title: Text(appLocalizations.backup),
-            subtitle: Text(appLocalizations.localBackupDesc),
-          ),
-          ListItem(
-            onTap: () {
-              _handleRestoreOnLocal();
-            },
-            title: Text(appLocalizations.restore),
-            subtitle: Text(appLocalizations.restoreFromFileDesc),
-          ),
-          ListHeader(title: appLocalizations.options),
-          Consumer(
-            builder: (_, ref, _) {
-              final restoreStrategy = ref.watch(
-                appSettingProvider.select((state) => state.restoreStrategy),
-              );
-              return ListItem(
-                onTap: () {
-                  _handleUpdateRestoreStrategy();
-                },
-                title: Text(appLocalizations.restoreStrategy),
-                trailing: FilledButton(
+    return Theme(
+      data: editorialLightTheme(context),
+      child: CommonScaffold(
+        flat: true,
+        backgroundColor: EditorialPalette.paper,
+        isLoading: isLoading,
+        title: appLocalizations.backupAndRestore,
+        body: ListView(
+          children: [
+            ListHeader(title: appLocalizations.remote),
+            if (dav == null)
+              ListItem(
+                leading: const Icon(Icons.account_box),
+                title: Text(appLocalizations.noInfo),
+                subtitle: Text(appLocalizations.pleaseBindWebDAV),
+                trailing: FilledButton.tonal(
                   onPressed: () {
-                    _handleUpdateRestoreStrategy();
+                    _showAddWebDAV(dav);
                   },
-                  child: Text(
-                    Intl.message('restoreStrategy_${restoreStrategy.name}'),
+                  child: Text(appLocalizations.bind),
+                ),
+              )
+            else ...[
+              ListItem(
+                leading: const Icon(Icons.account_box),
+                title: TooltipText(
+                  text: Text(
+                    dav.user,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-              );
-            },
-          ),
-        ],
+                subtitle: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(appLocalizations.connectivity),
+                      ValueListenableBuilder(
+                        valueListenable: _davConnection,
+                        builder: (_, isCompleter, _) {
+                          return Center(
+                            child: FadeThroughBox(
+                              child: isCompleter == null
+                                  ? const SizedBox(
+                                      width: 12,
+                                      height: 12,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 1,
+                                      ),
+                                    )
+                                  : Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: !isCompleter
+                                            ? context.colorScheme.error
+                                            : context
+                                                  .colorScheme
+                                                  .statusConnected,
+                                      ),
+                                      width: 12,
+                                      height: 12,
+                                    ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                trailing: FilledButton.tonal(
+                  onPressed: () {
+                    _showAddWebDAV(dav);
+                  },
+                  child: Text(appLocalizations.edit),
+                ),
+              ),
+              const SizedBox(height: 4),
+              ListItem.input(
+                title: Text(appLocalizations.file),
+                subtitle: Text(dav.fileName),
+                delegate: InputDelegate(
+                  title: appLocalizations.file,
+                  value: dav.fileName,
+                  resetValue: defaultDavFileName,
+                  maxLength: TextInputLimits.fileName,
+                  onChanged: (value) {
+                    _handleChange(value, ref);
+                  },
+                ),
+              ),
+              ListItem(
+                onTap: () {
+                  _backupOnWebDAV();
+                },
+                title: Text(appLocalizations.backup),
+                subtitle: Text(appLocalizations.remoteBackupDesc),
+              ),
+              ListItem(
+                onTap: () {
+                  _handleRestoreOnWebDAV();
+                },
+                title: Text(appLocalizations.restore),
+                subtitle: Text(appLocalizations.restoreFromWebDAVDesc),
+              ),
+            ],
+            ListHeader(title: appLocalizations.local),
+            ListItem(
+              onTap: () {
+                _backupOnLocal();
+              },
+              title: Text(appLocalizations.backup),
+              subtitle: Text(appLocalizations.localBackupDesc),
+            ),
+            ListItem(
+              onTap: () {
+                _handleRestoreOnLocal();
+              },
+              title: Text(appLocalizations.restore),
+              subtitle: Text(appLocalizations.restoreFromFileDesc),
+            ),
+            ListHeader(title: appLocalizations.options),
+            Consumer(
+              builder: (_, ref, _) {
+                final restoreStrategy = ref.watch(
+                  appSettingProvider.select((state) => state.restoreStrategy),
+                );
+                return ListItem(
+                  onTap: () {
+                    _handleUpdateRestoreStrategy();
+                  },
+                  title: Text(appLocalizations.restoreStrategy),
+                  trailing: FilledButton(
+                    onPressed: () {
+                      _handleUpdateRestoreStrategy();
+                    },
+                    child: Text(
+                      Intl.message('restoreStrategy_${restoreStrategy.name}'),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:animations/animations.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fl_clash/common/theme.dart';
 import 'package:fl_clash/widgets/dialog.dart';
+import 'package:fl_clash/widgets/editorial.dart';
 import 'package:fl_clash/widgets/list.dart';
 import 'package:fl_clash/widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -173,6 +174,12 @@ class GlobalState {
   /// long, multi-sentence dialog bodies. Defaults to false so every other
   /// caller of this shared helper (confirmations, short prompts, technical
   /// messages) keeps its current start-aligned rendering unchanged.
+  // [flat] opts into the editorial-minimal dialog surface (paper card,
+  // no blur) for callers already on that redesign — see EditorialPalette.
+  // A pushed dialog route doesn't inherit a Theme from the calling
+  // screen, so this wraps the dialog in one built from [context] (the
+  // calling screen's own context, which does have it) itself rather
+  // than relying on the caller to do so.
   Future<bool?> showMessage({
     required InlineSpan message,
     BuildContext? context,
@@ -182,26 +189,28 @@ class GlobalState {
     bool cancelable = true,
     bool? dismissible,
     bool longForm = false,
+    bool flat = false,
   }) async {
     return showCommonDialog<bool>(
       context: context,
       dismissible: dismissible,
       child: Builder(
-        builder: (context) {
-          final appLocalizations = context.appLocalizations;
-          return CommonDialog(
+        builder: (builderContext) {
+          final appLocalizations = builderContext.appLocalizations;
+          final dialog = CommonDialog(
+            flat: flat,
             title: title ?? appLocalizations.tip,
             actions: [
               if (cancelable)
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(false);
+                    Navigator.of(builderContext).pop(false);
                   },
                   child: Text(cancelText ?? appLocalizations.cancel),
                 ),
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(true);
+                  Navigator.of(builderContext).pop(true);
                 },
                 child: Text(confirmText ?? appLocalizations.confirm),
               ),
@@ -214,12 +223,12 @@ class GlobalState {
                         message.toPlainText(),
                         selectable: true,
                         style: Theme.of(
-                          context,
+                          builderContext,
                         ).textTheme.labelLarge?.copyWith(height: 1.55),
                       )
                     : SelectableText.rich(
                         TextSpan(
-                          style: Theme.of(context).textTheme.labelLarge,
+                          style: Theme.of(builderContext).textTheme.labelLarge,
                           children: [message],
                         ),
                         style: const TextStyle(overflow: TextOverflow.visible),
@@ -227,19 +236,24 @@ class GlobalState {
               ),
             ),
           );
+          return flat
+              ? Theme(data: editorialLightTheme(builderContext), child: dialog)
+              : dialog;
         },
       ),
     );
   }
 
   Future<bool?> showAllUpdatingMessagesDialog(
-    List<UpdatingMessage> messages,
-  ) async {
+    List<UpdatingMessage> messages, {
+    bool flat = false,
+  }) async {
     return showCommonDialog<bool>(
       child: Builder(
         builder: (context) {
           final appLocalizations = currentAppLocalizations;
-          return CommonDialog(
+          final dialog = CommonDialog(
+            flat: flat,
             padding: EdgeInsets.zero,
             title: appLocalizations.tip,
             actions: [
@@ -267,6 +281,9 @@ class GlobalState {
               ),
             ),
           );
+          return flat
+              ? Theme(data: editorialLightTheme(context), child: dialog)
+              : dialog;
         },
       ),
     );

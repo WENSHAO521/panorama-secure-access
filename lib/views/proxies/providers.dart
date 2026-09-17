@@ -37,7 +37,7 @@ class _ProvidersViewState extends ConsumerState<ProvidersView> {
     await Future.wait(updateProviders);
     ref.read(proxiesActionProvider.notifier).updateGroupsDebounce();
     if (messages.isNotEmpty) {
-      globalState.showAllUpdatingMessagesDialog(messages);
+      globalState.showAllUpdatingMessagesDialog(messages, flat: true);
     }
   }
 
@@ -60,6 +60,7 @@ class _ProvidersViewState extends ConsumerState<ProvidersView> {
       items: ruleProviders,
     );
     return AdaptiveSheetScaffold(
+      flat: true,
       actions: [IconButtonData(icon: Icons.sync, onPressed: _updateProviders)],
       body: generateListView([...proxySection, ...ruleSection]),
       title: appLocalizations.providers,

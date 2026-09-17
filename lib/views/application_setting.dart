@@ -288,17 +288,22 @@ class ApplicationSettingView extends StatelessWidget {
       if (system.isAndroid) const CrashlyticsItem(),
       const AutoCheckUpdateItem(),
     ];
-    return BaseScaffold(
-      title: context.appLocalizations.application,
-      body: ListView.separated(
-        itemBuilder: (_, index) {
-          final item = items[index];
-          return item;
-        },
-        separatorBuilder: (_, _) {
-          return const Divider(height: 0);
-        },
-        itemCount: items.length,
+    return Theme(
+      data: editorialLightTheme(context),
+      child: BaseScaffold(
+        flat: true,
+        backgroundColor: EditorialPalette.paper,
+        title: context.appLocalizations.application,
+        body: ListView.separated(
+          itemBuilder: (_, index) {
+            final item = items[index];
+            return item;
+          },
+          separatorBuilder: (_, _) {
+            return const Divider(height: 0, color: EditorialPalette.hairline);
+          },
+          itemCount: items.length,
+        ),
       ),
     );
   }

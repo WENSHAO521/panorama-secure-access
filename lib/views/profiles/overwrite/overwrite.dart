@@ -41,18 +41,23 @@ class _OverwriteViewState extends ConsumerState<OverwriteView> {
     final appLocalizations = context.appLocalizations;
     return ProfileIdProvider(
       profileId: widget.profileId,
-      child: CommonScaffold(
-        title: appLocalizations.override,
-        actions: [
-          CommonMinFilledButtonTheme(
-            child: FilledButton(
-              onPressed: _handlePreview,
-              child: Text(appLocalizations.preview),
+      child: Theme(
+        data: editorialLightTheme(context),
+        child: CommonScaffold(
+          flat: true,
+          backgroundColor: EditorialPalette.paper,
+          title: appLocalizations.override,
+          actions: [
+            CommonMinFilledButtonTheme(
+              child: FilledButton(
+                onPressed: _handlePreview,
+                child: Text(appLocalizations.preview),
+              ),
             ),
-          ),
-          const SizedBox(width: 8),
-        ],
-        body: const CustomScrollView(slivers: [_Title(), _Content()]),
+            const SizedBox(width: 8),
+          ],
+          body: const CustomScrollView(slivers: [_Title(), _Content()]),
+        ),
       ),
     );
   }

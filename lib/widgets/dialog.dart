@@ -5,6 +5,7 @@ import 'package:fl_clash/providers/app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'editorial.dart';
 import 'glass.dart';
 
 /// Desktop max-width tokens for [CommonDialog]. A dialog is never forced
@@ -46,6 +47,14 @@ class CommonDialog extends ConsumerWidget {
   /// screen-width minus the safe horizontal margin.
   final bool isLarge;
 
+  // Editorial-minimal variant: a flat paper card instead of the glass
+  // modal. Like AdaptiveSheetScaffold's `flat`, this only affects this
+  // dialog's own surface — since showCommonDialog pushes a new route,
+  // wrap the dialog itself (not just pass this flag) in
+  // Theme(data: editorialLightTheme(context), ...) so any ListItem/text
+  // inside resolves light colors instead of the app's ambient theme.
+  final bool flat;
+
   const CommonDialog({
     super.key,
     required this.title,
@@ -55,7 +64,29 @@ class CommonDialog extends ConsumerWidget {
     this.overrideScroll = false,
     this.backgroundColor,
     this.isLarge = false,
+    this.flat = false,
   });
+
+  Widget _buildSurface(
+    BuildContext context, {
+    required OutlinedBorder shape,
+    required Widget child,
+  }) {
+    if (flat) {
+      return Material(
+        color: backgroundColor ?? EditorialPalette.paper,
+        shape: shape,
+        clipBehavior: Clip.antiAlias,
+        child: child,
+      );
+    }
+    return GlassSurface.modal(
+      shape: shape,
+      color: backgroundColor ?? context.colorScheme.surfaceContainerHigh,
+      boxShadow: GlassTokens.modalShadowFor(context.colorScheme.brightness),
+      child: child,
+    );
+  }
 
   @override
   Widget build(BuildContext context, ref) {
@@ -82,12 +113,11 @@ class CommonDialog extends ConsumerWidget {
       // of whatever's behind it, not just tinted.
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: maxWidth),
-        child: GlassSurface.modal(
+        child: _buildSurface(
+          context,
           shape: RoundedSuperellipseBorder(
             borderRadius: BorderRadius.circular(24),
           ),
-          color: backgroundColor ?? context.colorScheme.surfaceContainerHigh,
-          boxShadow: GlassTokens.modalShadowFor(context.colorScheme.brightness),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             // Forces title/content/actions to the same width (the
@@ -101,7 +131,12 @@ class CommonDialog extends ConsumerWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-                child: Text(title, style: context.textTheme.headlineSmall),
+                child: Text(
+                  title,
+                  style: flat
+                      ? editorialSerif(size: 20, weight: FontWeight.w600)
+                      : context.textTheme.headlineSmall,
+                ),
               ),
               Flexible(child: content),
               if (actions != null && actions!.isNotEmpty)
