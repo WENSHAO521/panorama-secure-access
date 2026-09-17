@@ -62,6 +62,7 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
   Future<void> _handleDelete() async {
     final appLocalizations = context.appLocalizations;
     final res = await globalState.showMessage(
+      flat: true,
       title: appLocalizations.tip,
       message: TextSpan(
         text: appLocalizations.deleteMultipTip(appLocalizations.rule),
@@ -161,74 +162,53 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
     );
     final ruleTargets = vm2.a;
     final subRules = vm2.b;
-    return CommonScaffold(
-      title: appLocalizations.rule,
-      actions: [
-        if (selectedRules.isNotEmpty) ...[
-          CommonMinIconButtonTheme(
-            child: IconButton.filledTonal(
-              onPressed: _handleDelete,
-              icon: const Icon(Icons.delete),
+    // Shell-only, same reasoning as the custom proxy-groups view above.
+    return Theme(
+      data: editorialLightTheme(context),
+      child: CommonScaffold(
+        flat: true,
+        backgroundColor: EditorialPalette.paper,
+        title: appLocalizations.rule,
+        actions: [
+          if (selectedRules.isNotEmpty) ...[
+            CommonMinIconButtonTheme(
+              child: IconButton.filledTonal(
+                onPressed: _handleDelete,
+                icon: const Icon(Icons.delete),
+              ),
             ),
+            const SizedBox(width: 2),
+          ],
+          CommonMinFilledButtonTheme(
+            child: selectedRules.isNotEmpty
+                ? FilledButton(
+                    onPressed: _handleSelectAll,
+                    child: Text(appLocalizations.selectAll),
+                  )
+                : FilledButton.tonal(
+                    onPressed: _handleAddOrUpdate,
+                    child: Text(appLocalizations.add),
+                  ),
           ),
-          const SizedBox(width: 2),
+          const SizedBox(width: 8),
         ],
-        CommonMinFilledButtonTheme(
-          child: selectedRules.isNotEmpty
-              ? FilledButton(
-                  onPressed: _handleSelectAll,
-                  child: Text(appLocalizations.selectAll),
-                )
-              : FilledButton.tonal(
-                  onPressed: _handleAddOrUpdate,
-                  child: Text(appLocalizations.add),
-                ),
-        ),
-        const SizedBox(width: 8),
-      ],
-      body: rules.isEmpty
-          ? NullStatus(label: appLocalizations.ruleEmpty)
-          : CommonScrollBar(
-              controller: _scrollController,
-              child: ReorderableListView.builder(
-                scrollController: _scrollController,
-                buildDefaultDragHandles: false,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ).copyWith(bottom: 24),
-                itemBuilder: (_, index) {
-                  final rule = rules[index];
-                  return _buildItem(
-                    index: index,
-                    checkInvalidHandler: (rule) {
-                      return _handleCheckInvalid(rule, ruleTargets, subRules);
-                    },
-                    total: rules.length,
-                    isEditing: selectedRules.isNotEmpty,
-                    isSelected: selectedRules.contains(rule.id),
-                    rule: rule,
-                    onSelected: () {
-                      _handleSelected(rule.id);
-                    },
-                    onEdit: (rule) {
-                      _handleAddOrUpdate(rule: rule);
-                    },
-                  );
-                },
-                itemExtent: ruleItemHeight,
-                itemCount: rules.length,
-                proxyDecorator: (child, index, animation) {
-                  final rule = rules[index];
-                  return commonProxyDecorator(
-                    _buildItem(
+        body: rules.isEmpty
+            ? NullStatus(label: appLocalizations.ruleEmpty)
+            : CommonScrollBar(
+                controller: _scrollController,
+                child: ReorderableListView.builder(
+                  scrollController: _scrollController,
+                  buildDefaultDragHandles: false,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ).copyWith(bottom: 24),
+                  itemBuilder: (_, index) {
+                    final rule = rules[index];
+                    return _buildItem(
                       index: index,
-                      checkInvalidHandler: (target) {
-                        return _handleCheckInvalid(
-                          target,
-                          ruleTargets,
-                          subRules,
-                        );
+                      checkInvalidHandler: (rule) {
+                        return _handleCheckInvalid(rule, ruleTargets, subRules);
                       },
                       total: rules.length,
                       isEditing: selectedRules.isNotEmpty,
@@ -240,14 +220,41 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
                       onEdit: (rule) {
                         _handleAddOrUpdate(rule: rule);
                       },
-                    ),
-                    index,
-                    animation,
-                  );
-                },
-                onReorderItem: _handleReorder,
+                    );
+                  },
+                  itemExtent: ruleItemHeight,
+                  itemCount: rules.length,
+                  proxyDecorator: (child, index, animation) {
+                    final rule = rules[index];
+                    return commonProxyDecorator(
+                      _buildItem(
+                        index: index,
+                        checkInvalidHandler: (target) {
+                          return _handleCheckInvalid(
+                            target,
+                            ruleTargets,
+                            subRules,
+                          );
+                        },
+                        total: rules.length,
+                        isEditing: selectedRules.isNotEmpty,
+                        isSelected: selectedRules.contains(rule.id),
+                        rule: rule,
+                        onSelected: () {
+                          _handleSelected(rule.id);
+                        },
+                        onEdit: (rule) {
+                          _handleAddOrUpdate(rule: rule);
+                        },
+                      ),
+                      index,
+                      animation,
+                    );
+                  },
+                  onReorderItem: _handleReorder,
+                ),
               ),
-            ),
+      ),
     );
   }
 }
@@ -277,6 +284,7 @@ class _AddOrEditRuleNestedSheetState
     final state = _nestedNavigatorKey.currentState;
     if (state != null && state.canPop()) {
       final res = await globalState.showMessage(
+        flat: true,
         message: TextSpan(text: context.appLocalizations.confirmExitWindow),
       );
       if (res != true) {
@@ -295,6 +303,7 @@ class _AddOrEditRuleNestedSheetState
       return;
     }
     final res = await globalState.showMessage(
+      flat: true,
       message: TextSpan(text: context.appLocalizations.dataChangedSave),
     );
     if (!mounted) {
@@ -554,6 +563,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
                   child: IconButton(
                     onPressed: () {
                       globalState.showMessage(
+                        flat: true,
                         message: TextSpan(
                           text: appLocalizations.invalidPolicy(target!),
                         ),
@@ -1058,6 +1068,7 @@ bool _handleSaveRule(BuildContext context, WidgetRef ref) {
   final appLocalizations = context.appLocalizations;
   if (rule.realContent?.isNotEmpty != true) {
     globalState.showMessage(
+      flat: true,
       cancelable: false,
       message: TextSpan(
         text: rule.ruleAction == RuleAction.RULE_SET
@@ -1069,6 +1080,7 @@ bool _handleSaveRule(BuildContext context, WidgetRef ref) {
   }
   if (rule.realTarget?.isNotEmpty != true) {
     globalState.showMessage(
+      flat: true,
       cancelable: false,
       message: TextSpan(
         text: rule.ruleAction == RuleAction.SUB_RULE

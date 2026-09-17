@@ -24,6 +24,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
   Future<void> _handleDelScript(int id) async {
     final appLocalizations = context.appLocalizations;
     final res = await globalState.showMessage(
+      flat: true,
       message: TextSpan(
         text: appLocalizations.deleteTip(appLocalizations.script),
       ),
@@ -123,6 +124,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
           .isExits(newScript.label);
       if (isExits) {
         globalState.showMessage(
+          flat: true,
           message: TextSpan(
             text: appLocalizations.existsTip(appLocalizations.name),
           ),
@@ -148,6 +150,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
       return true;
     }
     final res = await globalState.showMessage(
+      flat: true,
       message: TextSpan(text: appLocalizations.saveChanges),
     );
     if (res == true && mounted) {
@@ -197,38 +200,43 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
         Navigator.of(context).pop();
         return false;
       },
-      child: CommonScaffold(
-        actions: [
-          if (selectedScriptId != null) ...[
-            CommonMinIconButtonTheme(
-              child: IconButton.filledTonal(
-                onPressed: () {
-                  _handleDelScript(selectedScriptId);
-                },
-                icon: const Icon(Icons.delete),
+      child: Theme(
+        data: editorialLightTheme(context),
+        child: CommonScaffold(
+          flat: true,
+          backgroundColor: EditorialPalette.paper,
+          actions: [
+            if (selectedScriptId != null) ...[
+              CommonMinIconButtonTheme(
+                child: IconButton.filledTonal(
+                  onPressed: () {
+                    _handleDelScript(selectedScriptId);
+                  },
+                  icon: const Icon(Icons.delete),
+                ),
               ),
+              const SizedBox(width: 2),
+            ],
+            CommonMinFilledButtonTheme(
+              child: selectedScriptId != null
+                  ? FilledButton(
+                      onPressed: () {
+                        _handleToEditor(selectedScriptId);
+                      },
+                      child: Text(appLocalizations.edit),
+                    )
+                  : FilledButton.tonal(
+                      onPressed: () {
+                        _handleToEditor();
+                      },
+                      child: Text(appLocalizations.add),
+                    ),
             ),
-            const SizedBox(width: 2),
+            const SizedBox(width: 8),
           ],
-          CommonMinFilledButtonTheme(
-            child: selectedScriptId != null
-                ? FilledButton(
-                    onPressed: () {
-                      _handleToEditor(selectedScriptId);
-                    },
-                    child: Text(appLocalizations.edit),
-                  )
-                : FilledButton.tonal(
-                    onPressed: () {
-                      _handleToEditor();
-                    },
-                    child: Text(appLocalizations.add),
-                  ),
-          ),
-          const SizedBox(width: 8),
-        ],
-        body: _buildContent(scripts, selectedScriptId),
-        title: appLocalizations.script,
+          body: _buildContent(scripts, selectedScriptId),
+          title: appLocalizations.script,
+        ),
       ),
     );
   }

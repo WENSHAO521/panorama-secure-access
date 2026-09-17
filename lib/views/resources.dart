@@ -19,85 +19,90 @@ class ResourcesView extends StatelessWidget {
   Widget build(BuildContext context) {
     const geoResources = GeoResource.values;
     final appLocalizations = context.appLocalizations;
-    return CommonScaffold(
-      title: context.appLocalizations.resources,
-      body: Consumer(
-        builder: (_, ref, _) {
-          final vm2 = ref.watch(
-            patchClashConfigProvider.select(
-              (state) => VM2(state.geoAutoUpdate, state.geoUpdateInterval),
-            ),
-          );
-          return generateListView([
-            ...generateSection(
-              title: appLocalizations.geoOptions,
-              items: [
-                ListItem.switchItem(
-                  title: Text(appLocalizations.geoAutoUpdate),
-                  delegate: SwitchDelegate(
-                    value: vm2.a,
-                    onChanged: (value) {
-                      ref
-                          .read(patchClashConfigProvider.notifier)
-                          .update(
-                            (state) => state.copyWith(geoAutoUpdate: value),
+    return Theme(
+      data: editorialLightTheme(context),
+      child: CommonScaffold(
+        flat: true,
+        backgroundColor: EditorialPalette.paper,
+        title: context.appLocalizations.resources,
+        body: Consumer(
+          builder: (_, ref, _) {
+            final vm2 = ref.watch(
+              patchClashConfigProvider.select(
+                (state) => VM2(state.geoAutoUpdate, state.geoUpdateInterval),
+              ),
+            );
+            return generateListView([
+              ...generateSection(
+                title: appLocalizations.geoOptions,
+                items: [
+                  ListItem.switchItem(
+                    title: Text(appLocalizations.geoAutoUpdate),
+                    delegate: SwitchDelegate(
+                      value: vm2.a,
+                      onChanged: (value) {
+                        ref
+                            .read(patchClashConfigProvider.notifier)
+                            .update(
+                              (state) => state.copyWith(geoAutoUpdate: value),
+                            );
+                      },
+                    ),
+                  ),
+                  ListItem.input(
+                    title: Text(appLocalizations.geoAutoUpdateInterval),
+                    trailing: Text(
+                      appLocalizations.hoursCount(vm2.b),
+                      style: context.textTheme.bodyMedium?.toSoftBold,
+                    ),
+                    delegate: InputDelegate(
+                      suffixText: appLocalizations.hours,
+                      title: appLocalizations.geoAutoUpdateInterval,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return appLocalizations.emptyTip(
+                            appLocalizations.geoAutoUpdateInterval,
                           );
-                    },
-                  ),
-                ),
-                ListItem.input(
-                  title: Text(appLocalizations.geoAutoUpdateInterval),
-                  trailing: Text(
-                    appLocalizations.hoursCount(vm2.b),
-                    style: context.textTheme.bodyMedium?.toSoftBold,
-                  ),
-                  delegate: InputDelegate(
-                    suffixText: appLocalizations.hours,
-                    title: appLocalizations.geoAutoUpdateInterval,
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return appLocalizations.emptyTip(
-                          appLocalizations.geoAutoUpdateInterval,
-                        );
-                      }
-                      final interval = int.tryParse(value);
-                      if (interval == null) {
-                        return appLocalizations.numberTip(
-                          appLocalizations.geoAutoUpdateInterval,
-                        );
-                      }
-                      if (interval <= 0) {
-                        return appLocalizations.geoAutoUpdateIntervalTip;
-                      }
-                      return null;
-                    },
-                    value: vm2.b.toString(),
-                    onChanged: (value) {
-                      final intValue = int.tryParse(value ?? '') ?? 0;
-                      if (intValue <= 0) {
-                        return;
-                      }
-                      ref
-                          .read(patchClashConfigProvider.notifier)
-                          .update(
-                            (state) =>
-                                state.copyWith(geoUpdateInterval: intValue),
+                        }
+                        final interval = int.tryParse(value);
+                        if (interval == null) {
+                          return appLocalizations.numberTip(
+                            appLocalizations.geoAutoUpdateInterval,
                           );
-                    },
+                        }
+                        if (interval <= 0) {
+                          return appLocalizations.geoAutoUpdateIntervalTip;
+                        }
+                        return null;
+                      },
+                      value: vm2.b.toString(),
+                      onChanged: (value) {
+                        final intValue = int.tryParse(value ?? '') ?? 0;
+                        if (intValue <= 0) {
+                          return;
+                        }
+                        ref
+                            .read(patchClashConfigProvider.notifier)
+                            .update(
+                              (state) =>
+                                  state.copyWith(geoUpdateInterval: intValue),
+                            );
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
-            ...generateSection(
-              title: appLocalizations.geoResources,
-              items: [
-                for (final geoResource in geoResources)
-                  _GeoResourceListItem(geoResource),
-              ],
-            ),
-          ]);
-        },
+                ],
+              ),
+              ...generateSection(
+                title: appLocalizations.geoResources,
+                items: [
+                  for (final geoResource in geoResources)
+                    _GeoResourceListItem(geoResource),
+                ],
+              ),
+            ]);
+          },
+        ),
       ),
     );
   }
@@ -138,6 +143,7 @@ class _GeoResourceListItemState extends ConsumerState<_GeoResourceListItem> {
             .updateGeoResourceUrl(widget.type, newUrl);
       } catch (e) {
         globalState.showMessage(
+          flat: true,
           title: widget.type.name,
           message: TextSpan(text: e.toString()),
         );

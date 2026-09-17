@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  # Lets a maintainer manually run the test/build/artifact-upload jobs from
+  # any branch (e.g. to sanity-check a PR) without pushing a version tag,
+  # which would also trigger the changelog commit and the release/Telegram
+  # steps in the `upload` job below. workflow_dispatch never fires those —
+  # only a `v*` tag push does (see each job's `if:` conditions).
+  workflow_dispatch:
 env:
   IS_STABLE: ${{ !contains(github.ref, '-') }}
   FLUTTER_VERSION: '3.44.4'

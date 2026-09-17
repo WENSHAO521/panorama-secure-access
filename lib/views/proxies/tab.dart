@@ -105,44 +105,56 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
   void _showMoreMenu() {
     showSheet(
       context: context,
-      props: const SheetProps(isScrollControlled: false),
+      props: const SheetProps(
+        isScrollControlled: false,
+        blur: false,
+        backgroundColor: EditorialPalette.paper,
+      ),
       builder: (_) {
-        return AdaptiveSheetScaffold(
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Consumer(
-              builder: (_, ref, _) {
-                final state = ref.watch(proxiesTabControllerStateProvider);
-                final groupNames = state.a;
-                final currentGroupName = state.b;
-                return SizedBox(
-                  width: double.infinity,
-                  child: Wrap(
-                    alignment: WrapAlignment.center,
-                    runSpacing: 8,
-                    spacing: 8,
-                    children: [
-                      for (final groupName in groupNames)
-                        SettingTextCard(
-                          groupName,
-                          onPressed: () {
-                            final index = groupNames.indexWhere(
-                              (item) => item == groupName,
-                            );
-                            if (index == -1) return;
-                            _tabController?.animateTo(index);
-                            updateCurrentGroupName(groupName);
-                            Navigator.of(context).pop();
-                          },
-                          isSelected: groupName == currentGroupName,
-                        ),
-                    ],
-                  ),
-                );
-              },
+        // showSheet pushes a new route, which does NOT inherit a Theme
+        // placed inside the calling screen's build() — wrap explicitly so
+        // list/card colors here resolve to the light palette instead of
+        // whatever the app's real (possibly dark) theme is.
+        return Theme(
+          data: editorialLightTheme(context),
+          child: AdaptiveSheetScaffold(
+            flat: true,
+            body: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Consumer(
+                builder: (_, ref, _) {
+                  final state = ref.watch(proxiesTabControllerStateProvider);
+                  final groupNames = state.a;
+                  final currentGroupName = state.b;
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Wrap(
+                      alignment: WrapAlignment.center,
+                      runSpacing: 8,
+                      spacing: 8,
+                      children: [
+                        for (final groupName in groupNames)
+                          SettingTextCard(
+                            groupName,
+                            onPressed: () {
+                              final index = groupNames.indexWhere(
+                                (item) => item == groupName,
+                              );
+                              if (index == -1) return;
+                              _tabController?.animateTo(index);
+                              updateCurrentGroupName(groupName);
+                              Navigator.of(context).pop();
+                            },
+                            isSelected: groupName == currentGroupName,
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
+            title: context.appLocalizations.proxyGroup,
           ),
-          title: context.appLocalizations.proxyGroup,
         );
       },
     );
@@ -231,23 +243,22 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
                           isScrollable: true,
                           tabAlignment: TabAlignment.start,
                           indicatorSize: TabBarIndicatorSize.label,
-                          indicator: UnderlineTabIndicator(
-                            borderRadius: BorderRadius.circular(99),
+                          indicator: const UnderlineTabIndicator(
+                            borderRadius: BorderRadius.zero,
                             borderSide: BorderSide(
-                              width: 3,
-                              color: context.colorScheme.primary,
+                              width: 2,
+                              color: EditorialPalette.accent,
                             ),
                           ),
-                          labelColor: context.colorScheme.primary,
+                          labelColor: EditorialPalette.ink,
                           labelStyle: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
                           ),
-                          unselectedLabelColor:
-                              context.colorScheme.onSurfaceVariant,
+                          unselectedLabelColor: EditorialPalette.muted,
                           unselectedLabelStyle: const TextStyle(
                             fontSize: 15,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w400,
                           ),
                           labelPadding: const EdgeInsets.symmetric(
                             horizontal: 12,
@@ -256,7 +267,7 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
                             states,
                           ) {
                             if (states.contains(WidgetState.pressed)) {
-                              return context.colorScheme.primary.withValues(
+                              return EditorialPalette.accent.withValues(
                                 alpha: 0.06,
                               );
                             }
@@ -280,22 +291,13 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
                           IgnorePointer(
                             child: Container(
                               width: 28,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 gradient: LinearGradient(
                                   begin: Alignment.centerLeft,
                                   end: Alignment.centerRight,
                                   colors: [
-                                    context.colorScheme.surface.withValues(
-                                      alpha: 0,
-                                    ),
-                                    context.colorScheme.surface.withValues(
-                                      alpha:
-                                          GlassTokens.opacityFor(
-                                            GlassSurfaceType.chrome,
-                                            context.colorScheme.brightness,
-                                          ) *
-                                          0.6,
-                                    ),
+                                    Color(0x00FAF9F6),
+                                    EditorialPalette.paper,
                                   ],
                                 ),
                               ),

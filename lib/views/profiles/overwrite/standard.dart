@@ -53,6 +53,7 @@ class _StandardContentState extends ConsumerState<StandardContent> {
   Future<void> _handleDelete() async {
     final appLocalizations = context.appLocalizations;
     final res = await globalState.showMessage(
+      flat: true,
       title: appLocalizations.tip,
       message: TextSpan(
         text: appLocalizations.deleteMultipTip(appLocalizations.rule),
@@ -204,32 +205,37 @@ class _EditGlobalAddedRules extends ConsumerWidget {
     final disabledRuleIds =
         ref.watch(profileDisabledRuleIdsProvider(profileId)).value ?? [];
     final rules = ref.watch(globalRulesProvider).value ?? [];
-    return BaseScaffold(
-      title: appLocalizations.editGlobalRules,
-      body: rules.isEmpty
-          ? NullStatus(
-              label: appLocalizations.nullTip(appLocalizations.rule),
-              illustration: const RuleEmptyIllustration(),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemExtent: ruleItemHeight,
-              itemBuilder: (context, index) {
-                final rule = rules[index];
-                final position = ItemPosition.get(index, rules.length);
-                return ItemPositionProvider(
-                  position: position,
-                  child: RuleStatusItem(
-                    status: !disabledRuleIds.contains(rule.id),
-                    rule: rule,
-                    onChange: (status) {
-                      _handleChange(ref, profileId, !status, rule.id);
-                    },
-                  ),
-                );
-              },
-              itemCount: rules.length,
-            ),
+    return Theme(
+      data: editorialLightTheme(context),
+      child: BaseScaffold(
+        flat: true,
+        backgroundColor: EditorialPalette.paper,
+        title: appLocalizations.editGlobalRules,
+        body: rules.isEmpty
+            ? NullStatus(
+                label: appLocalizations.nullTip(appLocalizations.rule),
+                illustration: const RuleEmptyIllustration(),
+              )
+            : ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemExtent: ruleItemHeight,
+                itemBuilder: (context, index) {
+                  final rule = rules[index];
+                  final position = ItemPosition.get(index, rules.length);
+                  return ItemPositionProvider(
+                    position: position,
+                    child: RuleStatusItem(
+                      status: !disabledRuleIds.contains(rule.id),
+                      rule: rule,
+                      onChange: (status) {
+                        _handleChange(ref, profileId, !status, rule.id);
+                      },
+                    ),
+                  );
+                },
+                itemCount: rules.length,
+              ),
+      ),
     );
   }
 }

@@ -345,8 +345,8 @@ class _ProxiesListViewState extends State<ProxiesListView> {
                         children: [
                           Positioned(
                             top: -headerState.offset,
-                            child: GlassSurface(
-                              color: context.colorScheme.surface,
+                            child: Material(
+                              color: EditorialPalette.paper,
                               child: Container(
                                 width: container.maxWidth,
                                 padding: const EdgeInsets.only(

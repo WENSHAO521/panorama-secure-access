@@ -48,6 +48,7 @@ class _AddedRulesViewState extends ConsumerState<AddedRulesView> {
   Future<void> _handleDelete() async {
     final appLocalizations = context.appLocalizations;
     final res = await globalState.showMessage(
+      flat: true,
       title: appLocalizations.tip,
       message: TextSpan(
         text: appLocalizations.deleteMultipTip(appLocalizations.rule),
@@ -76,70 +77,75 @@ class _AddedRulesViewState extends ConsumerState<AddedRulesView> {
         return false;
       },
 
-      child: BaseScaffold(
-        title: appLocalizations.addedRules,
-        actions: [
-          if (selectedRules.isNotEmpty) ...[
-            CommonMinIconButtonTheme(
-              child: IconButton.filledTonal(
-                onPressed: _handleDelete,
-                icon: const Icon(Icons.delete),
-              ),
-            ),
-            const SizedBox(width: 2),
-          ],
-          CommonMinFilledButtonTheme(
-            child: selectedRules.isNotEmpty
-                ? FilledButton(
-                    onPressed: _handleSelectAll,
-                    child: Text(appLocalizations.selectAll),
-                  )
-                : FilledButton.tonal(
-                    onPressed: () {
-                      _handleAddOrUpdate();
-                    },
-                    child: Text(appLocalizations.add),
-                  ),
-          ),
-          const SizedBox(width: 8),
-        ],
-        body: rules.isEmpty
-            ? NullStatus(
-                label: appLocalizations.nullTip(appLocalizations.rule),
-                illustration: const RuleEmptyIllustration(),
-              )
-            : ReorderableList(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 16,
+      child: Theme(
+        data: editorialLightTheme(context),
+        child: BaseScaffold(
+          flat: true,
+          backgroundColor: EditorialPalette.paper,
+          title: appLocalizations.addedRules,
+          actions: [
+            if (selectedRules.isNotEmpty) ...[
+              CommonMinIconButtonTheme(
+                child: IconButton.filledTonal(
+                  onPressed: _handleDelete,
+                  icon: const Icon(Icons.delete),
                 ),
-                itemBuilder: (context, index) {
-                  final rule = rules[index];
-                  final position = ItemPosition.get(index, rules.length);
-                  return ReorderableDelayedDragStartListener(
-                    key: ObjectKey(rule),
-                    index: index,
-                    child: ItemPositionProvider(
-                      position: position,
-                      child: RuleItem(
-                        hasMatch: true,
-                        isEditing: selectedRules.isNotEmpty,
-                        rule: rule,
-                        isSelected: selectedRules.contains(rule.id),
-                        onSelected: () {
-                          _handleSelected(rule.id);
-                        },
-                        onEdit: (Rule rule) {
-                          _handleAddOrUpdate(rule);
-                        },
-                      ),
-                    ),
-                  );
-                },
-                itemExtent: ruleItemHeight,
-                itemCount: rules.length,
-                onReorderItem: ref.read(globalRulesProvider.notifier).order,
               ),
+              const SizedBox(width: 2),
+            ],
+            CommonMinFilledButtonTheme(
+              child: selectedRules.isNotEmpty
+                  ? FilledButton(
+                      onPressed: _handleSelectAll,
+                      child: Text(appLocalizations.selectAll),
+                    )
+                  : FilledButton.tonal(
+                      onPressed: () {
+                        _handleAddOrUpdate();
+                      },
+                      child: Text(appLocalizations.add),
+                    ),
+            ),
+            const SizedBox(width: 8),
+          ],
+          body: rules.isEmpty
+              ? NullStatus(
+                  label: appLocalizations.nullTip(appLocalizations.rule),
+                  illustration: const RuleEmptyIllustration(),
+                )
+              : ReorderableList(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 16,
+                  ),
+                  itemBuilder: (context, index) {
+                    final rule = rules[index];
+                    final position = ItemPosition.get(index, rules.length);
+                    return ReorderableDelayedDragStartListener(
+                      key: ObjectKey(rule),
+                      index: index,
+                      child: ItemPositionProvider(
+                        position: position,
+                        child: RuleItem(
+                          hasMatch: true,
+                          isEditing: selectedRules.isNotEmpty,
+                          rule: rule,
+                          isSelected: selectedRules.contains(rule.id),
+                          onSelected: () {
+                            _handleSelected(rule.id);
+                          },
+                          onEdit: (Rule rule) {
+                            _handleAddOrUpdate(rule);
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                  itemExtent: ruleItemHeight,
+                  itemCount: rules.length,
+                  onReorderItem: ref.read(globalRulesProvider.notifier).order,
+                ),
+        ),
       ),
     );
   }

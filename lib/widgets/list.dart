@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'card.dart';
+import 'editorial.dart';
 import 'glass.dart';
 import 'input.dart';
 import 'scaffold.dart';
@@ -44,6 +45,7 @@ class OpenDelegate<T> extends Delegate {
   final bool blur;
   final bool forceFull;
   final ValueChanged<T?>? onChanged;
+  final Color? backgroundColor;
 
   const OpenDelegate({
     required this.widget,
@@ -51,6 +53,7 @@ class OpenDelegate<T> extends Delegate {
     this.blur = true,
     this.forceFull = true,
     this.onChanged,
+    this.backgroundColor,
   });
 }
 
@@ -328,6 +331,7 @@ class ListItem<T> extends StatelessWidget {
               blur: openDelegate.blur,
               maxWidth: openDelegate.maxWidth,
               forceFull: openDelegate.forceFull,
+              backgroundColor: openDelegate.backgroundColor,
             ),
             builder: (_) {
               return child;
@@ -533,11 +537,31 @@ Widget generateGlassSection({
   List<Widget>? actions,
   bool isFirst = false,
   bool separated = true,
+  // Editorial-minimal variant: a hairline-bordered flat block instead of
+  // a frosted GlassSurface, for screens that have opted into that
+  // redesign direction (see EditorialPalette).
+  bool flat = false,
 }) {
   if (items.isEmpty) return const SizedBox.shrink();
+  final dividerColor = flat ? EditorialPalette.hairline : null;
   final genItems = separated
-      ? items.separated(const Divider(height: 0))
+      ? items.separated(Divider(height: 0, color: dividerColor))
       : items;
+  final body = flat
+      ? Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: EditorialPalette.hairline),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Column(children: [...genItems]),
+        )
+      : GlassSurface(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(children: [...genItems]),
+        );
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 8),
     child: Column(
@@ -551,12 +575,7 @@ Widget generateGlassSection({
                 ? listHeaderPadding.copyWith(top: 8.ap)
                 : listHeaderPadding,
           ),
-        GlassSurface(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(children: [...genItems]),
-        ),
+        body,
       ],
     ),
   );

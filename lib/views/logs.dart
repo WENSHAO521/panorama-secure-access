@@ -76,6 +76,7 @@ class _LogsViewState extends ConsumerState<LogsView> {
     }, title: appLocalizations.exportLogs);
     if (res != true) return;
     globalState.showMessage(
+      flat: true,
       title: appLocalizations.tip,
       message: TextSpan(text: appLocalizations.exportSuccess),
     );
@@ -106,79 +107,91 @@ class _LogsViewState extends ConsumerState<LogsView> {
   @override
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
-    return CommonScaffold(
-      actions: _buildActions(),
-      onKeywordsUpdate: _onKeywordsUpdate,
-      searchState: AppBarSearchState(onSearch: _onSearch),
-      title: appLocalizations.logs,
-      floatingActionButton: ValueListenableBuilder(
-        valueListenable: _logsStateNotifier,
-        builder: (_, state, _) {
-          final autoScrollToEnd = state.autoScrollToEnd;
-          return FadeRotationScaleBox(
-            child: FloatingActionButton(
-              key: ValueKey(autoScrollToEnd),
-              onPressed: () {
-                _logsStateNotifier.value = _logsStateNotifier.value.copyWith(
-                  autoScrollToEnd: !_logsStateNotifier.value.autoScrollToEnd,
-                );
-              },
-              child: autoScrollToEnd
-                  ? const Icon(Icons.block)
-                  : const Icon(Icons.vertical_align_top),
-            ),
-          );
-        },
-      ),
-      body: ValueListenableBuilder<LogsState>(
-        valueListenable: _logsStateNotifier,
-        builder: (context, state, _) {
-          final logs = state.list;
-          if (logs.isEmpty) {
-            return NullStatus(
-              illustration: const LogEmptyIllustration(),
-              label: appLocalizations.nullTip(appLocalizations.logs),
+    return Theme(
+      data: editorialLightTheme(context),
+      child: CommonScaffold(
+        flat: true,
+        backgroundColor: EditorialPalette.paper,
+        actions: _buildActions(),
+        onKeywordsUpdate: _onKeywordsUpdate,
+        searchState: AppBarSearchState(onSearch: _onSearch),
+        title: appLocalizations.logs,
+        floatingActionButton: ValueListenableBuilder(
+          valueListenable: _logsStateNotifier,
+          builder: (_, state, _) {
+            final autoScrollToEnd = state.autoScrollToEnd;
+            return FadeRotationScaleBox(
+              child: FloatingActionButton(
+                key: ValueKey(autoScrollToEnd),
+                backgroundColor: EditorialPalette.accent,
+                foregroundColor: Colors.white,
+                onPressed: () {
+                  _logsStateNotifier.value = _logsStateNotifier.value.copyWith(
+                    autoScrollToEnd: !_logsStateNotifier.value.autoScrollToEnd,
+                  );
+                },
+                child: autoScrollToEnd
+                    ? const Icon(Icons.block)
+                    : const Icon(Icons.vertical_align_top),
+              ),
             );
-          }
-          final items = logs
-              .map<Widget>(
-                (log) => LogItem(
-                  key: Key(log.dateTime),
-                  log: log,
-                  onClick: (value) {
-                    context.commonScaffoldState?.addKeyword(value);
-                  },
-                ),
-              )
-              .separated(const Divider(height: 0))
-              .toList();
-          return Align(
-            alignment: Alignment.topCenter,
-            child: ScrollToEndBox(
-              onCancelToEnd: () {
-                _logsStateNotifier.value = _logsStateNotifier.value.copyWith(
-                  autoScrollToEnd: false,
-                );
-              },
-              controller: _scrollController,
-              enable: state.autoScrollToEnd,
-              dataSource: logs,
-              child: CommonScrollBar(
+          },
+        ),
+        // No opaque Container wrapper (see backgroundColor above) — it
+        // would sit between LogItem's ListTile and the Scaffold's Material
+        // ancestor and hide its ink/background painting.
+        body: ValueListenableBuilder<LogsState>(
+          valueListenable: _logsStateNotifier,
+          builder: (context, state, _) {
+            final logs = state.list;
+            if (logs.isEmpty) {
+              return NullStatus(
+                illustration: const LogEmptyIllustration(),
+                label: appLocalizations.nullTip(appLocalizations.logs),
+              );
+            }
+            final items = logs
+                .map<Widget>(
+                  (log) => LogItem(
+                    key: Key(log.dateTime),
+                    log: log,
+                    onClick: (value) {
+                      context.commonScaffoldState?.addKeyword(value);
+                    },
+                  ),
+                )
+                .separated(
+                  const Divider(height: 0, color: EditorialPalette.hairline),
+                )
+                .toList();
+            return Align(
+              alignment: Alignment.topCenter,
+              child: ScrollToEndBox(
+                onCancelToEnd: () {
+                  _logsStateNotifier.value = _logsStateNotifier.value.copyWith(
+                    autoScrollToEnd: false,
+                  );
+                },
                 controller: _scrollController,
-                child: SuperListView.builder(
-                  physics: const NextClampingScrollPhysics(),
-                  reverse: true,
-                  shrinkWrap: true,
+                enable: state.autoScrollToEnd,
+                dataSource: logs,
+                child: CommonScrollBar(
                   controller: _scrollController,
-                  itemBuilder: (_, index) {
-                    return items[index];
-                  },
-                  itemCount: items.length,
+                  child: SuperListView.builder(
+                    physics: const NextClampingScrollPhysics(),
+                    reverse: true,
+                    shrinkWrap: true,
+                    controller: _scrollController,
+                    itemBuilder: (_, index) {
+                      return items[index];
+                    },
+                    itemCount: items.length,
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -198,7 +211,9 @@ class LogItem extends StatelessWidget {
       title: SelectableText(
         log.payload,
         style: context.textTheme.bodyLarge?.copyWith(
-          color: log.logLevel.color(context),
+          fontFamily: FontFamily.jetBrainsMono.value,
+          fontSize: 13,
+          color: log.logLevel.color(context) ?? EditorialPalette.ink,
         ),
       ),
       subtitle: Column(
@@ -216,8 +231,10 @@ class LogItem extends StatelessWidget {
               ),
               Text(
                 log.dateTime,
-                style: context.textTheme.bodySmall?.copyWith(
-                  color: context.colorScheme.onSurface.opacity80,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: FontFamily.jetBrainsMono.value,
+                  color: EditorialPalette.muted,
                 ),
               ),
             ],

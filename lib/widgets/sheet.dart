@@ -6,6 +6,7 @@ import 'package:fl_clash/widgets/inherited.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'editorial.dart';
 import 'glass.dart';
 import 'scaffold.dart';
 import 'side_sheet.dart';
@@ -35,12 +36,14 @@ class ExtendProps {
   final bool useSafeArea;
   final bool blur;
   final bool forceFull;
+  final Color? backgroundColor;
 
   const ExtendProps({
     this.maxWidth,
     this.useSafeArea = true,
     this.blur = true,
     this.forceFull = false,
+    this.backgroundColor,
   });
 }
 
@@ -110,12 +113,14 @@ Future<T?> showExtend<T>(
     false => showModalSideSheet<T>(
       useSafeArea: props.useSafeArea,
       context: context,
-      backgroundColor: context.colorScheme.surface.withValues(
-        alpha: GlassTokens.opacityFor(
-          GlassSurfaceType.modal,
-          context.colorScheme.brightness,
-        ),
-      ),
+      backgroundColor:
+          props.backgroundColor ??
+          context.colorScheme.surface.withValues(
+            alpha: GlassTokens.opacityFor(
+              GlassSurfaceType.modal,
+              context.colorScheme.brightness,
+            ),
+          ),
       constraints: BoxConstraints(maxWidth: props.maxWidth ?? 360),
       filter: props.blur ? commonFilter : null,
       builder: (context) {
@@ -134,6 +139,11 @@ class AdaptiveSheetScaffold extends StatefulWidget {
   final bool sheetTransparentToolBar;
   final List<IconButtonData> actions;
   final VoidCallback? backAction;
+  // Editorial-minimal variant: a flat paper sheet instead of the glass
+  // modal/chrome, for sheets opened from a screen that has opted into
+  // that redesign direction. Wrap the caller in editorialLightTheme too
+  // (see EditorialPalette) so text/icon colors inside stay legible.
+  final bool flat;
 
   const AdaptiveSheetScaffold({
     super.key,
@@ -142,6 +152,7 @@ class AdaptiveSheetScaffold extends StatefulWidget {
     this.sheetTransparentToolBar = false,
     this.actions = const [],
     this.backAction,
+    this.flat = false,
   });
 
   @override
@@ -310,71 +321,87 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
         leading: suffixPop ? null : popButton,
         actions: !suffixPop ? actions : [?popButton],
       );
-      // Exactly one physical blur for the whole sheet (header + body). The
-      // scroll-driven "solidify" effect below only shifts the header's own
-      // tint on top of this shared glass — it must NOT add a second
-      // BackdropFilter, or the sheet would double-blur its own header.
-      return GlassSurface.modal(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-        ),
-        color: glassColor,
-        boxShadow: GlassTokens.modalShadowFor(colorScheme.brightness),
-        child: SafeArea(
-          top: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (!widget.sheetTransparentToolBar) ...[
-                header,
-                Flexible(child: widget.body),
-              ] else ...[
-                Flexible(
-                  child: Stack(
-                    children: [
-                      NotificationListener<ScrollNotification>(
-                        child: widget.body,
-                        onNotification: (notification) {
-                          if (notification is ScrollUpdateNotification) {
-                            final pixels = notification.metrics.pixels;
-                            _isScrolledController.value = pixels > 6;
-                          }
-                          return false;
+      final scrolledTint = widget.flat
+          ? EditorialPalette.paper
+          : glassColor.opacity60;
+      final content = SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!widget.sheetTransparentToolBar) ...[
+              header,
+              Flexible(child: widget.body),
+            ] else ...[
+              Flexible(
+                child: Stack(
+                  children: [
+                    NotificationListener<ScrollNotification>(
+                      child: widget.body,
+                      onNotification: (notification) {
+                        if (notification is ScrollUpdateNotification) {
+                          final pixels = notification.metrics.pixels;
+                          _isScrolledController.value = pixels > 6;
+                        }
+                        return false;
+                      },
+                    ),
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: ValueListenableBuilder(
+                        valueListenable: _isScrolledController,
+                        builder: (_, isScrolled, child) {
+                          return ColoredBox(
+                            color: isScrolled
+                                ? scrolledTint
+                                : Colors.transparent,
+                            child: child,
+                          );
                         },
+                        child: header,
                       ),
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        child: ValueListenableBuilder(
-                          valueListenable: _isScrolledController,
-                          builder: (_, isScrolled, child) {
-                            return ColoredBox(
-                              color: isScrolled
-                                  ? glassColor.opacity60
-                                  : Colors.transparent,
-                              child: child,
-                            );
-                          },
-                          child: header,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-              SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+              ),
             ],
-          ),
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+          ],
         ),
       );
+      const sheetShape = RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      );
+      // Editorial-minimal sheets get a flat opaque fill; everything else
+      // keeps the single physical blur for the whole sheet (header +
+      // body) — the scroll-driven "solidify" effect above only shifts
+      // the header's own tint on top of that shared glass, it must NOT
+      // add a second BackdropFilter, or the sheet would double-blur its
+      // own header.
+      return widget.flat
+          ? Material(
+              color: EditorialPalette.paper,
+              shape: sheetShape,
+              clipBehavior: Clip.antiAlias,
+              child: content,
+            )
+          : GlassSurface.modal(
+              shape: sheetShape,
+              color: glassColor,
+              boxShadow: GlassTokens.modalShadowFor(colorScheme.brightness),
+              child: content,
+            );
     }
 
     final appBar = AppBar(
-      backgroundColor: Colors.transparent,
+      backgroundColor: widget.flat
+          ? EditorialPalette.paper
+          : Colors.transparent,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
-      forceMaterialTransparency: true,
+      forceMaterialTransparency: !widget.flat,
       // suffixPop: a side sheet with no caller-supplied actions and a
       // closeable (not back-navigable) state moves the close button into
       // the trailing slot instead of leading, matching the bottom-sheet
@@ -387,13 +414,25 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
       // Left-aligned next to the back arrow can never collide.
       centerTitle: type != SheetType.page,
       titleSpacing: 16,
-      title: Text(widget.title, overflow: TextOverflow.ellipsis),
-      actions: genActions(!suffixPop ? actions : [?popButton]),
-      flexibleSpace: LiquidGlassChrome(
-        color: glassColor,
-        edge: LiquidGlassChromeEdge.bottom,
+      title: Text(
+        widget.title,
+        overflow: TextOverflow.ellipsis,
+        style: widget.flat
+            ? editorialSerif(size: 18, weight: FontWeight.w600)
+            : null,
       ),
+      actions: genActions(!suffixPop ? actions : [?popButton]),
+      flexibleSpace: widget.flat
+          ? null
+          : LiquidGlassChrome(
+              color: glassColor,
+              edge: LiquidGlassChromeEdge.bottom,
+            ),
     );
-    return CommonScaffold(appBar: appBar, body: widget.body);
+    return CommonScaffold(
+      appBar: appBar,
+      backgroundColor: widget.flat ? EditorialPalette.paper : null,
+      body: widget.body,
+    );
   }
 }

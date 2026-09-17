@@ -35,18 +35,23 @@ class HomePage extends StatelessWidget {
                   final isMobile = state.viewMode == ViewMode.mobile;
                   final navigationItems = state.navigationItems;
                   final currentIndex = state.currentIndex;
-                  final bottomNavigationBar = LiquidGlassChrome(
-                    edge: LiquidGlassChromeEdge.top,
+                  final bottomNavigationBar = Container(
+                    decoration: const BoxDecoration(
+                      color: EditorialPalette.paper,
+                      border: Border(
+                        top: BorderSide(color: EditorialPalette.hairline),
+                      ),
+                    ),
                     child: NavigationBarTheme(
                       data: _NavigationBarDefaultsM3(context),
                       child: NavigationBar(
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
                         destinations: navigationItems
                             .map(
                               (e) => NavigationDestination(
                                 icon: e.icon,
-                                selectedIcon: LiquidGlassSelectedIcon(
-                                  icon: e.icon,
-                                ),
+                                selectedIcon: e.icon,
                                 label: Intl.message(e.label.name),
                               ),
                             )
@@ -249,13 +254,10 @@ class _NavigationBarDefaultsM3 extends NavigationBarThemeData {
       );
 
   final BuildContext context;
-  late final ColorScheme _colors = Theme.of(context).colorScheme;
   late final TextTheme _textTheme = Theme.of(context).textTheme;
 
-  // Transparent: the surrounding LiquidGlassChrome (see HomePage) now owns
-  // the blur/tint/illumination/edge — painting a second, flat-color fill
-  // here would sit on top of that layered material and flatten it back
-  // into a plain tinted rectangle.
+  // The surrounding Container (see HomePage) already paints the flat
+  // paper background + hairline border, so this stays transparent.
   @override
   Color? get backgroundColor => Colors.transparent;
 
@@ -270,25 +272,22 @@ class _NavigationBarDefaultsM3 extends NavigationBarThemeData {
     return WidgetStateProperty.resolveWith((Set<WidgetState> states) {
       return IconThemeData(
         size: 24.0,
-        // Was onSecondaryContainer, paired with the old solid
-        // secondaryContainer indicator pill. The indicator is now a soft
-        // primary-tinted wash (GlassTokens.navIndicatorColorFor), so the
-        // selected icon follows suit instead of pairing with a container
-        // colour that's no longer what's actually behind it.
         color: states.contains(WidgetState.disabled)
-            ? _colors.onSurfaceVariant.opacity38
+            ? EditorialPalette.muted.opacity38
             : states.contains(WidgetState.selected)
-            ? _colors.primary
-            : _colors.onSurfaceVariant,
+            ? EditorialPalette.accent
+            : EditorialPalette.muted,
       );
     });
   }
 
   @override
-  Color? get indicatorColor => GlassTokens.navIndicatorColorFor(_colors);
+  Color? get indicatorColor => EditorialPalette.accent.opacity12;
 
   @override
-  ShapeBorder? get indicatorShape => GlassTokens.navIndicatorShape;
+  ShapeBorder? get indicatorShape => const RoundedRectangleBorder(
+    borderRadius: BorderRadius.all(Radius.circular(10)),
+  );
 
   @override
   WidgetStateProperty<TextStyle?>? get labelTextStyle {
@@ -297,10 +296,10 @@ class _NavigationBarDefaultsM3 extends NavigationBarThemeData {
       return style.apply(
         overflow: TextOverflow.ellipsis,
         color: states.contains(WidgetState.disabled)
-            ? _colors.onSurfaceVariant.opacity38
+            ? EditorialPalette.muted.opacity38
             : states.contains(WidgetState.selected)
-            ? _colors.onSurface
-            : _colors.onSurfaceVariant,
+            ? EditorialPalette.ink
+            : EditorialPalette.muted,
       );
     });
   }

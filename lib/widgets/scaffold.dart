@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import 'chip.dart';
+import 'editorial.dart';
 import 'glass.dart';
 import 'inherited.dart';
 
@@ -27,6 +28,11 @@ class CommonScaffold extends StatefulWidget {
   final AppBarSearchState? searchState;
   final OnKeywordsUpdateCallback? onKeywordsUpdate;
   final bool? resizeToAvoidBottomInset;
+  // Opt a screen into the flat "editorial minimal" app bar (solid paper
+  // fill, no LiquidGlassChrome) while keeping the search/edit-mode
+  // machinery below, which only lives on the default (non-custom
+  // `appBar:`) app bar this widget builds itself.
+  final bool flat;
 
   const CommonScaffold({
     super.key,
@@ -42,6 +48,7 @@ class CommonScaffold extends StatefulWidget {
     this.floatingActionButton,
     this.onKeywordsUpdate,
     this.resizeToAvoidBottomInset,
+    this.flat = false,
   });
 
   @override
@@ -283,14 +290,18 @@ class CommonScaffoldState extends State<CommonScaffold> {
                           : true,
                       animateColor: true,
                       centerTitle: widget.centerTitle ?? false,
-                      backgroundColor: Colors.transparent,
+                      backgroundColor: widget.flat
+                          ? EditorialPalette.paper
+                          : Colors.transparent,
                       surfaceTintColor: Colors.transparent,
                       elevation: 0,
                       scrolledUnderElevation: 0,
-                      flexibleSpace: LiquidGlassChrome(
-                        color: context.colorScheme.surface,
-                        edge: LiquidGlassChromeEdge.bottom,
-                      ),
+                      flexibleSpace: widget.flat
+                          ? null
+                          : LiquidGlassChrome(
+                              color: context.colorScheme.surface,
+                              edge: LiquidGlassChromeEdge.bottom,
+                            ),
                       leading: _buildLeading(backAction),
                       title: _buildTitle(state.searchState),
                       actions: _buildActions(
@@ -403,16 +414,26 @@ class BaseScaffold extends StatelessWidget {
   final String title;
   final List<Widget> actions;
   final Widget body;
+  final bool flat;
+  final Color? backgroundColor;
 
   const BaseScaffold({
     super.key,
     required this.title,
     this.actions = const [],
     required this.body,
+    this.flat = false,
+    this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
-    return CommonScaffold(body: body, title: title, actions: actions);
+    return CommonScaffold(
+      body: body,
+      title: title,
+      actions: actions,
+      flat: flat,
+      backgroundColor: backgroundColor,
+    );
   }
 }

@@ -46,6 +46,7 @@ class DeveloperView extends ConsumerWidget {
             minVerticalPadding: 12,
             onTap: () async {
               final res = await globalState.showMessage(
+                flat: true,
                 message: TextSpan(text: appLocalizations.confirmForceCrashCore),
               );
               if (res != true) {
@@ -59,6 +60,7 @@ class DeveloperView extends ConsumerWidget {
           minVerticalPadding: 12,
           onTap: () async {
             final res = await globalState.showMessage(
+              flat: true,
               message: TextSpan(text: appLocalizations.confirmClearAllData),
             );
             if (res != true) {
@@ -97,33 +99,38 @@ class DeveloperView extends ConsumerWidget {
     final enable = ref.watch(
       appSettingProvider.select((state) => state.developerMode),
     );
-    return BaseScaffold(
-      title: appLocalizations.developerMode,
-      body: SingleChildScrollView(
-        padding: baseInfoEdgeInsets,
-        child: Column(
-          children: [
-            CommonCard(
-              type: CommonCardType.filled,
-              radius: 18,
-              child: ListItem.switchItem(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                title: Text(appLocalizations.developerMode),
-                delegate: SwitchDelegate(
-                  value: enable,
-                  onChanged: (value) {
-                    ref
-                        .read(appSettingProvider.notifier)
-                        .update(
-                          (state) => state.copyWith(developerMode: value),
-                        );
-                  },
+    return Theme(
+      data: editorialLightTheme(context),
+      child: BaseScaffold(
+        flat: true,
+        backgroundColor: EditorialPalette.paper,
+        title: appLocalizations.developerMode,
+        body: SingleChildScrollView(
+          padding: baseInfoEdgeInsets,
+          child: Column(
+            children: [
+              CommonCard(
+                type: CommonCardType.filled,
+                radius: 18,
+                child: ListItem.switchItem(
+                  padding: const EdgeInsets.only(left: 16, right: 16),
+                  title: Text(appLocalizations.developerMode),
+                  delegate: SwitchDelegate(
+                    value: enable,
+                    onChanged: (value) {
+                      ref
+                          .read(appSettingProvider.notifier)
+                          .update(
+                            (state) => state.copyWith(developerMode: value),
+                          );
+                    },
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            _getDeveloperList(context, ref),
-          ],
+              const SizedBox(height: 16),
+              _getDeveloperList(context, ref),
+            ],
+          ),
         ),
       ),
     );

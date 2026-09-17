@@ -53,11 +53,21 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
               onPressed: () {
                 showSheet(
                   context: context,
-                  props: const SheetProps(isScrollControlled: true),
+                  props: const SheetProps(
+                    isScrollControlled: true,
+                    blur: false,
+                    backgroundColor: EditorialPalette.paper,
+                  ),
                   builder: (_) {
-                    return AdaptiveSheetScaffold(
-                      body: const ProxiesSetting(),
-                      title: appLocalizations.settings,
+                    // A pushed route doesn't inherit a Theme placed inside
+                    // this screen's build() — wrap explicitly.
+                    return Theme(
+                      data: editorialLightTheme(context),
+                      child: AdaptiveSheetScaffold(
+                        flat: true,
+                        body: const ProxiesSetting(),
+                        title: appLocalizations.settings,
+                      ),
                     );
                   },
                 );
@@ -70,8 +80,15 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
                 onPressed: () {
                   showExtend(
                     context,
+                    props: const ExtendProps(
+                      blur: false,
+                      backgroundColor: EditorialPalette.paper,
+                    ),
                     builder: (_) {
-                      return const ProvidersView();
+                      return Theme(
+                        data: editorialLightTheme(context),
+                        child: const ProvidersView(),
+                      );
                     },
                   );
                 },
@@ -138,18 +155,31 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
       proxiesStyleSettingProvider.select((state) => state.type),
     );
     final isLoading = ref.watch(loadingProvider(LoadingTag.proxies));
-    return CommonScaffold(
-      key: _scaffoldKey,
-      isLoading: isLoading,
-      resizeToAvoidBottomInset: false,
-      floatingActionButton: _buildFAB(),
-      actions: _buildActions(context),
-      title: context.appLocalizations.proxies,
-      searchState: AppBarSearchState(onSearch: _onSearch),
-      body: switch (proxiesType) {
-        ProxiesType.tab => ProxiesTabView(key: _proxiesTabKey),
-        ProxiesType.list => const ProxiesListView(),
-      },
+    // Shell-only for now: the flat paper background + app bar match the
+    // rest of the redesign, but the group/proxy list beneath it keeps its
+    // current styling. That list's sticky-header and virtualized-scroll
+    // math (see ListHeader/listHeaderHeight in list.dart and tab.dart)
+    // is keyed to exact pixel heights of the existing cards — reskinning
+    // it needs those constants reworked in lockstep, which is riskier
+    // than this pass should take on for the app's most load-bearing
+    // screen (proxy selection + delay testing).
+    return Theme(
+      data: editorialLightTheme(context),
+      child: CommonScaffold(
+        key: _scaffoldKey,
+        flat: true,
+        backgroundColor: EditorialPalette.paper,
+        isLoading: isLoading,
+        resizeToAvoidBottomInset: false,
+        floatingActionButton: _buildFAB(),
+        actions: _buildActions(context),
+        title: context.appLocalizations.proxies,
+        searchState: AppBarSearchState(onSearch: _onSearch),
+        body: switch (proxiesType) {
+          ProxiesType.tab => ProxiesTabView(key: _proxiesTabKey),
+          ProxiesType.list => const ProxiesListView(),
+        },
+      ),
     );
   }
 }

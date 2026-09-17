@@ -188,162 +188,174 @@ class _EditorPageState extends ConsumerState<EditorPage> {
         }
         return false;
       },
-      child: CommonScaffold(
-        appBar: AppBar(
-          title: TextField(
-            maxLength: 20,
-            enabled: widget.titleEditable,
-            controller: _titleController,
-            decoration: InputDecoration(
-              filled: false,
-              border: const NoInputBorder(),
-              counter: const SizedBox(),
-              hintText: appLocalizations.unnamed,
+      child: Theme(
+        data: editorialLightTheme(context),
+        child: CommonScaffold(
+          backgroundColor: EditorialPalette.paper,
+          appBar: AppBar(
+            backgroundColor: EditorialPalette.paper,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            title: TextField(
+              maxLength: 20,
+              enabled: widget.titleEditable,
+              controller: _titleController,
+              decoration: InputDecoration(
+                filled: false,
+                border: const NoInputBorder(),
+                counter: const SizedBox(),
+                hintText: appLocalizations.unnamed,
+              ),
+              style: context.textTheme.titleLarge,
+              autofocus: false,
             ),
-            style: context.textTheme.titleLarge,
-            autofocus: false,
-          ),
-          actions: genActions([
-            if (!readOnly)
+            actions: genActions([
+              if (!readOnly)
+                _wrapController(
+                  (value) => _wrapTitleController(
+                    (value) => IconButton(
+                      onPressed:
+                          _controller.text != widget.content ||
+                              _titleController.text != widget.title
+                          ? () {
+                              widget.onSave!(
+                                context,
+                                _titleController.text,
+                                _controller.text,
+                              );
+                            }
+                          : null,
+                      icon: const Icon(Icons.save),
+                    ),
+                  ),
+                ),
               _wrapController(
-                (value) => _wrapTitleController(
-                  (value) => IconButton(
-                    onPressed:
-                        _controller.text != widget.content ||
-                            _titleController.text != widget.title
-                        ? () {
-                            widget.onSave!(
-                              context,
-                              _titleController.text,
-                              _controller.text,
-                            );
-                          }
-                        : null,
-                    icon: const Icon(Icons.save),
+                (value) => CommonPopupBox(
+                  targetBuilder: (open) {
+                    return IconButton(
+                      onPressed: () {
+                        final isMobile = ref.read(isMobileViewProvider);
+                        open(offset: Offset(0, isMobile ? 0 : 20));
+                      },
+                      icon: const Icon(Icons.more_vert),
+                    );
+                  },
+                  popup: CommonPopupMenu(
+                    items: [
+                      PopupMenuItemData(
+                        icon: Icons.search,
+                        label: appLocalizations.search,
+                        onPressed: _handleSearch,
+                      ),
+                      PopupMenuItemData(
+                        icon: Icons.undo,
+                        label: appLocalizations.undo,
+                        onPressed: _controller.canUndo
+                            ? _controller.undo
+                            : null,
+                      ),
+                      PopupMenuItemData(
+                        icon: Icons.redo,
+                        label: appLocalizations.redo,
+                        onPressed: _controller.canRedo
+                            ? _controller.redo
+                            : null,
+                      ),
+                      if (widget.supportRemoteDownload && !readOnly)
+                        PopupMenuItemData(
+                          icon: Icons.arrow_downward,
+                          label: appLocalizations.externalFetch,
+                          subItems: [
+                            PopupMenuItemData(
+                              label: appLocalizations.importUrl,
+                              onPressed: _handleImportFormUrl,
+                            ),
+                            PopupMenuItemData(
+                              label: appLocalizations.importFile,
+                              onPressed: _handleImportFormFile,
+                            ),
+                          ],
+                        ),
+                    ],
                   ),
                 ),
               ),
-            _wrapController(
-              (value) => CommonPopupBox(
-                targetBuilder: (open) {
-                  return IconButton(
-                    onPressed: () {
-                      final isMobile = ref.read(isMobileViewProvider);
-                      open(offset: Offset(0, isMobile ? 0 : 20));
-                    },
-                    icon: const Icon(Icons.more_vert),
+            ]),
+          ),
+          body: Stack(
+            children: [
+              CodeEditor(
+                readOnly: readOnly,
+                autofocus: false,
+                showCursorWhenReadOnly: false,
+                findController: _findController,
+                findBuilder: (context, controller, readOnly) => FindPanel(
+                  controller: controller,
+                  readOnly: readOnly,
+                  isMobileView: isMobileView,
+                ),
+                padding: const EdgeInsets.only(right: 16),
+                autocompleteSymbols: true,
+                focusNode: _focusNode,
+                scrollbarBuilder: (context, child, details) {
+                  return CommonScrollBar(
+                    controller: details.controller,
+                    child: child,
                   );
                 },
-                popup: CommonPopupMenu(
-                  items: [
-                    PopupMenuItemData(
-                      icon: Icons.search,
-                      label: appLocalizations.search,
-                      onPressed: _handleSearch,
-                    ),
-                    PopupMenuItemData(
-                      icon: Icons.undo,
-                      label: appLocalizations.undo,
-                      onPressed: _controller.canUndo ? _controller.undo : null,
-                    ),
-                    PopupMenuItemData(
-                      icon: Icons.redo,
-                      label: appLocalizations.redo,
-                      onPressed: _controller.canRedo ? _controller.redo : null,
-                    ),
-                    if (widget.supportRemoteDownload && !readOnly)
-                      PopupMenuItemData(
-                        icon: Icons.arrow_downward,
-                        label: appLocalizations.externalFetch,
-                        subItems: [
-                          PopupMenuItemData(
-                            label: appLocalizations.importUrl,
-                            onPressed: _handleImportFormUrl,
+                toolbarController: _toolbarController,
+                indicatorBuilder:
+                    (context, editingController, chunkController, notifier) {
+                      return Row(
+                        children: [
+                          DefaultCodeLineNumber(
+                            controller: editingController,
+                            notifier: notifier,
                           ),
-                          PopupMenuItemData(
-                            label: appLocalizations.importFile,
-                            onPressed: _handleImportFormFile,
+                          DefaultCodeChunkIndicator(
+                            width: 20,
+                            controller: chunkController,
+                            notifier: notifier,
                           ),
                         ],
-                      ),
-                  ],
+                      );
+                    },
+                shortcutsActivatorsBuilder:
+                    const DefaultCodeShortcutsActivatorsBuilder(),
+                controller: _controller,
+                style: CodeEditorStyle(
+                  fontSize: context.textTheme.bodyLarge?.fontSize?.ap,
+                  fontFamily: FontFamily.jetBrainsMono.value,
+                  codeTheme: CodeHighlightTheme(
+                    languages: {
+                      if (widget.languages.contains(Language.yaml))
+                        'yaml': CodeHighlightThemeMode(mode: langYaml),
+                      if (widget.languages.contains(Language.javaScript))
+                        'javascript': CodeHighlightThemeMode(
+                          mode: langJavascript,
+                        ),
+                      if (widget.languages.contains(Language.json))
+                        'json': CodeHighlightThemeMode(mode: langJson),
+                    },
+                    theme: atomOneLightTheme,
+                  ),
                 ),
               ),
-            ),
-          ]),
-        ),
-        body: Stack(
-          children: [
-            CodeEditor(
-              readOnly: readOnly,
-              autofocus: false,
-              showCursorWhenReadOnly: false,
-              findController: _findController,
-              findBuilder: (context, controller, readOnly) => FindPanel(
-                controller: controller,
-                readOnly: readOnly,
-                isMobileView: isMobileView,
-              ),
-              padding: const EdgeInsets.only(right: 16),
-              autocompleteSymbols: true,
-              focusNode: _focusNode,
-              scrollbarBuilder: (context, child, details) {
-                return CommonScrollBar(
-                  controller: details.controller,
-                  child: child,
-                );
-              },
-              toolbarController: _toolbarController,
-              indicatorBuilder:
-                  (context, editingController, chunkController, notifier) {
-                    return Row(
-                      children: [
-                        DefaultCodeLineNumber(
-                          controller: editingController,
-                          notifier: notifier,
+              FadeBox(
+                child: widget.content == null
+                    ? Container(
+                        color: context.colorScheme.surface,
+                        alignment: Alignment.center,
+                        child: const SizedBox.square(
+                          dimension: 200,
+                          child: CommonCircleLoading(),
                         ),
-                        DefaultCodeChunkIndicator(
-                          width: 20,
-                          controller: chunkController,
-                          notifier: notifier,
-                        ),
-                      ],
-                    );
-                  },
-              shortcutsActivatorsBuilder:
-                  const DefaultCodeShortcutsActivatorsBuilder(),
-              controller: _controller,
-              style: CodeEditorStyle(
-                fontSize: context.textTheme.bodyLarge?.fontSize?.ap,
-                fontFamily: FontFamily.jetBrainsMono.value,
-                codeTheme: CodeHighlightTheme(
-                  languages: {
-                    if (widget.languages.contains(Language.yaml))
-                      'yaml': CodeHighlightThemeMode(mode: langYaml),
-                    if (widget.languages.contains(Language.javaScript))
-                      'javascript': CodeHighlightThemeMode(
-                        mode: langJavascript,
-                      ),
-                    if (widget.languages.contains(Language.json))
-                      'json': CodeHighlightThemeMode(mode: langJson),
-                  },
-                  theme: atomOneLightTheme,
-                ),
+                      )
+                    : const SizedBox.shrink(),
               ),
-            ),
-            FadeBox(
-              child: widget.content == null
-                  ? Container(
-                      color: context.colorScheme.surface,
-                      alignment: Alignment.center,
-                      child: const SizedBox.square(
-                        dimension: 200,
-                        child: CommonCircleLoading(),
-                      ),
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

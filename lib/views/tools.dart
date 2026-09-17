@@ -46,6 +46,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
 
   Widget _getOtherList(bool enableDeveloperMode) {
     return generateGlassSection(
+      flat: true,
       title: context.appLocalizations.other,
       items: [
         const _DisclaimerItem(),
@@ -57,6 +58,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
 
   Widget _getSettingList() {
     return generateGlassSection(
+      flat: true,
       title: context.appLocalizations.settings,
       items: [
         const _LocaleItem(),
@@ -87,6 +89,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
             return const SizedBox.shrink();
           }
           return generateGlassSection(
+            flat: true,
             title: context.appLocalizations.more,
             items: state.navigationItems.map(_buildNavigationMenuItem),
           );
@@ -95,13 +98,21 @@ class _ToolViewState extends ConsumerState<ToolsView> {
       _getSettingList(),
       _getOtherList(vm2.b),
     ];
-    return CommonScaffold(
-      title: context.appLocalizations.tools,
-      body: ListView.builder(
-        key: toolsStoreKey,
-        itemCount: items.length,
-        itemBuilder: (_, index) => items[index],
-        padding: const EdgeInsets.only(bottom: 20),
+    return Theme(
+      data: editorialLightTheme(context),
+      child: CommonScaffold(
+        flat: true,
+        backgroundColor: EditorialPalette.paper,
+        title: context.appLocalizations.tools,
+        // No opaque Container wrapper (see backgroundColor above) — the
+        // settings rows below are ListTiles and need their Material
+        // ancestor's ink painting to stay visible.
+        body: ListView.builder(
+          key: toolsStoreKey,
+          itemCount: items.length,
+          itemBuilder: (_, index) => items[index],
+          padding: const EdgeInsets.only(bottom: 20),
+        ),
       ),
     );
   }

@@ -1,465 +1,429 @@
-import 'dart:math';
+import 'dart:io';
 
-import 'package:defer_pointer/defer_pointer.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
-import 'widgets/start_button.dart';
-
-typedef _IsEditWidgetBuilder = Widget Function(bool isEdit);
-
-class DashboardView extends ConsumerStatefulWidget {
+// "Direction C — editorial minimal" prototype: this screen alone, in
+// isolation, is restyled to the redesign proposal's flat/ledger look
+// (see EditorialPalette). It intentionally drops the drag-to-customize
+// widget grid the classic dashboard had, in favour of a fixed layout
+// that mirrors the design mockup — everything else in the app (nav
+// rail, other screens' glass surfaces) is untouched for now.
+class DashboardView extends ConsumerWidget {
   const DashboardView({super.key});
 
-  @override
-  ConsumerState<DashboardView> createState() => _DashboardViewState();
-}
-
-class _DashboardViewState extends ConsumerState<DashboardView> {
-  final key = GlobalKey<SuperGridState>();
-  final _isEditNotifier = ValueNotifier<bool>(false);
-  final _addedWidgetsNotifier = ValueNotifier<List<GridItem>>([]);
-
-  @override
-  void dispose() {
-    _isEditNotifier.dispose();
-    _addedWidgetsNotifier.dispose();
-    super.dispose();
-  }
-
-  Widget _buildIsEdit(_IsEditWidgetBuilder builder) {
-    return ValueListenableBuilder(
-      valueListenable: _isEditNotifier,
-      builder: (_, isEdit, _) {
-        return builder(isEdit);
-      },
-    );
-  }
-
-  Future<void> _handleConnection() async {
-    final coreStatus = ref.read(coreStatusProvider);
-    if (coreStatus == CoreStatus.connecting) {
-      return;
-    }
-    final tip = coreStatus == CoreStatus.connected
-        ? context.appLocalizations.forceRestartCoreTip
-        : context.appLocalizations.restartCoreTip;
-    final res = await globalState.showMessage(message: TextSpan(text: tip));
-    if (res != true) {
-      return;
-    }
-    globalState.container.read(coreActionProvider.notifier).restartCore();
-  }
-
-  List<Widget> _buildActions(bool isEdit) {
-    return [
-      if (!isEdit)
-        Consumer(
-          builder: (_, ref, _) {
-            final coreStatus = ref.watch(coreStatusProvider);
-            return _ConnectionStatusBadge(
-              coreStatus: coreStatus,
-              onPressed: _handleConnection,
-            );
-          },
-        ),
-      if (isEdit)
-        ValueListenableBuilder(
-          valueListenable: _addedWidgetsNotifier,
-          builder: (_, addedChildren, child) {
-            if (addedChildren.isEmpty) {
-              return Container();
-            }
-            return child!;
-          },
-          child: IconButton(
-            onPressed: () {
-              _showAddWidgetsModal();
-            },
-            icon: const Icon(Icons.add_circle),
-          ),
-        ),
-      FadeRotationScaleBox(
-        child: isEdit
-            ? IconButton(
-                key: const ValueKey(true),
-                icon: const Icon(Icons.save, key: ValueKey('save-icon')),
-                onPressed: _handleUpdateIsEdit,
-              )
-            : IconButton(
-                key: const ValueKey(false),
-                icon: const Icon(Icons.edit, key: ValueKey('edit-icon')),
-                onPressed: _handleUpdateIsEdit,
-              ),
-      ),
-    ];
-  }
-
-  void _showAddWidgetsModal() {
-    showSheet(
-      builder: (_) {
-        return ValueListenableBuilder(
-          valueListenable: _addedWidgetsNotifier,
-          builder: (_, value, _) {
-            return AdaptiveSheetScaffold(
-              body: _AddDashboardWidgetModal(
-                items: value,
-                onAdd: (gridItem) {
-                  key.currentState?.handleAdd(gridItem);
-                },
-              ),
-              title: context.appLocalizations.add,
-            );
-          },
-        );
-      },
-      context: context,
-    );
-  }
-
-  Future<void> _handleUpdateIsEdit() async {
-    if (_isEditNotifier.value == true) {
-      await _handleSave();
-    }
-    _isEditNotifier.value = !_isEditNotifier.value;
-  }
-
-  Future<void> _handleSave() async {
-    final currentState = key.currentState;
-    if (currentState == null) {
-      return;
-    }
-    if (mounted && currentState.children.isNotEmpty) {
-      await currentState.isTransformCompleter;
-      final dashboardWidgets = currentState.children
-          .map((item) => DashboardWidget.getDashboardWidget(item))
-          .toList();
-      ref
-          .read(appSettingProvider.notifier)
-          .update(
-            (state) => state.copyWith(dashboardWidgets: dashboardWidgets),
-          );
-    }
+  void _handleToPage(PageLabel pageLabel) {
+    globalState.container
+        .read(currentPageLabelProvider.notifier)
+        .toPage(pageLabel);
   }
 
   @override
-  Widget build(BuildContext context) {
-    final dashboardState = ref.watch(dashboardStateProvider);
-    final columns = max(4 * ((dashboardState.contentWidth / 280).ceil()), 8);
-    final spacing = 14.mAp;
-    final children = [
-      ...dashboardState.dashboardWidgets
-          .where(
-            (item) => item.platforms.contains(SupportPlatform.currentPlatform),
-          )
-          .map((item) => item.widget),
-    ];
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _addedWidgetsNotifier.value = DashboardWidget.values
-          .where(
-            (item) =>
-                !children.contains(item.widget) &&
-                item.platforms.contains(SupportPlatform.currentPlatform),
-          )
-          .map((item) => item.widget)
-          .toList();
-    });
-    return _buildIsEdit(
-      (isEdit) => CommonScaffold(
-        title: context.appLocalizations.dashboard,
-        actions: _buildActions(isEdit),
-        floatingActionButton: const StartButton(),
-        body: Align(
-          alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16).copyWith(bottom: 88),
-            child: isEdit
-                ? SystemBackBlock(
-                    child: CommonPopScope(
-                      child: SuperGrid(
-                        key: key,
-                        crossAxisCount: columns,
-                        crossAxisSpacing: spacing,
-                        mainAxisSpacing: spacing,
-                        children: children,
-                        onUpdate: () {
-                          _handleSave();
-                        },
-                      ),
-                      onPop: (context) {
-                        _handleUpdateIsEdit();
-                        return false;
-                      },
-                    ),
-                  )
-                : Grid(
-                    crossAxisCount: columns,
-                    crossAxisSpacing: spacing,
-                    mainAxisSpacing: spacing,
-                    children: children,
-                  ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Compact AppBar-scale connection-status control shown beside the Dashboard
-/// edit action. Deliberately small (matches the neighbouring [IconButton]'s
-/// hit area) and tinted rather than solid-filled, so it reads as glass
-/// status chrome instead of a standalone success badge.
-class _ConnectionStatusBadge extends StatelessWidget {
-  static const double _hitSize = 44;
-  static const double _badgeSize = 40;
-
-  final CoreStatus coreStatus;
-  final VoidCallback onPressed;
-
-  const _ConnectionStatusBadge({
-    required this.coreStatus,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final appLocalizations = context.appLocalizations;
-    final colorScheme = context.colorScheme;
-    final isDark = colorScheme.brightness == Brightness.dark;
-
-    final String tooltip;
-    final Color tint;
-    final double tintAlpha;
-    final BorderSide border;
-    final List<BoxShadow>? glow;
-    final Color iconColor;
-    final Widget icon;
-
-    switch (coreStatus) {
-      case CoreStatus.connected:
-        tooltip = appLocalizations.connected;
-        tint = colorScheme.statusConnected;
-        tintAlpha = isDark ? 0.14 : 0.10;
-        border = BorderSide(
-          color: colorScheme.statusConnected.withValues(
-            alpha: isDark ? 0.37 : 0.28,
+    return Theme(
+      data: editorialLightTheme(context),
+      child: CommonScaffold(
+        backgroundColor: EditorialPalette.paper,
+        appBar: AppBar(
+          backgroundColor: EditorialPalette.paper,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          automaticallyImplyLeading: false,
+          centerTitle: false,
+          title: Text(
+            appLocalizations.dashboard,
+            style: editorialSerif(size: 20, weight: FontWeight.w600),
           ),
-        );
-        glow = [
-          BoxShadow(
-            color: colorScheme.statusConnected.withValues(
-              alpha: isDark ? 0.10 : 0.06,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(24, 4, 24, 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 56,
+                height: 3,
+                margin: const EdgeInsets.only(bottom: 28),
+                color: EditorialPalette.accent,
+              ),
+              const _StatusLine(),
+              const SizedBox(height: 26),
+              const _ModeRow(),
+              const SizedBox(height: 10),
+              const _Ledger(),
+              const SizedBox(height: 28),
+              _SubscriptionFooter(
+                onOpenProfiles: () => _handleToPage(PageLabel.profiles),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StatusLine extends ConsumerWidget {
+  const _StatusLine();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appLocalizations = context.appLocalizations;
+    final coreStatus = ref.watch(coreStatusProvider);
+    final mode = ref.watch(patchClashConfigProvider.select((s) => s.mode));
+    final profile = ref.watch(currentProfileProvider);
+    final selectedNode = profile != null && profile.currentGroupName != null
+        ? profile.selectedMap[profile.currentGroupName]
+        : null;
+    final isStart = ref.watch(isStartProvider);
+    final suspend = ref.watch(suspendProvider);
+    final hasProfile = ref.watch(
+      profilesProvider.select((state) => state.isNotEmpty),
+    );
+
+    final (String statusText, Color dotColor) = switch (coreStatus) {
+      CoreStatus.connected => (
+        appLocalizations.connected,
+        context.colorScheme.statusConnected,
+      ),
+      CoreStatus.connecting => (
+        appLocalizations.connecting,
+        context.colorScheme.statusWarning,
+      ),
+      CoreStatus.disconnected => (
+        appLocalizations.disconnected,
+        EditorialPalette.muted,
+      ),
+    };
+
+    final captionParts = [
+      Intl.message(mode.name),
+      if (selectedNode != null && selectedNode.isNotEmpty) selectedNode,
+    ];
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: 9,
+          height: 9,
+          margin: const EdgeInsets.only(right: 14),
+          decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
+        ),
+        Flexible(
+          child: RichText(
+            overflow: TextOverflow.ellipsis,
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: statusText,
+                  style: editorialSerif(size: 22, weight: FontWeight.w600),
+                ),
+                TextSpan(
+                  text: '  ·  ${captionParts.join('  ·  ')}',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: EditorialPalette.muted,
+                  ),
+                ),
+              ],
             ),
-            blurRadius: 14,
-            spreadRadius: 1,
           ),
-        ];
-        iconColor = colorScheme.statusConnected;
-        icon = const Icon(Icons.check_rounded, size: 24);
-        break;
-      case CoreStatus.connecting:
-        tooltip = appLocalizations.connecting;
-        tint = colorScheme.statusWarning;
-        tintAlpha = isDark ? 0.14 : 0.10;
-        border = BorderSide(
-          color: colorScheme.statusWarning.withValues(
-            alpha: isDark ? 0.32 : 0.26,
+        ),
+        const SizedBox(width: 16),
+        // Deliberately NOT reusing appLocalizations.connected/disconnected
+        // here — that's the headline's word for coreStatus, a different
+        // signal from isStart (the switch below), and the two can
+        // legitimately disagree (e.g. core still shutting down after the
+        // user flips the switch off). Showing uptime instead of a second,
+        // possibly-contradictory status word sidesteps that entirely.
+        if (isStart)
+          Consumer(
+            builder: (_, ref, _) {
+              final runTime = ref.watch(runTimeProvider);
+              return Text(
+                suspend ? appLocalizations.suspended : utils.getTimeText(runTime),
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: EditorialPalette.muted,
+                ),
+              );
+            },
           ),
-        );
-        glow = null;
-        iconColor = colorScheme.statusWarning;
-        icon = SizedBox(
-          width: 18,
-          height: 18,
-          child: CircularProgressIndicator(
-            strokeWidth: 2.2,
-            color: colorScheme.statusWarning,
-          ),
-        );
-        break;
-      case CoreStatus.disconnected:
-        tooltip = appLocalizations.disconnected;
-        tint = colorScheme.onSurfaceVariant;
-        tintAlpha = isDark ? 0.10 : 0.08;
-        border = BorderSide(color: colorScheme.outlineVariant);
-        glow = null;
-        iconColor = colorScheme.onSurfaceVariant;
-        icon = const Icon(Icons.power_settings_new_rounded, size: 22);
-        break;
-    }
-
-    final isInteractive = coreStatus != CoreStatus.connecting;
-
-    return Tooltip(
-      message: tooltip,
-      child: Semantics(
-        label: '${appLocalizations.coreStatus}：$tooltip',
-        button: isInteractive,
-        child: SizedBox(
-          width: _hitSize,
-          height: _hitSize,
-          child: Material(
-            color: Colors.transparent,
-            shape: const CircleBorder(),
-            child: InkWell(
-              customBorder: const CircleBorder(),
-              onTap: isInteractive ? onPressed : null,
-              overlayColor: WidgetStateProperty.resolveWith((states) {
-                if (states.contains(WidgetState.pressed)) {
-                  return tint.withValues(alpha: 0.05);
+        const SizedBox(width: 8),
+        Switch(
+          value: isStart,
+          activeTrackColor: EditorialPalette.accent,
+          onChanged: hasProfile
+              ? (value) {
+                  globalState.container
+                      .read(setupActionProvider.notifier)
+                      .updateStatus(value, isInit: !ref.read(initProvider));
                 }
-                if (states.contains(WidgetState.hovered) ||
-                    states.contains(WidgetState.focused)) {
-                  return tint.withValues(alpha: 0.08);
-                }
-                return null;
-              }),
-              child: Center(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 260),
-                  transitionBuilder: (child, animation) {
-                    final scale = TweenSequence<double>([
-                      TweenSequenceItem(
-                        tween: Tween(
-                          begin: 0.88,
-                          end: 1.04,
-                        ).chain(CurveTween(curve: Curves.easeOut)),
-                        weight: 60,
-                      ),
-                      TweenSequenceItem(
-                        tween: Tween(
-                          begin: 1.04,
-                          end: 1.0,
-                        ).chain(CurveTween(curve: Curves.easeIn)),
-                        weight: 40,
-                      ),
-                    ]).animate(animation);
-                    return FadeTransition(
-                      opacity: animation,
-                      child: ScaleTransition(scale: scale, child: child),
-                    );
-                  },
-                  child: Container(
-                    key: ValueKey(coreStatus),
-                    width: _badgeSize,
-                    height: _badgeSize,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: tint.withValues(alpha: tintAlpha),
-                      border: Border.fromBorderSide(border),
-                      boxShadow: glow,
-                    ),
-                    child: Center(
-                      child: IconTheme.merge(
-                        data: IconThemeData(color: iconColor),
-                        child: icon,
-                      ),
-                    ),
+              : null,
+        ),
+      ],
+    );
+  }
+}
+
+class _ModeRow extends ConsumerWidget {
+  const _ModeRow();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appLocalizations = context.appLocalizations;
+    final mode = ref.watch(patchClashConfigProvider.select((s) => s.mode));
+    return Row(
+      children: [
+        Text(
+          appLocalizations.outboundMode,
+          style: const TextStyle(fontSize: 13, color: EditorialPalette.muted),
+        ),
+        const SizedBox(width: 26),
+        for (final item in Mode.values)
+          Padding(
+            padding: const EdgeInsets.only(right: 22),
+            child: GestureDetector(
+              onTap: () {
+                globalState.container
+                    .read(setupActionProvider.notifier)
+                    .changeMode(item);
+              },
+              child: Container(
+                padding: const EdgeInsets.only(bottom: 3),
+                decoration: item == mode
+                    ? const BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: EditorialPalette.accent,
+                            width: 2,
+                          ),
+                        ),
+                      )
+                    : null,
+                child: Text(
+                  Intl.message(item.name),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: item == mode
+                        ? FontWeight.w600
+                        : FontWeight.w400,
+                    color: item == mode
+                        ? EditorialPalette.ink
+                        : EditorialPalette.muted,
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      ),
+      ],
     );
   }
 }
 
-class _AddDashboardWidgetModal extends StatelessWidget {
-  final List<GridItem> items;
-  final Function(GridItem item) onAdd;
-
-  const _AddDashboardWidgetModal({required this.items, required this.onAdd});
+class _Ledger extends ConsumerWidget {
+  const _Ledger();
 
   @override
-  Widget build(BuildContext context) {
-    return DeferredPointerHandler(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Grid(
-          crossAxisCount: 8,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          children: items
-              .map(
-                (item) => item.wrap(
-                  builder: (child) {
-                    return _AddedContainer(
-                      onAdd: () {
-                        onAdd(item);
-                      },
-                      child: child,
-                    );
-                  },
-                ),
-              )
-              .toList(),
-        ),
-      ),
-    );
-  }
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appLocalizations = context.appLocalizations;
+    final traffics = ref.watch(trafficsProvider).list;
+    final lastTraffic = traffics.isEmpty ? const Traffic() : traffics.last;
+    final totalTraffic = ref.watch(totalTrafficProvider);
+    final localIp = ref.watch(localIpProvider);
+    final networkDetection = ref.watch(networkDetectionProvider);
+    final ipInfo = networkDetection.ipInfo;
 
-class _AddedContainer extends StatefulWidget {
-  final Widget child;
-  final VoidCallback onAdd;
-
-  const _AddedContainer({required this.child, required this.onAdd});
-
-  @override
-  State<_AddedContainer> createState() => _AddedContainerState();
-}
-
-class _AddedContainerState extends State<_AddedContainer> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(_AddedContainer oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.child != widget.child) {}
-  }
-
-  Future<void> _handleAdd() async {
-    widget.onAdd();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
+    return Column(
       children: [
-        ActivateBox(child: widget.child),
-        Positioned(
-          top: -8,
-          right: -8,
-          child: DeferPointer(
-            child: SizedBox(
-              width: 24,
-              height: 24,
-              child: IconButton.filled(
-                iconSize: 20,
-                padding: const EdgeInsets.all(2),
-                onPressed: _handleAdd,
-                icon: const Icon(Icons.add),
-              ),
-            ),
+        LedgerRow(
+          label: appLocalizations.networkSpeed,
+          value: Text(
+            lastTraffic.speedText,
+            style: editorialSerif(size: 17, weight: FontWeight.w400),
+          ),
+        ),
+        LedgerRow(
+          label: appLocalizations.trafficUsage,
+          value: Text(
+            '${totalTraffic.up.traffic.show} ↑  ${totalTraffic.down.traffic.show} ↓',
+            style: editorialSerif(size: 17, weight: FontWeight.w400),
+          ),
+        ),
+        const _MemoryRow(),
+        LedgerRow(
+          label: appLocalizations.intranetIP,
+          value: Text(
+            localIp == null || localIp.isEmpty
+                ? appLocalizations.noNetwork
+                : localIp,
+            style: editorialSerif(size: 17, weight: FontWeight.w400),
+          ),
+        ),
+        LedgerRow(
+          showDivider: false,
+          label: appLocalizations.networkDetection,
+          value: Text(
+            ipInfo?.ip ??
+                (networkDetection.isLoading
+                    ? '···'
+                    : appLocalizations.noNetwork),
+            style: editorialSerif(size: 17, weight: FontWeight.w400),
           ),
         ),
       ],
+    );
+  }
+}
+
+class _MemoryRow extends StatefulWidget {
+  const _MemoryRow();
+
+  @override
+  State<_MemoryRow> createState() => _MemoryRowState();
+}
+
+class _MemoryRowState extends State<_MemoryRow>
+    with WidgetsBindingObserver, ActivePollingMixin<_MemoryRow> {
+  num _memory = 0;
+
+  @override
+  Duration get pollInterval => const Duration(seconds: 2);
+
+  @override
+  Future<void> poll(PollGuard isCurrent) async {
+    final memory = await _readMemory();
+    if (memory == null || !isCurrent() || !mounted) {
+      return;
+    }
+    setState(() {
+      _memory = memory;
+    });
+  }
+
+  Future<num?> _readMemory() async {
+    try {
+      final rss = ProcessInfo.currentRss;
+      final coreConnected =
+          globalState.container.read(coreStatusProvider) ==
+          CoreStatus.connected;
+      if (system.isDesktop && coreConnected) {
+        return await coreController.getMemory() + rss;
+      }
+      return rss;
+    } catch (error) {
+      commonPrint.log(
+        'updateMemory error: $error',
+        logLevel: coreFailureLogLevel(error),
+      );
+      return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final traffic = _memory.traffic;
+    return LedgerRow(
+      label: context.appLocalizations.memoryInfo,
+      value: Text(
+        '${traffic.value} ${traffic.unit}',
+        style: editorialSerif(size: 17, weight: FontWeight.w400),
+      ),
+    );
+  }
+}
+
+class _SubscriptionFooter extends ConsumerWidget {
+  final VoidCallback onOpenProfiles;
+
+  const _SubscriptionFooter({required this.onOpenProfiles});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appLocalizations = context.appLocalizations;
+    final profile = ref.watch(currentProfileProvider);
+    if (profile == null) {
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: GestureDetector(
+          onTap: onOpenProfiles,
+          child: Text(
+            appLocalizations.profiles,
+            style: const TextStyle(
+              fontSize: 13,
+              color: EditorialPalette.ink,
+              decoration: TextDecoration.underline,
+              decorationColor: EditorialPalette.ink,
+            ),
+          ),
+        ),
+      );
+    }
+    return Container(
+      padding: const EdgeInsets.only(top: 22),
+      decoration: const BoxDecoration(
+        border: Border(top: BorderSide(color: EditorialPalette.ink)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  appLocalizations.profiles,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: EditorialPalette.muted,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  profile.label,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: EditorialPalette.ink,
+                  ),
+                ),
+                if (profile.subscriptionInfo != null) ...[
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: 320,
+                    child: SubscriptionInfoView(
+                      subscriptionInfo: profile.subscriptionInfo,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: onOpenProfiles,
+            child: Text(
+              appLocalizations.update,
+              style: const TextStyle(
+                fontSize: 13,
+                color: EditorialPalette.ink,
+                decoration: TextDecoration.underline,
+                decorationColor: EditorialPalette.ink,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -84,78 +84,86 @@ class _RequestsViewState extends ConsumerState<RequestsView> {
   @override
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
-    return CommonScaffold(
-      title: appLocalizations.requests,
-      searchState: AppBarSearchState(onSearch: _onSearch),
-      onKeywordsUpdate: _onKeywordsUpdate,
-      floatingActionButton: ValueListenableBuilder(
-        valueListenable: _requestsStateNotifier,
-        builder: (_, state, _) {
-          final autoScrollToEnd = state.autoScrollToEnd;
-          return FadeRotationScaleBox(
-            child: FloatingActionButton(
-              key: ValueKey(autoScrollToEnd),
-              onPressed: () {
-                _requestsStateNotifier.value = _requestsStateNotifier.value
-                    .copyWith(
-                      autoScrollToEnd:
-                          !_requestsStateNotifier.value.autoScrollToEnd,
-                    );
-              },
-              child: autoScrollToEnd
-                  ? const Icon(Icons.block)
-                  : const Icon(Icons.vertical_align_top),
-            ),
-          );
-        },
-      ),
-      body: ValueListenableBuilder<TrackerInfosState>(
-        valueListenable: _requestsStateNotifier,
-        builder: (context, state, _) {
-          final requests = state.list;
-          if (requests.isEmpty) {
-            return NullStatus(
-              label: appLocalizations.nullTip(appLocalizations.requests),
-            );
-          }
-          return Align(
-            alignment: Alignment.topCenter,
-            child: CommonScrollBar(
-              trackVisibility: false,
-              controller: _scrollController,
-              child: ScrollToEndBox(
-                controller: _scrollController,
-                dataSource: requests,
-                enable: state.autoScrollToEnd,
-                onCancelToEnd: () {
+    return Theme(
+      data: editorialLightTheme(context),
+      child: CommonScaffold(
+        flat: true,
+        backgroundColor: EditorialPalette.paper,
+        title: appLocalizations.requests,
+        searchState: AppBarSearchState(onSearch: _onSearch),
+        onKeywordsUpdate: _onKeywordsUpdate,
+        floatingActionButton: ValueListenableBuilder(
+          valueListenable: _requestsStateNotifier,
+          builder: (_, state, _) {
+            final autoScrollToEnd = state.autoScrollToEnd;
+            return FadeRotationScaleBox(
+              child: FloatingActionButton(
+                key: ValueKey(autoScrollToEnd),
+                onPressed: () {
                   _requestsStateNotifier.value = _requestsStateNotifier.value
-                      .copyWith(autoScrollToEnd: false);
+                      .copyWith(
+                        autoScrollToEnd:
+                            !_requestsStateNotifier.value.autoScrollToEnd,
+                      );
                 },
-                child: SuperListView.separated(
-                  reverse: true,
-                  shrinkWrap: true,
-                  physics: const NextClampingScrollPhysics(),
+                child: autoScrollToEnd
+                    ? const Icon(Icons.block)
+                    : const Icon(Icons.vertical_align_top),
+              ),
+            );
+          },
+        ),
+        body: ValueListenableBuilder<TrackerInfosState>(
+          valueListenable: _requestsStateNotifier,
+          builder: (context, state, _) {
+            final requests = state.list;
+            if (requests.isEmpty) {
+              return NullStatus(
+                label: appLocalizations.nullTip(appLocalizations.requests),
+              );
+            }
+            return Align(
+              alignment: Alignment.topCenter,
+              child: CommonScrollBar(
+                trackVisibility: false,
+                controller: _scrollController,
+                child: ScrollToEndBox(
                   controller: _scrollController,
-                  itemCount: requests.length,
-                  separatorBuilder: (_, _) => const Divider(height: 0),
-                  itemBuilder: (_, index) {
-                    final trackerInfo = requests[index];
-                    return TrackerInfoItem(
-                      key: Key(trackerInfo.id),
-                      trackerInfo: trackerInfo,
-                      onClickKeyword: (value) {
-                        context.commonScaffoldState?.addKeyword(value);
-                      },
-                      detailTitle: appLocalizations.details(
-                        appLocalizations.request,
-                      ),
-                    );
+                  dataSource: requests,
+                  enable: state.autoScrollToEnd,
+                  onCancelToEnd: () {
+                    _requestsStateNotifier.value = _requestsStateNotifier.value
+                        .copyWith(autoScrollToEnd: false);
                   },
+                  child: SuperListView.separated(
+                    reverse: true,
+                    shrinkWrap: true,
+                    physics: const NextClampingScrollPhysics(),
+                    controller: _scrollController,
+                    itemCount: requests.length,
+                    separatorBuilder: (_, _) => const Divider(
+                      height: 0,
+                      color: EditorialPalette.hairline,
+                    ),
+                    itemBuilder: (_, index) {
+                      final trackerInfo = requests[index];
+                      return TrackerInfoItem(
+                        key: Key(trackerInfo.id),
+                        trackerInfo: trackerInfo,
+                        onClickKeyword: (value) {
+                          context.commonScaffoldState?.addKeyword(value);
+                        },
+                        detailTitle: appLocalizations.details(
+                          appLocalizations.request,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

@@ -109,44 +109,38 @@ class _CustomProxyGroupsViewState extends ConsumerState<CustomProxyGroupsView> {
           ).select((state) => VM(state.proxyGroups)),
         )
         .a;
-    return CommonScaffold(
-      title: appLocalizations.proxyGroup,
-      actions: [
-        CommonMinFilledButtonTheme(
-          child: FilledButton(
-            onPressed: _handleAdd,
-            child: Text(appLocalizations.add),
+    // Shell-only, like the Proxies list view: the reorderable list below
+    // uses itemExtent height math this pass doesn't touch, and the
+    // add/edit flow opens its own nested-Navigator sheet
+    // (AddOrEditProxyGroupNestedSheet) that's out of scope for this pass.
+    return Theme(
+      data: editorialLightTheme(context),
+      child: CommonScaffold(
+        flat: true,
+        backgroundColor: EditorialPalette.paper,
+        title: appLocalizations.proxyGroup,
+        actions: [
+          CommonMinFilledButtonTheme(
+            child: FilledButton(
+              onPressed: _handleAdd,
+              child: Text(appLocalizations.add),
+            ),
           ),
-        ),
-        const SizedBox(width: 8),
-      ],
-      body: proxyGroups.isEmpty
-          ? NullStatus(label: appLocalizations.proxyGroupEmpty)
-          : CommonScrollBar(
-              controller: _scrollController,
-              child: ReorderableListView.builder(
-                scrollController: _scrollController,
-                buildDefaultDragHandles: false,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                ).copyWith(bottom: 24),
-                itemBuilder: (context, index) {
-                  final proxyGroup = proxyGroups[index];
-                  return _ProxyGroupItem(
-                    key: ValueKey(proxyGroup.id),
-                    profileId: widget.profileId,
-                    proxyGroup: proxyGroup,
-                    total: proxyGroups.length,
-                    index: index,
-                    onPressed: () {
-                      _handleEditProxyGroup(context, proxyGroup, index);
-                    },
-                  );
-                },
-                proxyDecorator: (child, index, animation) {
-                  final proxyGroup = proxyGroups[index];
-                  return commonProxyDecorator(
-                    _ProxyGroupItem(
+          const SizedBox(width: 8),
+        ],
+        body: proxyGroups.isEmpty
+            ? NullStatus(label: appLocalizations.proxyGroupEmpty)
+            : CommonScrollBar(
+                controller: _scrollController,
+                child: ReorderableListView.builder(
+                  scrollController: _scrollController,
+                  buildDefaultDragHandles: false,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                  ).copyWith(bottom: 24),
+                  itemBuilder: (context, index) {
+                    final proxyGroup = proxyGroups[index];
+                    return _ProxyGroupItem(
                       key: ValueKey(proxyGroup.id),
                       profileId: widget.profileId,
                       proxyGroup: proxyGroup,
@@ -155,21 +149,36 @@ class _CustomProxyGroupsViewState extends ConsumerState<CustomProxyGroupsView> {
                       onPressed: () {
                         _handleEditProxyGroup(context, proxyGroup, index);
                       },
-                    ),
-                    index,
-                    animation,
-                  );
-                },
-                itemCount: proxyGroups.length,
-                itemExtent:
-                    globalState.measure.bodyLargeHeight +
-                    globalState.measure.bodyMediumHeight +
-                    16,
-                onReorderItem: (oldIndex, newIndex) {
-                  _handleReorder(oldIndex, newIndex);
-                },
+                    );
+                  },
+                  proxyDecorator: (child, index, animation) {
+                    final proxyGroup = proxyGroups[index];
+                    return commonProxyDecorator(
+                      _ProxyGroupItem(
+                        key: ValueKey(proxyGroup.id),
+                        profileId: widget.profileId,
+                        proxyGroup: proxyGroup,
+                        total: proxyGroups.length,
+                        index: index,
+                        onPressed: () {
+                          _handleEditProxyGroup(context, proxyGroup, index);
+                        },
+                      ),
+                      index,
+                      animation,
+                    );
+                  },
+                  itemCount: proxyGroups.length,
+                  itemExtent:
+                      globalState.measure.bodyLargeHeight +
+                      globalState.measure.bodyMediumHeight +
+                      16,
+                  onReorderItem: (oldIndex, newIndex) {
+                    _handleReorder(oldIndex, newIndex);
+                  },
+                ),
               ),
-            ),
+      ),
     );
   }
 }
@@ -254,6 +263,7 @@ bool _handleSaveProxyGroup(BuildContext context, WidgetRef ref) {
   final proxyGroup = ref.read(proxyGroupProvider);
   if (proxyGroup.name.isEmpty) {
     globalState.showMessage(
+      flat: true,
       message: TextSpan(text: appLocalizations.proxyGroupNameEmpty),
       cancelable: false,
     );
@@ -271,6 +281,7 @@ bool _handleSaveProxyGroup(BuildContext context, WidgetRef ref) {
       .put(newProxyGroup);
   if (isRepeat == false) {
     globalState.showMessage(
+      flat: true,
       message: TextSpan(text: appLocalizations.proxyGroupNameDuplicate),
       cancelable: false,
     );
@@ -305,6 +316,7 @@ class _AddOrEditProxyGroupNestedSheetState
     final state = _nestedNavigatorKey.currentState;
     if (state != null && state.canPop()) {
       final res = await globalState.showMessage(
+        flat: true,
         message: TextSpan(text: currentAppLocalizations.confirmExitWindow),
       );
       if (res != true) {
@@ -323,6 +335,7 @@ class _AddOrEditProxyGroupNestedSheetState
       return;
     }
     final res = await globalState.showMessage(
+      flat: true,
       message: TextSpan(text: currentAppLocalizations.dataChangedSave),
     );
     if (!mounted) {
@@ -829,6 +842,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
 
   Future<void> _handleDelete(int profileId, String name) async {
     final res = await globalState.showMessage(
+      flat: true,
       message: TextSpan(text: context.appLocalizations.confirmDeleteProxyGroup),
     );
     if (res == true && mounted) {

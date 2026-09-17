@@ -113,12 +113,22 @@ class _AccessViewState extends ConsumerState<AccessView> {
   Future<void> _handleToSetting() async {
     await showSheet<int>(
       context: context,
-      props: const SheetProps(isScrollControlled: true),
+      props: const SheetProps(
+        isScrollControlled: true,
+        blur: false,
+        backgroundColor: EditorialPalette.paper,
+      ),
       builder: (context) {
         final appLocalizations = context.appLocalizations;
-        return AdaptiveSheetScaffold(
-          body: const AccessControlPanel(),
-          title: appLocalizations.accessControlSettings,
+        // A pushed route doesn't inherit a Theme placed inside the
+        // calling screen's build() — wrap explicitly.
+        return Theme(
+          data: editorialLightTheme(context),
+          child: AdaptiveSheetScaffold(
+            flat: true,
+            body: const AccessControlPanel(),
+            title: appLocalizations.accessControlSettings,
+          ),
         );
       },
     );
@@ -145,6 +155,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
   Future<void> _handleBack() async {
     final appLocalizations = context.appLocalizations;
     final res = await globalState.showMessage(
+      flat: true,
       title: appLocalizations.tip,
       message: TextSpan(text: appLocalizations.saveChanges),
     );
@@ -409,31 +420,39 @@ class _AccessViewState extends ConsumerState<AccessView> {
     final currentList = accessControl.currentList;
     final viewPackageNameList = viewPackages.map((e) => e.packageName).toList();
     final valueList = currentList.intersection(viewPackageNameList);
-    return CommonScaffold(
-      key: _scaffoldKey,
-      isLoading: isLoading,
-      searchState: AppBarSearchState(onSearch: _onSearch, autoAddSearch: false),
-      title: context.appLocalizations.appAccessControl,
-      actions: _buildActions(context, enable: accessControl.enable),
-      body: DisabledMask(
-        status: !accessControl.enable,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildBannerBar(mode, valueList.length),
-            const SizedBox(height: 8),
-            Expanded(
-              child: _buildContent(
-                packages: viewPackages,
-                valueList: valueList,
-              ),
-            ),
-          ],
+    return Theme(
+      data: editorialLightTheme(context),
+      child: CommonScaffold(
+        key: _scaffoldKey,
+        flat: true,
+        backgroundColor: EditorialPalette.paper,
+        isLoading: isLoading,
+        searchState: AppBarSearchState(
+          onSearch: _onSearch,
+          autoAddSearch: false,
         ),
-      ),
-      floatingActionButton: _buildSelectedAllButton(
-        isSelectedAll: valueList.length == viewPackageNameList.length,
-        allValueList: viewPackageNameList,
+        title: context.appLocalizations.appAccessControl,
+        actions: _buildActions(context, enable: accessControl.enable),
+        body: DisabledMask(
+          status: !accessControl.enable,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildBannerBar(mode, valueList.length),
+              const SizedBox(height: 8),
+              Expanded(
+                child: _buildContent(
+                  packages: viewPackages,
+                  valueList: valueList,
+                ),
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: _buildSelectedAllButton(
+          isSelectedAll: valueList.length == viewPackageNameList.length,
+          allValueList: viewPackageNameList,
+        ),
       ),
     );
   }
