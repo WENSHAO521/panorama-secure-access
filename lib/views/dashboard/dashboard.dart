@@ -3,13 +3,14 @@ import 'dart:math';
 import 'package:defer_pointer/defer_pointer.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'widgets/start_button.dart';
+import 'widgets/overview.dart';
 
 typedef _IsEditWidgetBuilder = Widget Function(bool isEdit);
 
@@ -100,6 +101,99 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     ];
   }
 
+  AppBar _buildDashboardAppBar({required bool isEdit}) {
+    final colorScheme = context.colorScheme;
+    final appLocalizations = context.appLocalizations;
+    final profile = ref.watch(currentProfileProvider);
+    final themeLabel = colorScheme.brightness == Brightness.dark
+        ? appLocalizations.dark
+        : appLocalizations.light;
+    return AppBar(
+      automaticallyImplyLeading: false,
+      titleSpacing: 36,
+      backgroundColor: colorScheme.surface,
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      title: Row(
+        children: [
+          Text(
+            appLocalizations.dashboardActiveProfile,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(width: 18),
+          Container(
+            width: 9,
+            height: 9,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: colorScheme.statusConnected,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Flexible(
+            child: Text(
+              profile?.realLabel ?? appLocalizations.profile,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: context.textTheme.titleMedium?.copyWith(
+                color: colorScheme.onSurface,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+          Icon(
+            Icons.keyboard_arrow_down_rounded,
+            size: 19,
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ],
+      ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                colorScheme.brightness == Brightness.dark
+                    ? Icons.dark_mode_outlined
+                    : Icons.light_mode_outlined,
+                size: 20,
+                color: colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                themeLabel,
+                style: context.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurface,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.keyboard_arrow_down_rounded,
+                size: 19,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ],
+          ),
+        ),
+        ..._buildActions(isEdit),
+        const SizedBox(width: 16),
+      ],
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(1),
+        child: Divider(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.72),
+          height: 1,
+        ),
+      ),
+    );
+  }
+
   void _showAddWidgetsModal() {
     showSheet(
       builder: (_) {
@@ -171,15 +265,13 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     });
     return _buildIsEdit(
       (isEdit) => CommonScaffold(
-        title: context.appLocalizations.dashboard,
-        actions: _buildActions(isEdit),
-        floatingActionButton: const StartButton(),
-        body: Align(
-          alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16).copyWith(bottom: 88),
-            child: isEdit
-                ? SystemBackBlock(
+        appBar: _buildDashboardAppBar(isEdit: isEdit),
+        body: isEdit
+            ? Align(
+                alignment: Alignment.topCenter,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16).copyWith(bottom: 88),
+                  child: SystemBackBlock(
                     child: CommonPopScope(
                       child: SuperGrid(
                         key: key,
@@ -196,15 +288,10 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
                         return false;
                       },
                     ),
-                  )
-                : Grid(
-                    crossAxisCount: columns,
-                    crossAxisSpacing: spacing,
-                    mainAxisSpacing: spacing,
-                    children: children,
                   ),
-          ),
-        ),
+                ),
+              )
+            : const DashboardOverview(),
       ),
     );
   }

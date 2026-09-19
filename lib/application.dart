@@ -57,8 +57,39 @@ class ApplicationState extends ConsumerState<Application> {
   // (lib/widgets/glass.dart), applied per field, never globally.
   ThemeData _buildThemeData(ColorScheme colorScheme) {
     final brightness = colorScheme.brightness;
+    final isDark = brightness == Brightness.dark;
+    // Keep the user's accent colour for interactive states, but give the
+    // shell a stable paper-and-graphite surface instead of the seed colour's
+    // default lavender/blue Material surfaces.
+    final paperScheme = colorScheme.copyWith(
+      surface: isDark ? const Color(0xFF171A18) : const Color(0xFFF8F7F3),
+      surfaceContainerLowest: isDark
+          ? const Color(0xFF121512)
+          : const Color(0xFFF8F7F3),
+      surfaceContainerLow: isDark
+          ? const Color(0xFF1A1E1A)
+          : const Color(0xFFF8F7F3),
+      surfaceContainer: isDark
+          ? const Color(0xFF202420)
+          : const Color(0xFFF2F1EC),
+      surfaceContainerHigh: isDark
+          ? const Color(0xFF252A25)
+          : const Color(0xFFECEBE5),
+      surfaceContainerHighest: isDark
+          ? const Color(0xFF2B302B)
+          : const Color(0xFFE5E4DE),
+      onSurface: isDark ? const Color(0xFFF0F2EC) : const Color(0xFF1C211D),
+      onSurfaceVariant: isDark
+          ? const Color(0xFFB9C1B8)
+          : const Color(0xFF687069),
+      outline: isDark ? const Color(0xFF768077) : const Color(0xFFB4B9B2),
+      outlineVariant: isDark
+          ? const Color(0xFF3D453E)
+          : const Color(0xFFD5D5CE),
+      surfaceTint: Colors.transparent,
+    );
     final borderSide = BorderSide(
-      color: colorScheme.outlineVariant.withValues(
+      color: paperScheme.outlineVariant.withValues(
         alpha: GlassTokens.borderOpacityFor(brightness),
       ),
     );
@@ -85,15 +116,15 @@ class ApplicationState extends ConsumerState<Application> {
       // painted once behind the app shell (see HomePage) instead of
       // painting its own opaque surface color over it.
       scaffoldBackgroundColor: Colors.transparent,
-      colorScheme: colorScheme,
+      colorScheme: paperScheme,
       chipTheme: ChipThemeData(
         // Chips are lightweight, often-repeated controls, not mini glass
         // panels — a low tint (same family as GlassSurfaceType.repeated)
         // instead of a near-opaque fill.
-        backgroundColor: colorScheme.surfaceContainerHighest.withValues(
+        backgroundColor: paperScheme.surfaceContainerHighest.withValues(
           alpha: GlassTokens.opacityFor(GlassSurfaceType.repeated, brightness),
         ),
-        selectedColor: colorScheme.primary.withValues(alpha: 0.16),
+        selectedColor: paperScheme.primary.withValues(alpha: 0.16),
         side: borderSide,
       ),
       dialogTheme: const DialogThemeData(
@@ -112,7 +143,7 @@ class ApplicationState extends ConsumerState<Application> {
         ),
       ),
       dividerTheme: DividerThemeData(
-        color: colorScheme.outlineVariant.withValues(
+        color: paperScheme.outlineVariant.withValues(
           alpha: GlassTokens.dividerOpacityFor(brightness),
         ),
       ),

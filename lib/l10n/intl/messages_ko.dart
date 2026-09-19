@@ -243,6 +243,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "cut": MessageLookupByLibrary.simpleMessage("잘라내기"),
     "dark": MessageLookupByLibrary.simpleMessage("다크"),
     "dashboard": MessageLookupByLibrary.simpleMessage("대시보드"),
+    "dashboardActiveProfile": MessageLookupByLibrary.simpleMessage("활성 프로필"),
+    "dashboardChangeRoute": MessageLookupByLibrary.simpleMessage("경로 변경"),
+    "dashboardChangeRouteDesc": MessageLookupByLibrary.simpleMessage(
+      "다른 프로필 또는 프록시 경로로 전환합니다.",
+    ),
+    "dashboardLastThirtyMinutes": MessageLookupByLibrary.simpleMessage(
+      "최근 30분",
+    ),
+    "dashboardNetworkTraffic": MessageLookupByLibrary.simpleMessage("네트워크 트래픽"),
+    "dashboardOverviewEyebrow": MessageLookupByLibrary.simpleMessage("개요"),
+    "dashboardOverviewSubtitle": MessageLookupByLibrary.simpleMessage(
+      "트래픽은 Panorama를 통해 라우팅되며 실제 IP는 숨겨집니다.",
+    ),
+    "dashboardOverviewTagline": MessageLookupByLibrary.simpleMessage(
+      "더욱 안전하고 자유로운 인터넷.",
+    ),
+    "dashboardOverviewTitle": MessageLookupByLibrary.simpleMessage("안전하게 연결됨"),
+    "dashboardRoute": MessageLookupByLibrary.simpleMessage("경로"),
+    "dashboardStatusDescription": MessageLookupByLibrary.simpleMessage(
+      "트래픽이 비공개로 안전하게 보호됩니다",
+    ),
+    "dashboardUptime": MessageLookupByLibrary.simpleMessage("가동 시간"),
     "dataChangedSave": MessageLookupByLibrary.simpleMessage(
       "데이터 변경이 감지되었습니다. 저장하시겠습니까?",
     ),

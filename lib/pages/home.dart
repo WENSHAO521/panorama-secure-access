@@ -35,8 +35,19 @@ class HomePage extends StatelessWidget {
                   final isMobile = state.viewMode == ViewMode.mobile;
                   final navigationItems = state.navigationItems;
                   final currentIndex = state.currentIndex;
-                  final bottomNavigationBar = LiquidGlassChrome(
-                    edge: LiquidGlassChromeEdge.top,
+                  final bottomNavigationBar = DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: context.colorScheme.surface,
+                      border: Border(
+                        top: BorderSide(
+                          color: context.colorScheme.outlineVariant.withValues(
+                            alpha: GlassTokens.dividerOpacityFor(
+                              context.colorScheme.brightness,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     child: NavigationBarTheme(
                       data: _NavigationBarDefaultsM3(context),
                       child: NavigationBar(
@@ -44,9 +55,7 @@ class HomePage extends StatelessWidget {
                             .map(
                               (e) => NavigationDestination(
                                 icon: e.icon,
-                                selectedIcon: LiquidGlassSelectedIcon(
-                                  icon: e.icon,
-                                ),
+                                selectedIcon: e.icon,
                                 label: Intl.message(e.label.name),
                               ),
                             )

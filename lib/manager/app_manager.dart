@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/manager/window_manager.dart';
+import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -162,8 +162,16 @@ class AppSidebarContainer extends ConsumerWidget {
     required BuildContext context,
     required Widget child,
   }) {
-    return LiquidGlassChrome(
-      edge: LiquidGlassChromeEdge.right,
+    final colorScheme = context.colorScheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        border: Border(
+          right: BorderSide(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.78),
+          ),
+        ),
+      ),
       child: Material(color: Colors.transparent, child: child),
     );
   }
@@ -194,83 +202,96 @@ class AppSidebarContainer extends ConsumerWidget {
     final showLabel = ref.watch(appSettingProvider).showLabel;
     return Row(
       children: [
-        _buildBackground(
-          context: context,
-          child: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (system.isMacOS) const SizedBox(height: 22),
-                const SizedBox(height: 10),
-                if (!system.isMacOS) ...[
-                  const ClipRect(child: AppIcon()),
-                  const SizedBox(height: 12),
-                ],
-                Expanded(
-                  child: ScrollConfiguration(
-                    behavior: HiddenBarScrollBehavior(),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+        SizedBox(
+          width: 232,
+          child: _buildBackground(
+            context: context,
+            child: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  12,
+                  system.isMacOS ? 22 : 16,
+                  12,
+                  12,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        Image.asset(
+                          'assets/images/icon.png',
+                          width: 34,
+                          height: 34,
+                        ),
+                        const SizedBox(width: 10),
                         Expanded(
-                          child: NavigationRail(
-                            scrollable: true,
-                            minExtendedWidth: 200,
-                            backgroundColor: Colors.transparent,
-                            indicatorColor: GlassTokens.navIndicatorColorFor(
-                              context.colorScheme,
-                            ),
-                            indicatorShape: GlassTokens.navIndicatorShape,
-                            selectedLabelTextStyle: context
-                                .textTheme
-                                .labelLarge!
-                                .copyWith(color: context.colorScheme.onSurface),
-                            unselectedLabelTextStyle: context
-                                .textTheme
-                                .labelLarge!
-                                .copyWith(color: context.colorScheme.onSurface),
-                            destinations: navigationItems
-                                .map(
-                                  (e) => NavigationRailDestination(
-                                    icon: e.icon,
-                                    selectedIcon: LiquidGlassSelectedIcon(
-                                      icon: e.icon,
-                                    ),
-                                    label: Text(Intl.message(e.label.name)),
-                                  ),
-                                )
-                                .toList(),
-                            onDestinationSelected: (index) {
-                              _handleToPage(navigationItems[index].label);
-                            },
-                            extended: false,
-                            selectedIndex: currentIndex,
-                            labelType: showLabel
-                                ? NavigationRailLabelType.all
-                                : NavigationRailLabelType.none,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Panorama',
+                                style: context.textTheme.titleLarge?.copyWith(
+                                  color: context.colorScheme.onSurface,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: -0.4,
+                                ),
+                              ),
+                              Text(
+                                'SECURE ACCESS',
+                                style: context.textTheme.labelSmall?.copyWith(
+                                  color: context.colorScheme.onSurfaceVariant,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 1.6,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                  ),
+                    const SizedBox(height: 34),
+                    Expanded(
+                      child: ScrollConfiguration(
+                        behavior: HiddenBarScrollBehavior(),
+                        child: ListView.separated(
+                          padding: EdgeInsets.zero,
+                          itemCount: navigationItems.length,
+                          itemBuilder: (_, index) {
+                            final item = navigationItems[index];
+                            return _SidebarDestination(
+                              item: item,
+                              selected: index == currentIndex,
+                              showLabel: showLabel,
+                              onTap: () => _handleToPage(item.label),
+                            );
+                          },
+                          separatorBuilder: (_, _) => const SizedBox(height: 4),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: IconButton(
+                        onPressed: () {
+                          ref
+                              .read(appSettingProvider.notifier)
+                              .update(
+                                (state) =>
+                                    state.copyWith(showLabel: !state.showLabel),
+                              );
+                        },
+                        icon: Icon(
+                          Icons.menu,
+                          color: context.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                IconButton(
-                  onPressed: () {
-                    ref
-                        .read(appSettingProvider.notifier)
-                        .update(
-                          (state) =>
-                              state.copyWith(showLabel: !state.showLabel),
-                        );
-                  },
-                  icon: Icon(
-                    Icons.menu,
-                    color: context.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: 16),
-              ],
+              ),
             ),
           ),
         ),
@@ -286,6 +307,75 @@ class AppSidebarContainer extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _SidebarDestination extends StatelessWidget {
+  final NavigationItem item;
+  final bool selected;
+  final bool showLabel;
+  final VoidCallback onTap;
+
+  const _SidebarDestination({
+    required this.item,
+    required this.selected,
+    required this.showLabel,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
+    final foreground = selected
+        ? colorScheme.onSurface
+        : colorScheme.onSurfaceVariant;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(4),
+        child: Container(
+          height: 50,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            color: selected
+                ? colorScheme.statusConnected.withValues(alpha: 0.10)
+                : Colors.transparent,
+            border: selected
+                ? Border(
+                    left: BorderSide(
+                      color: colorScheme.statusConnected,
+                      width: 3,
+                    ),
+                  )
+                : null,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Row(
+            children: [
+              IconTheme.merge(
+                data: IconThemeData(color: foreground, size: 21),
+                child: item.icon,
+              ),
+              if (showLabel) ...[
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(
+                    Intl.message(item.label.name),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      color: foreground,
+                      fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -284,6 +284,38 @@ class MessageLookup extends MessageLookupByLibrary {
     "cut": MessageLookupByLibrary.simpleMessage("Cut"),
     "dark": MessageLookupByLibrary.simpleMessage("Dark"),
     "dashboard": MessageLookupByLibrary.simpleMessage("Dashboard"),
+    "dashboardActiveProfile": MessageLookupByLibrary.simpleMessage(
+      "Active profile",
+    ),
+    "dashboardChangeRoute": MessageLookupByLibrary.simpleMessage(
+      "Change route",
+    ),
+    "dashboardChangeRouteDesc": MessageLookupByLibrary.simpleMessage(
+      "Switch to a different profile or proxy route.",
+    ),
+    "dashboardLastThirtyMinutes": MessageLookupByLibrary.simpleMessage(
+      "Last 30 minutes",
+    ),
+    "dashboardNetworkTraffic": MessageLookupByLibrary.simpleMessage(
+      "Network traffic",
+    ),
+    "dashboardOverviewEyebrow": MessageLookupByLibrary.simpleMessage(
+      "Overview",
+    ),
+    "dashboardOverviewSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Your traffic is routed through Panorama and your real IP is hidden.",
+    ),
+    "dashboardOverviewTagline": MessageLookupByLibrary.simpleMessage(
+      "A more private, open internet.",
+    ),
+    "dashboardOverviewTitle": MessageLookupByLibrary.simpleMessage(
+      "You\'re securely connected",
+    ),
+    "dashboardRoute": MessageLookupByLibrary.simpleMessage("Route"),
+    "dashboardStatusDescription": MessageLookupByLibrary.simpleMessage(
+      "Your traffic is private and secured",
+    ),
+    "dashboardUptime": MessageLookupByLibrary.simpleMessage("Uptime"),
     "dataChangedSave": MessageLookupByLibrary.simpleMessage(
       "Data changes detected, do you want to save?",
     ),

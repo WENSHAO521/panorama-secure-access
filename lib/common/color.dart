@@ -124,8 +124,8 @@ extension ColorSchemeExtension on ColorScheme {
   /// with the seed color: "connected" needs to read as a stable green no
   /// matter what primary color the user picks (including red or purple).
   Color get statusConnected => switch (brightness) {
-    Brightness.dark => const Color(0xFF4FD19A),
-    Brightness.light => const Color(0xFF16875E),
+    Brightness.dark => const Color(0xFF8DBA92),
+    Brightness.light => const Color(0xFF4F7656),
   };
 
   /// Warning / caution state (e.g. a "reject" rule action). Fixed for the

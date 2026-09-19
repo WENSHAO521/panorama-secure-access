@@ -204,6 +204,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "cut": MessageLookupByLibrary.simpleMessage("剪下"),
     "dark": MessageLookupByLibrary.simpleMessage("深色"),
     "dashboard": MessageLookupByLibrary.simpleMessage("儀表盤"),
+    "dashboardActiveProfile": MessageLookupByLibrary.simpleMessage("目前配置"),
+    "dashboardChangeRoute": MessageLookupByLibrary.simpleMessage("更換路由"),
+    "dashboardChangeRouteDesc": MessageLookupByLibrary.simpleMessage(
+      "切換到其他配置或代理路由。",
+    ),
+    "dashboardLastThirtyMinutes": MessageLookupByLibrary.simpleMessage(
+      "最近 30 分鐘",
+    ),
+    "dashboardNetworkTraffic": MessageLookupByLibrary.simpleMessage("網路流量"),
+    "dashboardOverviewEyebrow": MessageLookupByLibrary.simpleMessage("概覽"),
+    "dashboardOverviewSubtitle": MessageLookupByLibrary.simpleMessage(
+      "你的流量會經由 Panorama 轉送，真實 IP 已隱藏。",
+    ),
+    "dashboardOverviewTagline": MessageLookupByLibrary.simpleMessage(
+      "更私密、更開放的網際網路。",
+    ),
+    "dashboardOverviewTitle": MessageLookupByLibrary.simpleMessage("已安全連線"),
+    "dashboardRoute": MessageLookupByLibrary.simpleMessage("路由"),
+    "dashboardStatusDescription": MessageLookupByLibrary.simpleMessage(
+      "你的流量已私密且安全",
+    ),
+    "dashboardUptime": MessageLookupByLibrary.simpleMessage("運行時間"),
     "dataChangedSave": MessageLookupByLibrary.simpleMessage("檢測到資料有更改，是否儲存"),
     "dataCollectionContent": MessageLookupByLibrary.simpleMessage(
       "本應用使用 Firebase Crashlytics 收集崩潰資訊以改進應用穩定性。\n收集的資料包括裝置資訊和崩潰詳情，不包含個人敏感資料。\n您可以在設定中關閉此功能。",

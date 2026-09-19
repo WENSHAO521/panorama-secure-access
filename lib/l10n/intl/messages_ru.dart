@@ -291,6 +291,36 @@ class MessageLookup extends MessageLookupByLibrary {
     "cut": MessageLookupByLibrary.simpleMessage("Вырезать"),
     "dark": MessageLookupByLibrary.simpleMessage("Темный"),
     "dashboard": MessageLookupByLibrary.simpleMessage("Панель управления"),
+    "dashboardActiveProfile": MessageLookupByLibrary.simpleMessage(
+      "Активный профиль",
+    ),
+    "dashboardChangeRoute": MessageLookupByLibrary.simpleMessage(
+      "Изменить маршрут",
+    ),
+    "dashboardChangeRouteDesc": MessageLookupByLibrary.simpleMessage(
+      "Переключиться на другой профиль или прокси-маршрут.",
+    ),
+    "dashboardLastThirtyMinutes": MessageLookupByLibrary.simpleMessage(
+      "Последние 30 минут",
+    ),
+    "dashboardNetworkTraffic": MessageLookupByLibrary.simpleMessage(
+      "Сетевой трафик",
+    ),
+    "dashboardOverviewEyebrow": MessageLookupByLibrary.simpleMessage("Обзор"),
+    "dashboardOverviewSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Трафик проходит через Panorama, а реальный IP скрыт.",
+    ),
+    "dashboardOverviewTagline": MessageLookupByLibrary.simpleMessage(
+      "Более приватный и открытый интернет.",
+    ),
+    "dashboardOverviewTitle": MessageLookupByLibrary.simpleMessage(
+      "Безопасное подключение установлено",
+    ),
+    "dashboardRoute": MessageLookupByLibrary.simpleMessage("Маршрут"),
+    "dashboardStatusDescription": MessageLookupByLibrary.simpleMessage(
+      "Ваш трафик защищен и остается приватным",
+    ),
+    "dashboardUptime": MessageLookupByLibrary.simpleMessage("Время работы"),
     "dataChangedSave": MessageLookupByLibrary.simpleMessage(
       "Обнаружены изменения данных, хотите сохранить?",
     ),
