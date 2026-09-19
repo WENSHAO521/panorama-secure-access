@@ -160,10 +160,10 @@ abstract final class GlassTokens {
   static const double lightModalBarrierOpacity = 0.16;
   static const double darkModalBarrierOpacity = 0.28;
 
-  static const double radiusSmall = 4;
-  static const double radiusMedium = 6;
-  static const double radiusLarge = 10;
-  static const double radiusModal = 12;
+  static const double radiusSmall = 0;
+  static const double radiusMedium = 0;
+  static const double radiusLarge = 0;
+  static const double radiusModal = 0;
 
   // Named scale for components that don't have a dedicated radius token
   // above. radiusButton is wired into the app-wide button theme
@@ -172,12 +172,12 @@ abstract final class GlassTokens {
   // radiusInput is wired into glassInputDecoration below.
   // Panel/Sidebar/CommandPalette are not yet consumed anywhere — reserved
   // for future call sites that want a distinct radius from radiusCard.
-  static const double radiusButton = 6;
-  static const double radiusInput = 6;
-  static const double radiusCard = 8;
-  static const double radiusPanel = 8;
+  static const double radiusButton = 2;
+  static const double radiusInput = 0;
+  static const double radiusCard = 0;
+  static const double radiusPanel = 0;
   static const double radiusSidebar = 0;
-  static const double radiusCommandPalette = 12;
+  static const double radiusCommandPalette = 0;
 
   static double blurFor(GlassSurfaceType type) => switch (type) {
     GlassSurfaceType.chrome => blurChrome,
@@ -499,8 +499,8 @@ abstract final class GlassTokens {
   // read as the same material. [LiquidGlassSelectedIcon] below layers a
   // small glass-within-glass treatment on top of this wash for the
   // selected icon itself.
-  static const double lightNavIndicatorOpacity = 0.14;
-  static const double darkNavIndicatorOpacity = 0.20;
+  static const double lightNavIndicatorOpacity = 0.06;
+  static const double darkNavIndicatorOpacity = 0.12;
 
   static Color navIndicatorColorFor(ColorScheme colorScheme) =>
       colorScheme.primary.withValues(
@@ -509,8 +509,7 @@ abstract final class GlassTokens {
             : lightNavIndicatorOpacity,
       );
 
-  static ShapeBorder get navIndicatorShape =>
-      RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusButton));
+  static ShapeBorder get navIndicatorShape => const RoundedRectangleBorder();
 
   static double borderOpacityFor(Brightness brightness) =>
       brightness == Brightness.dark ? darkBorderOpacity : lightBorderOpacity;
@@ -1439,33 +1438,7 @@ class LiquidGlassSelectedIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = context.colorScheme;
-    final isDark = colorScheme.brightness == Brightness.dark;
-    final highContrast = MediaQuery.maybeOf(context)?.highContrast ?? false;
-    if (highContrast) return icon;
-    final lift = Color.lerp(
-      colorScheme.primary,
-      Colors.white,
-      isDark ? 0.12 : 0.35,
-    )!;
-    return Container(
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: RadialGradient(
-          center: const Alignment(-0.4, -0.6),
-          colors: [
-            lift.withValues(alpha: isDark ? 0.22 : 0.16),
-            colorScheme.primary.withValues(alpha: isDark ? 0.10 : 0.05),
-          ],
-        ),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: isDark ? 0.10 : 0.30),
-          width: 0.6,
-        ),
-      ),
-      child: icon,
-    );
+    return icon;
   }
 }
 
@@ -1546,7 +1519,7 @@ class AmbientBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = context.colorScheme.brightness == Brightness.dark;
     return ColoredBox(
-      color: isDark ? const Color(0xFF171A18) : const Color(0xFFF8F7F3),
+      color: isDark ? const Color(0xFF15171A) : const Color(0xFFF6F6F3),
       child: const SizedBox.expand(),
     );
   }

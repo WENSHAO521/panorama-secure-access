@@ -224,32 +224,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "cut": MessageLookupByLibrary.simpleMessage("切り取り"),
     "dark": MessageLookupByLibrary.simpleMessage("ダーク"),
     "dashboard": MessageLookupByLibrary.simpleMessage("ダッシュボード"),
-    "dashboardActiveProfile": MessageLookupByLibrary.simpleMessage(
-      "アクティブなプロファイル",
-    ),
-    "dashboardChangeRoute": MessageLookupByLibrary.simpleMessage("ルートを変更"),
-    "dashboardChangeRouteDesc": MessageLookupByLibrary.simpleMessage(
-      "別のプロファイルまたはプロキシルートに切り替えます。",
-    ),
-    "dashboardLastThirtyMinutes": MessageLookupByLibrary.simpleMessage("過去30分"),
-    "dashboardNetworkTraffic": MessageLookupByLibrary.simpleMessage(
-      "ネットワークトラフィック",
-    ),
-    "dashboardOverviewEyebrow": MessageLookupByLibrary.simpleMessage("概要"),
-    "dashboardOverviewSubtitle": MessageLookupByLibrary.simpleMessage(
-      "通信は Panorama 経由で転送され、実際の IP は隠されています。",
-    ),
-    "dashboardOverviewTagline": MessageLookupByLibrary.simpleMessage(
-      "よりプライベートで、開かれたインターネット。",
-    ),
-    "dashboardOverviewTitle": MessageLookupByLibrary.simpleMessage(
-      "安全に接続されています",
-    ),
-    "dashboardRoute": MessageLookupByLibrary.simpleMessage("ルート"),
-    "dashboardStatusDescription": MessageLookupByLibrary.simpleMessage(
-      "通信はプライベートかつ安全です",
-    ),
-    "dashboardUptime": MessageLookupByLibrary.simpleMessage("稼働時間"),
     "dataChangedSave": MessageLookupByLibrary.simpleMessage(
       "データの変更が検出されました。保存しますか？",
     ),

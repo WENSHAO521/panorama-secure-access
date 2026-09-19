@@ -203,7 +203,7 @@ class AppSidebarContainer extends ConsumerWidget {
     return Row(
       children: [
         SizedBox(
-          width: 232,
+          width: 164,
           child: _buildBackground(
             context: context,
             child: SafeArea(
@@ -217,41 +217,14 @@ class AppSidebarContainer extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/icon.png',
-                          width: 34,
-                          height: 34,
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Panorama',
-                                style: context.textTheme.titleLarge?.copyWith(
-                                  color: context.colorScheme.onSurface,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: -0.4,
-                                ),
-                              ),
-                              Text(
-                                'SECURE ACCESS',
-                                style: context.textTheme.labelSmall?.copyWith(
-                                  color: context.colorScheme.onSurfaceVariant,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 1.6,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                    Center(
+                      child: Image.asset(
+                        'assets/images/icon.png',
+                        width: 42,
+                        height: 42,
+                      ),
                     ),
-                    const SizedBox(height: 34),
+                    const SizedBox(height: 28),
                     Expanded(
                       child: ScrollConfiguration(
                         behavior: HiddenBarScrollBehavior(),
@@ -334,13 +307,13 @@ class _SidebarDestination extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.zero,
         child: Container(
-          height: 50,
+          height: 48,
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
             color: selected
-                ? colorScheme.statusConnected.withValues(alpha: 0.10)
+                ? colorScheme.primary.withValues(alpha: 0.06)
                 : Colors.transparent,
             border: selected
                 ? Border(
@@ -350,12 +323,12 @@ class _SidebarDestination extends StatelessWidget {
                     ),
                   )
                 : null,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.zero,
           ),
           child: Row(
             children: [
               IconTheme.merge(
-                data: IconThemeData(color: foreground, size: 21),
+                data: IconThemeData(color: foreground, size: 20),
                 child: item.icon,
               ),
               if (showLabel) ...[
@@ -365,9 +338,9 @@ class _SidebarDestination extends StatelessWidget {
                     Intl.message(item.label.name),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: context.textTheme.bodyLarge?.copyWith(
+                    style: context.textTheme.labelLarge?.copyWith(
                       color: foreground,
-                      fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                     ),
                   ),
                 ),

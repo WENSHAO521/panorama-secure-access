@@ -58,41 +58,45 @@ class ApplicationState extends ConsumerState<Application> {
   ThemeData _buildThemeData(ColorScheme colorScheme) {
     final brightness = colorScheme.brightness;
     final isDark = brightness == Brightness.dark;
-    // Keep the user's accent colour for interactive states, but give the
-    // shell a stable paper-and-graphite surface instead of the seed colour's
-    // default lavender/blue Material surfaces.
-    final paperScheme = colorScheme.copyWith(
-      surface: isDark ? const Color(0xFF171A18) : const Color(0xFFF8F7F3),
-      surfaceContainerLowest: isDark
-          ? const Color(0xFF121512)
-          : const Color(0xFFF8F7F3),
+    final swissScheme = colorScheme.copyWith(
+      primary: isDark ? const Color(0xFFFF5A5F) : const Color(0xFFE3262E),
+      onPrimary: Colors.white,
+      primaryContainer: isDark
+          ? const Color(0xFF4A1D20)
+          : const Color(0xFFFBE6E6),
+      onPrimaryContainer: isDark
+          ? const Color(0xFFFFDAD9)
+          : const Color(0xFF5F0710),
+      secondary: isDark ? const Color(0xFFB8BCC2) : const Color(0xFF4D5157),
+      onSecondary: isDark ? const Color(0xFF1B1D20) : Colors.white,
+      tertiary: isDark ? const Color(0xFFB8BCC2) : const Color(0xFF4D5157),
+      onTertiary: isDark ? const Color(0xFF1B1D20) : Colors.white,
+      surface: isDark ? const Color(0xFF15171A) : const Color(0xFFF6F6F3),
+      surfaceContainerLowest: isDark ? const Color(0xFF101113) : Colors.white,
       surfaceContainerLow: isDark
-          ? const Color(0xFF1A1E1A)
-          : const Color(0xFFF8F7F3),
+          ? const Color(0xFF191B1F)
+          : const Color(0xFFFBFBF9),
       surfaceContainer: isDark
-          ? const Color(0xFF202420)
-          : const Color(0xFFF2F1EC),
+          ? const Color(0xFF202226)
+          : const Color(0xFFF0F0ED),
       surfaceContainerHigh: isDark
-          ? const Color(0xFF252A25)
-          : const Color(0xFFECEBE5),
+          ? const Color(0xFF282A2F)
+          : const Color(0xFFE8E8E4),
       surfaceContainerHighest: isDark
-          ? const Color(0xFF2B302B)
-          : const Color(0xFFE5E4DE),
-      onSurface: isDark ? const Color(0xFFF0F2EC) : const Color(0xFF1C211D),
+          ? const Color(0xFF303339)
+          : const Color(0xFFDCDCD7),
+      onSurface: isDark ? const Color(0xFFF3F3F0) : const Color(0xFF101113),
       onSurfaceVariant: isDark
-          ? const Color(0xFFB9C1B8)
-          : const Color(0xFF687069),
-      outline: isDark ? const Color(0xFF768077) : const Color(0xFFB4B9B2),
+          ? const Color(0xFFA5A9AF)
+          : const Color(0xFF5C6065),
+      outline: isDark ? const Color(0xFF7D8188) : const Color(0xFF777A7D),
       outlineVariant: isDark
-          ? const Color(0xFF3D453E)
-          : const Color(0xFFD5D5CE),
+          ? const Color(0xFF3A3D42)
+          : const Color(0xFFC9CAC6),
+      error: isDark ? const Color(0xFFFFB4AB) : const Color(0xFFBA1A1A),
       surfaceTint: Colors.transparent,
     );
-    final borderSide = BorderSide(
-      color: paperScheme.outlineVariant.withValues(
-        alpha: GlassTokens.borderOpacityFor(brightness),
-      ),
-    );
+    final borderSide = BorderSide(color: swissScheme.outlineVariant);
     // Material 3's own default button shape is a full StadiumBorder pill —
     // fine for chips/segmented controls/status pills, but every
     // Filled/Outlined/Elevated/TextButton in the app inherits it too,
@@ -116,16 +120,29 @@ class ApplicationState extends ConsumerState<Application> {
       // painted once behind the app shell (see HomePage) instead of
       // painting its own opaque surface color over it.
       scaffoldBackgroundColor: Colors.transparent,
-      colorScheme: paperScheme,
+      colorScheme: swissScheme,
+      appBarTheme: AppBarTheme(
+        backgroundColor: swissScheme.surface,
+        foregroundColor: swissScheme.onSurface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        titleTextStyle: TextStyle(
+          color: swissScheme.onSurface,
+          fontFamily: 'Inter',
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.2,
+        ),
+      ),
       chipTheme: ChipThemeData(
         // Chips are lightweight, often-repeated controls, not mini glass
         // panels — a low tint (same family as GlassSurfaceType.repeated)
         // instead of a near-opaque fill.
-        backgroundColor: paperScheme.surfaceContainerHighest.withValues(
-          alpha: GlassTokens.opacityFor(GlassSurfaceType.repeated, brightness),
-        ),
-        selectedColor: paperScheme.primary.withValues(alpha: 0.16),
+        backgroundColor: swissScheme.surfaceContainerHighest,
+        selectedColor: swissScheme.primaryContainer,
         side: borderSide,
+        shape: const RoundedRectangleBorder(),
       ),
       dialogTheme: const DialogThemeData(
         backgroundColor: Colors.transparent,
@@ -142,10 +159,15 @@ class ApplicationState extends ConsumerState<Application> {
           alpha: GlassTokens.modalBarrierOpacityFor(brightness),
         ),
       ),
-      dividerTheme: DividerThemeData(
-        color: paperScheme.outlineVariant.withValues(
-          alpha: GlassTokens.dividerOpacityFor(brightness),
-        ),
+      dividerTheme: DividerThemeData(color: swissScheme.outlineVariant),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: swissScheme.primary,
+        foregroundColor: swissScheme.onPrimary,
+        elevation: 0,
+        focusElevation: 0,
+        hoverElevation: 0,
+        highlightElevation: 0,
+        shape: buttonShape,
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(shape: buttonShape),
