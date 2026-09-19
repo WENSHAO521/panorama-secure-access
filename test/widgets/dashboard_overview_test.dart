@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/theme.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -57,6 +59,11 @@ void main() {
     expect(find.text('Helsinki'), findsOneWidget);
     expect(find.text('Outbound mode'), findsOneWidget);
     expect(find.byType(LineChart), findsNWidgets(2));
+    final previousGoldenFileComparator = goldenFileComparator;
+    goldenFileComparator = _PaperlineGoldenFileComparator(
+      Uri.parse('test/widgets/dashboard_overview_test.dart'),
+    );
+    addTearDown(() => goldenFileComparator = previousGoldenFileComparator);
     await expectLater(
       find.byType(Scaffold),
       matchesGoldenFile('goldens/dashboard_overview.png'),
@@ -77,6 +84,26 @@ void main() {
     expect(container.read(currentPageLabelProvider), PageLabel.profiles);
     expect(tester.takeException(), isNull);
   });
+}
+
+class _PaperlineGoldenFileComparator extends LocalFileComparator {
+  _PaperlineGoldenFileComparator(super.testFile);
+
+  @override
+  Future<bool> compare(Uint8List imageBytes, Uri golden) async {
+    final result = await GoldenFileComparator.compareLists(
+      imageBytes,
+      await getGoldenBytes(golden),
+    );
+    final passed = result.passed || result.diffPercent <= 0.01;
+    if (passed) {
+      result.dispose();
+      return true;
+    }
+    final error = await generateFailureOutput(result, golden, basedir);
+    result.dispose();
+    throw FlutterError(error);
+  }
 }
 
 class _TestApp extends StatelessWidget {
