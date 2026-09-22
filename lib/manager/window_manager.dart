@@ -227,6 +227,30 @@ class _WindowHeaderState extends State<WindowHeader> {
           ),
         ),
         IconButton(
+          // Close is the one caption button with an irreversible-feeling
+          // action, so it gets the platform-conventional red hover/press
+          // tint (Windows/Linux native window chrome) instead of the
+          // neutral hover every other caption button uses — the same
+          // error-tinted wash the danger context-menu item and destructive
+          // dialogs already use, not a one-off color.
+          style: IconButton.styleFrom(
+            foregroundColor: context.colorScheme.onSurface,
+          ).copyWith(
+            backgroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered) ||
+                  states.contains(WidgetState.pressed)) {
+                return context.colorScheme.error;
+              }
+              return Colors.transparent;
+            }),
+            foregroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered) ||
+                  states.contains(WidgetState.pressed)) {
+                return context.colorScheme.onError;
+              }
+              return context.colorScheme.onSurface;
+            }),
+          ),
           onPressed: () {
             globalState.container
                 .read(systemActionProvider.notifier)
