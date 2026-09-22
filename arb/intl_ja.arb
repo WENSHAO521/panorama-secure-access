@@ -610,5 +610,6 @@
   "currentNode": "ノード",
   "servicesLabel": "サービス",
   "connectedFor": "接続時間 {time}",
-  "dashboardDesc": "以前のバージョンのカスタマイズ可能なウィジェット"
+  "dashboardDesc": "以前のバージョンのカスタマイズ可能なウィジェット",
+  "advanced": "詳細"
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/design/icons/panorama_icons.dart';
+import 'package:fl_clash/design/spacing/panorama_spacing.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -10,6 +11,7 @@ import 'package:fl_clash/views/about.dart';
 import 'package:fl_clash/views/access.dart';
 import 'package:fl_clash/views/application_setting.dart';
 import 'package:fl_clash/views/backup_and_restore.dart';
+import 'package:fl_clash/views/config/advanced.dart';
 import 'package:fl_clash/views/config/config.dart';
 import 'package:fl_clash/views/hotkey.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -18,7 +20,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' show dirname, join;
 
-import 'config/advanced.dart';
 import 'developer.dart';
 import 'theme.dart';
 
@@ -45,33 +46,57 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
     );
   }
 
-  Widget _getOtherList(bool enableDeveloperMode) {
-    return generateGlassSection(
-      title: context.appLocalizations.other,
-      items: [
-        const _DisclaimerItem(),
-        if (enableDeveloperMode) const _DeveloperItem(),
-        const _InfoItem(),
-      ],
-    );
+  /// Brief §22: General · Connection · Profiles · Appearance · Backup &
+  /// Sync · Keyboard & Shortcuts · Advanced · Developer · About. Groups that
+  /// hold a single row get no header (the row title says it); rows that
+  /// don't apply to this platform are left out.
+  List<Widget> _sections(bool enableDeveloperMode) {
+    final appLocalizations = context.appLocalizations;
+    return [
+      generateGlassSection(
+        title: appLocalizations.general,
+        items: const [_LocaleItem(), _SettingItem()],
+      ),
+      generateGlassSection(
+        title: appLocalizations.connection,
+        items: const [
+          NetworkSettingsItem(),
+          DnsSettingsItem(),
+          AddedRulesSettingsItem(),
+          OnDemandSettingsItem(),
+        ],
+      ),
+      generateGlassSection(
+        title: appLocalizations.profiles,
+        items: [
+          if (system.isAndroid) const _AccessItem(),
+          if (system.isWindows) const _LoopbackItem(),
+          const ScriptsSettingsItem(),
+        ],
+      ),
+      _untitled(
+        items: [
+          const _ThemeItem(),
+          const _BackupItem(),
+          if (system.isDesktop) const _HotkeyItem(),
+        ],
+      ),
+      generateGlassSection(
+        title: appLocalizations.advanced,
+        items: [
+          const _ConfigItem(),
+          if (enableDeveloperMode) const _DeveloperItem(),
+        ],
+      ),
+      _untitled(items: const [_InfoItem(), _DisclaimerItem()]),
+    ];
   }
 
-  Widget _getGeneralList() {
-    return generateGlassSection(
-      title: context.appLocalizations.general,
-      items: [
-        const _LocaleItem(),
-        const _ThemeItem(),
-        const _BackupItem(),
-        if (system.isDesktop) const _HotkeyItem(),
-        if (system.isWindows) const _LoopbackItem(),
-        if (system.isAndroid) const _AccessItem(),
-        const _ConfigItem(),
-        const _AdvancedConfigItem(),
-        const _SettingItem(),
-      ],
-    );
-  }
+  /// A group without a header still needs to read as its own group.
+  Widget _untitled({required List<Widget> items}) => Padding(
+    padding: const EdgeInsets.only(top: PanoramaSpacing.xl),
+    child: generateGlassSection(items: items),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -93,8 +118,7 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
           );
         },
       ),
-      _getGeneralList(),
-      _getOtherList(vm2.b),
+      ..._sections(vm2.b),
     ];
     return CommonScaffold(
       title: context.appLocalizations.settings,
@@ -224,23 +248,9 @@ class _ConfigItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListItem.open(
       leading: Icon(PanoramaIcons.settings.basicConfig),
-      title: Text(context.appLocalizations.basicConfig),
+      title: Text(context.appLocalizations.core),
       subtitle: Text(context.appLocalizations.basicConfigDesc),
       delegate: const OpenDelegate(widget: ConfigView()),
-    );
-  }
-}
-
-class _AdvancedConfigItem extends StatelessWidget {
-  const _AdvancedConfigItem();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListItem.open(
-      leading: Icon(PanoramaIcons.settings.advancedConfig),
-      title: Text(context.appLocalizations.advancedConfig),
-      subtitle: Text(context.appLocalizations.advancedConfigDesc),
-      delegate: const OpenDelegate(widget: AdvancedConfigView()),
     );
   }
 }

@@ -610,5 +610,6 @@
   "currentNode": "Узел",
   "servicesLabel": "Сервисы",
   "connectedFor": "Подключено {time}",
-  "dashboardDesc": "Настраиваемые виджеты из прежних версий"
+  "dashboardDesc": "Настраиваемые виджеты из прежних версий",
+  "advanced": "Дополнительно"
 }

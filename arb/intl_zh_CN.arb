@@ -610,5 +610,6 @@
   "currentNode": "节点",
   "servicesLabel": "服务",
   "connectedFor": "已连接 {time}",
-  "dashboardDesc": "旧版的可自定义小组件"
+  "dashboardDesc": "旧版的可自定义小组件",
+  "advanced": "高级"
 }

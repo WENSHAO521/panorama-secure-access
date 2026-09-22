@@ -9,7 +9,7 @@ class ConfigView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
-      title: context.appLocalizations.basicConfig,
+      title: context.appLocalizations.core,
       body: generateListView(generalItems),
     );
   }

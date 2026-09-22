@@ -610,5 +610,6 @@
   "currentNode": "節點",
   "servicesLabel": "服務",
   "connectedFor": "已連線 {time}",
-  "dashboardDesc": "舊版的可自訂小工具"
+  "dashboardDesc": "舊版的可自訂小工具",
+  "advanced": "進階"
 }

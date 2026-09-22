@@ -610,5 +610,6 @@
   "currentNode": "노드",
   "servicesLabel": "서비스",
   "connectedFor": "{time} 동안 연결됨",
-  "dashboardDesc": "이전 버전의 사용자 지정 위젯"
+  "dashboardDesc": "이전 버전의 사용자 지정 위젯",
+  "advanced": "고급"
 }

@@ -610,5 +610,6 @@
   "currentNode": "Node",
   "servicesLabel": "Services",
   "connectedFor": "Connected for {time}",
-  "dashboardDesc": "Customizable widgets from earlier versions"
+  "dashboardDesc": "Customizable widgets from earlier versions",
+  "advanced": "Advanced"
 }

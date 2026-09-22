@@ -111,6 +111,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "address": MessageLookupByLibrary.simpleMessage("地址"),
     "addressHelp": MessageLookupByLibrary.simpleMessage("WebDAV伺服器位址"),
     "addressTip": MessageLookupByLibrary.simpleMessage("請輸入有效的WebDAV地址"),
+    "advanced": MessageLookupByLibrary.simpleMessage("進階"),
     "advancedConfig": MessageLookupByLibrary.simpleMessage("進階配置"),
     "advancedConfigDesc": MessageLookupByLibrary.simpleMessage("提供多樣化配置"),
     "agree": MessageLookupByLibrary.simpleMessage("同意"),

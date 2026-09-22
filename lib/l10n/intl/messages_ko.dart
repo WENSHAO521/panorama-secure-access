@@ -120,6 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "addressTip": MessageLookupByLibrary.simpleMessage(
       "올바른 WebDAV 주소를 입력해 주세요",
     ),
+    "advanced": MessageLookupByLibrary.simpleMessage("고급"),
     "advancedConfig": MessageLookupByLibrary.simpleMessage("고급 설정"),
     "advancedConfigDesc": MessageLookupByLibrary.simpleMessage(
       "다양한 설정 옵션을 제공합니다",
