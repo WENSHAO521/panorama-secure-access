@@ -74,8 +74,10 @@ NetworkInsightSources networkInsightSources(Ref ref) {
         listLocalInterfaces(tunDeviceName: tunDeviceName),
     connectionKinds: _systemConnectionKinds,
     services: serviceDefinitions,
-    startProbe: coreController.startProbeListener,
-    stopProbe: coreController.stopProbeListener,
+    // Closures, not tear-offs: reading this provider must not construct
+    // the core controller (and start its IPC server) as a side effect.
+    startProbe: (proxyName) => coreController.startProbeListener(proxyName),
+    stopProbe: () => coreController.stopProbeListener(),
     probeHttp: (port) =>
         ProxiedServiceHttp(findProxy: (_) => 'PROXY $localhost:$port'),
     nodeDelay: (proxyName) async {
