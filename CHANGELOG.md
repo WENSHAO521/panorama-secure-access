@@ -1,25 +1,3 @@
-## v3.3.26
-
-- Fix mobile-first nav-switch jank and guard against double-blurred glass
-
-- - Home nav switch: only animate on mobile (desktop now jumps instantly,
-
--   matching upstream), and drop the extra AnimatedBuilder+Opacity cross-fade
-
--   layered on top of PageView's own slide, which was doubling per-frame
-
--   compositing cost over glass-heavy pages.
-
-- - Add _GlassDepthScope so GlassSurface/LiquidGlassChrome fall back to a
-
--   flat tint instead of stacking a second BackdropFilter when a blurred
-
--   glass ancestor already sits above them, per Apple's Liquid Glass HIG.
-
-- - Bump version to 3.3.26.
-
-- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
-
 ## v3.3.25
 
 ## v3.3.24

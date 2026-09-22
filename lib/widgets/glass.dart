@@ -87,35 +87,32 @@ enum GlassSurfaceType {
 /// helper in this file do the same.
 abstract final class GlassTokens {
   // ---------------------------------------------------------------------
-  // Paperline surface tokens. The named GlassSurface APIs remain in place
-  // because they are shared by sheets, popovers, cards, and settings, but
-  // the active visual language is opaque paper with hairline rules instead
-  // of translucent blur.
+  // Backdrop blur / body opacity / brand tint — the base material.
   // ---------------------------------------------------------------------
-  static const double blurChrome = 0;
-  static const double blurPanel = 0;
-  static const double blurModal = 0;
-  static const double blurFloating = 0;
+  static const double blurChrome = 20;
+  static const double blurPanel = 20;
+  static const double blurModal = 24;
+  static const double blurFloating = 22;
   static const double blurRepeated = 0;
-  static const double blurCrystal = 0;
+  static const double blurCrystal = 36;
 
-  static const double lightChromeOpacity = 1;
-  static const double darkChromeOpacity = 1;
+  static const double lightChromeOpacity = 0.38;
+  static const double darkChromeOpacity = 0.52;
 
-  static const double lightPanelOpacity = 1;
-  static const double darkPanelOpacity = 1;
+  static const double lightPanelOpacity = 0.36;
+  static const double darkPanelOpacity = 0.50;
 
-  static const double lightModalOpacity = 1;
-  static const double darkModalOpacity = 1;
+  static const double lightModalOpacity = 0.66;
+  static const double darkModalOpacity = 0.58;
 
-  static const double lightFloatingOpacity = 1;
-  static const double darkFloatingOpacity = 1;
+  static const double lightFloatingOpacity = 0.52;
+  static const double darkFloatingOpacity = 0.54;
 
-  static const double lightRepeatedOpacity = 1;
-  static const double darkRepeatedOpacity = 1;
+  static const double lightRepeatedOpacity = 0.18;
+  static const double darkRepeatedOpacity = 0.14;
 
-  static const double lightCrystalOpacity = 1;
-  static const double darkCrystalOpacity = 1;
+  static const double lightCrystalOpacity = 0.68;
+  static const double darkCrystalOpacity = 0.74;
 
   // How much of the theme's ColorScheme.primary is mixed into a glass
   // surface's base colour before opacity is applied. This is what makes the
@@ -125,45 +122,45 @@ abstract final class GlassTokens {
   // color), so it stays consistent with whatever the rest of the UI is
   // themed with. Kept low: enough to tint, not enough to fight the content
   // drawn on top of the surface for attention.
-  static const double lightTintChrome = 0;
-  static const double darkTintChrome = 0;
+  static const double lightTintChrome = 0.05;
+  static const double darkTintChrome = 0.10;
 
-  static const double lightTintPanel = 0;
-  static const double darkTintPanel = 0;
+  static const double lightTintPanel = 0.05;
+  static const double darkTintPanel = 0.09;
 
-  static const double lightTintModal = 0;
-  static const double darkTintModal = 0;
+  static const double lightTintModal = 0.07;
+  static const double darkTintModal = 0.11;
 
-  static const double lightTintFloating = 0;
-  static const double darkTintFloating = 0;
+  static const double lightTintFloating = 0.06;
+  static const double darkTintFloating = 0.10;
 
   // Kept lowest: this type repeats dozens of times in one scroll view
   // (proxy cards), so a strong tint would compound into a muddy wash.
-  static const double lightTintRepeated = 0;
-  static const double darkTintRepeated = 0;
+  static const double lightTintRepeated = 0.03;
+  static const double darkTintRepeated = 0.05;
 
-  static const double lightTintCrystal = 0;
-  static const double darkTintCrystal = 0;
+  static const double lightTintCrystal = 0.07;
+  static const double darkTintCrystal = 0.12;
 
   // How much of primary is mixed into the neutral outlineVariant border —
   // a faint brand-coloured edge instead of a plain grey hairline.
   static const double borderTintStrength = 0.30;
 
-  static const double lightBorderOpacity = 0.85;
-  static const double darkBorderOpacity = 0.65;
+  static const double lightBorderOpacity = 0.28;
+  static const double darkBorderOpacity = 0.12;
 
-  static const double lightDividerOpacity = 0.90;
-  static const double darkDividerOpacity = 0.70;
+  static const double lightDividerOpacity = 0.30;
+  static const double darkDividerOpacity = 0.22;
 
   /// Scrim behind a modal (BottomSheet/side sheet) barrier — kept low so
   /// the page behind stays recognizable instead of going grey/dark.
   static const double lightModalBarrierOpacity = 0.16;
   static const double darkModalBarrierOpacity = 0.28;
 
-  static const double radiusSmall = 0;
-  static const double radiusMedium = 0;
-  static const double radiusLarge = 0;
-  static const double radiusModal = 0;
+  static const double radiusSmall = 12;
+  static const double radiusMedium = 16;
+  static const double radiusLarge = 22;
+  static const double radiusModal = 26;
 
   // Named scale for components that don't have a dedicated radius token
   // above. radiusButton is wired into the app-wide button theme
@@ -172,12 +169,12 @@ abstract final class GlassTokens {
   // radiusInput is wired into glassInputDecoration below.
   // Panel/Sidebar/CommandPalette are not yet consumed anywhere — reserved
   // for future call sites that want a distinct radius from radiusCard.
-  static const double radiusButton = 2;
-  static const double radiusInput = 0;
-  static const double radiusCard = 0;
-  static const double radiusPanel = 0;
-  static const double radiusSidebar = 0;
-  static const double radiusCommandPalette = 0;
+  static const double radiusButton = 10;
+  static const double radiusInput = 10;
+  static const double radiusCard = 16;
+  static const double radiusPanel = 18;
+  static const double radiusSidebar = 20;
+  static const double radiusCommandPalette = 24;
 
   static double blurFor(GlassSurfaceType type) => switch (type) {
     GlassSurfaceType.chrome => blurChrome,
@@ -499,8 +496,8 @@ abstract final class GlassTokens {
   // read as the same material. [LiquidGlassSelectedIcon] below layers a
   // small glass-within-glass treatment on top of this wash for the
   // selected icon itself.
-  static const double lightNavIndicatorOpacity = 0.06;
-  static const double darkNavIndicatorOpacity = 0.12;
+  static const double lightNavIndicatorOpacity = 0.14;
+  static const double darkNavIndicatorOpacity = 0.20;
 
   static Color navIndicatorColorFor(ColorScheme colorScheme) =>
       colorScheme.primary.withValues(
@@ -509,7 +506,8 @@ abstract final class GlassTokens {
             : lightNavIndicatorOpacity,
       );
 
-  static ShapeBorder get navIndicatorShape => const RoundedRectangleBorder();
+  static ShapeBorder get navIndicatorShape =>
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusButton));
 
   static double borderOpacityFor(Brightness brightness) =>
       brightness == Brightness.dark ? darkBorderOpacity : lightBorderOpacity;
@@ -660,10 +658,13 @@ class _GlassDepthScope extends InheritedWidget {
 /// release gate for this app, not a nice-to-have (a proxy/provider/log
 /// list can hold hundreds of rows on a low-end phone).
 abstract final class LiquidGlassPerformancePolicy {
-  /// Paperline surfaces rely on typography, spacing, and rules for hierarchy.
-  /// Keep the optical layers disabled so legacy GlassSurface call sites do
-  /// not reintroduce gradients or decorative highlights into the new shell.
-  static bool allowOpticalLayers(GlassSurfaceType type) => false;
+  /// Illumination + edge refraction: cheap (a couple of static gradients /
+  /// one lightweight path stroke), so every non-repeated surface gets them
+  /// — including under high contrast, just at reduced intensity via
+  /// [GlassTokens.boostOpacityForHighContrast]'s sibling logic in
+  /// [GlassSurface].
+  static bool allowOpticalLayers(GlassSurfaceType type) =>
+      type != GlassSurfaceType.repeated;
 
   /// Specular highlight + (crystal-only) micro-lensing/noise: skipped
   /// entirely under high contrast (item 31 — "减少复杂 refraction"), since
@@ -1396,28 +1397,128 @@ class LiquidGlassChrome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
-    final borderColor = colorScheme.outlineVariant.withValues(
-      alpha: GlassTokens.dividerOpacityFor(colorScheme.brightness),
+    final brightness = colorScheme.brightness;
+    final highContrast = MediaQuery.maybeOf(context)?.highContrast ?? false;
+    // See _GlassDepthScope: a chrome bar built inside an already-blurred
+    // ancestor (a modal's flexibleSpace, say) skips its own BackdropFilter
+    // rather than double-blur that ancestor's backdrop.
+    final hasGlassAncestor = _GlassDepthScope.hasBlurredAncestor(context);
+    final baseColor = color ?? colorScheme.surfaceContainer;
+    final tinted = GlassTokens.environmentTint(
+      GlassTokens.tint(baseColor, colorScheme, GlassSurfaceType.chrome),
+      colorScheme,
+      GlassSurfaceType.chrome,
     );
-    final border = switch (edge) {
-      LiquidGlassChromeEdge.top => Border(top: BorderSide(color: borderColor)),
-      LiquidGlassChromeEdge.bottom => Border(
-        bottom: BorderSide(color: borderColor),
-      ),
-      LiquidGlassChromeEdge.left => Border(
-        left: BorderSide(color: borderColor),
-      ),
-      LiquidGlassChromeEdge.right => Border(
-        right: BorderSide(color: borderColor),
-      ),
-      LiquidGlassChromeEdge.none => null,
-    };
-    return DecoratedBox(
+    final baseOpacity = GlassTokens.opacityFor(
+      GlassSurfaceType.chrome,
+      brightness,
+    );
+    final resolvedOpacity = (highContrast || hasGlassAncestor)
+        ? GlassTokens.boostOpacityForHighContrast(baseOpacity)
+        : baseOpacity;
+    final opticalIntensity = highContrast ? 0.5 : 1.0;
+    final fill = DecoratedBox(
       decoration: BoxDecoration(
-        color: color ?? colorScheme.surface,
-        border: border,
+        color: tinted.withValues(alpha: resolvedOpacity),
       ),
-      child: child,
+    );
+    final illumination = _LiquidInnerIllumination(
+      type: GlassSurfaceType.chrome,
+      brightness: brightness,
+      intensity: opticalIntensity,
+    );
+    final rim = _ChromeEdgeRim(
+      edge: edge,
+      brightness: brightness,
+      intensity: opticalIntensity,
+    );
+    // Two sizing strategies, chosen by whether there's a child to anchor
+    // to: some call sites (AppBar/side-sheet flexibleSpace, the desktop
+    // window title bar) have none and are always given bounded constraints
+    // by their parent, so StackFit.expand is safe there. Others (the
+    // mobile bottom NavigationBar in a Column, the desktop sidebar's
+    // NavigationRail in a Row) sit in an unbounded dimension as a
+    // non-flex child — StackFit.expand would throw ("forces an infinite
+    // width/height") in that position, so when a child is present it
+    // becomes the one non-positioned Stack child instead, sizing the
+    // Stack the same passthrough way GlassSurface's own compositor does.
+    final stack = child == null
+        ? Stack(fit: StackFit.expand, children: [fill, illumination, rim])
+        : Stack(
+            fit: StackFit.passthrough,
+            children: [
+              Positioned.fill(child: fill),
+              Positioned.fill(child: illumination),
+              Positioned.fill(child: rim),
+              child!,
+            ],
+          );
+    final content = hasGlassAncestor
+        ? stack
+        : BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: GlassTokens.blurChrome,
+              sigmaY: GlassTokens.blurChrome,
+            ),
+            child: stack,
+          );
+    // A chrome bar always reads as "inside glass" for whatever it hosts —
+    // its own actions, a search field, a popup menu anchored to it — so
+    // this publishes true unconditionally, whether the blur above is the
+    // real one or inherited from further up (see _GlassDepthScope).
+    return _GlassDepthScope(
+      blurred: true,
+      child: ClipRect(child: content),
+    );
+  }
+}
+
+class _ChromeEdgeRim extends StatelessWidget {
+  final LiquidGlassChromeEdge edge;
+  final Brightness brightness;
+  final double intensity;
+
+  const _ChromeEdgeRim({
+    required this.edge,
+    required this.brightness,
+    required this.intensity,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (edge == LiquidGlassChromeEdge.none) return const SizedBox.shrink();
+    final isDark = brightness == Brightness.dark;
+    final highlight = Colors.white.withValues(
+      alpha: (isDark ? 0.10 : 0.22) * intensity,
+    );
+    final shadow = Colors.black.withValues(
+      alpha: (isDark ? 0.22 : 0.08) * intensity,
+    );
+    final isHorizontal =
+        edge == LiquidGlassChromeEdge.top ||
+        edge == LiquidGlassChromeEdge.bottom;
+    final gradient = LinearGradient(
+      begin: isHorizontal ? Alignment.centerLeft : Alignment.topCenter,
+      end: isHorizontal ? Alignment.centerRight : Alignment.bottomCenter,
+      colors: [shadow, highlight, shadow],
+      stops: const [0, 0.5, 1],
+    );
+    final alignment = switch (edge) {
+      LiquidGlassChromeEdge.top => Alignment.topCenter,
+      LiquidGlassChromeEdge.bottom => Alignment.bottomCenter,
+      LiquidGlassChromeEdge.left => Alignment.centerLeft,
+      LiquidGlassChromeEdge.right => Alignment.centerRight,
+      LiquidGlassChromeEdge.none => Alignment.center,
+    };
+    return IgnorePointer(
+      child: Align(
+        alignment: alignment,
+        child: Container(
+          width: isHorizontal ? double.infinity : 1,
+          height: isHorizontal ? 1 : double.infinity,
+          decoration: BoxDecoration(gradient: gradient),
+        ),
+      ),
     );
   }
 }
@@ -1438,7 +1539,33 @@ class LiquidGlassSelectedIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return icon;
+    final colorScheme = context.colorScheme;
+    final isDark = colorScheme.brightness == Brightness.dark;
+    final highContrast = MediaQuery.maybeOf(context)?.highContrast ?? false;
+    if (highContrast) return icon;
+    final lift = Color.lerp(
+      colorScheme.primary,
+      Colors.white,
+      isDark ? 0.12 : 0.35,
+    )!;
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(
+          center: const Alignment(-0.4, -0.6),
+          colors: [
+            lift.withValues(alpha: isDark ? 0.22 : 0.16),
+            colorScheme.primary.withValues(alpha: isDark ? 0.10 : 0.05),
+          ],
+        ),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: isDark ? 0.10 : 0.30),
+          width: 0.6,
+        ),
+      ),
+      child: icon,
+    );
   }
 }
 
@@ -1509,18 +1636,91 @@ InputDecoration glassInputDecoration(
 /// user's chosen primary color automatically.
 ///
 /// This exists to feed the glass surfaces something to refract/tint from
-/// — a flat paper-like backdrop gives the dashboard and navigation a quiet
-/// surface, with hierarchy coming from typography and hairline dividers
-/// instead of decorative gradients or floating colour fields.
+/// — a flat white/black backdrop leaves nothing for [GlassSurface]'s
+/// environmental tint or specular layers to respond to — while staying a
+/// quiet, low-frequency field rather than a set of decorative colour
+/// blobs a user's eye is drawn to. Two large, very low-opacity radial
+/// fields (rather than the old three medium, more visible ones) keep the
+/// same "colour is available for the glass to pick up" property with a
+/// much softer, more spatial read; dark mode stays graphite/blue-black,
+/// never pure black, so surfaces above it always have some ambient light
+/// to catch (Pure Black mode only affects individual glass surfaces' own
+/// base colour, not this field — see GlassTokens' shadow/opacity docs).
 class AmbientBackground extends StatelessWidget {
   const AmbientBackground({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.colorScheme.brightness == Brightness.dark;
-    return ColoredBox(
-      color: isDark ? const Color(0xFF15171A) : const Color(0xFFF6F6F3),
-      child: const SizedBox.expand(),
+    final colorScheme = context.colorScheme;
+    final isDark = colorScheme.brightness == Brightness.dark;
+    final baseColors = isDark
+        ? const [Color(0xFF0F1118), Color(0xFF14161F), Color(0xFF181A26)]
+        : const [Color(0xFFF7F9FD), Color(0xFFF1F3FA), Color(0xFFEAEEF8)];
+    final primaryGlow = isDark ? 0.14 : 0.09;
+    final tertiaryGlow = isDark ? 0.11 : 0.07;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: baseColors,
+        ),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: -320,
+            right: -260,
+            child: _AmbientField(
+              color: colorScheme.primary,
+              opacity: primaryGlow,
+              size: 900,
+            ),
+          ),
+          Positioned(
+            bottom: -360,
+            left: -280,
+            child: _AmbientField(
+              color: colorScheme.tertiary,
+              opacity: tertiaryGlow,
+              size: 980,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AmbientField extends StatelessWidget {
+  final Color color;
+  final double opacity;
+  final double size;
+
+  const _AmbientField({
+    required this.color,
+    required this.opacity,
+    this.size = 380,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: RadialGradient(
+            colors: [
+              color.withValues(alpha: opacity),
+              color.withValues(alpha: opacity * 0.4),
+              color.withValues(alpha: 0),
+            ],
+            stops: const [0, 0.55, 1],
+          ),
+        ),
+      ),
     );
   }
 }

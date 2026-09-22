@@ -256,7 +256,7 @@ class _CommonCardState extends State<CommonCard> {
 
     final cardShape =
         widget.shape ??
-        RoundedRectangleBorder(
+        RoundedSuperellipseBorder(
           borderRadius: BorderRadius.circular(
             widget.radius ?? GlassTokens.radiusCard,
           ),
@@ -444,8 +444,15 @@ class _LiquidCardInteractionState extends State<_LiquidCardInteraction> {
                 child: DecoratedBox(
                   decoration: ShapeDecoration(
                     shape: widget.shape,
-                    color: context.colorScheme.primary.withValues(
-                      alpha: brightness == Brightness.dark ? 0.10 : 0.06,
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(
+                          alpha: brightness == Brightness.dark ? 0.05 : 0.10,
+                        ),
+                        Colors.white.withValues(alpha: 0),
+                      ],
                     ),
                   ),
                 ),
