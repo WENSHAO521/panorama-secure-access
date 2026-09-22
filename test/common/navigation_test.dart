@@ -25,18 +25,22 @@ void main() {
       },
     );
 
-    test('desktop sidebar has the same primary destinations', () {
+    test('desktop sidebar adds Network Insight after Activity', () {
       expect(_labelsFor(NavigationItemMode.desktop), [
         PageLabel.dashboard,
         PageLabel.proxies,
         PageLabel.profiles,
         PageLabel.activity,
+        PageLabel.networkInsight,
         PageLabel.settings,
       ]);
     });
 
-    test('Resources is only reachable from Settings > More', () {
-      expect(_labelsFor(NavigationItemMode.more), [PageLabel.resources]);
+    test('Settings > More holds Network Insight (mobile) and Resources', () {
+      expect(_labelsFor(NavigationItemMode.more), [
+        PageLabel.networkInsight,
+        PageLabel.resources,
+      ]);
     });
 
     test('Proxies is hidden until there are proxies to show', () {

@@ -365,7 +365,15 @@ extension GeoResourceExt on GeoResource {
   String get updatingKey => 'geo_resource_$name';
 }
 
-enum PageLabel { dashboard, proxies, profiles, activity, resources, settings }
+enum PageLabel {
+  dashboard,
+  proxies,
+  profiles,
+  activity,
+  networkInsight,
+  resources,
+  settings,
+}
 
 enum ActivityTab { connections, requests, logs }
 

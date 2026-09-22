@@ -171,7 +171,7 @@ class ServiceAvailabilityState {
     return null;
   }
 
-  int get availableCount => results.where((r) => r.status.isUsable).length;
+  int get availableCount => results.where((r) => r.status.isAvailable).length;
 
   int get checkedCount => results.where((r) => r.status.isDone).length;
 }

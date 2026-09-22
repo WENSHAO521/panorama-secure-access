@@ -4533,6 +4533,316 @@ class AppLocalizations {
       args: [count],
     );
   }
+
+  /// `Network Insight`
+  String get networkInsight {
+    return Intl.message(
+      'Network Insight',
+      name: 'networkInsight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exit IP, IPv4/IPv6 and service availability`
+  String get networkInsightDesc {
+    return Intl.message(
+      'Exit IP, IPv4/IPv6 and service availability',
+      name: 'networkInsightDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Network identity`
+  String get networkIdentity {
+    return Intl.message(
+      'Network identity',
+      name: 'networkIdentity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Public IPv4`
+  String get publicIPv4 {
+    return Intl.message('Public IPv4', name: 'publicIPv4', desc: '', args: []);
+  }
+
+  /// `Public IPv6`
+  String get publicIPv6 {
+    return Intl.message('Public IPv6', name: 'publicIPv6', desc: '', args: []);
+  }
+
+  /// `Local addresses`
+  String get localAddresses {
+    return Intl.message(
+      'Local addresses',
+      name: 'localAddresses',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wi-Fi`
+  String get connectionWifi {
+    return Intl.message('Wi-Fi', name: 'connectionWifi', desc: '', args: []);
+  }
+
+  /// `Ethernet`
+  String get connectionEthernet {
+    return Intl.message(
+      'Ethernet',
+      name: 'connectionEthernet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mobile data`
+  String get connectionMobile {
+    return Intl.message(
+      'Mobile data',
+      name: 'connectionMobile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VPN`
+  String get connectionVpn {
+    return Intl.message('VPN', name: 'connectionVpn', desc: '', args: []);
+  }
+
+  /// `Service availability`
+  String get serviceAvailability {
+    return Intl.message(
+      'Service availability',
+      name: 'serviceAvailability',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check all`
+  String get checkAll {
+    return Intl.message('Check all', name: 'checkAll', desc: '', args: []);
+  }
+
+  /// `Check`
+  String get checkService {
+    return Intl.message('Check', name: 'checkService', desc: '', args: []);
+  }
+
+  /// `{available} of {total} available`
+  String servicesAvailable(Object available, Object total) {
+    return Intl.message(
+      '$available of $total available',
+      name: 'servicesAvailable',
+      desc: '',
+      args: [available, total],
+    );
+  }
+
+  /// `Checks connect to each service directly through your current proxy. Nothing from your profiles, subscriptions or logs is sent.`
+  String get serviceCheckPrivacyTip {
+    return Intl.message(
+      'Checks connect to each service directly through your current proxy. Nothing from your profiles, subscriptions or logs is sent.',
+      name: 'serviceCheckPrivacyTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AI`
+  String get categoryAi {
+    return Intl.message('AI', name: 'categoryAi', desc: '', args: []);
+  }
+
+  /// `Streaming`
+  String get categoryStreaming {
+    return Intl.message(
+      'Streaming',
+      name: 'categoryStreaming',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Social`
+  String get categorySocial {
+    return Intl.message('Social', name: 'categorySocial', desc: '', args: []);
+  }
+
+  /// `Regional`
+  String get categoryRegional {
+    return Intl.message(
+      'Regional',
+      name: 'categoryRegional',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connectivity`
+  String get categoryConnectivity {
+    return Intl.message(
+      'Connectivity',
+      name: 'categoryConnectivity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not checked`
+  String get statusNotChecked {
+    return Intl.message(
+      'Not checked',
+      name: 'statusNotChecked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Checking…`
+  String get statusChecking {
+    return Intl.message(
+      'Checking…',
+      name: 'statusChecking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Available`
+  String get statusAvailable {
+    return Intl.message(
+      'Available',
+      name: 'statusAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Limited`
+  String get statusLimited {
+    return Intl.message('Limited', name: 'statusLimited', desc: '', args: []);
+  }
+
+  /// `Regional`
+  String get statusRegional {
+    return Intl.message('Regional', name: 'statusRegional', desc: '', args: []);
+  }
+
+  /// `Blocked`
+  String get statusBlocked {
+    return Intl.message('Blocked', name: 'statusBlocked', desc: '', args: []);
+  }
+
+  /// `Unsupported region`
+  String get statusUnsupportedRegion {
+    return Intl.message(
+      'Unsupported region',
+      name: 'statusUnsupportedRegion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `IP restricted`
+  String get statusIpRestricted {
+    return Intl.message(
+      'IP restricted',
+      name: 'statusIpRestricted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Network error`
+  String get statusNetworkError {
+    return Intl.message(
+      'Network error',
+      name: 'statusNetworkError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unexpected response`
+  String get statusParseError {
+    return Intl.message(
+      'Unexpected response',
+      name: 'statusParseError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Originals only`
+  String get originalsOnly {
+    return Intl.message(
+      'Originals only',
+      name: 'originalsOnly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coming soon`
+  String get comingSoon {
+    return Intl.message('Coming soon', name: 'comingSoon', desc: '', args: []);
+  }
+
+  /// `Interfaces`
+  String get interfaces {
+    return Intl.message('Interfaces', name: 'interfaces', desc: '', args: []);
+  }
+
+  /// `Diagnostics`
+  String get diagnostics {
+    return Intl.message('Diagnostics', name: 'diagnostics', desc: '', args: []);
+  }
+
+  /// `Running`
+  String get stateRunning {
+    return Intl.message('Running', name: 'stateRunning', desc: '', args: []);
+  }
+
+  /// `Stopped`
+  String get stateStopped {
+    return Intl.message('Stopped', name: 'stateStopped', desc: '', args: []);
+  }
+
+  /// `On`
+  String get stateOn {
+    return Intl.message('On', name: 'stateOn', desc: '', args: []);
+  }
+
+  /// `Off`
+  String get stateOff {
+    return Intl.message('Off', name: 'stateOff', desc: '', args: []);
+  }
+
+  /// `Not available`
+  String get notAvailable {
+    return Intl.message(
+      'Not available',
+      name: 'notAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Checked {time}`
+  String checkedAt(Object time) {
+    return Intl.message(
+      'Checked $time',
+      name: 'checkedAt',
+      desc: '',
+      args: [time],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

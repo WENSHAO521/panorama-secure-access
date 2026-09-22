@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 /// Panorama Design System — semantic icon system (docs/DESIGN-SYSTEM.md).
 ///
-/// `navigation`, `connection`, `actions`, `network`, `routing` are
-/// populated. `service`, `window`, `files`, `system`, `developer`,
+/// `navigation`, `connection`, `actions`, `network`, `routing`, `status`
+/// are populated. `service`, `window`, `files`, `system`, `developer`,
 /// `traffic` are left unpopulated until a real call site needs them, rather
 /// than guessed. Where a glyph was taken from an existing call site, the
 /// source file is noted on the getter.
@@ -14,6 +14,7 @@ abstract final class PanoramaIcons {
   static const actions = _PanoramaActionIcons();
   static const network = _PanoramaNetworkIcons();
   static const routing = _PanoramaRoutingIcons();
+  static const status = _PanoramaStatusIcons();
 }
 
 class _PanoramaNavigationIcons {
@@ -119,5 +120,36 @@ class _PanoramaRoutingIcons {
   /// direct outbound mode selector).
   IconData get mode => PanoramaIconResolver.resolve(
     const PanoramaIconToken(material: Icons.call_split_sharp),
+  );
+}
+
+/// Result-state glyphs. Always shown next to a text label, never alone
+/// (brief §100: status must not depend on colour or a single glyph).
+class _PanoramaStatusIcons {
+  const _PanoramaStatusIcons();
+
+  IconData get ok => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.check_circle_outline),
+  );
+
+  IconData get partial => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.remove_circle_outline),
+  );
+
+  /// Source: lib/views/connection/connections.dart (close connection).
+  IconData get blocked => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.block),
+  );
+
+  IconData get failed => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.error_outline),
+  );
+
+  IconData get unknown => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.help_outline),
+  );
+
+  IconData get notChecked => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.radio_button_unchecked),
   );
 }

@@ -38,6 +38,15 @@ class Navigation {
             const ActivityView(key: GlobalObjectKey(PageLabel.activity)),
       ),
       NavigationItem(
+        icon: Icon(PanoramaIcons.navigation.networkInsight),
+        label: PageLabel.networkInsight,
+        description: 'networkInsightDesc',
+        builder: (_) => const NetworkInsightView(
+          key: GlobalObjectKey(PageLabel.networkInsight),
+        ),
+        modes: [NavigationItemMode.desktop, NavigationItemMode.more],
+      ),
+      NavigationItem(
         icon: const Icon(Icons.storage),
         label: PageLabel.resources,
         description: 'resourcesDesc',

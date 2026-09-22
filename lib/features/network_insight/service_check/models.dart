@@ -29,7 +29,10 @@ enum ServiceCheckStatus {
 
   bool get isDone => this != pending && this != checking;
 
-  bool get isUsable => this == available || this == limited || this == regional;
+  /// Fully works on this route (limited results don't count).
+  bool get isAvailable => this == available || this == regional;
+
+  bool get isUsable => isAvailable || this == limited;
 
   bool get isFailure =>
       this == timeout ||

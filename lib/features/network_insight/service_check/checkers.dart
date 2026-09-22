@@ -37,6 +37,11 @@ class ServiceDefinition {
 
 const defaultServiceCheckTimeout = Duration(seconds: 15);
 
+/// Notes on a `limited` result that the UI shows localized; any other
+/// message is technical detail (e.g. "HTTP 429") and shown as-is.
+const serviceNoteOriginalsOnly = 'Originals only';
+const serviceNoteComingSoon = 'Coming soon';
+
 /// P0 services (brief §31) plus a plain Google connectivity probe.
 final List<ServiceDefinition> serviceDefinitions = [
   const ServiceDefinition(
@@ -290,7 +295,7 @@ Future<ServiceCheckOutcome> checkNetflix(ServiceHttp http) async {
   if (first == 404 && second == 404) {
     return const ServiceCheckOutcome(
       ServiceCheckStatus.limited,
-      message: 'Originals only',
+      message: serviceNoteOriginalsOnly,
     );
   }
   if (first == 403 || second == 403) {
@@ -492,7 +497,7 @@ Future<ServiceCheckOutcome> checkDisneyPlus(ServiceHttp http) async {
     false => ServiceCheckOutcome(
       ServiceCheckStatus.limited,
       regionCode: region,
-      message: 'Coming soon',
+      message: serviceNoteComingSoon,
     ),
     null => ServiceCheckOutcome(
       ServiceCheckStatus.unknown,
