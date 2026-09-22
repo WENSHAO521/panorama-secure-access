@@ -1,6 +1,8 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/colors/panorama_colors.dart';
 import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
@@ -13,6 +15,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'add.dart';
 import 'edit.dart';
 import 'preview.dart';
+import 'profile_summary.dart';
 
 class ProfilesView extends StatefulWidget {
   const ProfilesView({super.key});
@@ -224,29 +227,6 @@ class ProfileItem extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildUrlProfileInfo(BuildContext context) {
-    final subscriptionInfo = profile.subscriptionInfo;
-    return [
-      const SizedBox(height: 8),
-      if (subscriptionInfo != null)
-        SubscriptionInfoView(subscriptionInfo: subscriptionInfo),
-      LastUpdateTimeText(
-        lastUpdateDate: profile.lastUpdateDate,
-        style: context.textTheme.labelMedium?.toLighter,
-      ),
-    ];
-  }
-
-  List<Widget> _buildFileProfileInfo(BuildContext context) {
-    return [
-      const SizedBox(height: 8),
-      LastUpdateTimeText(
-        lastUpdateDate: profile.lastUpdateDate,
-        style: context.textTheme.labelMedium?.toLight,
-      ),
-    ];
-  }
-
   Future<void> _handleCopyLink(BuildContext context) async {
     await Clipboard.setData(ClipboardData(text: profile.url));
     if (context.mounted) {
@@ -274,183 +254,281 @@ class ProfileItem extends StatelessWidget {
     BaseNavigator.push(context, OverwriteView(profileId: id));
   }
 
+  Future<void> _handleDuplicate(BuildContext context) async {
+    await globalState.safeRun(() async {
+      await globalState.container
+          .read(profilesActionProvider.notifier)
+          .duplicateProfile(profile);
+    }, title: context.appLocalizations.tip);
+  }
+
+  /// Brief §74: Update, Edit, Duplicate, Export, Delete; the rest under
+  /// More. The same menu opens from the ⋯ button, a right click, or a long
+  /// press on the card.
+  List<PopupMenuItemData> _menuItems(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
+    final isUrl = profile.type == ProfileType.url;
+    return [
+      if (isUrl)
+        PopupMenuItemData(
+          icon: PanoramaIcons.actions.sync,
+          label: appLocalizations.update,
+          onPressed: updateProfile,
+        ),
+      PopupMenuItemData(
+        icon: PanoramaIcons.actions.edit,
+        label: appLocalizations.edit,
+        onPressed: () => _handleShowEditExtendPage(context),
+      ),
+      PopupMenuItemData(
+        icon: PanoramaIcons.actions.duplicate,
+        label: appLocalizations.duplicate,
+        onPressed: () => _handleDuplicate(context),
+      ),
+      PopupMenuItemData(
+        icon: PanoramaIcons.actions.exportFile,
+        label: appLocalizations.exportFile,
+        onPressed: () => _handleExportFile(context),
+      ),
+      PopupMenuItemData(
+        icon: PanoramaIcons.actions.moreActions,
+        label: appLocalizations.more,
+        subItems: [
+          PopupMenuItemData(
+            icon: PanoramaIcons.actions.view,
+            label: appLocalizations.preview,
+            onPressed: () => _handlePreview(context),
+          ),
+          PopupMenuItemData(
+            icon: PanoramaIcons.routing.override,
+            label: appLocalizations.override,
+            onPressed: () => _handlePushGenProfilePage(context, profile.id),
+          ),
+          if (isUrl)
+            PopupMenuItemData(
+              icon: PanoramaIcons.actions.copy,
+              label: appLocalizations.copyLink,
+              onPressed: () => _handleCopyLink(context),
+            ),
+        ],
+      ),
+      PopupMenuItemData(
+        danger: true,
+        icon: PanoramaIcons.actions.delete,
+        label: appLocalizations.delete,
+        onPressed: () => _handleDeleteProfile(context),
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
-    final appLocalizations = context.appLocalizations;
-    return CommonCard(
-      isSelected: profile.id == groupValue,
-      onPressed: () {
-        onChanged(profile.id);
-      },
-      child: ListItem(
-        key: Key(profile.id.toString()),
-        horizontalTitleGap: 16,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        trailing: SizedBox(
-          height: 40,
-          width: 40,
-          child: Consumer(
-            builder: (_, ref, _) {
-              final isUpdating = ref.watch(
-                isUpdatingProvider(profile.updatingKey),
-              );
-              return FadeThroughBox(
-                child: isUpdating
-                    ? const Padding(
-                        key: ValueKey('loading'),
-                        padding: EdgeInsets.all(8),
-                        child: CircularProgressIndicator(),
-                      )
-                    : CommonPopupBox(
-                        key: const ValueKey('menu'),
-                        popup: CommonPopupMenu(
-                          items: [
-                            PopupMenuItemData(
-                              icon: PanoramaIcons.actions.edit,
-                              label: appLocalizations.edit,
-                              onPressed: () {
-                                _handleShowEditExtendPage(context);
-                              },
-                            ),
-                            PopupMenuItemData(
-                              icon: PanoramaIcons.actions.view,
-                              label: appLocalizations.preview,
-                              onPressed: () {
-                                _handlePreview(context);
-                              },
-                            ),
-                            if (profile.type == ProfileType.url) ...[
-                              PopupMenuItemData(
-                                icon: PanoramaIcons.actions.sync,
-                                label: appLocalizations.sync,
-                                onPressed: () {
-                                  updateProfile();
-                                },
-                              ),
-                            ],
-                            PopupMenuItemData(
-                              icon: PanoramaIcons.actions.moreActions,
-                              label: appLocalizations.more,
-                              subItems: [
-                                PopupMenuItemData(
-                                  icon: PanoramaIcons.routing.override,
-                                  label: appLocalizations.override,
-                                  onPressed: () {
-                                    _handlePushGenProfilePage(
-                                      context,
-                                      profile.id,
-                                    );
-                                  },
-                                ),
-                                // PopupMenuItemData(
-                                //   icon: Icons.extension_outlined,
-                                //   label: appLocalizations.override + "1",
-                                //   onPressed: () {
-                                //     final overrideProfileView = OverrideProfileView(
-                                //       profileId: profile.id,
-                                //     );
-                                //     BaseNavigator.push(
-                                //       context,
-                                //       overrideProfileView,
-                                //     );
-                                //   },
-                                // ),
-                                if (profile.type == ProfileType.url) ...[
-                                  PopupMenuItemData(
-                                    icon: PanoramaIcons.actions.copy,
-                                    label: appLocalizations.copyLink,
-                                    onPressed: () {
-                                      _handleCopyLink(context);
-                                    },
-                                  ),
-                                ],
-                                PopupMenuItemData(
-                                  icon: PanoramaIcons.actions.exportFile,
-                                  label: appLocalizations.exportFile,
-                                  onPressed: () {
-                                    _handleExportFile(context);
-                                  },
-                                ),
-                              ],
-                            ),
-                            PopupMenuItemData(
-                              danger: true,
-                              icon: PanoramaIcons.actions.delete,
-                              label: appLocalizations.delete,
-                              onPressed: () {
-                                _handleDeleteProfile(context);
-                              },
-                            ),
-                          ],
+    return Consumer(
+      builder: (context, ref, _) {
+        final isUpdating = ref.watch(isUpdatingProvider(profile.updatingKey));
+        final summary = ProfileSummary.of(
+          profile,
+          isCurrent: profile.id == groupValue,
+          isUpdating: isUpdating,
+        );
+        final popup = CommonPopupMenu(items: _menuItems(context));
+        return LayoutBuilder(
+          builder: (context, constraints) => CommonPopupBox(
+            popup: popup,
+            targetBuilder: (openMenu) => GestureDetector(
+              onSecondaryTapUp: (details) {
+                openMenu(offset: details.localPosition);
+              },
+              child: CommonCard(
+                key: Key(profile.id.toString()),
+                isSelected: profile.id == groupValue,
+                onPressed: () => onChanged(profile.id),
+                onLongPress: () {
+                  openMenu(offset: Offset(constraints.maxWidth, 0));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 4, 12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: _ProfileDetails(
+                          profile: profile,
+                          summary: summary,
                         ),
-                        targetBuilder: (open) {
-                          return IconButton(
-                            onPressed: () {
-                              open();
-                            },
-                            icon: Icon(PanoramaIcons.actions.more),
-                          );
-                        },
                       ),
-              );
-            },
-          ),
-        ),
-        title: Container(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                profile.realLabel,
-                style: context.textTheme.titleMedium,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+                      SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: FadeThroughBox(
+                          child: isUpdating
+                              ? const Padding(
+                                  key: ValueKey('loading'),
+                                  padding: EdgeInsets.all(10),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : CommonPopupBox(
+                                  key: const ValueKey('menu'),
+                                  popup: popup,
+                                  targetBuilder: (open) => IconButton(
+                                    tooltip: context.appLocalizations.more,
+                                    onPressed: () => open(),
+                                    icon: Icon(PanoramaIcons.actions.more),
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ...switch (profile.type) {
-                    ProfileType.file => _buildFileProfileInfo(context),
-                    ProfileType.url => _buildUrlProfileInfo(context),
-                  },
-                ],
-              ),
-            ],
+            ),
           ),
-        ),
-        tileTitleAlignment: ListTileTitleAlignment.titleHeight,
-      ),
+        );
+      },
     );
   }
 }
 
-class LastUpdateTimeText extends StatelessWidget {
-  final DateTime? lastUpdateDate;
-  final TextStyle? style;
+/// Name and state, then source and last update, then traffic and expiry
+/// (brief §74).
+class _ProfileDetails extends StatelessWidget {
+  final Profile profile;
+  final ProfileSummary summary;
 
-  const LastUpdateTimeText({
-    super.key,
-    required this.lastUpdateDate,
-    this.style,
-  });
+  const _ProfileDetails({required this.profile, required this.summary});
+
+  String _stateLabel(AppLocalizations l, ProfileState state) => switch (state) {
+    ProfileState.inUse => l.profileInUse,
+    ProfileState.updating => l.profileUpdating,
+    ProfileState.expired => l.profileExpired,
+    ProfileState.dataUsedUp => l.profileDataUsedUp,
+  };
 
   @override
   Widget build(BuildContext context) {
-    if (lastUpdateDate == null) {
-      return Text('', style: style);
-    }
-    return TickBuilder(
-      duration: const Duration(minutes: 1),
-      builder: (context, _) {
-        return Text(
-          lastUpdateDate!.getLastUpdateTimeDesc(context),
-          style: style,
-        );
-      },
+    final l = context.appLocalizations;
+    final colorScheme = context.colorScheme;
+    final textTheme = context.textTheme;
+    final secondary = textTheme.bodySmall?.copyWith(
+      color: colorScheme.labelSecondary,
+    );
+    final source = summary.isLocal
+        ? l.localFile
+        : (summary.sourceHost ?? l.url);
+    final usage = summary.usage;
+    final quota = [
+      if (summary.totalBytes != null)
+        '${summary.usedBytes!.traffic.show} / '
+            '${summary.totalBytes!.traffic.show}',
+      if (summary.expiresAt != null)
+        l.expiresOn(summary.expiresAt!.show)
+      else if (summary.hasNoExpiry)
+        l.noExpiry,
+    ].join('  ·  ');
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 2),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(
+                profile.realLabel,
+                style: textTheme.titleMedium,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              for (final state in summary.states)
+                _StateBadge(label: _stateLabel(l, state), state: state),
+            ],
+          ),
+        ),
+        const SizedBox(height: 4),
+        TickBuilder(
+          duration: const Duration(minutes: 1),
+          builder: (context, _) {
+            final updated = profile.lastUpdateDate;
+            return Text(
+              [
+                source,
+                if (updated != null)
+                  l.updatedAgo(updated.getLastUpdateTimeDesc(context)),
+              ].join('  ·  '),
+              style: secondary,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            );
+          },
+        ),
+        if (usage != null) ...[
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(2),
+            child: LinearProgressIndicator(
+              minHeight: 4,
+              value: usage,
+              color: summary.states.contains(ProfileState.dataUsedUp)
+                  ? colorScheme.danger
+                  : null,
+              backgroundColor: colorScheme.primary.opacity15,
+            ),
+          ),
+        ],
+        if (quota.isNotEmpty) ...[
+          const SizedBox(height: 6),
+          Text(
+            quota,
+            style: secondary,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _StateBadge extends StatelessWidget {
+  final String label;
+  final ProfileState state;
+
+  const _StateBadge({required this.label, required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
+    final (background, foreground) = switch (state) {
+      ProfileState.inUse => (
+        colorScheme.primaryContainer,
+        colorScheme.onPrimaryContainer,
+      ),
+      ProfileState.updating => (
+        colorScheme.surfaceContainerHighest,
+        colorScheme.onSurfaceVariant,
+      ),
+      ProfileState.expired || ProfileState.dataUsedUp => (
+        colorScheme.errorContainer,
+        colorScheme.onErrorContainer,
+      ),
+    };
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        child: Text(
+          label,
+          style: context.textTheme.labelSmall?.copyWith(color: foreground),
+        ),
+      ),
     );
   }
 }

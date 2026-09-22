@@ -611,5 +611,14 @@
   "servicesLabel": "Services",
   "connectedFor": "Connected for {time}",
   "dashboardDesc": "Customizable widgets from earlier versions",
-  "advanced": "Advanced"
+  "advanced": "Advanced",
+  "duplicate": "Duplicate",
+  "localFile": "Local file",
+  "profileInUse": "In use",
+  "profileUpdating": "Updating…",
+  "profileExpired": "Expired",
+  "profileDataUsedUp": "Data used up",
+  "expiresOn": "Expires {date}",
+  "noExpiry": "No expiry",
+  "updatedAgo": "Updated {time}"
 }

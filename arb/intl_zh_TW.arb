@@ -611,5 +611,14 @@
   "servicesLabel": "服務",
   "connectedFor": "已連線 {time}",
   "dashboardDesc": "舊版的可自訂小工具",
-  "advanced": "進階"
+  "advanced": "進階",
+  "duplicate": "建立副本",
+  "localFile": "本機檔案",
+  "profileInUse": "使用中",
+  "profileUpdating": "更新中…",
+  "profileExpired": "已過期",
+  "profileDataUsedUp": "流量已用盡",
+  "expiresOn": "{date} 到期",
+  "noExpiry": "永不過期",
+  "updatedAgo": "更新於 {time}"
 }

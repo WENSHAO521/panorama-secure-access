@@ -4963,6 +4963,71 @@ class AppLocalizations {
   String get advanced {
     return Intl.message('Advanced', name: 'advanced', desc: '', args: []);
   }
+
+  /// `Duplicate`
+  String get duplicate {
+    return Intl.message('Duplicate', name: 'duplicate', desc: '', args: []);
+  }
+
+  /// `Local file`
+  String get localFile {
+    return Intl.message('Local file', name: 'localFile', desc: '', args: []);
+  }
+
+  /// `In use`
+  String get profileInUse {
+    return Intl.message('In use', name: 'profileInUse', desc: '', args: []);
+  }
+
+  /// `Updating…`
+  String get profileUpdating {
+    return Intl.message(
+      'Updating…',
+      name: 'profileUpdating',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expired`
+  String get profileExpired {
+    return Intl.message('Expired', name: 'profileExpired', desc: '', args: []);
+  }
+
+  /// `Data used up`
+  String get profileDataUsedUp {
+    return Intl.message(
+      'Data used up',
+      name: 'profileDataUsedUp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expires {date}`
+  String expiresOn(Object date) {
+    return Intl.message(
+      'Expires $date',
+      name: 'expiresOn',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `No expiry`
+  String get noExpiry {
+    return Intl.message('No expiry', name: 'noExpiry', desc: '', args: []);
+  }
+
+  /// `Updated {time}`
+  String updatedAgo(Object time) {
+    return Intl.message(
+      'Updated $time',
+      name: 'updatedAgo',
+      desc: '',
+      args: [time],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

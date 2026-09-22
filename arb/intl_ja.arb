@@ -611,5 +611,14 @@
   "servicesLabel": "サービス",
   "connectedFor": "接続時間 {time}",
   "dashboardDesc": "以前のバージョンのカスタマイズ可能なウィジェット",
-  "advanced": "詳細"
+  "advanced": "詳細",
+  "duplicate": "複製",
+  "localFile": "ローカルファイル",
+  "profileInUse": "使用中",
+  "profileUpdating": "更新中…",
+  "profileExpired": "期限切れ",
+  "profileDataUsedUp": "データ上限に到達",
+  "expiresOn": "{date} に期限切れ",
+  "noExpiry": "期限なし",
+  "updatedAgo": "{time}に更新"
 }

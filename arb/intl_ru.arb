@@ -611,5 +611,14 @@
   "servicesLabel": "Сервисы",
   "connectedFor": "Подключено {time}",
   "dashboardDesc": "Настраиваемые виджеты из прежних версий",
-  "advanced": "Дополнительно"
+  "advanced": "Дополнительно",
+  "duplicate": "Дублировать",
+  "localFile": "Локальный файл",
+  "profileInUse": "Используется",
+  "profileUpdating": "Обновление…",
+  "profileExpired": "Истёк",
+  "profileDataUsedUp": "Трафик исчерпан",
+  "expiresOn": "Истекает {date}",
+  "noExpiry": "Бессрочно",
+  "updatedAgo": "Обновлено {time}"
 }

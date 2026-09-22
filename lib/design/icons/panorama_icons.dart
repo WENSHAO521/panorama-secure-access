@@ -134,6 +134,9 @@ class _PanoramaActionIcons {
 
   IconData get exportFile => _icon(Icons.file_copy_outlined);
 
+  /// Make an independent copy of an item.
+  IconData get duplicate => _icon(Icons.control_point_duplicate);
+
   IconData get upload => _icon(Icons.upload);
 
   /// Fetch content from elsewhere (e.g. import from a URL).
