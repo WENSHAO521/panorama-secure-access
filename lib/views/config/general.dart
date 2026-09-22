@@ -719,6 +719,7 @@ class _PortDialogState extends ConsumerState<_PortDialog> {
   Future<void> _handleReset() async {
     final res = await globalState.showMessage(
       message: TextSpan(text: context.appLocalizations.resetTip),
+      isDanger: true,
     );
     if (res != true) {
       return;

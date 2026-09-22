@@ -106,30 +106,42 @@ class _StartButtonState extends ConsumerState<StartButton>
                           )
                           .width +
                       16;
-            return FloatingActionButton(
-              clipBehavior: Clip.antiAlias,
-              materialTapTargetSize: MaterialTapTargetSize.padded,
-              heroTag: null,
-              onPressed: () {
-                handleSwitchStart();
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    height: 56,
-                    padding: EdgeInsets.only(
-                      left: 16,
-                      right: 16 - 8 * _animation.value,
+            return Semantics(
+              button: true,
+              label:
+                  '${appLocalizations.coreStatus}：${isStart ? appLocalizations.connected : appLocalizations.disconnected}',
+              hint: isStart ? appLocalizations.stop : appLocalizations.start,
+              child: FloatingActionButton(
+                clipBehavior: Clip.antiAlias,
+                materialTapTargetSize: MaterialTapTargetSize.padded,
+                heroTag: null,
+                tooltip: isStart
+                    ? appLocalizations.stop
+                    : appLocalizations.start,
+                onPressed: () {
+                  handleSwitchStart();
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      height: 56,
+                      padding: EdgeInsets.only(
+                        left: 16,
+                        right: 16 - 8 * _animation.value,
+                      ),
+                      alignment: Alignment.centerLeft,
+                      child: AnimatedIcon(
+                        icon: AnimatedIcons.play_pause,
+                        progress: _animation,
+                      ),
                     ),
-                    alignment: Alignment.centerLeft,
-                    child: AnimatedIcon(
-                      icon: AnimatedIcons.play_pause,
-                      progress: _animation,
+                    SizedBox(
+                      width: textWidth * _animation.value,
+                      child: child!,
                     ),
-                  ),
-                  SizedBox(width: textWidth * _animation.value, child: child!),
-                ],
+                  ],
+                ),
               ),
             );
           },

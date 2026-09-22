@@ -173,6 +173,13 @@ class GlobalState {
   /// long, multi-sentence dialog bodies. Defaults to false so every other
   /// caller of this shared helper (confirmations, short prompts, technical
   /// messages) keeps its current start-aligned rendering unchanged.
+  /// [isDanger] marks the confirm action as destructive/irreversible
+  /// (clear all data, delete a profile/script/rule/proxy group, reset
+  /// settings) — it gets the same error-tinted treatment as the danger
+  /// item in [CommonPopupMenu] (`PopupMenuItemData.danger`) instead of the
+  /// plain [TextButton] every other confirmation uses, so a destructive
+  /// dialog reads as visually distinct from a benign one rather than
+  /// relying on the caller having written a scary enough message.
   Future<bool?> showMessage({
     required InlineSpan message,
     BuildContext? context,
@@ -182,6 +189,7 @@ class GlobalState {
     bool cancelable = true,
     bool? dismissible,
     bool longForm = false,
+    bool isDanger = false,
   }) async {
     return showCommonDialog<bool>(
       context: context,
@@ -189,6 +197,7 @@ class GlobalState {
       child: Builder(
         builder: (context) {
           final appLocalizations = context.appLocalizations;
+          final colorScheme = context.colorScheme;
           return CommonDialog(
             title: title ?? appLocalizations.tip,
             actions: [
@@ -200,6 +209,14 @@ class GlobalState {
                   child: Text(cancelText ?? appLocalizations.cancel),
                 ),
               TextButton(
+                style: isDanger
+                    ? TextButton.styleFrom(
+                        foregroundColor: colorScheme.error,
+                        backgroundColor: colorScheme.error.withValues(
+                          alpha: 0.12,
+                        ),
+                      )
+                    : null,
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },

@@ -53,6 +53,7 @@ class AdvancedConfigView extends StatelessWidget {
                       final res = await globalState.showMessage(
                         title: appLocalizations.reset,
                         message: TextSpan(text: appLocalizations.resetTip),
+                        isDanger: true,
                       );
                       if (res != true) {
                         return;

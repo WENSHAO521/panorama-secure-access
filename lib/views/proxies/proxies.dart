@@ -42,6 +42,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
               final isMobile = ref.read(isMobileViewProvider);
               open(offset: Offset(0, isMobile ? 0 : 20));
             },
+            tooltip: appLocalizations.more,
             icon: const Icon(Icons.more_vert),
           );
         },

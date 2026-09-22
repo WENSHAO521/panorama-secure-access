@@ -60,6 +60,7 @@ class DeveloperView extends ConsumerWidget {
           onTap: () async {
             final res = await globalState.showMessage(
               message: TextSpan(text: appLocalizations.confirmClearAllData),
+              isDanger: true,
             );
             if (res != true) {
               return;

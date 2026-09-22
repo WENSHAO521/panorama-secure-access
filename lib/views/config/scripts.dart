@@ -27,6 +27,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
       message: TextSpan(
         text: appLocalizations.deleteTip(appLocalizations.script),
       ),
+      isDanger: true,
     );
     if (res != true) {
       return;

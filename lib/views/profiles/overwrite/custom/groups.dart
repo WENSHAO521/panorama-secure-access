@@ -830,6 +830,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   Future<void> _handleDelete(int profileId, String name) async {
     final res = await globalState.showMessage(
       message: TextSpan(text: context.appLocalizations.confirmDeleteProxyGroup),
+      isDanger: true,
     );
     if (res == true && mounted) {
       ref.read(proxyGroupsProvider(profileId).notifier).del(name);

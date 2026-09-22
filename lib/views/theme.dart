@@ -171,6 +171,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
   Future<void> _handleReset() async {
     final res = await globalState.showMessage(
       message: TextSpan(text: context.appLocalizations.resetTip),
+      isDanger: true,
     );
     if (res != true) {
       return;
@@ -193,6 +194,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
       message: TextSpan(
         text: appLocalizations.deleteTip(appLocalizations.colorSchemes),
       ),
+      isDanger: true,
     );
     if (res != true) {
       return;
@@ -327,6 +329,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
                 iconSize: 20,
                 padding: const EdgeInsets.all(4),
                 visualDensity: VisualDensity.compact,
+                tooltip: context.appLocalizations.reset,
                 onPressed: _handleReset,
                 icon: const Icon(Icons.replay),
               ),
@@ -384,6 +387,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
                                   onPressed: _handleDel,
                                   padding: const EdgeInsets.all(12),
                                   iconSize: 30,
+                                  tooltip: context.appLocalizations.delete,
                                   icon: Icon(
                                     color: context.colorScheme.primary,
                                     Icons.delete,
@@ -401,6 +405,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
                         child: IconButton.filledTonal(
                           onPressed: _handleAdd,
                           iconSize: 32,
+                          tooltip: context.appLocalizations.add,
                           icon: Icon(
                             color: context.colorScheme.primary,
                             Icons.add,

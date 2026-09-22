@@ -281,6 +281,7 @@ class _OnDemandViewState extends ConsumerState<OnDemandView>
                     CommonMinIconButtonTheme(
                       child: IconButton.filledTonal(
                         onPressed: _handleDelete,
+                        tooltip: appLocalizations.delete,
                         icon: const Icon(Icons.delete),
                       ),
                     ),

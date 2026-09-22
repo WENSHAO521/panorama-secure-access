@@ -66,6 +66,7 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
       message: TextSpan(
         text: appLocalizations.deleteMultipTip(appLocalizations.rule),
       ),
+      isDanger: true,
     );
     if (res != true) {
       return;
