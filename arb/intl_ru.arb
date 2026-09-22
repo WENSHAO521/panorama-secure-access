@@ -627,5 +627,12 @@
   "showOnly": "Только «{value}»",
   "copyDestination": "Копировать адрес назначения",
   "sortedAscending": "По возрастанию",
-  "sortedDescending": "По убыванию"
+  "sortedDescending": "По убыванию",
+  "dnsConfiguredBy": "Источник настроек",
+  "dnsFromProfile": "Профиль",
+  "dnsFromOverride": "Настройки DNS приложения (переопределение включено)",
+  "dnsFromFallback": "Настройки DNS приложения и системный резолвер (в профиле DNS выключен)",
+  "systemResolver": "Системный резолвер",
+  "dnsRuleCount": "{count, plural, one{{count} правило} few{{count} правила} many{{count} правил} other{{count} правила}}",
+  "dnsConfigNote": "Это настройки DNS, с которыми работает ядро. Какой резолвер отвечает на самом деле, здесь не проверяется."
 }

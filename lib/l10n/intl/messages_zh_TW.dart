@@ -32,58 +32,60 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(label) => "${label}詳情";
 
-  static String m6(label) => "${label}不能為空";
+  static String m6(count) => "${count} 條規則";
 
-  static String m7(count) => "${count} 個條目";
+  static String m7(label) => "${label}不能為空";
 
-  static String m8(label) => "${label}當前已存在";
+  static String m8(count) => "${count} 個條目";
 
-  static String m9(date) => "${date} 到期";
+  static String m9(label) => "${label}當前已存在";
 
-  static String m10(name) => "${name} 已跳過";
+  static String m10(date) => "${date} 到期";
 
-  static String m11(name) => "${name} 已更新";
+  static String m11(name) => "${name} 已跳過";
 
-  static String m12(name) => "正在更新 ${name}...";
+  static String m12(name) => "${name} 已更新";
 
-  static String m13(count) => "${count} 小時前";
+  static String m13(name) => "正在更新 ${name}...";
 
-  static String m14(count) => "${count} 小時";
+  static String m14(count) => "${count} 小時前";
 
-  static String m15(target) => "${target} 是一個無效的策略";
+  static String m15(count) => "${count} 小時";
 
-  static String m16(proxyName) => "${proxyName} 是一個無效的代理";
+  static String m16(target) => "${target} 是一個無效的策略";
 
-  static String m17(providerName) => "${providerName} 是一個無效的代理集";
+  static String m17(proxyName) => "${proxyName} 是一個無效的代理";
 
-  static String m18(subRule) => "${subRule} 是一個無效的SUB_RULE";
+  static String m18(providerName) => "${providerName} 是一個無效的代理集";
 
-  static String m19(appName) =>
+  static String m19(subRule) => "${subRule} 是一個無效的SUB_RULE";
+
+  static String m20(appName) =>
       "1. 開啟 系統設定 > 隱私與安全性\n2. 選擇 定位服務\n3. 在右側列表中找到並勾選 ${appName}\n\n完成設定後，返回應用即可正常使用。感謝您的配合。";
 
-  static String m20(count) => "${count} 分鐘前";
+  static String m21(count) => "${count} 分鐘前";
 
-  static String m21(count) => "${count} 個月前";
+  static String m22(count) => "${count} 個月前";
 
-  static String m22(label) => "暫無${label}";
+  static String m23(label) => "暫無${label}";
 
-  static String m23(label) => "${label}必須為數字";
+  static String m24(label) => "${label}必須為數字";
 
-  static String m24(label) => "${label} 必須在 1024 到 49151 之間";
+  static String m25(label) => "${label} 必須在 1024 到 49151 之間";
 
-  static String m25(count) => "${count} 秒";
+  static String m26(count) => "${count} 秒";
 
-  static String m26(count) => "已選擇 ${count} 項";
+  static String m27(count) => "已選擇 ${count} 項";
 
-  static String m27(available, total) => "${available} / ${total} 可用";
+  static String m28(available, total) => "${available} / ${total} 可用";
 
-  static String m28(value) => "僅顯示「${value}」";
+  static String m29(value) => "僅顯示「${value}」";
 
-  static String m29(time) => "更新於 ${time}";
+  static String m30(time) => "更新於 ${time}";
 
-  static String m30(label) => "${label}必須為URL";
+  static String m31(label) => "${label}必須為URL";
 
-  static String m31(count) => "${count} 年前";
+  static String m32(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -271,9 +273,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "disconnectAction": MessageLookupByLibrary.simpleMessage("中斷連線"),
     "disconnected": MessageLookupByLibrary.simpleMessage("已斷開"),
     "discoverNewVersion": MessageLookupByLibrary.simpleMessage("發現新版本"),
+    "dnsConfigNote": MessageLookupByLibrary.simpleMessage(
+      "這是核心使用的 DNS 設定。此處不檢測實際回應的解析器。",
+    ),
+    "dnsConfiguredBy": MessageLookupByLibrary.simpleMessage("設定來源"),
     "dnsDesc": MessageLookupByLibrary.simpleMessage("更新DNS相關設定"),
+    "dnsFromFallback": MessageLookupByLibrary.simpleMessage(
+      "應用 DNS 設定加系統解析器（設定檔未啟用 DNS）",
+    ),
+    "dnsFromOverride": MessageLookupByLibrary.simpleMessage(
+      "應用 DNS 設定（已開啟覆寫 DNS）",
+    ),
+    "dnsFromProfile": MessageLookupByLibrary.simpleMessage("設定檔"),
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNS劫持"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNS模式"),
+    "dnsRuleCount": m6,
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage("是否要透過"),
     "domain": MessageLookupByLibrary.simpleMessage("域名"),
     "download": MessageLookupByLibrary.simpleMessage("下載"),
@@ -287,10 +301,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "editProxyGroup": MessageLookupByLibrary.simpleMessage("編輯策略組"),
     "editRule": MessageLookupByLibrary.simpleMessage("編輯規則"),
     "editSsid": MessageLookupByLibrary.simpleMessage("編輯SSID"),
-    "emptyTip": m6,
+    "emptyTip": m7,
     "en": MessageLookupByLibrary.simpleMessage("英語"),
     "entries": MessageLookupByLibrary.simpleMessage("個條目"),
-    "entriesCount": m7,
+    "entriesCount": m8,
     "exclude": MessageLookupByLibrary.simpleMessage("從最近任務中隱藏"),
     "excludeDesc": MessageLookupByLibrary.simpleMessage("應用在後臺時,從最近任務中隱藏應用"),
     "excludeProxyFilter": MessageLookupByLibrary.simpleMessage("排除節點過濾器"),
@@ -299,12 +313,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "連線到被排除SSID的WIFI時，將會自動切換應用執行狀態",
     ),
     "excludeType": MessageLookupByLibrary.simpleMessage("排除型別"),
-    "existsTip": m8,
+    "existsTip": m9,
     "exit": MessageLookupByLibrary.simpleMessage("退出"),
     "exitIp": MessageLookupByLibrary.simpleMessage("出口 IP"),
     "expand": MessageLookupByLibrary.simpleMessage("標準"),
     "expectedStatus": MessageLookupByLibrary.simpleMessage("預期狀態"),
-    "expiresOn": m9,
+    "expiresOn": m10,
     "exportFile": MessageLookupByLibrary.simpleMessage("匯出檔案"),
     "exportLogs": MessageLookupByLibrary.simpleMessage("匯出日誌"),
     "exportSuccess": MessageLookupByLibrary.simpleMessage("匯出成功"),
@@ -337,9 +351,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "geoOptions": MessageLookupByLibrary.simpleMessage("Geo 選項"),
     "geoResources": MessageLookupByLibrary.simpleMessage("Geo 資源"),
-    "geoSkipped": m10,
-    "geoUpdated": m11,
-    "geoUpdating": m12,
+    "geoSkipped": m11,
+    "geoUpdated": m12,
+    "geoUpdating": m13,
     "geodataLoader": MessageLookupByLibrary.simpleMessage("Geo低記憶體模式"),
     "geodataLoaderDesc": MessageLookupByLibrary.simpleMessage(
       "開啟將使用Geo低記憶體載入器",
@@ -358,8 +372,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "hotkeyManagement": MessageLookupByLibrary.simpleMessage("快捷鍵管理"),
     "hotkeyManagementDesc": MessageLookupByLibrary.simpleMessage("使用鍵盤控制應用程式"),
     "hours": MessageLookupByLibrary.simpleMessage("小時"),
-    "hoursAgo": m13,
-    "hoursCount": m14,
+    "hoursAgo": m14,
+    "hoursCount": m15,
     "icon": MessageLookupByLibrary.simpleMessage("圖片"),
     "iconRecords": MessageLookupByLibrary.simpleMessage("圖示記錄"),
     "iconStyle": MessageLookupByLibrary.simpleMessage("圖示樣式"),
@@ -390,10 +404,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "interval": MessageLookupByLibrary.simpleMessage("間隔"),
     "intranetIP": MessageLookupByLibrary.simpleMessage("內網 IP"),
     "invalidBackupFile": MessageLookupByLibrary.simpleMessage("無效備份檔案"),
-    "invalidPolicy": m15,
-    "invalidProxy": m16,
-    "invalidProxyProvider": m17,
-    "invalidSubRule": m18,
+    "invalidPolicy": m16,
+    "invalidProxy": m17,
+    "invalidProxyProvider": m18,
+    "invalidSubRule": m19,
     "ipcidr": MessageLookupByLibrary.simpleMessage("IP/掩碼"),
     "ipv6Desc": MessageLookupByLibrary.simpleMessage("開啟後將可以接收IPv6流量"),
     "ipv6InboundDesc": MessageLookupByLibrary.simpleMessage("允許IPv6入站"),
@@ -420,7 +434,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "locationPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "根據系統要求，獲取Wi-Fi名稱需要您授予位置許可權。",
     ),
-    "locationPermissionGuide": m19,
+    "locationPermissionGuide": m20,
     "locationPermissionRequired": MessageLookupByLibrary.simpleMessage(
       "需要位置許可權",
     ),
@@ -442,11 +456,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "min": MessageLookupByLibrary.simpleMessage("最小"),
     "minimizeOnExit": MessageLookupByLibrary.simpleMessage("退出時最小化"),
     "minimizeOnExitDesc": MessageLookupByLibrary.simpleMessage("修改系統預設退出事件"),
-    "minutesAgo": m20,
+    "minutesAgo": m21,
     "mixedPort": MessageLookupByLibrary.simpleMessage("混合埠"),
     "mode": MessageLookupByLibrary.simpleMessage("模式"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("單色"),
-    "monthsAgo": m21,
+    "monthsAgo": m22,
     "more": MessageLookupByLibrary.simpleMessage("更多"),
     "name": MessageLookupByLibrary.simpleMessage("名稱"),
     "nameserver": MessageLookupByLibrary.simpleMessage("域名伺服器"),
@@ -483,8 +497,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "notAvailable": MessageLookupByLibrary.simpleMessage("不可用"),
     "notSelectedTip": MessageLookupByLibrary.simpleMessage("當前代理組無法選中"),
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage("沒有配置檔案,請先新增配置檔案"),
-    "nullTip": m22,
-    "numberTip": m23,
+    "nullTip": m23,
+    "numberTip": m24,
     "onDemand": MessageLookupByLibrary.simpleMessage("按需執行"),
     "onDemandDesc": MessageLookupByLibrary.simpleMessage("配置程式特定場景執行狀態"),
     "onlyIcon": MessageLookupByLibrary.simpleMessage("僅圖示"),
@@ -520,7 +534,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "port": MessageLookupByLibrary.simpleMessage("埠"),
     "portConflictTip": MessageLookupByLibrary.simpleMessage("請輸入不同的埠"),
-    "portTip": m24,
+    "portTip": m25,
     "preferH3Desc": MessageLookupByLibrary.simpleMessage("優先使用DOH的http/3"),
     "prerequisites": MessageLookupByLibrary.simpleMessage("前置條件"),
     "pressKeyboard": MessageLookupByLibrary.simpleMessage("請按下按鍵"),
@@ -712,7 +726,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "search": MessageLookupByLibrary.simpleMessage("搜尋"),
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
-    "secondsCount": m25,
+    "secondsCount": m26,
     "selectAll": MessageLookupByLibrary.simpleMessage("全選"),
     "selectProxies": MessageLookupByLibrary.simpleMessage("選擇代理"),
     "selectProxyProviders": MessageLookupByLibrary.simpleMessage("選擇代理集"),
@@ -720,16 +734,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "selectSplitStrategy": MessageLookupByLibrary.simpleMessage("請選擇分流策略"),
     "selectSubRule": MessageLookupByLibrary.simpleMessage("請選擇子規則"),
     "selected": MessageLookupByLibrary.simpleMessage("已選擇"),
-    "selectedCountTitle": m26,
+    "selectedCountTitle": m27,
     "serviceAvailability": MessageLookupByLibrary.simpleMessage("服務可用性"),
     "serviceCheckPrivacyTip": MessageLookupByLibrary.simpleMessage(
       "檢測會透過目前代理直接存取各服務，不會傳送設定檔、訂閱或日誌中的任何內容。",
     ),
-    "servicesAvailable": m27,
+    "servicesAvailable": m28,
     "servicesLabel": MessageLookupByLibrary.simpleMessage("服務"),
     "settings": MessageLookupByLibrary.simpleMessage("設定"),
     "show": MessageLookupByLibrary.simpleMessage("顯示"),
-    "showOnly": m28,
+    "showOnly": m29,
     "shrink": MessageLookupByLibrary.simpleMessage("緊湊"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("靜默啟動"),
     "silentLaunchDesc": MessageLookupByLibrary.simpleMessage("後臺啟動"),
@@ -786,6 +800,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "systemApp": MessageLookupByLibrary.simpleMessage("系統應用"),
     "systemProxy": MessageLookupByLibrary.simpleMessage("系統代理"),
     "systemProxyDesc": MessageLookupByLibrary.simpleMessage("設定系統代理"),
+    "systemResolver": MessageLookupByLibrary.simpleMessage("系統解析器"),
     "tab": MessageLookupByLibrary.simpleMessage("標籤頁"),
     "tabAnimation": MessageLookupByLibrary.simpleMessage("選項卡動畫"),
     "tabAnimationDesc": MessageLookupByLibrary.simpleMessage("僅在移動檢視中有效"),
@@ -821,11 +836,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage("未知網路錯誤"),
     "unnamed": MessageLookupByLibrary.simpleMessage("未命名"),
     "update": MessageLookupByLibrary.simpleMessage("更新"),
-    "updatedAgo": m29,
+    "updatedAgo": m30,
     "upload": MessageLookupByLibrary.simpleMessage("上傳"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("透過URL獲取配置檔案"),
-    "urlTip": m30,
+    "urlTip": m31,
     "useHosts": MessageLookupByLibrary.simpleMessage("使用Hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("使用系統Hosts"),
     "userAgent": MessageLookupByLibrary.simpleMessage("使用者代理"),
@@ -841,7 +856,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "vpnTip": MessageLookupByLibrary.simpleMessage("重啟VPN後改變生效"),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV配置"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名單模式"),
-    "yearsAgo": m31,
+    "yearsAgo": m32,
     "zh_CN": MessageLookupByLibrary.simpleMessage("中文簡體"),
     "zh_TW": MessageLookupByLibrary.simpleMessage("中文繁體"),
   };

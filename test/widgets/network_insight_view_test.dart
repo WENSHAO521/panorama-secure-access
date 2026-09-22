@@ -1,5 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/theme.dart';
+import 'package:fl_clash/features/network_insight/dns.dart';
 import 'package:fl_clash/features/network_insight/identity.dart';
 import 'package:fl_clash/features/network_insight/service_check/checkers.dart';
 import 'package:fl_clash/features/network_insight/service_check/models.dart';
@@ -64,6 +65,15 @@ void main() {
             stopProbe: () async {},
             probeHttp: (_) => throw UnimplementedError(),
             nodeDelay: (_) async => null,
+            readDns: () async => DnsInsight.fromSection(const {
+              'enhanced-mode': 'fake-ip',
+              'fake-ip-range': '198.18.0.1/16',
+              'nameserver': [
+                'https://dns.nextdns.io/abc123#Proxy',
+                'system://',
+              ],
+              'nameserver-policy': {'geosite:cn': '223.5.5.5'},
+            }, DnsSource.appFallback),
             services: [
               service(
                 'netflix',
@@ -160,5 +170,31 @@ void main() {
     expect(runs, {'prime_video': 1});
     expect(find.text('IP restricted'), findsOneWidget);
     expect(find.text('Not checked'), findsNWidgets(2));
+  });
+
+  testWidgets('DNS shows the configuration, never a DoH path', (tester) async {
+    await pumpView(tester);
+
+    expect(find.text('Configured by'), findsOneWidget);
+    expect(
+      find.text(
+        'App DNS settings plus the system resolver '
+        '(the profile has DNS off)',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Fake-IP  198.18.0.1/16'), findsOneWidget);
+    expect(
+      find.text('DoH  dns.nextdns.io  → Proxy\nSystem resolver'),
+      findsOneWidget,
+    );
+    expect(find.text('1 rule'), findsOneWidget);
+    expect(find.textContaining('abc123'), findsNothing);
+    // Configuration only: no leak verdict, and the page says so.
+    expect(find.textContaining('leak'), findsNothing);
+    expect(
+      find.textContaining('Which resolver actually answers is not checked'),
+      findsOneWidget,
+    );
   });
 }

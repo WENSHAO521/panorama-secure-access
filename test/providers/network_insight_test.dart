@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:fl_clash/common/task.dart';
+import 'package:fl_clash/features/network_insight/dns.dart';
 import 'package:fl_clash/features/network_insight/identity.dart';
 import 'package:fl_clash/features/network_insight/service_check/checkers.dart';
 import 'package:fl_clash/features/network_insight/service_check/models.dart';
@@ -65,6 +67,8 @@ class _Harness {
               });
             },
             nodeDelay: (_) async => 42,
+            readDns: () async =>
+                const DnsInsight(source: DnsSource.profile, mode: 'fake-ip'),
           ),
         ),
         isStartProvider.overrideWith((ref) => isStart),
@@ -99,6 +103,7 @@ void main() {
         expect(identity.ipv6?.status, IpFamilyStatus.unavailable);
         expect(identity.localIPv4, ['192.168.1.10']);
         expect(identity.connectionKinds, {ConnectionKind.wifi});
+        expect(identity.dns?.mode, 'fake-ip');
       },
     );
 

@@ -627,5 +627,12 @@
   "showOnly": "“{value}”만 표시",
   "copyDestination": "대상 복사",
   "sortedAscending": "오름차순",
-  "sortedDescending": "내림차순"
+  "sortedDescending": "내림차순",
+  "dnsConfiguredBy": "설정 출처",
+  "dnsFromProfile": "프로필",
+  "dnsFromOverride": "앱 DNS 설정 (DNS 재정의 켜짐)",
+  "dnsFromFallback": "앱 DNS 설정과 시스템 리졸버 (프로필 DNS 꺼짐)",
+  "systemResolver": "시스템 리졸버",
+  "dnsRuleCount": "규칙 {count}개",
+  "dnsConfigNote": "코어가 사용하는 DNS 설정입니다. 실제로 응답하는 리졸버는 여기서 확인하지 않습니다."
 }

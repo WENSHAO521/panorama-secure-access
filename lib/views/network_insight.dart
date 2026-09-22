@@ -2,6 +2,8 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/design/colors/panorama_colors.dart';
 import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/l10n/l10n.dart';
+import 'package:fl_clash/features/network_insight/dns.dart';
 import 'package:fl_clash/features/network_insight/identity.dart';
 import 'package:fl_clash/features/network_insight/service_check/checkers.dart';
 import 'package:fl_clash/features/network_insight/service_check/models.dart';
@@ -95,6 +97,8 @@ class _NetworkInsightViewState extends ConsumerState<NetworkInsightView> {
               _ServicesSection(),
               Divider(height: 24),
               _InterfacesSection(),
+              Divider(height: 24),
+              _DnsSection(),
               Divider(height: 24),
               _DiagnosticsSection(),
             ],
@@ -521,6 +525,98 @@ class _InterfacesSection extends ConsumerWidget {
               ),
               subtitle: _TechnicalText(interface.addresses.join('\n')),
             ),
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// DNS (brief §71: configured DNS only)
+// ---------------------------------------------------------------------------
+
+class _DnsSection extends ConsumerWidget {
+  const _DnsSection();
+
+  static String _mode(String mode) => switch (mode) {
+    'fake-ip' => 'Fake-IP',
+    'redir-host' => 'Redir-Host',
+    'normal' => 'Normal',
+    'hosts' => 'Hosts',
+    _ => mode,
+  };
+
+  static String _transport(DnsTransport transport) => switch (transport) {
+    DnsTransport.udp => 'UDP',
+    DnsTransport.tcp => 'TCP',
+    DnsTransport.tls => 'DoT',
+    DnsTransport.https => 'DoH',
+    DnsTransport.quic => 'DoQ',
+    DnsTransport.dhcp => 'DHCP',
+    DnsTransport.system || DnsTransport.other => '',
+  };
+
+  static String _server(AppLocalizations l, DnsServer server) {
+    final name = switch (server.transport) {
+      DnsTransport.system => l.systemResolver,
+      DnsTransport.other => server.host,
+      _ => '${_transport(server.transport).padRight(4)} ${server.host}',
+    };
+    return server.via == null ? name : '$name  → ${server.via}';
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.appLocalizations;
+    final dns = ref.watch(
+      networkInsightIdentityProvider.select((state) => state.identity?.dns),
+    );
+
+    Widget servers(String title, List<DnsServer> list) => ListItem(
+      title: Text(title),
+      subtitle: _TechnicalText(list.map((s) => _server(l, s)).join('\n')),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const ListHeader(title: 'DNS'),
+        if (dns == null)
+          const ListItem(title: Text('—'))
+        else ...[
+          ListItem(
+            title: Text(l.dnsConfiguredBy),
+            subtitle: Text(switch (dns.source) {
+              DnsSource.profile => l.dnsFromProfile,
+              DnsSource.appOverride => l.dnsFromOverride,
+              DnsSource.appFallback => l.dnsFromFallback,
+            }),
+          ),
+          ListItem(
+            title: Text(l.dnsMode),
+            trailing: _TechnicalText(
+              [_mode(dns.mode), if (dns.isFakeIp) ?dns.fakeIpRange].join('  '),
+            ),
+          ),
+          if (dns.nameservers.isNotEmpty)
+            servers(l.nameserver, dns.nameservers),
+          if (dns.fallback.isNotEmpty) servers(l.fallback, dns.fallback),
+          if (dns.proxyServerNameservers.isNotEmpty)
+            servers(l.proxyNameserver, dns.proxyServerNameservers),
+          if (dns.policyCount > 0)
+            ListItem(
+              title: Text(l.nameserverPolicy),
+              trailing: Text(l.dnsRuleCount(dns.policyCount)),
+            ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+            child: Text(
+              l.dnsConfigNote,
+              style: context.textTheme.bodySmall?.copyWith(
+                color: context.colorScheme.labelSecondary,
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }

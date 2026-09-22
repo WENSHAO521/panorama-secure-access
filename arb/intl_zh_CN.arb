@@ -627,5 +627,12 @@
   "showOnly": "仅显示“{value}”",
   "copyDestination": "复制目标地址",
   "sortedAscending": "升序",
-  "sortedDescending": "降序"
+  "sortedDescending": "降序",
+  "dnsConfiguredBy": "配置来源",
+  "dnsFromProfile": "配置文件",
+  "dnsFromOverride": "应用 DNS 设置（已开启覆写 DNS）",
+  "dnsFromFallback": "应用 DNS 设置加系统解析器（配置文件未启用 DNS）",
+  "systemResolver": "系统解析器",
+  "dnsRuleCount": "{count} 条规则",
+  "dnsConfigNote": "这是内核使用的 DNS 配置。此处不检测实际应答的解析器。"
 }

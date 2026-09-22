@@ -191,33 +191,12 @@ Future<VM2<String, String>> _makeRealProfileTask(
   for (final host in realPatchConfig.hosts.entries) {
     rawConfig['hosts'][host.key] = host.value.splitByMultipleSeparators;
   }
-  if (rawConfig['dns'] == null) {
-    rawConfig['dns'] = {};
-  }
-  final isEnableDns = rawConfig['dns']['enable'] == true;
-  const systemDns = 'system://';
-  if (overrideDns || !isEnableDns) {
-    final dns = switch (!isEnableDns) {
-      true => realPatchConfig.dns.copyWith(
-        nameserver: [...realPatchConfig.dns.nameserver, systemDns],
-      ),
-      false => realPatchConfig.dns,
-    };
-    rawConfig['dns'] = dns.toJson();
-    rawConfig['dns']['nameserver-policy'] = {};
-    for (final entry in dns.nameserverPolicy.entries) {
-      rawConfig['dns']['nameserver-policy'][entry.key] =
-          entry.value.splitByMultipleSeparators;
-    }
-  }
-  if (appendSystemDns) {
-    final List<String> nameserver = List<String>.from(
-      rawConfig['dns']['nameserver'] ?? [],
-    );
-    if (!nameserver.contains(systemDns)) {
-      rawConfig['dns']['nameserver'] = [...nameserver, systemDns];
-    }
-  }
+  rawConfig['dns'] = resolveDnsSection(
+    rawConfig['dns'],
+    appDns: realPatchConfig.dns,
+    overrideDns: overrideDns,
+    appendSystemDns: appendSystemDns,
+  ).dns;
   List<String> rules = [];
   if (data.rules.isEmpty) {
     if (rawConfig['rules'] != null) {
@@ -639,4 +618,52 @@ Future<List<T>> _mapListTask<T, S>(VM2<List<S>, T Function(S)> vm2) async {
   final results = vm2.a;
   final mapper = vm2.b;
   return results.map((item) => mapper(item)).toList();
+}
+
+/// Where the core's DNS settings come from.
+enum DnsSource {
+  /// The profile's own `dns` section.
+  profile,
+
+  /// The app's DNS settings, because "Override DNS" is on.
+  appOverride,
+
+  /// The app's DNS settings plus the system resolver, because the profile
+  /// has no DNS section or has DNS turned off.
+  appFallback,
+}
+
+/// The `dns` section the core is started with, from the profile's section
+/// and the app's DNS settings. The config builder and Network Insight both
+/// use this, so the page shows what the core actually runs with (§71).
+({Map<String, dynamic> dns, DnsSource source}) resolveDnsSection(
+  Object? profileDns, {
+  required Dns appDns,
+  required bool overrideDns,
+  required bool appendSystemDns,
+}) {
+  const systemDns = 'system://';
+  var dns = profileDns is Map
+      ? Map<String, dynamic>.from(profileDns)
+      : <String, dynamic>{};
+  final isEnableDns = dns['enable'] == true;
+  var source = DnsSource.profile;
+  if (overrideDns || !isEnableDns) {
+    source = overrideDns ? DnsSource.appOverride : DnsSource.appFallback;
+    final effective = !isEnableDns
+        ? appDns.copyWith(nameserver: [...appDns.nameserver, systemDns])
+        : appDns;
+    dns = effective.toJson();
+    dns['nameserver-policy'] = {
+      for (final entry in effective.nameserverPolicy.entries)
+        entry.key: entry.value.splitByMultipleSeparators,
+    };
+  }
+  if (appendSystemDns) {
+    final nameserver = List<String>.from(dns['nameserver'] ?? []);
+    if (!nameserver.contains(systemDns)) {
+      dns['nameserver'] = [...nameserver, systemDns];
+    }
+  }
+  return (dns: dns, source: source);
 }

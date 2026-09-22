@@ -627,5 +627,12 @@
   "showOnly": "Show only “{value}”",
   "copyDestination": "Copy destination",
   "sortedAscending": "Sorted ascending",
-  "sortedDescending": "Sorted descending"
+  "sortedDescending": "Sorted descending",
+  "dnsConfiguredBy": "Configured by",
+  "dnsFromProfile": "The profile",
+  "dnsFromOverride": "App DNS settings (Override DNS is on)",
+  "dnsFromFallback": "App DNS settings plus the system resolver (the profile has DNS off)",
+  "systemResolver": "System resolver",
+  "dnsRuleCount": "{count, plural, =1{1 rule} other{{count} rules}}",
+  "dnsConfigNote": "This is the DNS configuration the core runs with. Which resolver actually answers is not checked here."
 }

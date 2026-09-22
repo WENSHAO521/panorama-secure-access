@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:fl_clash/models/common.dart';
 import 'package:flutter/foundation.dart';
 
+import 'dns.dart';
 import 'service_check/http.dart';
 import 'service_check/region.dart';
 
@@ -185,6 +186,9 @@ class NetworkIdentity {
   final IpFamilyProbe? ipv6;
   final List<LocalInterface> interfaces;
   final Set<ConnectionKind> connectionKinds;
+
+  /// Configured DNS (brief §71); null when it couldn't be read.
+  final DnsInsight? dns;
   final DateTime checkedAt;
 
   const NetworkIdentity({
@@ -194,6 +198,7 @@ class NetworkIdentity {
     this.ipv6,
     this.interfaces = const [],
     this.connectionKinds = const {},
+    this.dns,
   });
 
   String? get publicIPv4 => ipv4?.exitIp;

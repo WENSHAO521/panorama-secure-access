@@ -41,6 +41,7 @@ void main() {
               'https://[2606:4700:4700::1111]/': failWith(),
             }),
             nodeDelay: (_) async => 38,
+            readDns: () async => null,
             services: [
               ServiceDefinition(
                 id: 'claude',

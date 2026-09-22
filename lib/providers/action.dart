@@ -298,6 +298,32 @@ class SetupAction extends _$SetupAction {
     );
   }
 
+  /// The profile's config after its override script, if any: the input
+  /// both the core config and the DNS insight are built from.
+  Future<Map<String, dynamic>> _profileConfig(SetupState setupState) async {
+    final configMap = await coreController.getConfig(setupState.profileId!);
+    if (setupState.overwriteType != OverwriteType.script) return configMap;
+    final scriptContent = await setupState.script?.content;
+    if (scriptContent == null || scriptContent.isEmpty) return configMap;
+    return handleEvaluate(scriptContent, configMap);
+  }
+
+  /// The DNS section the core gets for the current profile, computed the
+  /// same way as the full config (brief §71). Null without a profile.
+  Future<({Map<String, dynamic> dns, DnsSource source})?>
+  currentDnsSection() async {
+    final profileId = ref.read(currentProfileIdProvider);
+    if (profileId == null) return null;
+    final setupState = await ref.read(setupStateProvider(profileId).future);
+    final rawConfig = await _profileConfig(setupState);
+    return resolveDnsSection(
+      rawConfig['dns'],
+      appDns: ref.read(patchClashConfigProvider).dns,
+      overrideDns: ref.read(overrideDnsProvider),
+      appendSystemDns: ref.read(networkSettingProvider).appendSystemDns,
+    );
+  }
+
   Future<VM2<String, String>> getProfile({
     required SetupState setupState,
     required PatchClashConfig patchConfig,
@@ -313,26 +339,19 @@ class SetupAction extends _$SetupAction {
     final overrideDns = ref.read(overrideDnsProvider);
     final appendSystemDns = networkVM2.a;
     final routeMode = networkVM2.b;
-    final configMap = await coreController.getConfig(profileId);
-    String? scriptContent;
     final List<Rule> addedRules = [];
     final List<ProxyGroup> proxyGroups = [];
     final List<Rule> rules = [];
-    if (setupState.overwriteType == OverwriteType.script) {
-      scriptContent = await setupState.script?.content;
-    } else if (setupState.overwriteType == OverwriteType.standard) {
+    if (setupState.overwriteType == OverwriteType.standard) {
       addedRules.addAll(setupState.addedRules);
-    } else {
+    } else if (setupState.overwriteType == OverwriteType.custom) {
       proxyGroups.addAll(setupState.proxyGroups);
       rules.addAll(setupState.rules);
     }
     final realPatchConfig = patchConfig.copyWith(
       tun: patchConfig.tun.getRealTun(routeMode),
     );
-    Map<String, dynamic> rawConfig = configMap;
-    if (scriptContent?.isNotEmpty == true) {
-      rawConfig = await handleEvaluate(scriptContent!, rawConfig);
-    }
+    final rawConfig = await _profileConfig(setupState);
     final directory = await appPath.profilesPath;
     final res = makeRealProfileTask(
       MakeRealProfileState(

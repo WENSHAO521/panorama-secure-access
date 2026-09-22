@@ -627,5 +627,12 @@
   "showOnly": "「{value}」のみ表示",
   "copyDestination": "宛先をコピー",
   "sortedAscending": "昇順",
-  "sortedDescending": "降順"
+  "sortedDescending": "降順",
+  "dnsConfiguredBy": "設定元",
+  "dnsFromProfile": "プロファイル",
+  "dnsFromOverride": "アプリの DNS 設定（DNS 上書きがオン）",
+  "dnsFromFallback": "アプリの DNS 設定とシステムリゾルバー（プロファイルの DNS はオフ）",
+  "systemResolver": "システムリゾルバー",
+  "dnsRuleCount": "{count} 件のルール",
+  "dnsConfigNote": "コアが使用している DNS 設定です。実際に応答しているリゾルバーはここでは確認しません。"
 }

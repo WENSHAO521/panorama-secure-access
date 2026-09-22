@@ -5088,6 +5088,78 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Configured by`
+  String get dnsConfiguredBy {
+    return Intl.message(
+      'Configured by',
+      name: 'dnsConfiguredBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The profile`
+  String get dnsFromProfile {
+    return Intl.message(
+      'The profile',
+      name: 'dnsFromProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App DNS settings (Override DNS is on)`
+  String get dnsFromOverride {
+    return Intl.message(
+      'App DNS settings (Override DNS is on)',
+      name: 'dnsFromOverride',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App DNS settings plus the system resolver (the profile has DNS off)`
+  String get dnsFromFallback {
+    return Intl.message(
+      'App DNS settings plus the system resolver (the profile has DNS off)',
+      name: 'dnsFromFallback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `System resolver`
+  String get systemResolver {
+    return Intl.message(
+      'System resolver',
+      name: 'systemResolver',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count, plural, =1{1 rule} other{{count} rules}}`
+  String dnsRuleCount(num count) {
+    return Intl.plural(
+      count,
+      one: '1 rule',
+      other: '$count rules',
+      name: 'dnsRuleCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `This is the DNS configuration the core runs with. Which resolver actually answers is not checked here.`
+  String get dnsConfigNote {
+    return Intl.message(
+      'This is the DNS configuration the core runs with. Which resolver actually answers is not checked here.',
+      name: 'dnsConfigNote',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

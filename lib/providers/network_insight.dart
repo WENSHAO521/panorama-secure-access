@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/features/network_insight/dns.dart';
 import 'package:fl_clash/features/network_insight/identity.dart';
 import 'package:fl_clash/features/network_insight/service_check/checkers.dart';
 import 'package:fl_clash/features/network_insight/service_check/http.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'action.dart';
 import 'config.dart';
 import 'state.dart';
 
@@ -36,6 +38,9 @@ class NetworkInsightSources {
   final ServiceHttp Function(int port) probeHttp;
   final Future<int?> Function(String proxyName) nodeDelay;
 
+  /// The DNS configuration the core runs with; null without a profile.
+  final Future<DnsInsight?> Function() readDns;
+
   const NetworkInsightSources({
     required this.lookupPublicIp,
     required this.httpFactory,
@@ -46,6 +51,7 @@ class NetworkInsightSources {
     required this.stopProbe,
     required this.probeHttp,
     required this.nodeDelay,
+    required this.readDns,
   });
 }
 
@@ -87,6 +93,13 @@ NetworkInsightSources networkInsightSources(Ref ref) {
       );
       final value = delay.value;
       return value != null && value > 0 ? value : null;
+    },
+    readDns: () async {
+      final section = await ref
+          .read(setupActionProvider.notifier)
+          .currentDnsSection();
+      if (section == null) return null;
+      return DnsInsight.fromSection(section.dns, section.source);
     },
   );
 }
@@ -153,12 +166,13 @@ class NetworkInsightIdentity extends _$NetworkInsightIdentity {
       }
     }
 
-    final (publicIp, ipv4, ipv6, interfaces, kinds) = await (
+    final (publicIp, ipv4, ipv6, interfaces, kinds, dns) = await (
       guarded(sources.lookupPublicIp),
       probe(IpFamily.ipv4),
       probe(IpFamily.ipv6),
       guarded(() => sources.listInterfaces(tunDeviceName)),
       guarded(sources.connectionKinds),
+      guarded(sources.readDns),
     ).wait;
 
     if (!ref.mounted || version != _version) {
@@ -172,6 +186,7 @@ class NetworkInsightIdentity extends _$NetworkInsightIdentity {
         ipv6: ipv6,
         interfaces: interfaces ?? const [],
         connectionKinds: kinds ?? const {},
+        dns: dns,
       ),
     );
   }
