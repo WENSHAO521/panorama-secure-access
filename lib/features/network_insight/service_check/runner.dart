@@ -31,7 +31,8 @@ class ServiceCheckCancellation {
     _listeners.clear();
   }
 
-  void _onCancel(void Function() listener) {
+  /// Runs [listener] on cancel, or right away if already cancelled.
+  void onCancel(void Function() listener) {
     if (_cancelled) {
       listener();
       return;
@@ -59,7 +60,7 @@ class ServiceCheckRunner {
     ServiceCheckCancellation? cancellation,
   }) async {
     final http = httpFactory();
-    cancellation?._onCancel(http.close);
+    cancellation?.onCancel(http.close);
     final stopwatch = Stopwatch()..start();
     ServiceCheckOutcome outcome;
     try {
@@ -150,7 +151,7 @@ class ServiceCheckRunner {
       closeIfDone();
     }
 
-    cancellation?._onCancel(() {
+    cancellation?.onCancel(() {
       queue.clear();
       if (!controller.isClosed) {
         controller.close();

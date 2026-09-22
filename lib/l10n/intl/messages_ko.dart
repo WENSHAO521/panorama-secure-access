@@ -332,6 +332,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "excludeType": MessageLookupByLibrary.simpleMessage("제외 유형"),
     "existsTip": m7,
     "exit": MessageLookupByLibrary.simpleMessage("종료"),
+    "exitIp": MessageLookupByLibrary.simpleMessage("출구 IP"),
     "expand": MessageLookupByLibrary.simpleMessage("표준"),
     "expectedStatus": MessageLookupByLibrary.simpleMessage("예상 상태"),
     "exportFile": MessageLookupByLibrary.simpleMessage("파일 내보내기"),
@@ -527,6 +528,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "noRecords": MessageLookupByLibrary.simpleMessage("기록 없음"),
     "noResolve": MessageLookupByLibrary.simpleMessage("IP 확인 안 함"),
     "noResolveHostname": MessageLookupByLibrary.simpleMessage("호스트 이름 확인 안 함"),
+    "nodeTestNotConnected": MessageLookupByLibrary.simpleMessage(
+      "이 노드를 테스트하려면 먼저 연결하세요.",
+    ),
+    "nodeTestTip": MessageLookupByLibrary.simpleMessage(
+      "이 노드만 거쳐 테스트합니다. 현재 선택은 바뀌지 않습니다.",
+    ),
     "none": MessageLookupByLibrary.simpleMessage("없음"),
     "notAvailable": MessageLookupByLibrary.simpleMessage("사용 불가"),
     "notSelectedTip": MessageLookupByLibrary.simpleMessage(
@@ -828,6 +835,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("SSID가 비어 있습니다"),
     "stackMode": MessageLookupByLibrary.simpleMessage("스택 모드"),
+    "staleResult": MessageLookupByLibrary.simpleMessage("오래된 결과"),
     "standard": MessageLookupByLibrary.simpleMessage("표준"),
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "표준 모드로, 기본 설정을 재정의하고 간단한 규칙 추가 기능을 제공합니다",
@@ -878,6 +886,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "활성화하면 TCP 동시 연결을 허용합니다",
     ),
     "testInterval": MessageLookupByLibrary.simpleMessage("테스트 간격"),
+    "testNode": MessageLookupByLibrary.simpleMessage("노드 테스트"),
     "testUrl": MessageLookupByLibrary.simpleMessage("테스트 URL"),
     "testWhenUsed": MessageLookupByLibrary.simpleMessage("사용 시 테스트"),
     "textScale": MessageLookupByLibrary.simpleMessage("글자 크기"),

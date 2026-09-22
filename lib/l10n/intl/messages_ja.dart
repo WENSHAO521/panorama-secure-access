@@ -313,6 +313,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "excludeType": MessageLookupByLibrary.simpleMessage("除外タイプ"),
     "existsTip": m7,
     "exit": MessageLookupByLibrary.simpleMessage("終了"),
+    "exitIp": MessageLookupByLibrary.simpleMessage("出口 IP"),
     "expand": MessageLookupByLibrary.simpleMessage("標準"),
     "expectedStatus": MessageLookupByLibrary.simpleMessage("期待されるステータス"),
     "exportFile": MessageLookupByLibrary.simpleMessage("ファイルをエクスポート"),
@@ -500,6 +501,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "noRecords": MessageLookupByLibrary.simpleMessage("履歴なし"),
     "noResolve": MessageLookupByLibrary.simpleMessage("IPを解決しない"),
     "noResolveHostname": MessageLookupByLibrary.simpleMessage("ホスト名を解決しない"),
+    "nodeTestNotConnected": MessageLookupByLibrary.simpleMessage(
+      "このノードをテストするには、先に接続してください。",
+    ),
+    "nodeTestTip": MessageLookupByLibrary.simpleMessage(
+      "このノードのみを経由してテストします。現在の選択は変更されません。",
+    ),
     "none": MessageLookupByLibrary.simpleMessage("なし"),
     "notAvailable": MessageLookupByLibrary.simpleMessage("利用不可"),
     "notSelectedTip": MessageLookupByLibrary.simpleMessage(
@@ -811,6 +818,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("SSID が空です"),
     "stackMode": MessageLookupByLibrary.simpleMessage("スタックモード"),
+    "staleResult": MessageLookupByLibrary.simpleMessage("古い結果"),
     "standard": MessageLookupByLibrary.simpleMessage("標準"),
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "標準モード、基本設定を上書きし、シンプルなルール追加機能を提供",
@@ -855,6 +863,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tcpConcurrent": MessageLookupByLibrary.simpleMessage("TCP並列処理"),
     "tcpConcurrentDesc": MessageLookupByLibrary.simpleMessage("TCP並列処理を許可"),
     "testInterval": MessageLookupByLibrary.simpleMessage("テスト間隔"),
+    "testNode": MessageLookupByLibrary.simpleMessage("ノードをテスト"),
     "testUrl": MessageLookupByLibrary.simpleMessage("URLテスト"),
     "testWhenUsed": MessageLookupByLibrary.simpleMessage("使用時にテスト"),
     "textScale": MessageLookupByLibrary.simpleMessage("テキストスケーリング"),

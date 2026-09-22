@@ -595,5 +595,10 @@
   "stateOn": "켜짐",
   "stateOff": "꺼짐",
   "notAvailable": "사용 불가",
-  "checkedAt": "{time}에 확인"
+  "checkedAt": "{time}에 확인",
+  "testNode": "노드 테스트",
+  "exitIp": "출구 IP",
+  "nodeTestTip": "이 노드만 거쳐 테스트합니다. 현재 선택은 바뀌지 않습니다.",
+  "nodeTestNotConnected": "이 노드를 테스트하려면 먼저 연결하세요.",
+  "staleResult": "오래된 결과"
 }

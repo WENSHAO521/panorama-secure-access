@@ -15,6 +15,10 @@ class _Harness {
   var routeKey = 'profile-1|rule|Proxy=JP-01';
   var exitIPv4 = '203.0.113.7';
   var lookups = 0;
+  var isStart = true;
+  final probeStarts = <String>[];
+  final probePorts = <int>[];
+  var probeStops = 0;
 
   ServiceDefinition gated(String id) => ServiceDefinition(
     id: id,
@@ -43,8 +47,27 @@ class _Harness {
             ],
             connectionKinds: () async => {ConnectionKind.wifi},
             services: services,
+            startProbe: (proxyName) async {
+              probeStarts.add(proxyName);
+              if (proxyName == 'missing') {
+                throw StateError('proxy missing not found');
+              }
+              return 51234;
+            },
+            stopProbe: () async => probeStops++,
+            probeHttp: (port) {
+              probePorts.add(port);
+              return FakeServiceHttp({
+                'https://1.1.1.1/': (_) =>
+                    respond('ip=198.51.100.20\nloc=US\n'),
+                'https://[2606:4700:4700::1111]/': (_) =>
+                    respond('ip=2001:db8::20\nloc=US\n'),
+              });
+            },
+            nodeDelay: (_) async => 42,
           ),
         ),
+        isStartProvider.overrideWith((ref) => isStart),
         serviceRouteKeyProvider.overrideWith(
           (ref) => ref.watch(_routeKeyProvider),
         ),
@@ -245,6 +268,100 @@ void main() {
         container.read(serviceAvailabilityProvider).byId('b')!.message,
         'Originals only',
       );
+    });
+  });
+
+  group('NodeDiagnostics', () {
+    test('tests one node through its probe and stops the probe', () async {
+      final harness = _Harness();
+      final container = harness.container();
+      addTearDown(container.dispose);
+      final notifier = container.read(nodeDiagnosticsProvider.notifier);
+
+      final done = notifier.test('JP-01');
+      await pumpEventQueue();
+      var report = container.read(nodeDiagnosticsProvider)['JP-01']!;
+      expect(report.isRunning, isTrue);
+      expect(report.delayMs, 42);
+      expect(report.ipv4?.exitIp, '198.51.100.20');
+      expect(report.ipv6?.exitIp, '2001:db8::20');
+
+      for (final gate in harness.gates.values) {
+        gate.complete(const ServiceCheckOutcome(ServiceCheckStatus.available));
+      }
+      await done;
+
+      report = container.read(nodeDiagnosticsProvider)['JP-01']!;
+      expect(report.isRunning, isFalse);
+      expect(report.checkedAt, isNotNull);
+      expect(report.availableCount, 2);
+      expect(harness.probeStarts, ['JP-01']);
+      expect(harness.probePorts.toSet(), {51234});
+      expect(harness.probeStops, 1);
+    });
+
+    test('never touches the active route\'s service results', () async {
+      final harness = _Harness();
+      final container = harness.container();
+      addTearDown(container.dispose);
+
+      final done = container
+          .read(nodeDiagnosticsProvider.notifier)
+          .test('JP-01');
+      await pumpEventQueue();
+      for (final gate in harness.gates.values) {
+        gate.complete(const ServiceCheckOutcome(ServiceCheckStatus.blocked));
+      }
+      await done;
+
+      expect(
+        container
+            .read(serviceAvailabilityProvider)
+            .results
+            .every((r) => r.status == ServiceCheckStatus.pending),
+        isTrue,
+      );
+    });
+
+    test('refuses to run while disconnected', () async {
+      final harness = _Harness()..isStart = false;
+      final container = harness.container();
+      addTearDown(container.dispose);
+
+      await container.read(nodeDiagnosticsProvider.notifier).test('JP-01');
+
+      expect(
+        container.read(nodeDiagnosticsProvider)['JP-01']!.error,
+        'notConnected',
+      );
+      expect(harness.probeStarts, isEmpty);
+    });
+
+    test('reports why the probe could not start', () async {
+      final harness = _Harness();
+      final container = harness.container();
+      addTearDown(container.dispose);
+
+      await container.read(nodeDiagnosticsProvider.notifier).test('missing');
+
+      final report = container.read(nodeDiagnosticsProvider)['missing']!;
+      expect(report.error, contains('not found'));
+      expect(report.isRunning, isFalse);
+    });
+
+    test('cancel drops the partial report and stops the probe', () async {
+      final harness = _Harness();
+      final container = harness.container();
+      addTearDown(container.dispose);
+      final notifier = container.read(nodeDiagnosticsProvider.notifier);
+
+      final done = notifier.test('JP-01');
+      await pumpEventQueue();
+      notifier.cancel();
+      await done;
+
+      expect(container.read(nodeDiagnosticsProvider), isEmpty);
+      expect(harness.probeStops, 1);
     });
   });
 }

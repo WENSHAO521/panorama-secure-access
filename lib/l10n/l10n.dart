@@ -4843,6 +4843,41 @@ class AppLocalizations {
       args: [time],
     );
   }
+
+  /// `Test node`
+  String get testNode {
+    return Intl.message('Test node', name: 'testNode', desc: '', args: []);
+  }
+
+  /// `Exit IP`
+  String get exitIp {
+    return Intl.message('Exit IP', name: 'exitIp', desc: '', args: []);
+  }
+
+  /// `Tested through this node only. Your current selection isn’t changed.`
+  String get nodeTestTip {
+    return Intl.message(
+      'Tested through this node only. Your current selection isn’t changed.',
+      name: 'nodeTestTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect first to test this node.`
+  String get nodeTestNotConnected {
+    return Intl.message(
+      'Connect first to test this node.',
+      name: 'nodeTestNotConnected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Out of date`
+  String get staleResult {
+    return Intl.message('Out of date', name: 'staleResult', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

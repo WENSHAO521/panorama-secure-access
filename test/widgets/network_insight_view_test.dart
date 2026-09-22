@@ -60,6 +60,10 @@ void main() {
             }),
             listInterfaces: (_) async => const [],
             connectionKinds: () async => {ConnectionKind.ethernet},
+            startProbe: (_) => throw UnimplementedError(),
+            stopProbe: () async {},
+            probeHttp: (_) => throw UnimplementedError(),
+            nodeDelay: (_) async => null,
             services: [
               service(
                 'netflix',

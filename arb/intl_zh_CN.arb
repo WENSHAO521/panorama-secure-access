@@ -595,5 +595,10 @@
   "stateOn": "开启",
   "stateOff": "关闭",
   "notAvailable": "不可用",
-  "checkedAt": "检测于 {time}"
+  "checkedAt": "检测于 {time}",
+  "testNode": "测试节点",
+  "exitIp": "出口 IP",
+  "nodeTestTip": "仅通过该节点测试，不会更改当前选择。",
+  "nodeTestNotConnected": "请先连接，再测试该节点。",
+  "staleResult": "已过期"
 }

@@ -595,5 +595,10 @@
   "stateOn": "On",
   "stateOff": "Off",
   "notAvailable": "Not available",
-  "checkedAt": "Checked {time}"
+  "checkedAt": "Checked {time}",
+  "testNode": "Test node",
+  "exitIp": "Exit IP",
+  "nodeTestTip": "Tested through this node only. Your current selection isn’t changed.",
+  "nodeTestNotConnected": "Connect first to test this node.",
+  "staleResult": "Out of date"
 }

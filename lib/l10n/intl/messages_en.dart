@@ -397,6 +397,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "excludeType": MessageLookupByLibrary.simpleMessage("Exclude type"),
     "existsTip": m7,
     "exit": MessageLookupByLibrary.simpleMessage("Exit"),
+    "exitIp": MessageLookupByLibrary.simpleMessage("Exit IP"),
     "expand": MessageLookupByLibrary.simpleMessage("Standard"),
     "expectedStatus": MessageLookupByLibrary.simpleMessage("Expected status"),
     "exportFile": MessageLookupByLibrary.simpleMessage("Export file"),
@@ -635,6 +636,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "noResolve": MessageLookupByLibrary.simpleMessage("No resolve IP"),
     "noResolveHostname": MessageLookupByLibrary.simpleMessage(
       "No resolve hostname",
+    ),
+    "nodeTestNotConnected": MessageLookupByLibrary.simpleMessage(
+      "Connect first to test this node.",
+    ),
+    "nodeTestTip": MessageLookupByLibrary.simpleMessage(
+      "Tested through this node only. Your current selection isn’t changed.",
     ),
     "none": MessageLookupByLibrary.simpleMessage("none"),
     "notAvailable": MessageLookupByLibrary.simpleMessage("Not available"),
@@ -999,6 +1006,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("SSIDs is empty"),
     "stackMode": MessageLookupByLibrary.simpleMessage("Stack mode"),
+    "staleResult": MessageLookupByLibrary.simpleMessage("Out of date"),
     "standard": MessageLookupByLibrary.simpleMessage("Standard"),
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "Standard mode, override basic configuration, provide simple rule addition capability",
@@ -1055,6 +1063,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Enabling it will allow TCP concurrency",
     ),
     "testInterval": MessageLookupByLibrary.simpleMessage("Test interval"),
+    "testNode": MessageLookupByLibrary.simpleMessage("Test node"),
     "testUrl": MessageLookupByLibrary.simpleMessage("Test url"),
     "testWhenUsed": MessageLookupByLibrary.simpleMessage("Test when used"),
     "textScale": MessageLookupByLibrary.simpleMessage("Text Scaling"),

@@ -406,6 +406,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "excludeType": MessageLookupByLibrary.simpleMessage("Тип исключения"),
     "existsTip": m7,
     "exit": MessageLookupByLibrary.simpleMessage("Выход"),
+    "exitIp": MessageLookupByLibrary.simpleMessage("Внешний IP"),
     "expand": MessageLookupByLibrary.simpleMessage("Стандартный"),
     "expectedStatus": MessageLookupByLibrary.simpleMessage("Ожидаемый статус"),
     "exportFile": MessageLookupByLibrary.simpleMessage("Экспорт файла"),
@@ -662,6 +663,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "noResolve": MessageLookupByLibrary.simpleMessage("Не разрешать IP"),
     "noResolveHostname": MessageLookupByLibrary.simpleMessage(
       "Не разрешать имя хоста",
+    ),
+    "nodeTestNotConnected": MessageLookupByLibrary.simpleMessage(
+      "Сначала подключитесь, чтобы проверить этот узел.",
+    ),
+    "nodeTestTip": MessageLookupByLibrary.simpleMessage(
+      "Проверка идёт только через этот узел; текущий выбор не меняется.",
     ),
     "none": MessageLookupByLibrary.simpleMessage("Нет"),
     "notAvailable": MessageLookupByLibrary.simpleMessage("Недоступно"),
@@ -1054,6 +1061,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("Список SSID пуст"),
     "stackMode": MessageLookupByLibrary.simpleMessage("Режим стека"),
+    "staleResult": MessageLookupByLibrary.simpleMessage("Устарело"),
     "standard": MessageLookupByLibrary.simpleMessage("Стандартный"),
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "Стандартный режим, переопределение базовой конфигурации, предоставление возможности простого добавления правил",
@@ -1114,6 +1122,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "testInterval": MessageLookupByLibrary.simpleMessage(
       "Интервал тестирования",
     ),
+    "testNode": MessageLookupByLibrary.simpleMessage("Проверить узел"),
     "testUrl": MessageLookupByLibrary.simpleMessage("Тест URL"),
     "testWhenUsed": MessageLookupByLibrary.simpleMessage(
       "Тестировать при использовании",

@@ -595,5 +595,10 @@
   "stateOn": "オン",
   "stateOff": "オフ",
   "notAvailable": "利用不可",
-  "checkedAt": "{time} に確認"
+  "checkedAt": "{time} に確認",
+  "testNode": "ノードをテスト",
+  "exitIp": "出口 IP",
+  "nodeTestTip": "このノードのみを経由してテストします。現在の選択は変更されません。",
+  "nodeTestNotConnected": "このノードをテストするには、先に接続してください。",
+  "staleResult": "古い結果"
 }

@@ -595,5 +595,10 @@
   "stateOn": "Вкл",
   "stateOff": "Выкл",
   "notAvailable": "Недоступно",
-  "checkedAt": "Проверено {time}"
+  "checkedAt": "Проверено {time}",
+  "testNode": "Проверить узел",
+  "exitIp": "Внешний IP",
+  "nodeTestTip": "Проверка идёт только через этот узел; текущий выбор не меняется.",
+  "nodeTestNotConnected": "Сначала подключитесь, чтобы проверить этот узел.",
+  "staleResult": "Устарело"
 }

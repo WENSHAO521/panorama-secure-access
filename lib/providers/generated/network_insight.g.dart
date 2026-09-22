@@ -55,7 +55,7 @@ final class NetworkInsightSourcesProvider
 }
 
 String _$networkInsightSourcesHash() =>
-    r'45eedf9e3e8cfddaa0b12d4fb841d7e5b1dcd301';
+    r'a06a80a8fa0edfce02c0a4967d5d0d91701bb288';
 
 /// The route service results belong to: profile, outbound mode and every
 /// group selection. Any change means cached results no longer apply.
@@ -208,6 +208,59 @@ abstract class _$ServiceAvailability
             as $ClassProviderElement<
               AnyNotifier<ServiceAvailabilityState, ServiceAvailabilityState>,
               ServiceAvailabilityState,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(NodeDiagnostics)
+final nodeDiagnosticsProvider = NodeDiagnosticsProvider._();
+
+final class NodeDiagnosticsProvider
+    extends $NotifierProvider<NodeDiagnostics, Map<String, NodeReport>> {
+  NodeDiagnosticsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'nodeDiagnosticsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$nodeDiagnosticsHash();
+
+  @$internal
+  @override
+  NodeDiagnostics create() => NodeDiagnostics();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Map<String, NodeReport> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Map<String, NodeReport>>(value),
+    );
+  }
+}
+
+String _$nodeDiagnosticsHash() => r'773a9a610193ad4b8fe8f19db5a17b5bb30f5a27';
+
+abstract class _$NodeDiagnostics extends $Notifier<Map<String, NodeReport>> {
+  Map<String, NodeReport> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref =
+        this.ref as $Ref<Map<String, NodeReport>, Map<String, NodeReport>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Map<String, NodeReport>, Map<String, NodeReport>>,
+              Map<String, NodeReport>,
               Object?,
               Object?
             >;

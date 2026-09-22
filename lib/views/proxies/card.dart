@@ -4,6 +4,7 @@ import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/proxies/common.dart';
+import 'package:fl_clash/views/proxies/node_detail.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -124,17 +125,23 @@ class ProxyCard extends StatelessWidget {
     return Stack(
       children: [
         Consumer(
-          builder: (_, ref, child) {
+          builder: (context, ref, child) {
             final selectedProxyName = ref.watch(
               selectedProxyNameProvider(groupName),
             );
-            return CommonCard(
-              key: key,
-              onPressed: () {
-                _changeProxy(ref);
-              },
-              isSelected: selectedProxyName == proxy.name,
-              child: child!,
+            // Long-press on touch, right-click on desktop: node details and
+            // a node-only service test (brief §48).
+            return GestureDetector(
+              onSecondaryTap: () => showNodeDetail(context, proxy),
+              child: CommonCard(
+                key: key,
+                onPressed: () {
+                  _changeProxy(ref);
+                },
+                onLongPress: () => showNodeDetail(context, proxy),
+                isSelected: selectedProxyName == proxy.name,
+                child: child!,
+              ),
             );
           },
           child: Container(
