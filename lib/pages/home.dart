@@ -106,7 +106,10 @@ class HomePage extends StatelessWidget {
                                   onDidRemovePage: (_) {},
                                 ),
                         );
-                        return view;
+                        return HomePageActivity(
+                          label: navigationItem.label,
+                          child: view,
+                        );
                       },
                     );
                   },
@@ -117,6 +120,25 @@ class HomePage extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+/// Tells a navigation page whether it is the one on screen, so pollers
+/// (ActivePollingMixin) and refreshers in pages kept alive offscreen go
+/// quiet. A Consumer of its own: PageView doesn't rebuild kept-alive
+/// offscreen pages, so the flag can't come from the parent's build.
+class HomePageActivity extends ConsumerWidget {
+  final PageLabel label;
+  final Widget child;
+
+  const HomePageActivity({super.key, required this.label, required this.child});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isActive = ref.watch(
+      currentPageLabelProvider.select((current) => current == label),
+    );
+    return PageActivityScope(isActive: isActive, child: child);
   }
 }
 
