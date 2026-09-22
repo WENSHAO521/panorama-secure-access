@@ -85,7 +85,7 @@ Future<T?> showSheet<T>({
             ),
           ),
       constraints: BoxConstraints(maxWidth: props.maxWidth ?? 360),
-      filter: props.blur ? commonFilter : null,
+      filter: props.blur ? GlassTokens.modalBackdropFilter : null,
       builder: (_) {
         return SheetProvider(
           type: SheetType.sideSheet,
@@ -117,7 +117,7 @@ Future<T?> showExtend<T>(
         ),
       ),
       constraints: BoxConstraints(maxWidth: props.maxWidth ?? 360),
-      filter: props.blur ? commonFilter : null,
+      filter: props.blur ? GlassTokens.modalBackdropFilter : null,
       builder: (context) {
         return SheetProvider(
           type: SheetType.sideSheet,

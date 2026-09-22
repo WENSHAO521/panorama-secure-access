@@ -183,6 +183,20 @@ abstract final class GlassTokens {
   /// changing one doesn't silently move the other.
   static const double radiusDialog = 24;
 
+  /// A ready-to-use [ImageFilter] at the modal tier's calibrated blur
+  /// ([blurModal], 24) for callers that apply a route-level/full-screen
+  /// [BackdropFilter] rather than going through [GlassSurface] itself —
+  /// currently the side sheet (widgets/sheet.dart), whose
+  /// `ModalSideSheetRoute.filter` blurs the whole screen behind it, not a
+  /// scoped region the way [GlassSurface.modal]'s own clipped
+  /// BackdropFilter does. Was `commonFilter` (a flat sigma 5, shared with
+  /// the unrelated CommonDialog barrier blur) — measurably too weak: at
+  /// sigma 5 a detailed background stays largely legible, while sigma 24
+  /// fully frosts it, so a side sheet on desktop read as far less "glass"
+  /// than the equivalent bottom sheet on mobile or a dialog.
+  static ImageFilter get modalBackdropFilter =>
+      ImageFilter.blur(sigmaX: blurModal, sigmaY: blurModal);
+
   static double blurFor(GlassSurfaceType type) => switch (type) {
     GlassSurfaceType.chrome => blurChrome,
     GlassSurfaceType.panel => blurPanel,
