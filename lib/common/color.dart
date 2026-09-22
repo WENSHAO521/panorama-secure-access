@@ -120,11 +120,12 @@ extension ColorSchemeExtension on ColorScheme {
         )
       : this;
 
-  /// Connected state. The Swiss UI uses one signal-red accent consistently
-  /// for the active state and the primary action.
+  /// Connected / success state. Deliberately a fixed color, not harmonized
+  /// with the seed color: "connected" needs to read as a stable green no
+  /// matter what primary color the user picks (including red or purple).
   Color get statusConnected => switch (brightness) {
-    Brightness.dark => const Color(0xFFFF5A5F),
-    Brightness.light => const Color(0xFFE3262E),
+    Brightness.dark => const Color(0xFF4FD19A),
+    Brightness.light => const Color(0xFF16875E),
   };
 
   /// Warning / caution state (e.g. a "reject" rule action). Fixed for the

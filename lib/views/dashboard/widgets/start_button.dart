@@ -139,7 +139,7 @@ class _StartButtonState extends ConsumerState<StartButton>
                   maxLines: 1,
                   overflow: TextOverflow.visible,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: context.colorScheme.onPrimary,
+                    color: context.colorScheme.onPrimaryContainer,
                   ),
                 )
               : Consumer(
@@ -151,7 +151,9 @@ class _StartButtonState extends ConsumerState<StartButton>
                       maxLines: 1,
                       overflow: TextOverflow.visible,
                       style: Theme.of(context).textTheme.titleMedium?.toSoftBold
-                          .copyWith(color: context.colorScheme.onPrimary),
+                          .copyWith(
+                            color: context.colorScheme.onPrimaryContainer,
+                          ),
                     );
                   },
                 ),

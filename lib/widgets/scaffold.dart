@@ -287,21 +287,9 @@ class CommonScaffoldState extends State<CommonScaffold> {
                       surfaceTintColor: Colors.transparent,
                       elevation: 0,
                       scrolledUnderElevation: 0,
-                      flexibleSpace: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: context.colorScheme.surface,
-                          border: Border(
-                            bottom: BorderSide(
-                              color: context.colorScheme.outlineVariant
-                                  .withValues(
-                                    alpha: GlassTokens.dividerOpacityFor(
-                                      context.colorScheme.brightness,
-                                    ),
-                                  ),
-                            ),
-                          ),
-                        ),
-                        child: const SizedBox.expand(),
+                      flexibleSpace: LiquidGlassChrome(
+                        color: context.colorScheme.surface,
+                        edge: LiquidGlassChromeEdge.bottom,
                       ),
                       leading: _buildLeading(backAction),
                       title: _buildTitle(state.searchState),
