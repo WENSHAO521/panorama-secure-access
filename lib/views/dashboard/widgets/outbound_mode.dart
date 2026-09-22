@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
@@ -37,7 +38,7 @@ class OutboundMode extends StatelessWidget {
               onPressed: () {},
               info: Info(
                 label: appLocalizations.outboundMode,
-                iconData: Icons.call_split_sharp,
+                iconData: PanoramaIcons.routing.mode,
               ),
               child: Padding(
                 padding: const EdgeInsets.only(top: 12, bottom: 12),

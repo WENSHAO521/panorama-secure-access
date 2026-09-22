@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/color.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -90,7 +91,7 @@ class InitErrorScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _copyToClipboard(context),
         label: const Text('Copy Details'),
-        icon: const Icon(Icons.copy),
+        icon: Icon(PanoramaIcons.actions.copy),
         backgroundColor: colorScheme.error,
         foregroundColor: colorScheme.onError,
       ),

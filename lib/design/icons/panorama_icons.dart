@@ -3,21 +3,23 @@ import 'package:flutter/material.dart';
 
 /// Panorama Design System — semantic icon system (docs/DESIGN-SYSTEM.md).
 ///
-/// First slice only: `navigation`, `connection`, `actions`. Other
-/// categories from the brief (`network`, `service`, `window`, `files`,
-/// `system`, `developer`, `routing`, `traffic`) are intentionally left
-/// unpopulated rather than guessed — see docs/DESIGN-SYSTEM.md for why.
-/// Existing `Icons.*` call sites are not migrated yet; this only adds the
-/// destination for that migration.
+/// `navigation`, `connection`, `actions`, `network`, `routing` are
+/// populated. `service`, `window`, `files`, `system`, `developer`,
+/// `traffic` are intentionally left unpopulated rather than guessed — see
+/// docs/DESIGN-SYSTEM.md for why.
 ///
-/// Glyph choices below are deliberately restricted to long-established
-/// classic Material glyphs (no ambiguous `_outlined` variants) because
-/// this environment has no Flutter/Dart SDK to run `flutter analyze`
-/// against — see docs/UI-MODERNIZATION-REPORT.md.
+/// Glyph choices are restricted to two safe sources, since this
+/// environment has no Flutter/Dart SDK to run `flutter analyze` against
+/// (see docs/UI-MODERNIZATION-REPORT.md): long-established classic
+/// Material glyph names, or glyphs copied verbatim from an existing
+/// `Icons.*` call site already compiling elsewhere in this repo (each such
+/// glyph is annotated with its source file below).
 abstract final class PanoramaIcons {
   static const navigation = _PanoramaNavigationIcons();
   static const connection = _PanoramaConnectionIcons();
   static const actions = _PanoramaActionIcons();
+  static const network = _PanoramaNetworkIcons();
+  static const routing = _PanoramaRoutingIcons();
 }
 
 class _PanoramaNavigationIcons {
@@ -82,4 +84,22 @@ class _PanoramaActionIcons {
 
   IconData get add =>
       PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.add));
+}
+
+class _PanoramaNetworkIcons {
+  const _PanoramaNetworkIcons();
+
+  /// Source: lib/views/proxies/tab.dart (node latency test action).
+  IconData get ping =>
+      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.network_ping));
+}
+
+class _PanoramaRoutingIcons {
+  const _PanoramaRoutingIcons();
+
+  /// Source: lib/views/dashboard/widgets/outbound_mode.dart (rule/global/
+  /// direct outbound mode selector).
+  IconData get mode => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.call_split_sharp),
+  );
 }

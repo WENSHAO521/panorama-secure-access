@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/clash_config.dart';
 import 'package:fl_clash/models/common.dart';
@@ -494,7 +495,7 @@ class _DelayTestButtonState extends State<DelayTestButton>
       child: CommonFloatingActionButton(
         onPressed: _healthcheck,
         label: appLocalizations.delayTest,
-        icon: const Icon(Icons.network_ping),
+        icon: Icon(PanoramaIcons.network.ping),
       ),
     );
   }
