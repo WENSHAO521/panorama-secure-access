@@ -6,9 +6,12 @@ void main() {
   group('PanoramaColorsExt', () {
     final scheme = ColorScheme.fromSeed(seedColor: Colors.blue);
 
-    test('accent maps to the theme primary color, never a fixed brand wash', () {
-      expect(scheme.accent, scheme.primary);
-    });
+    test(
+      'accent maps to the theme primary color, never a fixed brand wash',
+      () {
+        expect(scheme.accent, scheme.primary);
+      },
+    );
 
     test('danger maps to the theme error color', () {
       expect(scheme.danger, scheme.error);
@@ -21,7 +24,10 @@ void main() {
     });
 
     test('surfaceGlass applies alpha, not a plain opaque passthrough', () {
-      expect(scheme.surfaceGlass, isNot(equals(scheme.surfaceContainerHighest)));
+      expect(
+        scheme.surfaceGlass,
+        isNot(equals(scheme.surfaceContainerHighest)),
+      );
     });
   });
 }

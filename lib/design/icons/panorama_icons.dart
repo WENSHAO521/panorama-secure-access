@@ -5,15 +5,9 @@ import 'package:flutter/material.dart';
 ///
 /// `navigation`, `connection`, `actions`, `network`, `routing` are
 /// populated. `service`, `window`, `files`, `system`, `developer`,
-/// `traffic` are intentionally left unpopulated rather than guessed — see
-/// docs/DESIGN-SYSTEM.md for why.
-///
-/// Glyph choices are restricted to two safe sources, since this
-/// environment has no Flutter/Dart SDK to run `flutter analyze` against
-/// (see docs/UI-MODERNIZATION-REPORT.md): long-established classic
-/// Material glyph names, or glyphs copied verbatim from an existing
-/// `Icons.*` call site already compiling elsewhere in this repo (each such
-/// glyph is annotated with its source file below).
+/// `traffic` are left unpopulated until a real call site needs them, rather
+/// than guessed. Where a glyph was taken from an existing call site, the
+/// source file is noted on the getter.
 abstract final class PanoramaIcons {
   static const navigation = _PanoramaNavigationIcons();
   static const connection = _PanoramaConnectionIcons();
@@ -25,79 +19,97 @@ abstract final class PanoramaIcons {
 class _PanoramaNavigationIcons {
   const _PanoramaNavigationIcons();
 
-  IconData get home =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.home_outlined));
+  IconData get home => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.home_outlined),
+  );
 
-  IconData get proxies =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.device_hub));
+  IconData get proxies => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.device_hub),
+  );
 
-  IconData get profiles =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.folder_outlined));
+  IconData get profiles => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.folder_outlined),
+  );
 
-  IconData get activity =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.swap_vert));
+  IconData get activity => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.swap_vert),
+  );
 
-  IconData get networkInsight =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.public));
+  IconData get networkInsight => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.public),
+  );
 
-  IconData get settings =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.settings_outlined));
+  IconData get settings => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.settings_outlined),
+  );
 }
 
 class _PanoramaConnectionIcons {
   const _PanoramaConnectionIcons();
 
-  IconData get connected =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.check_circle_outline));
+  IconData get connected => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.check_circle_outline),
+  );
 
-  IconData get connecting =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.sync));
+  IconData get connecting => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.sync),
+  );
 
   IconData get disconnected => PanoramaIconResolver.resolve(
     const PanoramaIconToken(material: Icons.radio_button_unchecked),
   );
 
-  IconData get error =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.error_outline));
+  IconData get error => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.error_outline),
+  );
 }
 
 class _PanoramaActionIcons {
   const _PanoramaActionIcons();
 
-  IconData get refresh =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.refresh));
+  IconData get refresh => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.refresh),
+  );
 
   /// Distinct from [_PanoramaConnectionIcons.connecting]: this is a "sync/
   /// update this data" action (e.g. update providers), not a connection
   /// status indicator, even though both currently use the same glyph.
-  IconData get sync =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.sync));
+  IconData get sync => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.sync),
+  );
 
-  IconData get copy =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.content_copy));
+  IconData get copy => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.content_copy),
+  );
 
-  IconData get search =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.search));
+  IconData get search => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.search),
+  );
 
-  IconData get filter =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.filter_list));
+  IconData get filter => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.filter_list),
+  );
 
-  IconData get sort =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.sort));
+  IconData get sort => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.sort),
+  );
 
-  IconData get delete =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.delete_outline));
+  IconData get delete => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.delete_outline),
+  );
 
-  IconData get add =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.add));
+  IconData get add => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.add),
+  );
 }
 
 class _PanoramaNetworkIcons {
   const _PanoramaNetworkIcons();
 
   /// Source: lib/views/proxies/tab.dart (node latency test action).
-  IconData get ping =>
-      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.network_ping));
+  IconData get ping => PanoramaIconResolver.resolve(
+    const PanoramaIconToken(material: Icons.network_ping),
+  );
 }
 
 class _PanoramaRoutingIcons {
