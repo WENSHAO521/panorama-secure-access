@@ -9,6 +9,7 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'widgets/connection_status_header.dart';
 import 'widgets/start_button.dart';
 
 typedef _IsEditWidgetBuilder = Widget Function(bool isEdit);
@@ -174,37 +175,51 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
         title: context.appLocalizations.dashboard,
         actions: _buildActions(isEdit),
         floatingActionButton: const StartButton(),
-        body: Align(
-          alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16).copyWith(bottom: 88),
-            child: isEdit
-                ? SystemBackBlock(
-                    child: CommonPopScope(
-                      child: SuperGrid(
-                        key: key,
-                        crossAxisCount: columns,
-                        crossAxisSpacing: spacing,
-                        mainAxisSpacing: spacing,
-                        children: children,
-                        onUpdate: () {
-                          _handleSave();
-                        },
-                      ),
-                      onPop: (context) {
-                        _handleUpdateIsEdit();
-                        return false;
-                      },
-                    ),
-                  )
-                : Grid(
+        body: Column(
+          children: [
+            if (!isEdit) const ConnectionStatusHeader(),
+            Expanded(child: _buildGridArea(isEdit, columns, spacing, children)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGridArea(
+    bool isEdit,
+    int columns,
+    double spacing,
+    List<GridItem> children,
+  ) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16).copyWith(bottom: 88),
+        child: isEdit
+            ? SystemBackBlock(
+                child: CommonPopScope(
+                  child: SuperGrid(
+                    key: key,
                     crossAxisCount: columns,
                     crossAxisSpacing: spacing,
                     mainAxisSpacing: spacing,
                     children: children,
+                    onUpdate: () {
+                      _handleSave();
+                    },
                   ),
-          ),
-        ),
+                  onPop: (context) {
+                    _handleUpdateIsEdit();
+                    return false;
+                  },
+                ),
+              )
+            : Grid(
+                crossAxisCount: columns,
+                crossAxisSpacing: spacing,
+                mainAxisSpacing: spacing,
+                children: children,
+              ),
       ),
     );
   }
