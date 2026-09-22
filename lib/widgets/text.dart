@@ -5,6 +5,57 @@ import 'package:flutter/material.dart';
 
 import '../state.dart';
 
+/// Names the app's type hierarchy the way the design spec's Apple-HIG
+/// scale does (Large Title/Title/Title 2/Headline/Body/Callout/
+/// Subheadline/Footnote/Caption), mapped onto this app's already-tuned
+/// Material [TextTheme] (Inter, sized/weighted per role in
+/// `application.dart`) rather than introducing a second, parallel font
+/// scale. [AppTitle]/[AppBody]/[AppParagraph] above are a *usage-role*
+/// abstraction (heading vs. label vs. long-form prose) and stay as the
+/// default choice for those three common cases; reach for these named
+/// getters directly when a widget's role doesn't fit one of those three
+/// (a compact secondary line, a section eyebrow) and you'd otherwise
+/// reach for a bare `context.textTheme.someSize` with no semantic name
+/// attached — see [ConnectionStatusHeader] for a real call site.
+extension AppTypography on BuildContext {
+  /// A screen's single biggest heading — this app doesn't currently have
+  /// one (no page uses a collapsing/hero title), but the token exists so
+  /// one doesn't get invented ad hoc as a one-off font size when it does.
+  TextStyle? get largeTitleStyle => textTheme.headlineLarge;
+
+  /// Page/dialog heading — same role and same underlying style as
+  /// [AppTitle]'s default.
+  TextStyle? get titleStyle => textTheme.headlineSmall;
+
+  /// A secondary heading one step down from [titleStyle]: a prominent
+  /// inline label that isn't the page's own title (e.g. the connection
+  /// state word atop Home).
+  TextStyle? get title2Style => textTheme.titleLarge;
+
+  /// Bold, body-sized emphasis — a row's own sub-heading, not a page
+  /// heading.
+  TextStyle? get headlineStyle => textTheme.titleMedium;
+
+  /// Slightly larger than [bodyStyle]; for a control's primary label
+  /// where [AppBody]'s default reads a touch small.
+  TextStyle? get calloutStyle => textTheme.bodyLarge;
+
+  /// Same role and same underlying style as [AppBody]'s default.
+  TextStyle? get bodyStyle => textTheme.bodyMedium;
+
+  /// A secondary line directly under a title/headline (e.g. the current
+  /// profile name under Home's connection state) — smaller than body,
+  /// larger than footnote.
+  TextStyle? get subheadlineStyle => textTheme.bodySmall;
+
+  /// Metadata/timestamps/counts — smaller and quieter than body text but
+  /// not as small as [captionStyle].
+  TextStyle? get footnoteStyle => textTheme.labelMedium;
+
+  /// The smallest role: chip labels, inline status tags.
+  TextStyle? get captionStyle => textTheme.labelSmall;
+}
+
 /// Page/dialog heading. Always start-aligned — titles are never prose and
 /// must never be justified.
 class AppTitle extends StatelessWidget {

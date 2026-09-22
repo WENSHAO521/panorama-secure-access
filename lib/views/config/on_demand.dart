@@ -282,7 +282,7 @@ class _OnDemandViewState extends ConsumerState<OnDemandView>
                       child: IconButton.filledTonal(
                         onPressed: _handleDelete,
                         tooltip: appLocalizations.delete,
-                        icon: const Icon(Icons.delete),
+                        icon: const Icon(AppIcons.delete),
                       ),
                     ),
                   const SizedBox(width: 2),

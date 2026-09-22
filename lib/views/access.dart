@@ -256,7 +256,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
               open(offset: const Offset(0, 0));
             },
             tooltip: appLocalizations.more,
-            icon: const Icon(Icons.more_vert),
+            icon: const Icon(AppIcons.more),
           );
         },
         popup: CommonPopupMenu(

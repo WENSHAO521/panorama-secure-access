@@ -415,7 +415,7 @@ class ProfileItem extends StatelessWidget {
                               open();
                             },
                             tooltip: appLocalizations.more,
-                            icon: const Icon(Icons.more_vert),
+                            icon: const Icon(AppIcons.more),
                           );
                         },
                       ),

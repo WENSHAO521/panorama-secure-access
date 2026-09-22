@@ -232,7 +232,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
                       open(offset: Offset(0, isMobile ? 0 : 20));
                     },
                     tooltip: appLocalizations.more,
-                    icon: const Icon(Icons.more_vert),
+                    icon: const Icon(AppIcons.more),
                   );
                 },
                 popup: CommonPopupMenu(

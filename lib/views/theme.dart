@@ -331,7 +331,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
                 visualDensity: VisualDensity.compact,
                 tooltip: context.appLocalizations.reset,
                 onPressed: _handleReset,
-                icon: const Icon(Icons.replay),
+                icon: const Icon(AppIcons.reset),
               ),
           ], space: 8),
           child: Container(
@@ -390,7 +390,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
                                   tooltip: context.appLocalizations.delete,
                                   icon: Icon(
                                     color: context.colorScheme.primary,
-                                    Icons.delete,
+                                    AppIcons.delete,
                                   ),
                                 ),
                               ),
@@ -408,7 +408,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
                           tooltip: context.appLocalizations.add,
                           icon: Icon(
                             color: context.colorScheme.primary,
-                            Icons.add,
+                            AppIcons.add,
                           ),
                         ),
                       ),
