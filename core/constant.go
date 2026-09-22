@@ -102,6 +102,8 @@ const (
 	stopLogMethod                  Method = "stopLog"
 	startListenerMethod            Method = "startListener"
 	stopListenerMethod             Method = "stopListener"
+	startProbeListenerMethod       Method = "startProbeListener"
+	stopProbeListenerMethod        Method = "stopProbeListener"
 	updateDnsMethod                Method = "updateDns"
 	crashMethod                    Method = "crash"
 	setupConfigMethod              Method = "setupConfig"

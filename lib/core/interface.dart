@@ -34,6 +34,13 @@ mixin CoreInterface {
 
   Future<bool> stopListener();
 
+  /// Starts a loopback proxy listener pinned to [proxyName] (see
+  /// core/probe.go). Returns the core's JSON answer: {"port": n} or
+  /// {"error": "..."}.
+  Future<String> startProbeListener(String proxyName);
+
+  Future<bool> stopProbeListener();
+
   Future<String> getExternalProviders();
 
   Future<String>? getExternalProvider(String externalProviderName);
@@ -314,6 +321,21 @@ abstract class CoreHandlerInterface with CoreInterface {
   @override
   Future<bool> stopListener() async {
     return await _invoke<bool>(method: ActionMethod.stopListener) ?? false;
+  }
+
+  @override
+  Future<String> startProbeListener(String proxyName) async {
+    return await _invoke<String>(
+          method: ActionMethod.startProbeListener,
+          data: json.encode({'proxy': proxyName}),
+        ) ??
+        json.encode({'error': 'core unavailable'});
+  }
+
+  @override
+  Future<bool> stopProbeListener() async {
+    return await _invoke<bool>(method: ActionMethod.stopProbeListener) ??
+        false;
   }
 
   @override

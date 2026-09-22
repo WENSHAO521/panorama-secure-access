@@ -203,6 +203,24 @@ class CoreController {
     return _interface.stopListener();
   }
 
+  /// Port of a loopback proxy that sends everything through [proxyName],
+  /// bypassing rules and group selections. Throws with the core's reason
+  /// if it can't be started. Stop it with [stopProbeListener].
+  Future<int> startProbeListener(String proxyName) async {
+    final answer = json.decode(
+      await _interface.startProbeListener(proxyName),
+    ) as Map<String, dynamic>;
+    final port = answer['port'];
+    if (port is int && port > 0) {
+      return port;
+    }
+    throw StateError(answer['error'] as String? ?? 'probe listener failed');
+  }
+
+  Future<bool> stopProbeListener() {
+    return _interface.stopProbeListener();
+  }
+
   Future<Delay> getDelay(String url, String proxyName) async {
     final data = await _interface.asyncTestDelay(url, proxyName);
     return Delay.fromJson(json.decode(data));

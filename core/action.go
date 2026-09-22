@@ -169,6 +169,13 @@ func handleAction(action *Action, result ActionResult) {
 	case stopListenerMethod:
 		result.success(handleStopListener())
 		return
+	case startProbeListenerMethod:
+		paramsString := action.Data.(string)
+		result.success(handleStartProbeListener(paramsString))
+		return
+	case stopProbeListenerMethod:
+		result.success(handleStopProbeListener())
+		return
 	case getCountryCodeMethod:
 		ip := action.Data.(string)
 		handleGetCountryCode(ip, func(value string) {

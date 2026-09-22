@@ -247,6 +247,8 @@ enum ActionMethod {
   stopLog,
   startListener,
   stopListener,
+  startProbeListener,
+  stopProbeListener,
   getCountryCode,
   getMemory,
   crash,
