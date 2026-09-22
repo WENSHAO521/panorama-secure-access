@@ -962,6 +962,24 @@ class ProfilesAction extends _$ProfilesAction {
     }
   }
 
+  /// A new, independent profile with the same configuration file, source
+  /// URL, settings and overrides. It is not selected.
+  Future<Profile> duplicateProfile(Profile profile) async {
+    final copy = profile.copyWith(
+      id: snowflake.id,
+      label: profile.realLabel,
+      order: null,
+    );
+    final source = await profile.file;
+    await source.copy((await copy.file).path);
+    final labelled = ref.read(profilesProvider).optimizeLabel(copy);
+    // Overrides reference the profile row, so write it before them.
+    await database.profiles.put(labelled.toCompanion());
+    await database.copyProfileOverrides(profile.id, labelled.id);
+    ref.read(profilesProvider.notifier).put(labelled);
+    return labelled;
+  }
+
   void setProfileAndAutoApply(Profile profile) {
     ref.read(profilesProvider.notifier).put(profile);
     if (profile.id == ref.read(currentProfileIdProvider)) {

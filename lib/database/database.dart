@@ -150,6 +150,41 @@ class Database extends _$Database {
       rulesDao.setCustomRulesWithBatch(profileId, b, rules);
     });
   }
+
+  /// Copies one profile's overrides — added, disabled and custom rules and
+  /// custom proxy groups — to another profile. Copied rules and groups get
+  /// new ids, so editing or deleting them in one profile never touches the
+  /// other. Disabled links to global rules keep pointing at those rules.
+  Future<void> copyProfileOverrides(int fromProfileId, int toProfileId) async {
+    final added = await rulesDao.queryProfileAddedRules(fromProfileId).get();
+    final disabled = await rulesDao
+        .queryProfileDisabledRules(fromProfileId)
+        .get();
+    final custom = await rulesDao.queryProfileCustomRules(fromProfileId).get();
+    final groups = await proxyGroupsDao.query(fromProfileId).get();
+    await transaction(() async {
+      final addedIds = <int, int>{};
+      for (final rule in added) {
+        final id = snowflake.id;
+        addedIds[rule.id] = id;
+        await rulesDao.putProfileAddedRule(toProfileId, rule.copyWith(id: id));
+      }
+      for (final rule in disabled) {
+        await rulesDao.putDisabledLink(
+          toProfileId,
+          addedIds[rule.id] ?? rule.id,
+        );
+      }
+      await setProfileCustomData(
+        toProfileId,
+        [
+          for (final group in groups)
+            group.copyWith(id: snowflake.id, profileId: toProfileId),
+        ],
+        [for (final rule in custom) rule.copyWith(id: snowflake.id)],
+      );
+    });
+  }
 }
 
 extension TableInfoExt<Tbl extends Table, Row> on TableInfo<Tbl, Row> {
