@@ -23,6 +23,23 @@ class ProfilesView extends StatefulWidget {
 class _ProfilesViewState extends State<ProfilesView> {
   Function? applyConfigDebounce;
   bool _isUpdating = false;
+  String _query = '';
+
+  void _onSearch(String value) {
+    setState(() {
+      _query = value;
+    });
+  }
+
+  List<Profile> _filterProfiles(List<Profile> profiles) {
+    if (_query.isEmpty) {
+      return profiles;
+    }
+    final query = _query.toLowerCase();
+    return profiles
+        .where((profile) => profile.realLabel.toLowerCase().contains(query))
+        .toList();
+  }
 
   // final GlobalKey _targetKey = GlobalKey();
 
@@ -122,14 +139,23 @@ class _ProfilesViewState extends State<ProfilesView> {
         final isLoading = ref.watch(loadingProvider(LoadingTag.profiles));
         final state = ref.watch(profilesStateProvider);
         final spacing = 14.mAp;
+        final filteredProfiles = _filterProfiles(state.profiles);
         return CommonScaffold(
           isLoading: isLoading,
           title: appLocalizations.profiles,
           floatingActionButton: _buildFAB(),
           actions: _buildActions(state.profiles),
+          searchState: state.profiles.isEmpty
+              ? null
+              : AppBarSearchState(onSearch: _onSearch),
           body: state.profiles.isEmpty
               ? NullStatus(
                   label: appLocalizations.nullProfileDesc,
+                  illustration: const ProfileEmptyIllustration(),
+                )
+              : filteredProfiles.isEmpty
+              ? NullStatus(
+                  label: appLocalizations.nullTip(appLocalizations.profiles),
                   illustration: const ProfileEmptyIllustration(),
                 )
               : Align(
@@ -147,10 +173,10 @@ class _ProfilesViewState extends State<ProfilesView> {
                       crossAxisSpacing: spacing,
                       crossAxisCount: state.columns,
                       children: [
-                        for (int i = 0; i < state.profiles.length; i++)
+                        for (int i = 0; i < filteredProfiles.length; i++)
                           GridItem(
                             child: ProfileItem(
-                              profile: state.profiles[i],
+                              profile: filteredProfiles[i],
                               groupValue: state.currentProfileId,
                               onChanged: (profileId) {
                                 ref
@@ -189,6 +215,7 @@ class ProfileItem extends StatelessWidget {
       message: TextSpan(
         text: appLocalizations.deleteTip(appLocalizations.profile),
       ),
+      isDanger: true,
     );
     if (res != true) {
       return;
@@ -387,6 +414,7 @@ class ProfileItem extends StatelessWidget {
                             onPressed: () {
                               open();
                             },
+                            tooltip: appLocalizations.more,
                             icon: const Icon(Icons.more_vert),
                           );
                         },

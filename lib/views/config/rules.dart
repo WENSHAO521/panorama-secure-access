@@ -2,6 +2,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/features/features.dart';
 import 'package:fl_clash/models/clash_config.dart';
+import 'package:fl_clash/models/state.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -17,6 +18,25 @@ class AddedRulesView extends ConsumerStatefulWidget {
 
 class _AddedRulesViewState extends ConsumerState<AddedRulesView> {
   final _key = utils.id;
+  String _query = '';
+
+  void _onSearch(String value) {
+    setState(() {
+      _query = value;
+    });
+  }
+
+  List<Rule> _filterRules(List<Rule> rules) {
+    if (_query.isEmpty) {
+      return rules;
+    }
+    final query = _query.toLowerCase();
+    return rules.where((rule) {
+      return (rule.content?.toLowerCase().contains(query) ?? false) ||
+          (rule.ruleTarget?.toLowerCase().contains(query) ?? false) ||
+          rule.ruleAction.name.toLowerCase().contains(query);
+    }).toList();
+  }
 
   Future<void> _handleAddOrUpdate([Rule? rule]) async {
     final res = await globalState.showCommonDialog<Rule>(
@@ -52,6 +72,7 @@ class _AddedRulesViewState extends ConsumerState<AddedRulesView> {
       message: TextSpan(
         text: appLocalizations.deleteMultipTip(appLocalizations.rule),
       ),
+      isDanger: true,
     );
     if (res != true) {
       return;
@@ -65,6 +86,8 @@ class _AddedRulesViewState extends ConsumerState<AddedRulesView> {
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
     final rules = ref.watch(globalRulesProvider).value ?? [];
+    final filteredRules = _filterRules(rules);
+    final isSearching = _query.isNotEmpty;
     final selectedRules = ref.watch(itemsProvider(_key));
     return CommonPopScope(
       onPop: (_) {
@@ -76,8 +99,11 @@ class _AddedRulesViewState extends ConsumerState<AddedRulesView> {
         return false;
       },
 
-      child: BaseScaffold(
+      child: CommonScaffold(
         title: appLocalizations.addedRules,
+        searchState: rules.isEmpty
+            ? null
+            : AppBarSearchState(onSearch: _onSearch),
         actions: [
           if (selectedRules.isNotEmpty) ...[
             CommonMinIconButtonTheme(
@@ -107,6 +133,42 @@ class _AddedRulesViewState extends ConsumerState<AddedRulesView> {
             ? NullStatus(
                 label: appLocalizations.nullTip(appLocalizations.rule),
                 illustration: const RuleEmptyIllustration(),
+              )
+            : filteredRules.isEmpty
+            ? NullStatus(
+                label: appLocalizations.nullTip(appLocalizations.rule),
+                illustration: const RuleEmptyIllustration(),
+              )
+            // Drag-to-reorder only makes sense against the full, unfiltered
+            // list — ReorderableList's onReorderItem works in terms of
+            // indices into the list it's given, which would silently
+            // scramble order if a search was narrowing that list. A plain
+            // ListView (same RuleItem, same itemExtent, no drag listener)
+            // while searching, matching the read-only rule list pattern
+            // already used for disabled rules in overwrite/standard.dart.
+            : isSearching
+            ? ListView.builder(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 16,
+                ),
+                itemExtent: ruleItemHeight,
+                itemCount: filteredRules.length,
+                itemBuilder: (context, index) {
+                  final rule = filteredRules[index];
+                  return RuleItem(
+                    hasMatch: true,
+                    isEditing: selectedRules.isNotEmpty,
+                    rule: rule,
+                    isSelected: selectedRules.contains(rule.id),
+                    onSelected: () {
+                      _handleSelected(rule.id);
+                    },
+                    onEdit: (Rule rule) {
+                      _handleAddOrUpdate(rule);
+                    },
+                  );
+                },
               )
             : ReorderableList(
                 padding: const EdgeInsets.symmetric(
