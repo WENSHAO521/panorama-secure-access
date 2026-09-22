@@ -554,5 +554,10 @@
   "geoSkipped": "{name} 已跳過",
   "geoUpdated": "{name} 已更新",
   "secondsCount": "{count} 秒",
-  "entriesCount": "{count} 個條目"
+  "entriesCount": "{count} 個條目",
+  "minimizeWindow": "最小化",
+  "maximizeWindow": "最大化",
+  "restoreWindow": "還原",
+  "alwaysOnTop": "永遠置頂",
+  "closeWindow": "關閉"
 }

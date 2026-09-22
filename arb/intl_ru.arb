@@ -554,5 +554,10 @@
   "geoSkipped": "{name} пропущено",
   "geoUpdated": "{name} обновлено",
   "secondsCount": "{count} секунд",
-  "entriesCount": "{count} записей"
+  "entriesCount": "{count} записей",
+  "minimizeWindow": "Свернуть",
+  "maximizeWindow": "Развернуть",
+  "restoreWindow": "Восстановить",
+  "alwaysOnTop": "Поверх всех окон",
+  "closeWindow": "Закрыть"
 }

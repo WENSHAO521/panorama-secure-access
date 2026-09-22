@@ -554,5 +554,10 @@
   "secondsCount": "{count}초",
   "entriesCount": "{count}개 항목",
   "zh_TW": "중국어 번체",
-  "ko": "한국어"
+  "ko": "한국어",
+  "minimizeWindow": "최소화",
+  "maximizeWindow": "최대화",
+  "restoreWindow": "이전 크기로 복원",
+  "alwaysOnTop": "항상 위에 표시",
+  "closeWindow": "닫기"
 }

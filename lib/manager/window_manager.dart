@@ -195,6 +195,7 @@ class _WindowHeaderState extends State<WindowHeader> {
     return Row(
       children: [
         IconButton(
+          tooltip: context.appLocalizations.alwaysOnTop,
           onPressed: () async {
             _updatePin();
           },
@@ -202,31 +203,36 @@ class _WindowHeaderState extends State<WindowHeader> {
             valueListenable: isPinNotifier,
             builder: (_, value, _) {
               return value
-                  ? const Icon(Icons.push_pin)
-                  : const Icon(Icons.push_pin_outlined);
+                  ? const Icon(AppIcons.windowPinned)
+                  : const Icon(AppIcons.windowUnpinned);
             },
           ),
         ),
         IconButton(
+          tooltip: context.appLocalizations.minimizeWindow,
           onPressed: () {
             windowManager.minimize();
           },
-          icon: const Icon(Icons.remove),
+          icon: const Icon(AppIcons.windowMinimize),
         ),
-        IconButton(
-          onPressed: () async {
-            _updateMaximized();
+        ValueListenableBuilder(
+          valueListenable: isMaximizedNotifier,
+          builder: (_, isMaximized, _) {
+            return IconButton(
+              tooltip: isMaximized
+                  ? context.appLocalizations.restoreWindow
+                  : context.appLocalizations.maximizeWindow,
+              onPressed: () async {
+                _updateMaximized();
+              },
+              icon: isMaximized
+                  ? const Icon(AppIcons.windowRestore, size: 20)
+                  : const Icon(AppIcons.windowMaximize),
+            );
           },
-          icon: ValueListenableBuilder(
-            valueListenable: isMaximizedNotifier,
-            builder: (_, value, _) {
-              return value
-                  ? const Icon(Icons.filter_none, size: 20)
-                  : const Icon(Icons.crop_square);
-            },
-          ),
         ),
         IconButton(
+          tooltip: context.appLocalizations.closeWindow,
           // Close is the one caption button with an irreversible-feeling
           // action, so it gets the platform-conventional red hover/press
           // tint (Windows/Linux native window chrome) instead of the
@@ -256,7 +262,7 @@ class _WindowHeaderState extends State<WindowHeader> {
                 .read(systemActionProvider.notifier)
                 .handleClose();
           },
-          icon: const Icon(Icons.close),
+          icon: const Icon(AppIcons.windowClose),
         ),
         // const SizedBox(
         //   width: 8,

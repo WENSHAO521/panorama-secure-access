@@ -554,5 +554,10 @@
   "geoSkipped": "{name} skipped",
   "geoUpdated": "{name} updated",
   "secondsCount": "{count} seconds",
-  "entriesCount": "{count} entries"
+  "entriesCount": "{count} entries",
+  "minimizeWindow": "Minimize",
+  "maximizeWindow": "Maximize",
+  "restoreWindow": "Restore",
+  "alwaysOnTop": "Always on Top",
+  "closeWindow": "Close"
 }

@@ -126,6 +126,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "allowLanDesc": MessageLookupByLibrary.simpleMessage(
       "LAN을 통한 프록시 접근을 허용합니다",
     ),
+    "alwaysOnTop": MessageLookupByLibrary.simpleMessage("항상 위에 표시"),
     "app": MessageLookupByLibrary.simpleMessage("앱"),
     "appAccessControl": MessageLookupByLibrary.simpleMessage("앱 접근 제어"),
     "appendSystemDns": MessageLookupByLibrary.simpleMessage("시스템 DNS 추가"),
@@ -189,6 +190,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "clearData": MessageLookupByLibrary.simpleMessage("데이터 지우기"),
     "clipboardExport": MessageLookupByLibrary.simpleMessage("클립보드로 내보내기"),
     "clipboardImport": MessageLookupByLibrary.simpleMessage("클립보드에서 가져오기"),
+    "closeWindow": MessageLookupByLibrary.simpleMessage("닫기"),
     "color": MessageLookupByLibrary.simpleMessage("색상"),
     "colorSchemes": MessageLookupByLibrary.simpleMessage("색상 구성표"),
     "columns": MessageLookupByLibrary.simpleMessage("열"),
@@ -462,6 +464,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "loose": MessageLookupByLibrary.simpleMessage("넓게"),
     "matchSourceIp": MessageLookupByLibrary.simpleMessage("소스 IP 일치"),
     "maxFailedTimes": MessageLookupByLibrary.simpleMessage("최대 실패 횟수"),
+    "maximizeWindow": MessageLookupByLibrary.simpleMessage("최대화"),
     "memoryInfo": MessageLookupByLibrary.simpleMessage("메모리 정보"),
     "messageTest": MessageLookupByLibrary.simpleMessage("메시지 테스트"),
     "messageTestTip": MessageLookupByLibrary.simpleMessage("이것은 메시지입니다."),
@@ -470,6 +473,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "minimizeOnExitDesc": MessageLookupByLibrary.simpleMessage(
       "기본 시스템 종료 동작을 변경합니다",
     ),
+    "minimizeWindow": MessageLookupByLibrary.simpleMessage("최소화"),
     "minutesAgo": m17,
     "mixedPort": MessageLookupByLibrary.simpleMessage("Mixed 포트"),
     "mode": MessageLookupByLibrary.simpleMessage("모드"),
@@ -660,6 +664,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "restoreStrategy_compatible": MessageLookupByLibrary.simpleMessage("호환"),
     "restoreStrategy_override": MessageLookupByLibrary.simpleMessage("덮어쓰기"),
     "restoreSuccess": MessageLookupByLibrary.simpleMessage("복원 성공"),
+    "restoreWindow": MessageLookupByLibrary.simpleMessage("이전 크기로 복원"),
     "routeAddress": MessageLookupByLibrary.simpleMessage("라우트 주소"),
     "routeAddressDesc": MessageLookupByLibrary.simpleMessage(
       "리스닝 라우트 주소를 설정합니다",

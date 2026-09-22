@@ -4528,6 +4528,36 @@ class AppLocalizations {
       args: [count],
     );
   }
+
+  /// `Minimize`
+  String get minimizeWindow {
+    return Intl.message('Minimize', name: 'minimizeWindow', desc: '', args: []);
+  }
+
+  /// `Maximize`
+  String get maximizeWindow {
+    return Intl.message('Maximize', name: 'maximizeWindow', desc: '', args: []);
+  }
+
+  /// `Restore`
+  String get restoreWindow {
+    return Intl.message('Restore', name: 'restoreWindow', desc: '', args: []);
+  }
+
+  /// `Always on Top`
+  String get alwaysOnTop {
+    return Intl.message(
+      'Always on Top',
+      name: 'alwaysOnTop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get closeWindow {
+    return Intl.message('Close', name: 'closeWindow', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

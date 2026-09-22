@@ -554,5 +554,10 @@
   "geoSkipped": "{name} スキップ済み",
   "geoUpdated": "{name} 更新済み",
   "secondsCount": "{count} 秒",
-  "entriesCount": "{count} エントリ"
+  "entriesCount": "{count} エントリ",
+  "minimizeWindow": "最小化",
+  "maximizeWindow": "最大化",
+  "restoreWindow": "元のサイズに戻す",
+  "alwaysOnTop": "常に最前面に表示",
+  "closeWindow": "閉じる"
 }
