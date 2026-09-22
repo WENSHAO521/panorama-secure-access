@@ -100,13 +100,34 @@ class Request {
     'https://ipinfo.io/json': IpInfo.fromIpInfoIoJson,
   };
 
-  Future<Result<IpInfo?>> checkIp({CancelToken? cancelToken}) async {
+  /// Sources that also report ISP / ASN; api.myip.com only has the country.
+  static const _detailedIpInfoSources = {
+    'https://ipwho.is',
+    'https://ipapi.co/json',
+    'https://ident.me/json',
+    'http://ip-api.com/json',
+    'https://api.ip.sb/geoip',
+    'https://ipinfo.io/json',
+  };
+
+  /// Races the public IP lookup services and returns the first answer.
+  /// With [detailed], only races services that also report ISP / ASN.
+  Future<Result<IpInfo?>> checkIp({
+    CancelToken? cancelToken,
+    bool detailed = false,
+  }) async {
     var failureCount = 0;
     final token = cancelToken ?? CancelToken();
-    final futures = _ipInfoSources.entries.map((source) async {
+    final sources = detailed
+        ? _ipInfoSources.entries.where(
+            (source) => _detailedIpInfoSources.contains(source.key),
+          )
+        : _ipInfoSources.entries;
+    final sourceCount = sources.length;
+    final futures = sources.map((source) async {
       final Completer<Result<IpInfo?>> completer = Completer();
       void handleFailRes() {
-        if (!completer.isCompleted && failureCount == _ipInfoSources.length) {
+        if (!completer.isCompleted && failureCount == sourceCount) {
           completer.complete(Result.success(null));
         }
       }

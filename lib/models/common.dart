@@ -361,14 +361,27 @@ extension ColorSchemesExt on ColorSchemes {
 
 @freezed
 abstract class IpInfo with _$IpInfo {
-  const factory IpInfo({required String ip, required String countryCode}) =
-      _IpInfo;
+  const factory IpInfo({
+    required String ip,
+    required String countryCode,
+    String? countryName,
+    String? region,
+    String? city,
+    int? asn,
+    String? isp,
+    String? organization,
+  }) = _IpInfo;
 
   static IpInfo fromIpInfoIoJson(Map<String, dynamic> json) {
     return switch (json) {
       {'ip': final String ip, 'country': final String country} => IpInfo(
         ip: ip,
         countryCode: country,
+        region: _string(json['region']),
+        city: _string(json['city']),
+        // ipinfo.io reports "AS13335 Cloudflare, Inc." in one field.
+        asn: _asn(json['org']),
+        organization: _stripAsn(json['org']),
       ),
       _ => throw const FormatException('invalid json'),
     };
@@ -377,7 +390,15 @@ abstract class IpInfo with _$IpInfo {
   static IpInfo fromIpApiCoJson(Map<String, dynamic> json) {
     return switch (json) {
       {'ip': final String ip, 'country_code': final String countryCode} =>
-        IpInfo(ip: ip, countryCode: countryCode),
+        IpInfo(
+          ip: ip,
+          countryCode: countryCode,
+          countryName: _string(json['country_name']),
+          region: _string(json['region']),
+          city: _string(json['city']),
+          asn: _asn(json['asn']),
+          organization: _string(json['org']),
+        ),
       _ => throw const FormatException('invalid json'),
     };
   }
@@ -385,15 +406,39 @@ abstract class IpInfo with _$IpInfo {
   static IpInfo fromIpSbJson(Map<String, dynamic> json) {
     return switch (json) {
       {'ip': final String ip, 'country_code': final String countryCode} =>
-        IpInfo(ip: ip, countryCode: countryCode),
+        IpInfo(
+          ip: ip,
+          countryCode: countryCode,
+          countryName: _string(json['country']),
+          region: _string(json['region']),
+          city: _string(json['city']),
+          asn: _asn(json['asn']),
+          isp: _string(json['isp']),
+          organization:
+              _string(json['asn_organization']) ??
+              _string(json['organization']),
+        ),
       _ => throw const FormatException('invalid json'),
     };
   }
 
   static IpInfo fromIpWhoIsJson(Map<String, dynamic> json) {
+    final connection = json['connection'];
+    final details = connection is Map<String, dynamic>
+        ? connection
+        : const <String, dynamic>{};
     return switch (json) {
       {'ip': final String ip, 'country_code': final String countryCode} =>
-        IpInfo(ip: ip, countryCode: countryCode),
+        IpInfo(
+          ip: ip,
+          countryCode: countryCode,
+          countryName: _string(json['country']),
+          region: _string(json['region']),
+          city: _string(json['city']),
+          asn: _asn(details['asn']),
+          isp: _string(details['isp']),
+          organization: _string(details['org']),
+        ),
       _ => throw const FormatException('invalid json'),
     };
   }
@@ -403,6 +448,7 @@ abstract class IpInfo with _$IpInfo {
       {'ip': final String ip, 'cc': final String countryCode} => IpInfo(
         ip: ip,
         countryCode: countryCode,
+        countryName: _string(json['country']),
       ),
       _ => throw const FormatException('invalid json'),
     };
@@ -411,7 +457,17 @@ abstract class IpInfo with _$IpInfo {
   static IpInfo fromIpAPIJson(Map<String, dynamic> json) {
     return switch (json) {
       {'query': final String ip, 'countryCode': final String countryCode} =>
-        IpInfo(ip: ip, countryCode: countryCode),
+        IpInfo(
+          ip: ip,
+          countryCode: countryCode,
+          countryName: _string(json['country']),
+          region: _string(json['regionName']),
+          city: _string(json['city']),
+          // ip-api.com reports "AS13335 Cloudflare, Inc." in `as`.
+          asn: _asn(json['as']),
+          isp: _string(json['isp']),
+          organization: _string(json['org']),
+        ),
       _ => throw const FormatException('invalid json'),
     };
   }
@@ -421,9 +477,44 @@ abstract class IpInfo with _$IpInfo {
       {'ip': final String ip, 'cc': final String countryCode} => IpInfo(
         ip: ip,
         countryCode: countryCode,
+        countryName: _string(json['country']),
+        city: _string(json['city']),
+        asn: _asn(json['asn']),
+        organization: _string(json['aso']),
       ),
       _ => throw const FormatException('invalid json'),
     };
+  }
+
+  static String? _string(Object? value) {
+    if (value is! String) {
+      return null;
+    }
+    final trimmed = value.trim();
+    return trimmed.isEmpty ? null : trimmed;
+  }
+
+  static final _asnPattern = RegExp(r'^(?:AS)?(\d+)', caseSensitive: false);
+
+  /// Accepts 13335, "13335", "AS13335" or "AS13335 Cloudflare, Inc.".
+  static int? _asn(Object? value) {
+    if (value is int) {
+      return value > 0 ? value : null;
+    }
+    final text = _string(value);
+    if (text == null) {
+      return null;
+    }
+    return int.tryParse(_asnPattern.firstMatch(text)?.group(1) ?? '');
+  }
+
+  /// "AS13335 Cloudflare, Inc." -> "Cloudflare, Inc."
+  static String? _stripAsn(Object? value) {
+    final text = _string(value);
+    if (text == null) {
+      return null;
+    }
+    return _string(text.replaceFirst(RegExp(r'^AS\d+\s*'), ''));
   }
 }
 
