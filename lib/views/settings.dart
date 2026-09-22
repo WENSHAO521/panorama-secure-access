@@ -21,14 +21,14 @@ import 'config/advanced.dart';
 import 'developer.dart';
 import 'theme.dart';
 
-class ToolsView extends ConsumerStatefulWidget {
-  const ToolsView({super.key});
+class SettingsView extends ConsumerStatefulWidget {
+  const SettingsView({super.key});
 
   @override
-  ConsumerState<ToolsView> createState() => _ToolViewState();
+  ConsumerState<SettingsView> createState() => _SettingsViewState();
 }
 
-class _ToolViewState extends ConsumerState<ToolsView> {
+class _SettingsViewState extends ConsumerState<SettingsView> {
   Widget _buildNavigationMenuItem(NavigationItem navigationItem) {
     return ListItem.open(
       leading: navigationItem.icon,
@@ -55,9 +55,9 @@ class _ToolViewState extends ConsumerState<ToolsView> {
     );
   }
 
-  Widget _getSettingList() {
+  Widget _getGeneralList() {
     return generateGlassSection(
-      title: context.appLocalizations.settings,
+      title: context.appLocalizations.general,
       items: [
         const _LocaleItem(),
         const _ThemeItem(),
@@ -92,11 +92,11 @@ class _ToolViewState extends ConsumerState<ToolsView> {
           );
         },
       ),
-      _getSettingList(),
+      _getGeneralList(),
       _getOtherList(vm2.b),
     ];
     return CommonScaffold(
-      title: context.appLocalizations.tools,
+      title: context.appLocalizations.settings,
       body: ListView.builder(
         key: toolsStoreKey,
         itemCount: items.length,

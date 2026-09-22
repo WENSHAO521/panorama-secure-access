@@ -94,6 +94,11 @@ class AppLocalizations {
     return Intl.message('Tools', name: 'tools', desc: '', args: []);
   }
 
+  /// `Activity`
+  String get activity {
+    return Intl.message('Activity', name: 'activity', desc: '', args: []);
+  }
+
   /// `Logs`
   String get logs {
     return Intl.message('Logs', name: 'logs', desc: '', args: []);

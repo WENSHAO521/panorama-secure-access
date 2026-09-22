@@ -92,6 +92,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "action_start": MessageLookupByLibrary.simpleMessage("啟動/停止"),
     "action_tun": MessageLookupByLibrary.simpleMessage("虛擬網絡卡"),
     "action_view": MessageLookupByLibrary.simpleMessage("顯示/隱藏"),
+    "activity": MessageLookupByLibrary.simpleMessage("活動"),
     "add": MessageLookupByLibrary.simpleMessage("新增"),
     "addProfile": MessageLookupByLibrary.simpleMessage("新增配置"),
     "addProxies": MessageLookupByLibrary.simpleMessage("新增代理"),

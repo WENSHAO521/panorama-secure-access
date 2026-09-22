@@ -28,6 +28,7 @@ class CommonScaffold extends StatefulWidget {
   final AppBarSearchState? searchState;
   final OnKeywordsUpdateCallback? onKeywordsUpdate;
   final bool? resizeToAvoidBottomInset;
+  final PreferredSizeWidget? appBarBottom;
 
   const CommonScaffold({
     super.key,
@@ -43,6 +44,7 @@ class CommonScaffold extends StatefulWidget {
     this.floatingActionButton,
     this.onKeywordsUpdate,
     this.resizeToAvoidBottomInset,
+    this.appBarBottom,
   });
 
   @override
@@ -268,8 +270,11 @@ class CommonScaffoldState extends State<CommonScaffold> {
   }
 
   PreferredSizeWidget _buildAppBar(VoidCallback? backAction) {
+    final bottom = widget.appBarBottom;
     return PreferredSize(
-      preferredSize: const Size.fromHeight(kToolbarHeight),
+      preferredSize: Size.fromHeight(
+        kToolbarHeight + (bottom?.preferredSize.height ?? 0),
+      ),
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
@@ -300,6 +305,7 @@ class CommonScaffoldState extends State<CommonScaffold> {
                             ? state.actions
                             : widget.actions ?? [],
                       ),
+                      bottom: bottom,
                     ),
                   );
                 },
@@ -390,6 +396,31 @@ class CommonScaffoldState extends State<CommonScaffold> {
             )
           : null,
     );
+  }
+}
+
+/// Lets a host page (e.g. Activity) hand the title and app-bar bottom to the
+/// view it embeds, so the embedded view shows them in its own app bar
+/// instead of the host stacking a second bar above it. Views opt in by
+/// reading [maybeOf]; nothing reads it implicitly.
+class ScaffoldHeaderScope extends InheritedWidget {
+  final String title;
+  final PreferredSizeWidget bottom;
+
+  const ScaffoldHeaderScope({
+    super.key,
+    required this.title,
+    required this.bottom,
+    required super.child,
+  });
+
+  static ScaffoldHeaderScope? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ScaffoldHeaderScope>();
+  }
+
+  @override
+  bool updateShouldNotify(ScaffoldHeaderScope oldWidget) {
+    return title != oldWidget.title || bottom != oldWidget.bottom;
   }
 }
 

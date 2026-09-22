@@ -84,8 +84,10 @@ class _RequestsViewState extends ConsumerState<RequestsView> {
   @override
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
+    final header = ScaffoldHeaderScope.maybeOf(context);
     return CommonScaffold(
-      title: appLocalizations.requests,
+      title: header?.title ?? appLocalizations.requests,
+      appBarBottom: header?.bottom,
       searchState: AppBarSearchState(onSearch: _onSearch),
       onKeywordsUpdate: _onKeywordsUpdate,
       floatingActionButton: ValueListenableBuilder(

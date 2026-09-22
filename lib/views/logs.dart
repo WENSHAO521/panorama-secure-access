@@ -106,11 +106,13 @@ class _LogsViewState extends ConsumerState<LogsView> {
   @override
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
+    final header = ScaffoldHeaderScope.maybeOf(context);
     return CommonScaffold(
       actions: _buildActions(),
       onKeywordsUpdate: _onKeywordsUpdate,
       searchState: AppBarSearchState(onSearch: _onSearch),
-      title: appLocalizations.logs,
+      title: header?.title ?? appLocalizations.logs,
+      appBarBottom: header?.bottom,
       floatingActionButton: ValueListenableBuilder(
         valueListenable: _logsStateNotifier,
         builder: (_, state, _) {

@@ -104,8 +104,10 @@ class _ConnectionsViewState extends ConsumerState<ConnectionsView>
   @override
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
+    final header = ScaffoldHeaderScope.maybeOf(context);
     return CommonScaffold(
-      title: appLocalizations.connections,
+      title: header?.title ?? appLocalizations.connections,
+      appBarBottom: header?.bottom,
       onKeywordsUpdate: _onKeywordsUpdate,
       searchState: AppBarSearchState(onSearch: _onSearch),
       actions: _buildActions(),

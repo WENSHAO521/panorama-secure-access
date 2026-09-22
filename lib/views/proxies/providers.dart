@@ -62,7 +62,10 @@ class _ProvidersViewState extends ConsumerState<ProvidersView> {
     );
     return AdaptiveSheetScaffold(
       actions: [
-        IconButtonData(icon: PanoramaIcons.actions.sync, onPressed: _updateProviders),
+        IconButtonData(
+          icon: PanoramaIcons.actions.sync,
+          onPressed: _updateProviders,
+        ),
       ],
       body: generateListView([...proxySection, ...ruleSection]),
       title: appLocalizations.providers,

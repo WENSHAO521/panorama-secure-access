@@ -99,6 +99,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "action_start": MessageLookupByLibrary.simpleMessage("시작/중지"),
     "action_tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "action_view": MessageLookupByLibrary.simpleMessage("표시/숨김"),
+    "activity": MessageLookupByLibrary.simpleMessage("활동"),
     "add": MessageLookupByLibrary.simpleMessage("추가"),
     "addProfile": MessageLookupByLibrary.simpleMessage("프로필 추가"),
     "addProxies": MessageLookupByLibrary.simpleMessage("프록시 추가"),

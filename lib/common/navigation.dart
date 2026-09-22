@@ -1,3 +1,4 @@
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/views/views.dart';
@@ -6,20 +7,17 @@ import 'package:flutter/material.dart';
 class Navigation {
   static Navigation? _instance;
 
-  List<NavigationItem> getItems({
-    bool openLogs = false,
-    bool hasProxies = false,
-  }) {
+  List<NavigationItem> getItems({bool hasProxies = false}) {
     return [
       NavigationItem(
         keep: false,
-        icon: const Icon(Icons.space_dashboard),
+        icon: Icon(PanoramaIcons.navigation.home),
         label: PageLabel.dashboard,
         builder: (_) =>
             const DashboardView(key: GlobalObjectKey(PageLabel.dashboard)),
       ),
       NavigationItem(
-        icon: const Icon(Icons.article),
+        icon: Icon(PanoramaIcons.navigation.proxies),
         label: PageLabel.proxies,
         builder: (_) =>
             const ProxiesView(key: GlobalObjectKey(PageLabel.proxies)),
@@ -28,26 +26,16 @@ class Navigation {
             : [],
       ),
       NavigationItem(
-        icon: const Icon(Icons.folder),
+        icon: Icon(PanoramaIcons.navigation.profiles),
         label: PageLabel.profiles,
         builder: (_) =>
             const ProfilesView(key: GlobalObjectKey(PageLabel.profiles)),
       ),
       NavigationItem(
-        icon: const Icon(Icons.view_timeline),
-        label: PageLabel.requests,
+        icon: Icon(PanoramaIcons.navigation.activity),
+        label: PageLabel.activity,
         builder: (_) =>
-            const RequestsView(key: GlobalObjectKey(PageLabel.requests)),
-        description: 'requestsDesc',
-        modes: [NavigationItemMode.desktop, NavigationItemMode.more],
-      ),
-      NavigationItem(
-        icon: const Icon(Icons.ballot),
-        label: PageLabel.connections,
-        builder: (_) =>
-            const ConnectionsView(key: GlobalObjectKey(PageLabel.connections)),
-        description: 'connectionsDesc',
-        modes: [NavigationItemMode.desktop, NavigationItemMode.more],
+            const ActivityView(key: GlobalObjectKey(PageLabel.activity)),
       ),
       NavigationItem(
         icon: const Icon(Icons.storage),
@@ -58,19 +46,10 @@ class Navigation {
         modes: [NavigationItemMode.more],
       ),
       NavigationItem(
-        icon: const Icon(Icons.adb),
-        label: PageLabel.logs,
-        builder: (_) => const LogsView(key: GlobalObjectKey(PageLabel.logs)),
-        description: 'logsDesc',
-        modes: openLogs
-            ? [NavigationItemMode.desktop, NavigationItemMode.more]
-            : [],
-      ),
-      NavigationItem(
-        icon: const Icon(Icons.construction),
-        label: PageLabel.tools,
-        builder: (_) => const ToolsView(key: GlobalObjectKey(PageLabel.tools)),
-        modes: [NavigationItemMode.desktop, NavigationItemMode.mobile],
+        icon: Icon(PanoramaIcons.navigation.settings),
+        label: PageLabel.settings,
+        builder: (_) =>
+            const SettingsView(key: GlobalObjectKey(PageLabel.settings)),
       ),
     ];
   }
