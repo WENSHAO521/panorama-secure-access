@@ -600,5 +600,15 @@
   "exitIp": "出口 IP",
   "nodeTestTip": "仅通过该节点测试，不会更改当前选择。",
   "nodeTestNotConnected": "请先连接，再测试该节点。",
-  "staleResult": "已过期"
+  "staleResult": "已过期",
+  "home": "首页",
+  "connectAction": "连接",
+  "disconnectAction": "断开",
+  "stateConnecting": "正在连接…",
+  "stateDisconnecting": "正在断开…",
+  "stateNotConnected": "未连接",
+  "currentNode": "节点",
+  "servicesLabel": "服务",
+  "connectedFor": "已连接 {time}",
+  "dashboardDesc": "旧版的可自定义小组件"
 }

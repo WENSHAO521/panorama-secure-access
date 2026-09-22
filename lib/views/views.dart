@@ -8,6 +8,7 @@ export 'connection/connections.dart';
 export 'connection/requests.dart';
 export 'dashboard/dashboard.dart';
 export 'developer.dart';
+export 'home.dart';
 export 'logs.dart';
 export 'network_insight.dart';
 export 'profiles/profiles.dart';

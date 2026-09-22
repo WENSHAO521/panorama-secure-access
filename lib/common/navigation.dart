@@ -10,11 +10,9 @@ class Navigation {
   List<NavigationItem> getItems({bool hasProxies = false}) {
     return [
       NavigationItem(
-        keep: false,
         icon: Icon(PanoramaIcons.navigation.home),
-        label: PageLabel.dashboard,
-        builder: (_) =>
-            const DashboardView(key: GlobalObjectKey(PageLabel.dashboard)),
+        label: PageLabel.home,
+        builder: (_) => const HomeView(key: GlobalObjectKey(PageLabel.home)),
       ),
       NavigationItem(
         icon: Icon(PanoramaIcons.navigation.proxies),
@@ -45,6 +43,17 @@ class Navigation {
           key: GlobalObjectKey(PageLabel.networkInsight),
         ),
         modes: [NavigationItemMode.desktop, NavigationItemMode.more],
+      ),
+      // The earlier customizable widget dashboard, kept reachable from
+      // Settings > More so existing widget layouts aren't lost.
+      NavigationItem(
+        keep: false,
+        icon: const Icon(Icons.space_dashboard_outlined),
+        label: PageLabel.dashboard,
+        description: 'dashboardDesc',
+        builder: (_) =>
+            const DashboardView(key: GlobalObjectKey(PageLabel.dashboard)),
+        modes: [NavigationItemMode.more],
       ),
       NavigationItem(
         icon: const Icon(Icons.storage),

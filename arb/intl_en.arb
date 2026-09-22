@@ -600,5 +600,15 @@
   "exitIp": "Exit IP",
   "nodeTestTip": "Tested through this node only. Your current selection isn’t changed.",
   "nodeTestNotConnected": "Connect first to test this node.",
-  "staleResult": "Out of date"
+  "staleResult": "Out of date",
+  "home": "Home",
+  "connectAction": "Connect",
+  "disconnectAction": "Disconnect",
+  "stateConnecting": "Connecting…",
+  "stateDisconnecting": "Disconnecting…",
+  "stateNotConnected": "Not connected",
+  "currentNode": "Node",
+  "servicesLabel": "Services",
+  "connectedFor": "Connected for {time}",
+  "dashboardDesc": "Customizable widgets from earlier versions"
 }

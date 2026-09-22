@@ -26,16 +26,16 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: Column(
-          children: [page(PageLabel.dashboard), page(PageLabel.activity)],
+          children: [page(PageLabel.home), page(PageLabel.activity)],
         ),
       ),
     );
-    expect(seen, {PageLabel.dashboard: true, PageLabel.activity: false});
+    expect(seen, {PageLabel.home: true, PageLabel.activity: false});
 
     container
         .read(currentPageLabelProvider.notifier)
         .toPage(PageLabel.activity);
     await tester.pump();
-    expect(seen, {PageLabel.dashboard: false, PageLabel.activity: true});
+    expect(seen, {PageLabel.home: false, PageLabel.activity: true});
   });
 }

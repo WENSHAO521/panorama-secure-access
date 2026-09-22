@@ -4878,6 +4878,86 @@ class AppLocalizations {
   String get staleResult {
     return Intl.message('Out of date', name: 'staleResult', desc: '', args: []);
   }
+
+  /// `Home`
+  String get home {
+    return Intl.message('Home', name: 'home', desc: '', args: []);
+  }
+
+  /// `Connect`
+  String get connectAction {
+    return Intl.message('Connect', name: 'connectAction', desc: '', args: []);
+  }
+
+  /// `Disconnect`
+  String get disconnectAction {
+    return Intl.message(
+      'Disconnect',
+      name: 'disconnectAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connecting…`
+  String get stateConnecting {
+    return Intl.message(
+      'Connecting…',
+      name: 'stateConnecting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disconnecting…`
+  String get stateDisconnecting {
+    return Intl.message(
+      'Disconnecting…',
+      name: 'stateDisconnecting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not connected`
+  String get stateNotConnected {
+    return Intl.message(
+      'Not connected',
+      name: 'stateNotConnected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Node`
+  String get currentNode {
+    return Intl.message('Node', name: 'currentNode', desc: '', args: []);
+  }
+
+  /// `Services`
+  String get servicesLabel {
+    return Intl.message('Services', name: 'servicesLabel', desc: '', args: []);
+  }
+
+  /// `Connected for {time}`
+  String connectedFor(Object time) {
+    return Intl.message(
+      'Connected for $time',
+      name: 'connectedFor',
+      desc: '',
+      args: [time],
+    );
+  }
+
+  /// `Customizable widgets from earlier versions`
+  String get dashboardDesc {
+    return Intl.message(
+      'Customizable widgets from earlier versions',
+      name: 'dashboardDesc',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -600,5 +600,15 @@
   "exitIp": "出口 IP",
   "nodeTestTip": "僅透過此節點測試，不會變更目前選擇。",
   "nodeTestNotConnected": "請先連線，再測試此節點。",
-  "staleResult": "已過期"
+  "staleResult": "已過期",
+  "home": "首頁",
+  "connectAction": "連線",
+  "disconnectAction": "中斷連線",
+  "stateConnecting": "正在連線…",
+  "stateDisconnecting": "正在中斷連線…",
+  "stateNotConnected": "未連線",
+  "currentNode": "節點",
+  "servicesLabel": "服務",
+  "connectedFor": "已連線 {time}",
+  "dashboardDesc": "舊版的可自訂小工具"
 }

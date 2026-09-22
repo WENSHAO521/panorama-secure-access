@@ -600,5 +600,15 @@
   "exitIp": "出口 IP",
   "nodeTestTip": "このノードのみを経由してテストします。現在の選択は変更されません。",
   "nodeTestNotConnected": "このノードをテストするには、先に接続してください。",
-  "staleResult": "古い結果"
+  "staleResult": "古い結果",
+  "home": "ホーム",
+  "connectAction": "接続",
+  "disconnectAction": "切断",
+  "stateConnecting": "接続中…",
+  "stateDisconnecting": "切断中…",
+  "stateNotConnected": "未接続",
+  "currentNode": "ノード",
+  "servicesLabel": "サービス",
+  "connectedFor": "接続時間 {time}",
+  "dashboardDesc": "以前のバージョンのカスタマイズ可能なウィジェット"
 }

@@ -600,5 +600,15 @@
   "exitIp": "출구 IP",
   "nodeTestTip": "이 노드만 거쳐 테스트합니다. 현재 선택은 바뀌지 않습니다.",
   "nodeTestNotConnected": "이 노드를 테스트하려면 먼저 연결하세요.",
-  "staleResult": "오래된 결과"
+  "staleResult": "오래된 결과",
+  "home": "홈",
+  "connectAction": "연결",
+  "disconnectAction": "연결 해제",
+  "stateConnecting": "연결 중…",
+  "stateDisconnecting": "연결 해제 중…",
+  "stateNotConnected": "연결되지 않음",
+  "currentNode": "노드",
+  "servicesLabel": "서비스",
+  "connectedFor": "{time} 동안 연결됨",
+  "dashboardDesc": "이전 버전의 사용자 지정 위젯"
 }

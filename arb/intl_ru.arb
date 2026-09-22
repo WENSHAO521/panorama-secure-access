@@ -600,5 +600,15 @@
   "exitIp": "Внешний IP",
   "nodeTestTip": "Проверка идёт только через этот узел; текущий выбор не меняется.",
   "nodeTestNotConnected": "Сначала подключитесь, чтобы проверить этот узел.",
-  "staleResult": "Устарело"
+  "staleResult": "Устарело",
+  "home": "Главная",
+  "connectAction": "Подключить",
+  "disconnectAction": "Отключить",
+  "stateConnecting": "Подключение…",
+  "stateDisconnecting": "Отключение…",
+  "stateNotConnected": "Не подключено",
+  "currentNode": "Узел",
+  "servicesLabel": "Сервисы",
+  "connectedFor": "Подключено {time}",
+  "dashboardDesc": "Настраиваемые виджеты из прежних версий"
 }

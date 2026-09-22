@@ -16,7 +16,7 @@ void main() {
       'mobile bottom bar is Home, Proxies, Profiles, Activity, Settings',
       () {
         expect(_labelsFor(NavigationItemMode.mobile), [
-          PageLabel.dashboard,
+          PageLabel.home,
           PageLabel.proxies,
           PageLabel.profiles,
           PageLabel.activity,
@@ -27,7 +27,7 @@ void main() {
 
     test('desktop sidebar adds Network Insight after Activity', () {
       expect(_labelsFor(NavigationItemMode.desktop), [
-        PageLabel.dashboard,
+        PageLabel.home,
         PageLabel.proxies,
         PageLabel.profiles,
         PageLabel.activity,
@@ -36,12 +36,16 @@ void main() {
       ]);
     });
 
-    test('Settings > More holds Network Insight (mobile) and Resources', () {
-      expect(_labelsFor(NavigationItemMode.more), [
-        PageLabel.networkInsight,
-        PageLabel.resources,
-      ]);
-    });
+    test(
+      'Settings > More holds Network Insight, the classic dashboard and Resources',
+      () {
+        expect(_labelsFor(NavigationItemMode.more), [
+          PageLabel.networkInsight,
+          PageLabel.dashboard,
+          PageLabel.resources,
+        ]);
+      },
+    );
 
     test('Proxies is hidden until there are proxies to show', () {
       expect(
