@@ -553,7 +553,7 @@ Widget generateGlassSection({
           ),
         GlassSurface(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(GlassTokens.radiusMedium),
           ),
           child: Column(children: [...genItems]),
         ),
@@ -585,7 +585,7 @@ Widget generateSectionV2({
       if (items.isNotEmpty && title != null)
         ListHeader(title: title, actions: actions),
       ClipRRect(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(GlassTokens.radiusPanel),
         child: Column(children: [...genItems]),
       ),
     ],

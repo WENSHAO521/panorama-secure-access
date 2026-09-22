@@ -135,4 +135,19 @@ extension ColorSchemeExtension on ColorScheme {
     Brightness.dark => const Color(0xFFF4BF63),
     Brightness.light => const Color(0xFFC57A00),
   };
+
+  /// Proxy/node latency under 600ms. Same fixed-hue rationale as
+  /// [statusConnected]: "fast" must read as a stable green regardless of
+  /// the user's chosen accent color.
+  Color get latencyGood => statusConnected;
+
+  /// Latency at or above 600ms but not timed out/errored — was a raw,
+  /// brightness-independent `Color(0xFFC57F0A)` before this token existed,
+  /// so dark mode got the exact same light-mode amber. Reuses
+  /// [statusWarning]'s calibrated pair instead.
+  Color get latencyMedium => statusWarning;
+
+  /// Timeout or test error. [ColorScheme.error] directly, like every other
+  /// failure state in the app.
+  Color get latencyPoor => error;
 }

@@ -84,7 +84,7 @@ class CommonDialog extends ConsumerWidget {
         constraints: BoxConstraints(maxWidth: maxWidth),
         child: GlassSurface.modal(
           shape: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(GlassTokens.radiusDialog),
           ),
           color: backgroundColor ?? context.colorScheme.surfaceContainerHigh,
           boxShadow: GlassTokens.modalShadowFor(context.colorScheme.brightness),
@@ -134,7 +134,9 @@ class CommonModal extends ConsumerWidget {
       child: Container(
         width: size.width * 0.85,
         height: size.height * 0.85,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(GlassTokens.radiusSmall),
+        ),
         clipBehavior: Clip.antiAlias,
         child: child,
       ),

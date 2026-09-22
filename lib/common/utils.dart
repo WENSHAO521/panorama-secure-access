@@ -19,11 +19,11 @@ class Utils {
     return _instance!;
   }
 
-  Color? getDelayColor(int? delay) {
+  Color? getDelayColor(ColorScheme colorScheme, int? delay) {
     if (delay == null) return null;
-    if (delay < 0) return Colors.red;
-    if (delay < 600) return Colors.green;
-    return const Color(0xFFC57F0A);
+    if (delay < 0) return colorScheme.latencyPoor;
+    if (delay < 600) return colorScheme.latencyGood;
+    return colorScheme.latencyMedium;
   }
 
   String get id {

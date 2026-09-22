@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'builder.dart';
 import 'card.dart';
+import 'glass.dart';
 
 class CommonFloatingActionButton extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -73,7 +74,7 @@ class MoreActionButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: CommonCard(
-        radius: 18,
+        radius: GlassTokens.radiusPanel,
         onPressed: onPressed,
         child: ListTile(
           minTileHeight: 0,

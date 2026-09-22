@@ -176,6 +176,13 @@ abstract final class GlassTokens {
   static const double radiusSidebar = 20;
   static const double radiusCommandPalette = 24;
 
+  /// [CommonDialog]'s outer shape (widgets/dialog.dart). Distinct from
+  /// [radiusModal] (26, the abstract modal-tier token above) because the
+  /// dialog's shape was tuned slightly tighter than that; kept as its own
+  /// named constant rather than snapped to the nearest existing value so
+  /// changing one doesn't silently move the other.
+  static const double radiusDialog = 24;
+
   static double blurFor(GlassSurfaceType type) => switch (type) {
     GlassSurfaceType.chrome => blurChrome,
     GlassSurfaceType.panel => blurPanel,
