@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/plugins/app.dart';
@@ -268,7 +269,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
               onPressed: _handleToggle,
             ),
             PopupMenuItemData(
-              icon: Icons.search,
+              icon: PanoramaIcons.actions.search,
               label: appLocalizations.search,
               onPressed: _handleSearch,
             ),
@@ -287,7 +288,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
                   onPressed: _intelligentSelected,
                 ),
                 PopupMenuItemData(
-                  icon: Icons.content_copy,
+                  icon: PanoramaIcons.actions.copy,
                   label: appLocalizations.clipboardExport,
                   onPressed: _exportToClipboard,
                 ),
@@ -504,7 +505,7 @@ class _AccessControlPanelState extends ConsumerState<AccessControlPanel> {
 
   IconData _getIconWithProxiesSortType(AccessSortType type) {
     return switch (type) {
-      AccessSortType.none => Icons.sort,
+      AccessSortType.none => PanoramaIcons.actions.sort,
       AccessSortType.name => Icons.sort_by_alpha,
       AccessSortType.time => Icons.timeline,
     };

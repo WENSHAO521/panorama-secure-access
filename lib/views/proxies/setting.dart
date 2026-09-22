@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -18,7 +19,7 @@ class ProxiesSetting extends StatelessWidget {
 
   IconData _getIconWithProxiesSortType(ProxiesSortType type) {
     return switch (type) {
-      ProxiesSortType.none => Icons.sort,
+      ProxiesSortType.none => PanoramaIcons.actions.sort,
       ProxiesSortType.delay => Icons.network_ping,
       ProxiesSortType.name => Icons.sort_by_alpha,
     };

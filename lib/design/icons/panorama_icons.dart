@@ -67,6 +67,12 @@ class _PanoramaActionIcons {
   IconData get refresh =>
       PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.refresh));
 
+  /// Distinct from [_PanoramaConnectionIcons.connecting]: this is a "sync/
+  /// update this data" action (e.g. update providers), not a connection
+  /// status indicator, even though both currently use the same glyph.
+  IconData get sync =>
+      PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.sync));
+
   IconData get copy =>
       PanoramaIconResolver.resolve(const PanoramaIconToken(material: Icons.content_copy));
 

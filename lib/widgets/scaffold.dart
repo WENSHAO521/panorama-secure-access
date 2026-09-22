@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/widgets/pop_scope.dart';
@@ -240,7 +241,7 @@ class CommonScaffoldState extends State<CommonScaffold> {
           onPressed: () {
             _updateSearchState((state) => state?.copyWith(query: ''));
           },
-          icon: const Icon(Icons.search),
+          icon: Icon(PanoramaIcons.actions.search),
         ),
       ...actions,
     ]);

@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/config.dart';
@@ -248,7 +249,7 @@ class TrackerInfoDetailView extends StatelessWidget {
                   child: IconButton(
                     visualDensity: VisualDensity.compact,
                     padding: EdgeInsets.zero,
-                    icon: const Icon(Icons.content_copy, size: 18),
+                    icon: Icon(PanoramaIcons.actions.copy, size: 18),
                     onPressed: () {},
                   ),
                 ),

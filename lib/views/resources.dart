@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/action.dart';
@@ -221,7 +222,7 @@ class _GeoResourceListItemState extends ConsumerState<_GeoResourceListItem> {
                                   ),
                                 )
                               : CommonChip(
-                                  avatar: const Icon(Icons.sync),
+                                  avatar: Icon(PanoramaIcons.actions.sync),
                                   label: appLocalizations.sync,
                                   onPressed: () {
                                     _handleUpdateGeoDataItem();

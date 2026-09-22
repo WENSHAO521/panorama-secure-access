@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -88,7 +89,7 @@ class _ProfilesViewState extends State<ProfilesView> {
               onPressed: () {
                 _updateProfiles(profiles);
               },
-              icon: const Icon(Icons.sync),
+              icon: Icon(PanoramaIcons.actions.sync),
             ),
             IconButton(
               onPressed: () {
@@ -99,7 +100,7 @@ class _ProfilesViewState extends State<ProfilesView> {
                   },
                 );
               },
-              icon: const Icon(Icons.sort),
+              icon: Icon(PanoramaIcons.actions.sort),
               iconSize: 26,
             ),
           ]
@@ -109,7 +110,7 @@ class _ProfilesViewState extends State<ProfilesView> {
   Widget _buildFAB() {
     return CommonFloatingActionButton(
       onPressed: _handleShowAddExtendPage,
-      icon: const Icon(Icons.add),
+      icon: Icon(PanoramaIcons.actions.add),
       label: context.appLocalizations.addProfile,
     );
   }

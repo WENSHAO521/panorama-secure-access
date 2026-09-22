@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:defer_pointer/defer_pointer.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
@@ -454,7 +455,7 @@ class _AddedContainerState extends State<_AddedContainer> {
                 iconSize: 20,
                 padding: const EdgeInsets.all(2),
                 onPressed: _handleAdd,
-                icon: const Icon(Icons.add),
+                icon: Icon(PanoramaIcons.actions.add),
               ),
             ),
           ),

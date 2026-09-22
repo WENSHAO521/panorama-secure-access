@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/core.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/models/core.dart';
 import 'package:fl_clash/providers/action.dart';
@@ -60,7 +61,9 @@ class _ProvidersViewState extends ConsumerState<ProvidersView> {
       items: ruleProviders,
     );
     return AdaptiveSheetScaffold(
-      actions: [IconButtonData(icon: Icons.sync, onPressed: _updateProviders)],
+      actions: [
+        IconButtonData(icon: PanoramaIcons.actions.sync, onPressed: _updateProviders),
+      ],
       body: generateListView([...proxySection, ...ruleSection]),
       title: appLocalizations.providers,
     );
@@ -155,7 +158,7 @@ class ProviderItem extends StatelessWidget {
                             ),
                           )
                         : CommonChip(
-                            avatar: const Icon(Icons.sync),
+                            avatar: Icon(PanoramaIcons.actions.sync),
                             label: context.appLocalizations.sync,
                             onPressed: _handleUpdateProvider,
                           );

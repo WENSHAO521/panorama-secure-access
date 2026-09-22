@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart' hide FileInfo;
 import 'package:fl_clash/providers/providers.dart';
@@ -380,7 +381,7 @@ class _AddProxiesViewState extends ConsumerState<_AddProxiesView>
             trailing: CommonMinIconButtonTheme(
               child: IconButton.filledTonal(
                 onPressed: onAdd,
-                icon: const Icon(Icons.add, size: 18),
+                icon: Icon(PanoramaIcons.actions.add, size: 18),
               ),
             ),
           ),
