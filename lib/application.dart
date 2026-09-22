@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/core.dart';
+import 'package:fl_clash/design/typography/panorama_typography.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/manager/hotkey_manager.dart';
 import 'package:fl_clash/manager/manager.dart';
@@ -73,13 +74,14 @@ class ApplicationState extends ConsumerState<Application> {
     );
     return ThemeData(
       useMaterial3: true,
-      // Inter (OFL-licensed, bundled in assets/fonts/) instead of the
-      // Material default (Roboto/San Francisco/Segoe depending on
-      // platform) for a consistent brand look across desktop and mobile.
-      // Only covers Latin/Cyrillic/Greek — CJK glyphs (zh/ja locales) fall
-      // through to the platform's system font automatically, the same way
-      // they already render today.
-      fontFamily: 'Inter',
+      // Inter (OFL-licensed, bundled in assets/fonts/) on Windows/Linux/
+      // Android for a consistent brand look; macOS resolves to the native
+      // system font instead (see PanoramaTypography) since Apple platforms
+      // carry a strong native-typography expectation. Only covers Latin/
+      // Cyrillic/Greek — CJK glyphs (zh/ja locales) fall through to the
+      // platform's system font automatically, the same way they already
+      // render today.
+      fontFamily: PanoramaTypography.appFontFamily,
       pageTransitionsTheme: _pageTransitionsTheme,
       // Transparent so every Scaffold reveals the AmbientBackground
       // painted once behind the app shell (see HomePage) instead of
