@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/dav_client.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/action.dart';
@@ -213,7 +214,7 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
           ListHeader(title: appLocalizations.remote),
           if (dav == null)
             ListItem(
-              leading: const Icon(Icons.account_box),
+              leading: Icon(PanoramaIcons.settings.webdavAccount),
               title: Text(appLocalizations.noInfo),
               subtitle: Text(appLocalizations.pleaseBindWebDAV),
               trailing: FilledButton.tonal(
@@ -225,7 +226,7 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
             )
           else ...[
             ListItem(
-              leading: const Icon(Icons.account_box),
+              leading: Icon(PanoramaIcons.settings.webdavAccount),
               title: TooltipText(
                 text: Text(
                   dav.user,
@@ -457,7 +458,7 @@ class _WebDAVFormDialogState extends ConsumerState<WebDAVFormDialog> {
               minLines: 1,
               decoration: glassInputDecoration(
                 context,
-                prefixIcon: const Icon(Icons.link),
+                prefixIcon: Icon(PanoramaIcons.settings.address),
                 labelText: appLocalizations.address,
                 helperText: appLocalizations.addressHelp,
               ),
@@ -473,7 +474,7 @@ class _WebDAVFormDialogState extends ConsumerState<WebDAVFormDialog> {
               inputFormatters: TextInputLimits.limit(TextInputLimits.userName),
               decoration: glassInputDecoration(
                 context,
-                prefixIcon: const Icon(Icons.account_circle),
+                prefixIcon: Icon(PanoramaIcons.settings.account),
                 labelText: appLocalizations.account,
               ),
               validator: (String? value) {
@@ -494,10 +495,12 @@ class _WebDAVFormDialogState extends ConsumerState<WebDAVFormDialog> {
                   obscureText: obscure,
                   decoration: glassInputDecoration(
                     context,
-                    prefixIcon: const Icon(Icons.password),
+                    prefixIcon: Icon(PanoramaIcons.settings.password),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        obscure ? Icons.visibility : Icons.visibility_off,
+                        obscure
+                            ? PanoramaIcons.actions.show
+                            : PanoramaIcons.actions.hide,
                       ),
                       onPressed: () {
                         _obscureController.value = !obscure;

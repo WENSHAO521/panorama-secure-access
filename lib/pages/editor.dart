@@ -220,7 +220,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
                             );
                           }
                         : null,
-                    icon: const Icon(Icons.save),
+                    icon: Icon(PanoramaIcons.actions.save),
                   ),
                 ),
               ),
@@ -232,7 +232,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
                       final isMobile = ref.read(isMobileViewProvider);
                       open(offset: Offset(0, isMobile ? 0 : 20));
                     },
-                    icon: const Icon(Icons.more_vert),
+                    icon: Icon(PanoramaIcons.actions.more),
                   );
                 },
                 popup: CommonPopupMenu(
@@ -243,18 +243,18 @@ class _EditorPageState extends ConsumerState<EditorPage> {
                       onPressed: _handleSearch,
                     ),
                     PopupMenuItemData(
-                      icon: Icons.undo,
+                      icon: PanoramaIcons.actions.undo,
                       label: appLocalizations.undo,
                       onPressed: _controller.canUndo ? _controller.undo : null,
                     ),
                     PopupMenuItemData(
-                      icon: Icons.redo,
+                      icon: PanoramaIcons.actions.redo,
                       label: appLocalizations.redo,
                       onPressed: _controller.canRedo ? _controller.redo : null,
                     ),
                     if (widget.supportRemoteDownload && !readOnly)
                       PopupMenuItemData(
-                        icon: Icons.arrow_downward,
+                        icon: PanoramaIcons.actions.fetch,
                         label: appLocalizations.externalFetch,
                         subItems: [
                           PopupMenuItemData(
@@ -420,7 +420,7 @@ class FindPanel extends StatelessWidget implements PreferredSizeWidget {
                       : () {
                           controller.previousMatch();
                         },
-                  icon: Icons.arrow_upward,
+                  icon: PanoramaIcons.actions.previous,
                 ),
                 _buildIconButton(
                   onPressed: value.result == null
@@ -428,12 +428,12 @@ class FindPanel extends StatelessWidget implements PreferredSizeWidget {
                       : () {
                           controller.nextMatch();
                         },
-                  icon: Icons.arrow_downward,
+                  icon: PanoramaIcons.actions.next,
                 ),
                 const SizedBox(width: 2),
                 IconButton.filledTonal(
                   onPressed: controller.close,
-                  icon: const Icon(Icons.close, size: 16),
+                  icon: Icon(PanoramaIcons.actions.close, size: 16),
                 ),
               ],
             ),

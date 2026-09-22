@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/features/overwrite/rule.dart';
 import 'package:fl_clash/models/clash_config.dart';
@@ -109,7 +110,7 @@ class _StandardContentState extends ConsumerState<StandardContent> {
                           onPressed: () {
                             _handleDelete();
                           },
-                          icon: const Icon(Icons.delete),
+                          icon: Icon(PanoramaIcons.actions.delete),
                         ),
                       ),
                       const SizedBox(width: 8),

@@ -1,3 +1,4 @@
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,10 +65,10 @@ class ColorSchemeBox extends StatelessWidget {
                   ),
                 ),
                 if (primaryColor == null)
-                  const Positioned(
+                  Positioned(
                     bottom: 4,
                     right: 4,
-                    child: Icon(Icons.colorize, size: 20),
+                    child: Icon(PanoramaIcons.actions.pickColor, size: 20),
                   ),
               ],
             );

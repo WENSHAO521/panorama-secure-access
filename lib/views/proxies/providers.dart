@@ -141,7 +141,7 @@ class ProviderItem extends StatelessWidget {
             runAlignment: WrapAlignment.center,
             children: [
               CommonChip(
-                avatar: const Icon(Icons.upload),
+                avatar: Icon(PanoramaIcons.actions.upload),
                 label: context.appLocalizations.upload,
                 onPressed: _handleSideLoadProvider,
               ),

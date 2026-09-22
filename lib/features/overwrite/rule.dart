@@ -1,6 +1,7 @@
 library;
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/clash_config.dart';
 import 'package:fl_clash/models/state.dart';
@@ -67,7 +68,11 @@ class RuleItem extends StatelessWidget {
             ),
           );
         },
-        icon: Icon(Icons.info, size: 16.ap, color: context.colorScheme.error),
+        icon: Icon(
+          PanoramaIcons.status.alert,
+          size: 16.ap,
+          color: context.colorScheme.error,
+        ),
       ),
     );
   }

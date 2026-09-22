@@ -186,13 +186,13 @@ class CommonScaffoldState extends State<CommonScaffold> {
     if (_isEdit) {
       return IconButton(
         onPressed: _appBarState.value.editState?.onExit,
-        icon: const Icon(Icons.close),
+        icon: Icon(PanoramaIcons.actions.close),
       );
     }
     if (_isSearch) {
       return IconButton(
         onPressed: handleExitSearching,
-        icon: const Icon(Icons.arrow_back),
+        icon: Icon(PanoramaIcons.navigation.back),
       );
     }
     return backAction != null
@@ -234,7 +234,10 @@ class CommonScaffoldState extends State<CommonScaffold> {
   List<Widget> _buildActions(bool hasSearch, List<Widget> actions) {
     if (_isSearch) {
       return genActions([
-        IconButton(onPressed: _handleClear, icon: const Icon(Icons.close)),
+        IconButton(
+          onPressed: _handleClear,
+          icon: Icon(PanoramaIcons.actions.close),
+        ),
       ]);
     }
     return genActions([

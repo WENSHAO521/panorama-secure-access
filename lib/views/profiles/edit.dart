@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/editor.dart';
@@ -328,12 +329,12 @@ class _EditProfileViewState extends State<EditProfileView> {
                           spacing: 12,
                           children: [
                             CommonChip(
-                              avatar: const Icon(Icons.edit),
+                              avatar: Icon(PanoramaIcons.actions.edit),
                               label: appLocalizations.edit,
                               onPressed: _editProfileFile,
                             ),
                             CommonChip(
-                              avatar: const Icon(Icons.upload),
+                              avatar: Icon(PanoramaIcons.actions.upload),
                               label: appLocalizations.upload,
                               onPressed: _uploadProfileFile,
                             ),
@@ -360,7 +361,7 @@ class _EditProfileViewState extends State<EditProfileView> {
             heroTag: null,
             onPressed: _handleConfirm,
             label: Text(appLocalizations.save),
-            icon: const Icon(Icons.save),
+            icon: Icon(PanoramaIcons.actions.save),
           ),
         ),
         child: Form(

@@ -92,17 +92,17 @@ class _ThemeModeItem extends ConsumerWidget {
     );
     final List<ThemeModeItem> themeModeItems = [
       ThemeModeItem(
-        iconData: Icons.auto_mode,
+        iconData: PanoramaIcons.appearance.followSystem,
         label: appLocalizations.auto,
         themeMode: ThemeMode.system,
       ),
       ThemeModeItem(
-        iconData: Icons.light_mode,
+        iconData: PanoramaIcons.appearance.light,
         label: appLocalizations.light,
         themeMode: ThemeMode.light,
       ),
       ThemeModeItem(
-        iconData: Icons.dark_mode,
+        iconData: PanoramaIcons.appearance.dark,
         label: appLocalizations.dark,
         themeMode: ThemeMode.dark,
       ),
@@ -111,7 +111,7 @@ class _ThemeModeItem extends ConsumerWidget {
       child: ItemCard(
         info: Info(
           label: appLocalizations.themeMode,
-          iconData: Icons.brightness_high,
+          iconData: PanoramaIcons.appearance.themeMode,
         ),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -300,7 +300,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
         child: ItemCard(
           info: Info(
             label: appLocalizations.themeColor,
-            iconData: Icons.palette,
+            iconData: PanoramaIcons.appearance.color,
           ),
           actions: genActions([
             if (_removablePrimaryColor == null)
@@ -329,7 +329,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
                 padding: const EdgeInsets.all(4),
                 visualDensity: VisualDensity.compact,
                 onPressed: _handleReset,
-                icon: const Icon(Icons.replay),
+                icon: Icon(PanoramaIcons.actions.reset),
               ),
           ], space: 8),
           child: Container(
@@ -387,7 +387,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
                                   iconSize: 30,
                                   icon: Icon(
                                     color: context.colorScheme.primary,
-                                    Icons.delete,
+                                    PanoramaIcons.actions.delete,
                                   ),
                                 ),
                               ),
@@ -430,7 +430,7 @@ class _PrueBlackItem extends ConsumerWidget {
     );
     return SliverToBoxAdapter(
       child: ListItem.switchItem(
-        leading: const Icon(Icons.contrast),
+        leading: Icon(PanoramaIcons.appearance.pureBlack),
         horizontalTitleGap: 12,
         title: Text(
           appLocalizations.pureBlackMode,
@@ -468,7 +468,7 @@ class _TextScaleFactorItem extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: ListItem.switchItem(
-              leading: const Icon(Icons.text_fields),
+              leading: Icon(PanoramaIcons.appearance.textScale),
               horizontalTitleGap: 12,
               title: Text(
                 appLocalizations.textScale,

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/editor.dart';
@@ -205,7 +206,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
                 onPressed: () {
                   _handleDelScript(selectedScriptId);
                 },
-                icon: const Icon(Icons.delete),
+                icon: Icon(PanoramaIcons.actions.delete),
               ),
             ),
             const SizedBox(width: 2),

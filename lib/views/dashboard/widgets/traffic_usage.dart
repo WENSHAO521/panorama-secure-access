@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -57,7 +58,7 @@ class TrafficUsage extends StatelessWidget {
         child: CommonCard(
           info: Info(
             label: appLocalizations.trafficUsage,
-            iconData: Icons.data_saver_off,
+            iconData: PanoramaIcons.traffic.usage,
           ),
           onPressed: () {},
           child: Consumer(
@@ -183,14 +184,18 @@ class TrafficUsage extends StatelessWidget {
                     ),
                     _buildTrafficDataItem(
                       context,
-                      Icon(Icons.arrow_upward, color: primaryColor, size: 14),
+                      Icon(
+                        PanoramaIcons.traffic.upload,
+                        color: primaryColor,
+                        size: 14,
+                      ),
                       upTotalTrafficValue,
                     ),
                     const SizedBox(height: 8),
                     _buildTrafficDataItem(
                       context,
                       Icon(
-                        Icons.arrow_downward,
+                        PanoramaIcons.traffic.download,
                         color: secondaryColor,
                         size: 14,
                       ),

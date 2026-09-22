@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/pages/scan.dart';
 import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/state.dart';
@@ -68,19 +69,19 @@ class AddProfileView extends StatelessWidget {
     return ListView(
       children: [
         ListItem(
-          leading: const Icon(Icons.qr_code_sharp),
+          leading: Icon(PanoramaIcons.files.qrCode),
           title: Text(appLocalizations.qrcode),
           subtitle: Text(appLocalizations.qrcodeDesc),
           onTap: _toScan,
         ),
         ListItem(
-          leading: const Icon(Icons.upload_file_sharp),
+          leading: Icon(PanoramaIcons.files.importFile),
           title: Text(appLocalizations.file),
           subtitle: Text(appLocalizations.fileDesc),
           onTap: _handleAddProfileFormFile,
         ),
         ListItem(
-          leading: const Icon(Icons.cloud_download_sharp),
+          leading: Icon(PanoramaIcons.files.importUrl),
           title: Text(appLocalizations.url),
           subtitle: Text(appLocalizations.urlDesc),
           onTap: _toAdd,

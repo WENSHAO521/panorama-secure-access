@@ -306,14 +306,14 @@ class ProfileItem extends StatelessWidget {
                         popup: CommonPopupMenu(
                           items: [
                             PopupMenuItemData(
-                              icon: Icons.edit_outlined,
+                              icon: PanoramaIcons.actions.edit,
                               label: appLocalizations.edit,
                               onPressed: () {
                                 _handleShowEditExtendPage(context);
                               },
                             ),
                             PopupMenuItemData(
-                              icon: Icons.visibility_outlined,
+                              icon: PanoramaIcons.actions.view,
                               label: appLocalizations.preview,
                               onPressed: () {
                                 _handlePreview(context);
@@ -321,7 +321,7 @@ class ProfileItem extends StatelessWidget {
                             ),
                             if (profile.type == ProfileType.url) ...[
                               PopupMenuItemData(
-                                icon: Icons.sync_alt_sharp,
+                                icon: PanoramaIcons.actions.sync,
                                 label: appLocalizations.sync,
                                 onPressed: () {
                                   updateProfile();
@@ -329,11 +329,11 @@ class ProfileItem extends StatelessWidget {
                               ),
                             ],
                             PopupMenuItemData(
-                              icon: Icons.emergency_outlined,
+                              icon: PanoramaIcons.actions.moreActions,
                               label: appLocalizations.more,
                               subItems: [
                                 PopupMenuItemData(
-                                  icon: Icons.extension_outlined,
+                                  icon: PanoramaIcons.routing.override,
                                   label: appLocalizations.override,
                                   onPressed: () {
                                     _handlePushGenProfilePage(
@@ -357,7 +357,7 @@ class ProfileItem extends StatelessWidget {
                                 // ),
                                 if (profile.type == ProfileType.url) ...[
                                   PopupMenuItemData(
-                                    icon: Icons.copy,
+                                    icon: PanoramaIcons.actions.copy,
                                     label: appLocalizations.copyLink,
                                     onPressed: () {
                                       _handleCopyLink(context);
@@ -365,7 +365,7 @@ class ProfileItem extends StatelessWidget {
                                   ),
                                 ],
                                 PopupMenuItemData(
-                                  icon: Icons.file_copy_outlined,
+                                  icon: PanoramaIcons.actions.exportFile,
                                   label: appLocalizations.exportFile,
                                   onPressed: () {
                                     _handleExportFile(context);
@@ -375,7 +375,7 @@ class ProfileItem extends StatelessWidget {
                             ),
                             PopupMenuItemData(
                               danger: true,
-                              icon: Icons.delete_outlined,
+                              icon: PanoramaIcons.actions.delete,
                               label: appLocalizations.delete,
                               onPressed: () {
                                 _handleDeleteProfile(context);
@@ -388,7 +388,7 @@ class ProfileItem extends StatelessWidget {
                             onPressed: () {
                               open();
                             },
-                            icon: const Icon(Icons.more_vert),
+                            icon: Icon(PanoramaIcons.actions.more),
                           );
                         },
                       ),
@@ -483,7 +483,7 @@ class _ReorderableProfilesSheetState extends State<ReorderableProfilesSheet> {
       child: DecorationListItem(
         trailing: ReorderableDelayedDragStartListener(
           index: index,
-          child: const Icon(Icons.drag_handle),
+          child: Icon(PanoramaIcons.actions.dragHandle),
         ),
         title: Text(profile.realLabel),
       ),
@@ -500,7 +500,12 @@ class _ReorderableProfilesSheetState extends State<ReorderableProfilesSheet> {
     final appLocalizations = context.appLocalizations;
     return AdaptiveSheetScaffold(
       sheetTransparentToolBar: true,
-      actions: [IconButtonData(icon: Icons.check, onPressed: _handleSave)],
+      actions: [
+        IconButtonData(
+          icon: PanoramaIcons.actions.confirm,
+          onPressed: _handleSave,
+        ),
+      ],
       body: Padding(
         padding: const EdgeInsets.only(bottom: 32),
         child: ReorderableListView.builder(

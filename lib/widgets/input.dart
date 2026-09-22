@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -388,7 +389,7 @@ class _ListInputPageState extends ConsumerState<ListInputPage> {
             CommonMinIconButtonTheme(
               child: IconButton.filledTonal(
                 onPressed: _handleDelete,
-                icon: const Icon(Icons.delete),
+                icon: Icon(PanoramaIcons.actions.delete),
               ),
             ),
             const SizedBox(width: 2),
@@ -396,7 +397,7 @@ class _ListInputPageState extends ConsumerState<ListInputPage> {
             CommonMinIconButtonTheme(
               child: IconButton.filledTonal(
                 onPressed: _handleReset,
-                icon: const Icon(Icons.replay),
+                icon: Icon(PanoramaIcons.actions.reset),
               ),
             ),
             const SizedBox(width: 2),
@@ -640,7 +641,7 @@ class _MapInputPageState extends ConsumerState<MapInputPage> {
             CommonMinIconButtonTheme(
               child: IconButton.filledTonal(
                 onPressed: _handleDelete,
-                icon: const Icon(Icons.delete),
+                icon: Icon(PanoramaIcons.actions.delete),
               ),
             ),
             const SizedBox(width: 2),
@@ -651,7 +652,7 @@ class _MapInputPageState extends ConsumerState<MapInputPage> {
             CommonMinIconButtonTheme(
               child: IconButton.filledTonal(
                 onPressed: _handleReset,
-                icon: const Icon(Icons.replay),
+                icon: Icon(PanoramaIcons.actions.reset),
               ),
             ),
             const SizedBox(width: 2),

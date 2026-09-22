@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:fl_clash/common/color.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/activate_box.dart';
@@ -91,26 +92,26 @@ class _ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.close),
+              icon: Icon(PanoramaIcons.actions.close),
             ),
             actions: [
               ValueListenableBuilder<MobileScannerState>(
                 valueListenable: controller,
                 builder: (context, state, _) {
-                  var icon = const Icon(Icons.flash_off);
+                  var icon = Icon(PanoramaIcons.system.torchOff);
                   var backgroundColor = Colors.black12;
                   switch (state.torchState) {
                     case TorchState.off:
-                      icon = const Icon(Icons.flash_off);
+                      icon = Icon(PanoramaIcons.system.torchOff);
                       backgroundColor = Colors.black12;
                     case TorchState.on:
-                      icon = const Icon(Icons.flash_on);
+                      icon = Icon(PanoramaIcons.system.torchOn);
                       backgroundColor = Colors.orange;
                     case TorchState.unavailable:
-                      icon = const Icon(Icons.flash_off);
+                      icon = Icon(PanoramaIcons.system.torchOff);
                       backgroundColor = Colors.transparent;
                     case TorchState.auto:
-                      icon = const Icon(Icons.flash_auto);
+                      icon = Icon(PanoramaIcons.system.torchAuto);
                       backgroundColor = Colors.orange;
                   }
                   return Container(
@@ -146,7 +147,7 @@ class _ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
               onPressed: globalState.container
                   .read(profilesActionProvider.notifier)
                   .addProfileFormQrCode,
-              icon: const Icon(Icons.photo_camera_back),
+              icon: Icon(PanoramaIcons.files.gallery),
             ),
           ),
         ],

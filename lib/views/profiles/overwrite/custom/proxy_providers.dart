@@ -101,7 +101,7 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
                     onPressed: () {
                       _handleRemove(providerName);
                     },
-                    icon: const Icon(Icons.remove, size: 18),
+                    icon: Icon(PanoramaIcons.actions.remove, size: 18),
                     padding: EdgeInsets.zero,
                   ),
                 ),
@@ -119,7 +119,7 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
                       child: Container(
                         color: Colors.transparent,
                         padding: const EdgeInsets.all(16),
-                        child: const Icon(Icons.drag_handle),
+                        child: Icon(PanoramaIcons.actions.dragHandle),
                       ),
                     ),
                   ],
@@ -202,7 +202,7 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
                             },
                             icon: Icon(
                               size: 16.ap,
-                              Icons.info_outline,
+                              PanoramaIcons.status.info,
                               color: context.colorScheme.onSurfaceVariant,
                             ),
                           ),

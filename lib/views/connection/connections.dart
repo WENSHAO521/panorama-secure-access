@@ -1,5 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class _ConnectionsViewState extends ConsumerState<ConnectionsView>
           coreController.closeConnections();
           await _refreshConnections();
         },
-        icon: const Icon(Icons.delete_sweep_outlined),
+        icon: Icon(PanoramaIcons.actions.clearAll),
       ),
     ];
   }
@@ -137,7 +138,7 @@ class _ConnectionsViewState extends ConsumerState<ConnectionsView>
                   padding: EdgeInsets.zero,
                   visualDensity: VisualDensity.compact,
                   style: IconButton.styleFrom(minimumSize: Size.zero),
-                  icon: const Icon(Icons.block),
+                  icon: Icon(PanoramaIcons.actions.closeConnection),
                   onPressed: () {
                     _handleBlockConnection(trackerInfo.id);
                   },

@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/state.dart';
@@ -55,7 +56,10 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
                           _countryCodeToEmoji(ipInfo.countryCode),
                           style: emojiTextStyle,
                         )
-                      : Icon(Icons.network_check, color: titleTextStyle),
+                      : Icon(
+                          PanoramaIcons.network.check,
+                          color: titleTextStyle,
+                        ),
                   const SizedBox(width: 8),
                   Flexible(
                     flex: 1,
@@ -84,7 +88,7 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
                       },
                       icon: Icon(
                         size: 16.ap,
-                        Icons.info_outline,
+                        PanoramaIcons.status.info,
                         color: context.colorScheme.onSurfaceVariant,
                       ),
                     ),

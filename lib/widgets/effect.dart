@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/widgets/inherited.dart';
 import 'package:flutter/material.dart';
 
@@ -119,7 +120,7 @@ class _CommonExpandIconState extends State<CommonExpandIcon>
       builder: (_, child) {
         return RotationTransition(turns: _iconTurns, child: child!);
       },
-      child: const Icon(Icons.expand_more),
+      child: Icon(PanoramaIcons.navigation.expand),
     );
   }
 }

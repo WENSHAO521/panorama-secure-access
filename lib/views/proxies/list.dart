@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/config.dart';
@@ -564,7 +565,7 @@ class _ListHeaderState extends State<ListHeader> {
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     iconSize: 19,
-                    icon: const Icon(Icons.adjust),
+                    icon: Icon(PanoramaIcons.actions.locate),
                   ),
                   const SizedBox(width: 2),
                   IconButton(
@@ -575,7 +576,7 @@ class _ListHeaderState extends State<ListHeader> {
                     style: const ButtonStyle(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    icon: const Icon(Icons.network_ping),
+                    icon: Icon(PanoramaIcons.network.ping),
                   ),
                   const SizedBox(width: 6),
                 ] else

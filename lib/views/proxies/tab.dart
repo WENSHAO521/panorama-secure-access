@@ -76,8 +76,8 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
           onPressed: _showMoreMenu,
           icon: Icon(
             isMobileView
-                ? Icons.expand_more_rounded
-                : Icons.chevron_right_rounded,
+                ? PanoramaIcons.navigation.expand
+                : PanoramaIcons.navigation.collapsed,
           ),
           style:
               IconButton.styleFrom(

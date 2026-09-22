@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart' hide FileInfo;
 import 'package:fl_clash/providers/providers.dart';
@@ -236,7 +237,7 @@ class _ProxyGroupItem extends ConsumerWidget {
                     child: Container(
                       padding: const EdgeInsets.all(12),
                       color: Colors.transparent,
-                      child: const Icon(Icons.drag_handle),
+                      child: Icon(PanoramaIcons.actions.dragHandle),
                     ),
                   ),
                 ],
@@ -517,7 +518,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
                   : (!includeAllProviders
                         ? _NumberCard(number: use.length)
                         : const _CheckIcon()),
-              const Icon(Icons.arrow_forward_ios),
+              Icon(PanoramaIcons.navigation.disclosure),
             ],
           ),
           onPressed: _handleToProvidersView,
@@ -700,7 +701,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
                   : (!includeAllProxies
                         ? _NumberCard(number: proxies.length)
                         : const _CheckIcon()),
-              const Icon(Icons.arrow_forward_ios),
+              Icon(PanoramaIcons.navigation.disclosure),
             ],
           ),
           onPressed: _handleToProxiesView,
@@ -855,7 +856,12 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
         : double.maxFinite;
     return AdaptiveSheetScaffold(
       sheetTransparentToolBar: true,
-      actions: [IconButtonData(icon: Icons.check, onPressed: _handleSave)],
+      actions: [
+        IconButtonData(
+          icon: PanoramaIcons.actions.confirm,
+          onPressed: _handleSave,
+        ),
+      ],
       body: SizedBox(
         height: height,
         child: ListView(
@@ -934,7 +940,7 @@ class _CheckIcon extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(6),
       child: Icon(
-        Icons.check_circle_outline,
+        PanoramaIcons.status.ok,
         size: 20.ap,
         color: context.colorScheme.statusConnected,
       ),

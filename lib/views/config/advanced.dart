@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/models/clash_config.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/state.dart';
@@ -23,7 +24,7 @@ class AdvancedConfigView extends StatelessWidget {
       ListItem.open(
         title: Text(appLocalizations.network),
         subtitle: Text(appLocalizations.networkDesc),
-        leading: const Icon(Icons.vpn_key),
+        leading: Icon(PanoramaIcons.settings.network),
         delegate: OpenDelegate(
           blur: false,
           widget: BaseScaffold(
@@ -35,13 +36,16 @@ class AdvancedConfigView extends StatelessWidget {
       ListItem.open(
         title: Text(appLocalizations.onDemand),
         subtitle: Text(appLocalizations.onDemandDesc),
-        leading: const Icon(Icons.ssid_chart, fontWeight: FontWeight.w900),
+        leading: Icon(
+          PanoramaIcons.settings.onDemand,
+          fontWeight: FontWeight.w900,
+        ),
         delegate: const OpenDelegate(widget: OnDemandView(), blur: false),
       ),
       ListItem.open(
         title: const Text('DNS'),
         subtitle: Text(appLocalizations.dnsDesc),
-        leading: const Icon(Icons.dns),
+        leading: Icon(PanoramaIcons.settings.dns),
         delegate: OpenDelegate(
           widget: BaseScaffold(
             title: 'DNS',
@@ -62,7 +66,7 @@ class AdvancedConfigView extends StatelessWidget {
                           .update((state) => state.copyWith(dns: defaultDns));
                     },
                     tooltip: appLocalizations.reset,
-                    icon: const Icon(Icons.replay),
+                    icon: Icon(PanoramaIcons.actions.reset),
                   );
                 },
               ),
@@ -75,13 +79,16 @@ class AdvancedConfigView extends StatelessWidget {
       ListItem.open(
         title: Text(appLocalizations.addedRules),
         subtitle: Text(appLocalizations.controlGlobalAddedRules),
-        leading: const Icon(Icons.library_books),
+        leading: Icon(PanoramaIcons.settings.addedRules),
         delegate: const OpenDelegate(widget: AddedRulesView(), blur: false),
       ),
       ListItem.open(
         title: Text(appLocalizations.script),
         subtitle: Text(appLocalizations.overrideScript),
-        leading: const Icon(Icons.rocket, fontWeight: FontWeight.w900),
+        leading: Icon(
+          PanoramaIcons.settings.scripts,
+          fontWeight: FontWeight.w900,
+        ),
         delegate: const OpenDelegate(widget: ScriptsView(), blur: false),
       ),
     ];

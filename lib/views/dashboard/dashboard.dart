@@ -82,19 +82,25 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
             onPressed: () {
               _showAddWidgetsModal();
             },
-            icon: const Icon(Icons.add_circle),
+            icon: Icon(PanoramaIcons.actions.addItem),
           ),
         ),
       FadeRotationScaleBox(
         child: isEdit
             ? IconButton(
                 key: const ValueKey(true),
-                icon: const Icon(Icons.save, key: ValueKey('save-icon')),
+                icon: Icon(
+                  PanoramaIcons.actions.save,
+                  key: const ValueKey('save-icon'),
+                ),
                 onPressed: _handleUpdateIsEdit,
               )
             : IconButton(
                 key: const ValueKey(false),
-                icon: const Icon(Icons.edit, key: ValueKey('edit-icon')),
+                icon: Icon(
+                  PanoramaIcons.actions.edit,
+                  key: const ValueKey('edit-icon'),
+                ),
                 onPressed: _handleUpdateIsEdit,
               ),
       ),
@@ -261,7 +267,7 @@ class _ConnectionStatusBadge extends StatelessWidget {
           ),
         ];
         iconColor = colorScheme.statusConnected;
-        icon = const Icon(Icons.check_rounded, size: 24);
+        icon = Icon(PanoramaIcons.connection.active, size: 24);
         break;
       case CoreStatus.connecting:
         tooltip = appLocalizations.connecting;
@@ -290,7 +296,7 @@ class _ConnectionStatusBadge extends StatelessWidget {
         border = BorderSide(color: colorScheme.outlineVariant);
         glow = null;
         iconColor = colorScheme.onSurfaceVariant;
-        icon = const Icon(Icons.power_settings_new_rounded, size: 22);
+        icon = Icon(PanoramaIcons.connection.power, size: 22);
         break;
     }
 

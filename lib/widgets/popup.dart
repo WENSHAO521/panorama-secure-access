@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/models/common.dart';
 import 'package:flutter/material.dart';
 
@@ -353,7 +354,7 @@ class _CommonPopupMenuItemsState extends State<_CommonPopupMenuItems> {
             children: [
               IconButton(
                 icon: Icon(
-                  Icons.arrow_back_outlined,
+                  PanoramaIcons.navigation.back,
                   color: context.colorScheme.onSurfaceVariant.opacity80,
                 ),
                 onPressed: () {

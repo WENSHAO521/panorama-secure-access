@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
@@ -53,7 +54,7 @@ class AboutView extends StatelessWidget {
           onTap: () {
             globalState.openUrl('https://github.com/$repository');
           },
-          trailing: const Icon(Icons.launch),
+          trailing: Icon(PanoramaIcons.actions.openExternal),
         ),
         ListItem(
           title: Text(appLocalizations.core),
@@ -62,7 +63,7 @@ class AboutView extends StatelessWidget {
               'https://github.com/chen08209/Clash.Meta/tree/FlClash',
             );
           },
-          trailing: const Icon(Icons.launch),
+          trailing: Icon(PanoramaIcons.actions.openExternal),
         ),
       ],
     );

@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/views/config/network.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -39,7 +40,7 @@ class TUNButton extends StatelessWidget {
         },
         info: Info(
           label: appLocalizations.tun,
-          iconData: Icons.stacked_line_chart,
+          iconData: PanoramaIcons.routing.tun,
         ),
         child: Container(
           padding: baseInfoEdgeInsets.copyWith(top: 4, bottom: 8, right: 8),
@@ -111,7 +112,7 @@ class SystemProxyButton extends StatelessWidget {
         },
         info: Info(
           label: appLocalizations.systemProxy,
-          iconData: Icons.shuffle,
+          iconData: PanoramaIcons.routing.systemProxy,
         ),
         child: Container(
           padding: baseInfoEdgeInsets.copyWith(top: 4, bottom: 8, right: 8),
@@ -186,7 +187,7 @@ class VpnButton extends StatelessWidget {
             },
           );
         },
-        info: const Info(label: 'VPN', iconData: Icons.stacked_line_chart),
+        info: Info(label: 'VPN', iconData: PanoramaIcons.routing.tun),
         child: Container(
           padding: baseInfoEdgeInsets.copyWith(top: 4, bottom: 8, right: 8),
           child: Row(

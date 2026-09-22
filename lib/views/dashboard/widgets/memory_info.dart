@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/state.dart';
@@ -54,7 +55,7 @@ class _MemoryInfoState extends State<MemoryInfo>
       child: RepaintBoundary(
         child: CommonCard(
           info: Info(
-            iconData: Icons.memory,
+            iconData: PanoramaIcons.system.memory,
             label: appLocalizations.memoryInfo,
           ),
           onPressed: () {

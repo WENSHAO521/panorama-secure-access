@@ -48,7 +48,7 @@ class Navigation {
       // Settings > More so existing widget layouts aren't lost.
       NavigationItem(
         keep: false,
-        icon: const Icon(Icons.space_dashboard_outlined),
+        icon: Icon(PanoramaIcons.navigation.dashboard),
         label: PageLabel.dashboard,
         description: 'dashboardDesc',
         builder: (_) =>
@@ -56,7 +56,7 @@ class Navigation {
         modes: [NavigationItemMode.more],
       ),
       NavigationItem(
-        icon: const Icon(Icons.storage),
+        icon: Icon(PanoramaIcons.navigation.resources),
         label: PageLabel.resources,
         description: 'resourcesDesc',
         builder: (_) =>

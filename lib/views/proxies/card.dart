@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -50,7 +51,7 @@ class ProxyCard extends StatelessWidget {
                     child: delay == 0
                         ? const CircularProgressIndicator(strokeWidth: 2)
                         : IconButton(
-                            icon: const Icon(Icons.bolt),
+                            icon: Icon(PanoramaIcons.network.quickTest),
                             iconSize: globalState.measure.labelSmallHeight,
                             padding: EdgeInsets.zero,
                             onPressed: _handleTestCurrentDelay,

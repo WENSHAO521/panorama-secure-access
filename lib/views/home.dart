@@ -235,7 +235,7 @@ class _ConnectionHeaderState extends ConsumerState<_ConnectionHeader> {
             child: isStart && !isPending
                 ? FilledButton.tonalIcon(
                     onPressed: _toggle,
-                    icon: const Icon(Icons.power_settings_new),
+                    icon: Icon(PanoramaIcons.connection.power),
                     label: Text(appLocalizations.disconnectAction),
                   )
                 : FilledButton.icon(
@@ -245,7 +245,7 @@ class _ConnectionHeaderState extends ConsumerState<_ConnectionHeader> {
                             dimension: 18,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Icon(Icons.power_settings_new),
+                        : Icon(PanoramaIcons.connection.power),
                     label: Text(
                       isPending ? title : appLocalizations.connectAction,
                     ),

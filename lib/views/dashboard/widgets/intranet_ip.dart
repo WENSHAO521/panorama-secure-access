@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -14,7 +15,10 @@ class IntranetIP extends StatelessWidget {
     return SizedBox(
       height: getWidgetHeight(1),
       child: CommonCard(
-        info: Info(label: appLocalizations.intranetIP, iconData: Icons.devices),
+        info: Info(
+          label: appLocalizations.intranetIP,
+          iconData: PanoramaIcons.network.localAddresses,
+        ),
         onPressed: () {},
         child: Container(
           padding: baseInfoEdgeInsets.copyWith(top: 0),

@@ -6,21 +6,23 @@ import 'package:flutter/widgets.dart';
 class PanoramaIconToken {
   final IconData material;
 
-  const PanoramaIconToken({required this.material});
+  /// Glyph for Apple platforms, when the platform convention differs from
+  /// Material (e.g. the back chevron). Null means "same as [material]".
+  final IconData? apple;
+
+  const PanoramaIconToken({required this.material, this.apple});
 }
 
 /// Semantic icon → platform glyph resolver (docs/DESIGN-SYSTEM.md §Icons).
 ///
-/// Apple platforms are meant to eventually resolve to native symbol
-/// glyphs (SF Symbols-equivalent); no such glyph set is bundled yet, so
-/// [resolve] currently returns the same Material glyph on every platform.
-/// This is the seam where that gets wired in, not a claim it already
-/// exists.
+/// On macOS a token's [PanoramaIconToken.apple] glyph wins when it has one.
+/// No SF Symbols-equivalent glyph set is bundled, so Apple variants are
+/// limited to Material glyphs that follow the Apple convention; this is
+/// the seam where a native set would be wired in.
 abstract final class PanoramaIconResolver {
-  static IconData resolve(PanoramaIconToken token) {
-    if (system.isMacOS) {
-      // TODO(icons): resolve to a native Apple symbol set once bundled.
-      return token.material;
+  static IconData resolve(PanoramaIconToken token, {bool? apple}) {
+    if (apple ?? system.isMacOS) {
+      return token.apple ?? token.material;
     }
     return token.material;
   }

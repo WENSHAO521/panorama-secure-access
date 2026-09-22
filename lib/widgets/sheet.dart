@@ -1,9 +1,9 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/inherited.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'glass.dart';
@@ -151,22 +151,6 @@ class AdaptiveSheetScaffold extends StatefulWidget {
 class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
   final _isScrolledController = ValueNotifier<bool>(false);
 
-  IconData get backIconData {
-    if (kIsWeb) {
-      return Icons.arrow_back;
-    }
-    switch (Theme.of(context).platform) {
-      case TargetPlatform.android:
-      case TargetPlatform.fuchsia:
-      case TargetPlatform.linux:
-      case TargetPlatform.windows:
-        return Icons.arrow_back;
-      case TargetPlatform.iOS:
-      case TargetPlatform.macOS:
-        return Icons.arrow_back_ios_new_rounded;
-    }
-  }
-
   @override
   void didUpdateWidget(covariant AdaptiveSheetScaffold oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -286,14 +270,14 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
               ? _buildIconButton(
                   type,
                   IconButtonData(
-                    icon: Icons.close,
+                    icon: PanoramaIcons.actions.close,
                     onPressed: context.safeNestedPop,
                   ),
                 )
               : _buildIconButton(
                   type,
                   IconButtonData(
-                    icon: backIconData,
+                    icon: PanoramaIcons.navigation.back,
                     onPressed:
                         widget.backAction ??
                         () {

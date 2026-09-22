@@ -73,14 +73,14 @@ class _AccessViewState extends ConsumerState<AccessView> {
               key: const ValueKey(true),
               onPressed: onPressed,
               label: Text(appLocalizations.cancelSelectAll),
-              icon: const Icon(Icons.deselect),
+              icon: Icon(PanoramaIcons.actions.deselectAll),
             )
           : FloatingActionButton.extended(
               key: const ValueKey(false),
               tooltip: appLocalizations.selectAll,
               onPressed: onPressed,
               label: Text(appLocalizations.selectAll),
-              icon: const Icon(Icons.select_all),
+              icon: Icon(PanoramaIcons.actions.selectAll),
             ),
     );
   }
@@ -256,13 +256,13 @@ class _AccessViewState extends ConsumerState<AccessView> {
             onPressed: () {
               open(offset: const Offset(0, 0));
             },
-            icon: const Icon(Icons.more_vert),
+            icon: Icon(PanoramaIcons.actions.more),
           );
         },
         popup: CommonPopupMenu(
           items: [
             PopupMenuItemData(
-              icon: Icons.swap_horiz,
+              icon: PanoramaIcons.actions.toggle,
               label: enable
                   ? appLocalizations.turnOff
                   : appLocalizations.turnOn,
@@ -274,16 +274,16 @@ class _AccessViewState extends ConsumerState<AccessView> {
               onPressed: _handleSearch,
             ),
             PopupMenuItemData(
-              icon: Icons.tune,
+              icon: PanoramaIcons.actions.options,
               label: appLocalizations.settings,
               onPressed: _handleToSetting,
             ),
             PopupMenuItemData(
-              icon: Icons.emergency_outlined,
+              icon: PanoramaIcons.actions.moreActions,
               label: appLocalizations.action,
               subItems: [
                 PopupMenuItemData(
-                  icon: Icons.auto_awesome,
+                  icon: PanoramaIcons.actions.smartSelect,
                   label: appLocalizations.intelligentSelected,
                   onPressed: _intelligentSelected,
                 ),
@@ -293,7 +293,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
                   onPressed: _exportToClipboard,
                 ),
                 PopupMenuItemData(
-                  icon: Icons.paste,
+                  icon: PanoramaIcons.actions.paste,
                   label: appLocalizations.clipboardImport,
                   onPressed: _importFormClipboard,
                 ),
@@ -481,8 +481,8 @@ class AccessControlPanel extends ConsumerStatefulWidget {
 class _AccessControlPanelState extends ConsumerState<AccessControlPanel> {
   IconData _getIconWithAccessControlMode(AccessControlMode mode) {
     return switch (mode) {
-      AccessControlMode.acceptSelected => Icons.adjust_outlined,
-      AccessControlMode.rejectSelected => Icons.block_outlined,
+      AccessControlMode.acceptSelected => PanoramaIcons.routing.acceptSelected,
+      AccessControlMode.rejectSelected => PanoramaIcons.routing.rejectSelected,
     };
   }
 
@@ -506,8 +506,8 @@ class _AccessControlPanelState extends ConsumerState<AccessControlPanel> {
   IconData _getIconWithProxiesSortType(AccessSortType type) {
     return switch (type) {
       AccessSortType.none => PanoramaIcons.actions.sort,
-      AccessSortType.name => Icons.sort_by_alpha,
-      AccessSortType.time => Icons.timeline,
+      AccessSortType.name => PanoramaIcons.actions.sortByName,
+      AccessSortType.time => PanoramaIcons.actions.sortByTime,
     };
   }
 

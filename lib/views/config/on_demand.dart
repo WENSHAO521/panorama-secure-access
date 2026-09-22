@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/app.dart';
@@ -281,7 +282,7 @@ class _OnDemandViewState extends ConsumerState<OnDemandView>
                     CommonMinIconButtonTheme(
                       child: IconButton.filledTonal(
                         onPressed: _handleDelete,
-                        icon: const Icon(Icons.delete),
+                        icon: Icon(PanoramaIcons.actions.delete),
                       ),
                     ),
                   const SizedBox(width: 2),

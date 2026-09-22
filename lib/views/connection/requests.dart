@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -105,8 +106,8 @@ class _RequestsViewState extends ConsumerState<RequestsView> {
                     );
               },
               child: autoScrollToEnd
-                  ? const Icon(Icons.block)
-                  : const Icon(Icons.vertical_align_top),
+                  ? Icon(PanoramaIcons.actions.stopFollowing)
+                  : Icon(PanoramaIcons.actions.follow),
             ),
           );
         },

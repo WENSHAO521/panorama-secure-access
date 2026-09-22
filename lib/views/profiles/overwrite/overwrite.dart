@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
@@ -77,9 +78,9 @@ class _Title extends ConsumerWidget {
 
   IconData _getIcon(OverwriteType type) {
     return switch (type) {
-      OverwriteType.standard => Icons.stars,
-      OverwriteType.script => Icons.rocket,
-      OverwriteType.custom => Icons.dashboard_customize,
+      OverwriteType.standard => PanoramaIcons.routing.overrideStandard,
+      OverwriteType.script => PanoramaIcons.routing.overrideScript,
+      OverwriteType.custom => PanoramaIcons.routing.overrideCustom,
     };
   }
 

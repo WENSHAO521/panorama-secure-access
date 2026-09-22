@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/features/features.dart';
 import 'package:fl_clash/models/clash_config.dart';
@@ -83,7 +84,7 @@ class _AddedRulesViewState extends ConsumerState<AddedRulesView> {
             CommonMinIconButtonTheme(
               child: IconButton.filledTonal(
                 onPressed: _handleDelete,
-                icon: const Icon(Icons.delete),
+                icon: Icon(PanoramaIcons.actions.delete),
               ),
             ),
             const SizedBox(width: 2),

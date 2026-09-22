@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/views/config/scripts.dart';
@@ -113,7 +114,7 @@ class ScriptContent extends ConsumerWidget {
                         style: context.textTheme.bodyLarge,
                       ),
                     ),
-                    const Icon(Icons.arrow_forward_ios, size: 18),
+                    Icon(PanoramaIcons.navigation.disclosure, size: 18),
                   ],
                 ),
               ),

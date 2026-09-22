@@ -202,7 +202,7 @@ class _GeoResourceListItemState extends ConsumerState<_GeoResourceListItem> {
                   runAlignment: WrapAlignment.center,
                   children: [
                     CommonChip(
-                      avatar: const Icon(Icons.edit),
+                      avatar: Icon(PanoramaIcons.actions.edit),
                       label: appLocalizations.edit,
                       onPressed: () {
                         _updateUrl(url);

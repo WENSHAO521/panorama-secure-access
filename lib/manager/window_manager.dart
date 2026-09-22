@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
@@ -202,8 +203,8 @@ class _WindowHeaderState extends State<WindowHeader> {
             valueListenable: isPinNotifier,
             builder: (_, value, _) {
               return value
-                  ? const Icon(Icons.push_pin)
-                  : const Icon(Icons.push_pin_outlined);
+                  ? Icon(PanoramaIcons.window.pin)
+                  : Icon(PanoramaIcons.window.unpin);
             },
           ),
         ),
@@ -211,7 +212,7 @@ class _WindowHeaderState extends State<WindowHeader> {
           onPressed: () {
             windowManager.minimize();
           },
-          icon: const Icon(Icons.remove),
+          icon: Icon(PanoramaIcons.window.minimize),
         ),
         IconButton(
           onPressed: () async {
@@ -221,8 +222,8 @@ class _WindowHeaderState extends State<WindowHeader> {
             valueListenable: isMaximizedNotifier,
             builder: (_, value, _) {
               return value
-                  ? const Icon(Icons.filter_none, size: 20)
-                  : const Icon(Icons.crop_square);
+                  ? Icon(PanoramaIcons.window.restore, size: 20)
+                  : Icon(PanoramaIcons.window.maximize);
             },
           ),
         ),
@@ -232,7 +233,7 @@ class _WindowHeaderState extends State<WindowHeader> {
                 .read(systemActionProvider.notifier)
                 .handleClose();
           },
-          icon: const Icon(Icons.close),
+          icon: Icon(PanoramaIcons.window.close),
         ),
         // const SizedBox(
         //   width: 8,

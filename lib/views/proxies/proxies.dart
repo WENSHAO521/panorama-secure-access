@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/models/state.dart';
@@ -33,7 +34,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
           onPressed: () {
             _proxiesTabKey.currentState?.scrollToGroupSelected();
           },
-          icon: const Icon(Icons.adjust, weight: 1),
+          icon: Icon(PanoramaIcons.actions.locate, weight: 1),
         ),
       CommonPopupBox(
         targetBuilder: (open) {
@@ -42,13 +43,13 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
               final isMobile = ref.read(isMobileViewProvider);
               open(offset: Offset(0, isMobile ? 0 : 20));
             },
-            icon: const Icon(Icons.more_vert),
+            icon: Icon(PanoramaIcons.actions.more),
           );
         },
         popup: CommonPopupMenu(
           items: [
             PopupMenuItemData(
-              icon: Icons.tune,
+              icon: PanoramaIcons.actions.options,
               label: appLocalizations.settings,
               onPressed: () {
                 showSheet(
@@ -65,7 +66,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
             ),
             if (_hasProviders)
               PopupMenuItemData(
-                icon: Icons.poll_outlined,
+                icon: PanoramaIcons.routing.providers,
                 label: appLocalizations.providers,
                 onPressed: () {
                   showExtend(
