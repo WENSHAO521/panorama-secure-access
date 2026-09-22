@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 import 'item.dart';
+import 'table.dart';
 
 class ConnectionsView extends ConsumerStatefulWidget {
   final Future<List<TrackerInfo>> Function()? connectionsReader;
@@ -122,30 +123,51 @@ class _ConnectionsViewState extends ConsumerState<ConnectionsView>
               illustration: const ConnectionEmptyIllustration(),
             );
           }
-          return SuperListView.separated(
-            controller: _scrollController,
-            itemCount: connections.length,
-            separatorBuilder: (_, _) => const Divider(height: 0),
-            itemBuilder: (_, index) {
-              final trackerInfo = connections[index];
-              return TrackerInfoItem(
-                key: Key(trackerInfo.id),
-                trackerInfo: trackerInfo,
-                onClickKeyword: (value) {
-                  context.commonScaffoldState?.addKeyword(value);
-                },
-                trailing: IconButton(
-                  padding: EdgeInsets.zero,
-                  visualDensity: VisualDensity.compact,
-                  style: IconButton.styleFrom(minimumSize: Size.zero),
-                  icon: Icon(PanoramaIcons.actions.closeConnection),
-                  onPressed: () {
+          final detailTitle = appLocalizations.details(
+            appLocalizations.connection,
+          );
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth >= ConnectionsTable.minWidth) {
+                return ConnectionsTable(
+                  controller: _scrollController,
+                  connections: connections,
+                  onOpen: (trackerInfo) {
+                    showTrackerInfoDetail(context, trackerInfo, detailTitle);
+                  },
+                  onClose: (trackerInfo) {
                     _handleBlockConnection(trackerInfo.id);
                   },
-                ),
-                detailTitle: appLocalizations.details(
-                  appLocalizations.connection,
-                ),
+                  onFilter: (keyword) {
+                    context.commonScaffoldState?.addKeyword(keyword);
+                  },
+                );
+              }
+              return SuperListView.separated(
+                controller: _scrollController,
+                itemCount: connections.length,
+                separatorBuilder: (_, _) => const Divider(height: 0),
+                itemBuilder: (_, index) {
+                  final trackerInfo = connections[index];
+                  return TrackerInfoItem(
+                    key: Key(trackerInfo.id),
+                    trackerInfo: trackerInfo,
+                    onClickKeyword: (value) {
+                      context.commonScaffoldState?.addKeyword(value);
+                    },
+                    trailing: IconButton(
+                      tooltip: appLocalizations.closeConnection,
+                      padding: EdgeInsets.zero,
+                      visualDensity: VisualDensity.compact,
+                      style: IconButton.styleFrom(minimumSize: Size.zero),
+                      icon: Icon(PanoramaIcons.actions.closeConnection),
+                      onPressed: () {
+                        _handleBlockConnection(trackerInfo.id);
+                      },
+                    ),
+                    detailTitle: detailTitle,
+                  );
+                },
               );
             },
           );

@@ -81,11 +81,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m27(available, total) => "${total}개 중 ${available}개 이용 가능";
 
-  static String m28(time) => "${time} 업데이트됨";
+  static String m28(value) => "“${value}”만 표시";
 
-  static String m29(label) => "${label}은(는) URL 형식이어야 합니다";
+  static String m29(time) => "${time} 업데이트됨";
 
-  static String m30(count) =>
+  static String m30(label) => "${label}은(는) URL 형식이어야 합니다";
+
+  static String m31(count) =>
       "${Intl.plural(count, one: '1년 전', other: '${count}년 전')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -209,6 +211,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "clearData": MessageLookupByLibrary.simpleMessage("데이터 지우기"),
     "clipboardExport": MessageLookupByLibrary.simpleMessage("클립보드로 내보내기"),
     "clipboardImport": MessageLookupByLibrary.simpleMessage("클립보드에서 가져오기"),
+    "closeConnection": MessageLookupByLibrary.simpleMessage("연결 닫기"),
     "color": MessageLookupByLibrary.simpleMessage("색상"),
     "colorSchemes": MessageLookupByLibrary.simpleMessage("색상 구성표"),
     "columns": MessageLookupByLibrary.simpleMessage("열"),
@@ -252,6 +255,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "전역 추가 규칙 제어",
     ),
     "copy": MessageLookupByLibrary.simpleMessage("복사"),
+    "copyDestination": MessageLookupByLibrary.simpleMessage("대상 복사"),
     "copyEnvVar": MessageLookupByLibrary.simpleMessage("환경 변수 복사 중"),
     "copyLink": MessageLookupByLibrary.simpleMessage("링크 복사"),
     "copySuccess": MessageLookupByLibrary.simpleMessage("복사 성공"),
@@ -323,6 +327,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "downloadingUpdate": MessageLookupByLibrary.simpleMessage("업데이트 다운로드 중..."),
     "duplicate": MessageLookupByLibrary.simpleMessage("복제"),
+    "duration": MessageLookupByLibrary.simpleMessage("지속 시간"),
     "edit": MessageLookupByLibrary.simpleMessage("편집"),
     "editGlobalRules": MessageLookupByLibrary.simpleMessage("전역 규칙 편집"),
     "editProxy": MessageLookupByLibrary.simpleMessage("프록시 편집"),
@@ -637,6 +642,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "providers": MessageLookupByLibrary.simpleMessage("제공자"),
     "proxies": MessageLookupByLibrary.simpleMessage("프록시"),
     "proxiesEmpty": MessageLookupByLibrary.simpleMessage("프록시가 비어 있습니다"),
+    "proxy": MessageLookupByLibrary.simpleMessage("프록시"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("프록시 체인"),
     "proxyDetectedAbnormal": MessageLookupByLibrary.simpleMessage(
       "선택한 프록시가 비정상적인 것으로 감지되었습니다",
@@ -840,12 +846,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "servicesLabel": MessageLookupByLibrary.simpleMessage("서비스"),
     "settings": MessageLookupByLibrary.simpleMessage("설정"),
     "show": MessageLookupByLibrary.simpleMessage("표시"),
+    "showOnly": m28,
     "shrink": MessageLookupByLibrary.simpleMessage("축소"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("조용히 시작"),
     "silentLaunchDesc": MessageLookupByLibrary.simpleMessage("백그라운드에서 시작합니다"),
     "size": MessageLookupByLibrary.simpleMessage("크기"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socks 포트"),
     "sort": MessageLookupByLibrary.simpleMessage("정렬"),
+    "sortedAscending": MessageLookupByLibrary.simpleMessage("오름차순"),
+    "sortedDescending": MessageLookupByLibrary.simpleMessage("내림차순"),
     "source": MessageLookupByLibrary.simpleMessage("소스"),
     "sourceIp": MessageLookupByLibrary.simpleMessage("소스 IP"),
     "specialProxy": MessageLookupByLibrary.simpleMessage("특수 프록시"),
@@ -943,11 +952,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "unnamed": MessageLookupByLibrary.simpleMessage("이름 없음"),
     "update": MessageLookupByLibrary.simpleMessage("업데이트"),
-    "updatedAgo": m28,
+    "updatedAgo": m29,
     "upload": MessageLookupByLibrary.simpleMessage("업로드"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URL을 통해 프로필을 가져옵니다"),
-    "urlTip": m29,
+    "urlTip": m30,
     "useHosts": MessageLookupByLibrary.simpleMessage("Hosts 사용"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("시스템 Hosts 사용"),
     "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
@@ -963,7 +972,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "vpnTip": MessageLookupByLibrary.simpleMessage("VPN을 재시작해야 변경 사항이 적용됩니다"),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV 설정"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("화이트리스트 모드"),
-    "yearsAgo": m30,
+    "yearsAgo": m31,
     "zh_CN": MessageLookupByLibrary.simpleMessage("중국어 간체"),
     "zh_TW": MessageLookupByLibrary.simpleMessage("중국어 번체"),
   };

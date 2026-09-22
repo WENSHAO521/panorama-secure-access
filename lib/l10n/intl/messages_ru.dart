@@ -83,11 +83,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m27(available, total) => "Доступно ${available} из ${total}";
 
-  static String m28(time) => "Обновлено ${time}";
+  static String m28(value) => "Только «${value}»";
 
-  static String m29(label) => "${label} должен быть URL";
+  static String m29(time) => "Обновлено ${time}";
 
-  static String m30(count) =>
+  static String m30(label) => "${label} должен быть URL";
+
+  static String m31(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -251,6 +253,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "clipboardImport": MessageLookupByLibrary.simpleMessage(
       "Импорт из буфера обмена",
     ),
+    "closeConnection": MessageLookupByLibrary.simpleMessage(
+      "Закрыть соединение",
+    ),
     "color": MessageLookupByLibrary.simpleMessage("Цвет"),
     "colorSchemes": MessageLookupByLibrary.simpleMessage("Цветовые схемы"),
     "columns": MessageLookupByLibrary.simpleMessage("Столбцы"),
@@ -298,6 +303,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Управление глобальными добавленными правилами",
     ),
     "copy": MessageLookupByLibrary.simpleMessage("Копировать"),
+    "copyDestination": MessageLookupByLibrary.simpleMessage(
+      "Копировать адрес назначения",
+    ),
     "copyEnvVar": MessageLookupByLibrary.simpleMessage(
       "Копирование переменных окружения",
     ),
@@ -391,6 +399,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Загрузка обновления...",
     ),
     "duplicate": MessageLookupByLibrary.simpleMessage("Дублировать"),
+    "duration": MessageLookupByLibrary.simpleMessage("Длительность"),
     "edit": MessageLookupByLibrary.simpleMessage("Редактировать"),
     "editGlobalRules": MessageLookupByLibrary.simpleMessage(
       "Редактировать глобальные правила",
@@ -803,6 +812,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "providers": MessageLookupByLibrary.simpleMessage("Провайдеры"),
     "proxies": MessageLookupByLibrary.simpleMessage("Прокси"),
     "proxiesEmpty": MessageLookupByLibrary.simpleMessage("Список прокси пуст"),
+    "proxy": MessageLookupByLibrary.simpleMessage("Прокси"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("Цепочки прокси"),
     "proxyDetectedAbnormal": MessageLookupByLibrary.simpleMessage(
       "Обнаружена аномалия выбранных прокси",
@@ -1064,6 +1074,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "servicesLabel": MessageLookupByLibrary.simpleMessage("Сервисы"),
     "settings": MessageLookupByLibrary.simpleMessage("Настройки"),
     "show": MessageLookupByLibrary.simpleMessage("Показать"),
+    "showOnly": m28,
     "shrink": MessageLookupByLibrary.simpleMessage("Сжать"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("Тихий запуск"),
     "silentLaunchDesc": MessageLookupByLibrary.simpleMessage(
@@ -1072,6 +1083,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "size": MessageLookupByLibrary.simpleMessage("Размер"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socks-порт"),
     "sort": MessageLookupByLibrary.simpleMessage("Сортировка"),
+    "sortedAscending": MessageLookupByLibrary.simpleMessage("По возрастанию"),
+    "sortedDescending": MessageLookupByLibrary.simpleMessage("По убыванию"),
     "source": MessageLookupByLibrary.simpleMessage("Источник"),
     "sourceIp": MessageLookupByLibrary.simpleMessage("Исходный IP"),
     "specialProxy": MessageLookupByLibrary.simpleMessage("Специальный прокси"),
@@ -1193,13 +1206,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "unnamed": MessageLookupByLibrary.simpleMessage("Без имени"),
     "update": MessageLookupByLibrary.simpleMessage("Обновить"),
-    "updatedAgo": m28,
+    "updatedAgo": m29,
     "upload": MessageLookupByLibrary.simpleMessage("Загрузка"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Получить профиль через URL",
     ),
-    "urlTip": m29,
+    "urlTip": m30,
     "useHosts": MessageLookupByLibrary.simpleMessage("Использовать hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage(
       "Использовать системные hosts",
@@ -1223,7 +1236,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage(
       "Режим белого списка",
     ),
-    "yearsAgo": m30,
+    "yearsAgo": m31,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Упрощенный китайский"),
     "zh_TW": MessageLookupByLibrary.simpleMessage("Традиционный китайский"),
   };

@@ -77,11 +77,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m27(available, total) => "${available} / ${total} 可用";
 
-  static String m28(time) => "更新於 ${time}";
+  static String m28(value) => "僅顯示「${value}」";
 
-  static String m29(label) => "${label}必須為URL";
+  static String m29(time) => "更新於 ${time}";
 
-  static String m30(count) => "${count} 年前";
+  static String m30(label) => "${label}必須為URL";
+
+  static String m31(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -180,6 +182,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "clearData": MessageLookupByLibrary.simpleMessage("清除資料"),
     "clipboardExport": MessageLookupByLibrary.simpleMessage("匯出剪貼簿"),
     "clipboardImport": MessageLookupByLibrary.simpleMessage("剪貼簿匯入"),
+    "closeConnection": MessageLookupByLibrary.simpleMessage("關閉連線"),
     "color": MessageLookupByLibrary.simpleMessage("顏色"),
     "colorSchemes": MessageLookupByLibrary.simpleMessage("配色方案"),
     "columns": MessageLookupByLibrary.simpleMessage("列數"),
@@ -213,6 +216,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "控制全域性附加規則",
     ),
     "copy": MessageLookupByLibrary.simpleMessage("複製"),
+    "copyDestination": MessageLookupByLibrary.simpleMessage("複製目標位址"),
     "copyEnvVar": MessageLookupByLibrary.simpleMessage("複製環境變數"),
     "copyLink": MessageLookupByLibrary.simpleMessage("複製連結"),
     "copySuccess": MessageLookupByLibrary.simpleMessage("複製成功"),
@@ -276,6 +280,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "downloadUpdateFailed": MessageLookupByLibrary.simpleMessage("下載失敗，請重試"),
     "downloadingUpdate": MessageLookupByLibrary.simpleMessage("正在下載更新..."),
     "duplicate": MessageLookupByLibrary.simpleMessage("建立副本"),
+    "duration": MessageLookupByLibrary.simpleMessage("時長"),
     "edit": MessageLookupByLibrary.simpleMessage("編輯"),
     "editGlobalRules": MessageLookupByLibrary.simpleMessage("編輯全域性規則"),
     "editProxy": MessageLookupByLibrary.simpleMessage("編輯代理"),
@@ -548,6 +553,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "providers": MessageLookupByLibrary.simpleMessage("提供者"),
     "proxies": MessageLookupByLibrary.simpleMessage("代理"),
     "proxiesEmpty": MessageLookupByLibrary.simpleMessage("代理為空"),
+    "proxy": MessageLookupByLibrary.simpleMessage("代理"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("代理鏈"),
     "proxyDetectedAbnormal": MessageLookupByLibrary.simpleMessage(
       "檢測到選中的代理存在異常",
@@ -723,12 +729,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "servicesLabel": MessageLookupByLibrary.simpleMessage("服務"),
     "settings": MessageLookupByLibrary.simpleMessage("設定"),
     "show": MessageLookupByLibrary.simpleMessage("顯示"),
+    "showOnly": m28,
     "shrink": MessageLookupByLibrary.simpleMessage("緊湊"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("靜默啟動"),
     "silentLaunchDesc": MessageLookupByLibrary.simpleMessage("後臺啟動"),
     "size": MessageLookupByLibrary.simpleMessage("尺寸"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socks埠"),
     "sort": MessageLookupByLibrary.simpleMessage("排序"),
+    "sortedAscending": MessageLookupByLibrary.simpleMessage("升冪"),
+    "sortedDescending": MessageLookupByLibrary.simpleMessage("降冪"),
     "source": MessageLookupByLibrary.simpleMessage("來源"),
     "sourceIp": MessageLookupByLibrary.simpleMessage("源IP"),
     "specialProxy": MessageLookupByLibrary.simpleMessage("特殊代理"),
@@ -812,11 +821,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage("未知網路錯誤"),
     "unnamed": MessageLookupByLibrary.simpleMessage("未命名"),
     "update": MessageLookupByLibrary.simpleMessage("更新"),
-    "updatedAgo": m28,
+    "updatedAgo": m29,
     "upload": MessageLookupByLibrary.simpleMessage("上傳"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("透過URL獲取配置檔案"),
-    "urlTip": m29,
+    "urlTip": m30,
     "useHosts": MessageLookupByLibrary.simpleMessage("使用Hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("使用系統Hosts"),
     "userAgent": MessageLookupByLibrary.simpleMessage("使用者代理"),
@@ -832,7 +841,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "vpnTip": MessageLookupByLibrary.simpleMessage("重啟VPN後改變生效"),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV配置"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名單模式"),
-    "yearsAgo": m30,
+    "yearsAgo": m31,
     "zh_CN": MessageLookupByLibrary.simpleMessage("中文簡體"),
     "zh_TW": MessageLookupByLibrary.simpleMessage("中文繁體"),
   };

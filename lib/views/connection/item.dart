@@ -8,6 +8,22 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+void showTrackerInfoDetail(
+  BuildContext context,
+  TrackerInfo trackerInfo,
+  String title,
+) {
+  showExtend(
+    context,
+    builder: (_) {
+      return AdaptiveSheetScaffold(
+        body: TrackerInfoDetailView(trackerInfo: trackerInfo),
+        title: title,
+      );
+    },
+  );
+}
+
 class TrackerInfoItem extends ConsumerWidget {
   final TrackerInfo trackerInfo;
   final Function(String)? onClickKeyword;
@@ -126,17 +142,7 @@ class TrackerInfoItem extends ConsumerWidget {
         : null;
     return ListItem(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      onTap: () {
-        showExtend(
-          context,
-          builder: (_) {
-            return AdaptiveSheetScaffold(
-              body: TrackerInfoDetailView(trackerInfo: trackerInfo),
-              title: detailTitle,
-            );
-          },
-        );
-      },
+      onTap: () => showTrackerInfoDetail(context, trackerInfo, detailTitle),
       title: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

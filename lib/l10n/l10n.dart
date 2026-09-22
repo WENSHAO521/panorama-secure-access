@@ -5028,6 +5028,66 @@ class AppLocalizations {
       args: [time],
     );
   }
+
+  /// `Proxy`
+  String get proxy {
+    return Intl.message('Proxy', name: 'proxy', desc: '', args: []);
+  }
+
+  /// `Duration`
+  String get duration {
+    return Intl.message('Duration', name: 'duration', desc: '', args: []);
+  }
+
+  /// `Close connection`
+  String get closeConnection {
+    return Intl.message(
+      'Close connection',
+      name: 'closeConnection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show only “{value}”`
+  String showOnly(Object value) {
+    return Intl.message(
+      'Show only “$value”',
+      name: 'showOnly',
+      desc: '',
+      args: [value],
+    );
+  }
+
+  /// `Copy destination`
+  String get copyDestination {
+    return Intl.message(
+      'Copy destination',
+      name: 'copyDestination',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sorted ascending`
+  String get sortedAscending {
+    return Intl.message(
+      'Sorted ascending',
+      name: 'sortedAscending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sorted descending`
+  String get sortedDescending {
+    return Intl.message(
+      'Sorted descending',
+      name: 'sortedDescending',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

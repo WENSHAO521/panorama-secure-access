@@ -620,5 +620,12 @@
   "profileDataUsedUp": "Data used up",
   "expiresOn": "Expires {date}",
   "noExpiry": "No expiry",
-  "updatedAgo": "Updated {time}"
+  "updatedAgo": "Updated {time}",
+  "proxy": "Proxy",
+  "duration": "Duration",
+  "closeConnection": "Close connection",
+  "showOnly": "Show only “{value}”",
+  "copyDestination": "Copy destination",
+  "sortedAscending": "Sorted ascending",
+  "sortedDescending": "Sorted descending"
 }

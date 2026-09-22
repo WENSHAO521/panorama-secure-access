@@ -620,5 +620,12 @@
   "profileDataUsedUp": "データ上限に到達",
   "expiresOn": "{date} に期限切れ",
   "noExpiry": "期限なし",
-  "updatedAgo": "{time}に更新"
+  "updatedAgo": "{time}に更新",
+  "proxy": "プロキシ",
+  "duration": "経過時間",
+  "closeConnection": "接続を閉じる",
+  "showOnly": "「{value}」のみ表示",
+  "copyDestination": "宛先をコピー",
+  "sortedAscending": "昇順",
+  "sortedDescending": "降順"
 }

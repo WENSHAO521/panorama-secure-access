@@ -620,5 +620,12 @@
   "profileDataUsedUp": "데이터 소진",
   "expiresOn": "{date} 만료",
   "noExpiry": "만료 없음",
-  "updatedAgo": "{time} 업데이트됨"
+  "updatedAgo": "{time} 업데이트됨",
+  "proxy": "프록시",
+  "duration": "지속 시간",
+  "closeConnection": "연결 닫기",
+  "showOnly": "“{value}”만 표시",
+  "copyDestination": "대상 복사",
+  "sortedAscending": "오름차순",
+  "sortedDescending": "내림차순"
 }

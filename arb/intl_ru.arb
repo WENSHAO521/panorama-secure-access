@@ -620,5 +620,12 @@
   "profileDataUsedUp": "Трафик исчерпан",
   "expiresOn": "Истекает {date}",
   "noExpiry": "Бессрочно",
-  "updatedAgo": "Обновлено {time}"
+  "updatedAgo": "Обновлено {time}",
+  "proxy": "Прокси",
+  "duration": "Длительность",
+  "closeConnection": "Закрыть соединение",
+  "showOnly": "Только «{value}»",
+  "copyDestination": "Копировать адрес назначения",
+  "sortedAscending": "По возрастанию",
+  "sortedDescending": "По убыванию"
 }

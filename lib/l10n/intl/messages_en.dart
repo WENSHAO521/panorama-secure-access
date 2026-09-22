@@ -84,11 +84,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m27(available, total) => "${available} of ${total} available";
 
-  static String m28(time) => "Updated ${time}";
+  static String m28(value) => "Show only “${value}”";
 
-  static String m29(label) => "${label} must be a url";
+  static String m29(time) => "Updated ${time}";
 
-  static String m30(count) =>
+  static String m30(label) => "${label} must be a url";
+
+  static String m31(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -246,6 +248,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "clearData": MessageLookupByLibrary.simpleMessage("Clear Data"),
     "clipboardExport": MessageLookupByLibrary.simpleMessage("Export clipboard"),
     "clipboardImport": MessageLookupByLibrary.simpleMessage("Clipboard import"),
+    "closeConnection": MessageLookupByLibrary.simpleMessage("Close connection"),
     "color": MessageLookupByLibrary.simpleMessage("Color"),
     "colorSchemes": MessageLookupByLibrary.simpleMessage("Color schemes"),
     "columns": MessageLookupByLibrary.simpleMessage("Columns"),
@@ -293,6 +296,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Control global added rules",
     ),
     "copy": MessageLookupByLibrary.simpleMessage("Copy"),
+    "copyDestination": MessageLookupByLibrary.simpleMessage("Copy destination"),
     "copyEnvVar": MessageLookupByLibrary.simpleMessage(
       "Copying environment variables",
     ),
@@ -386,6 +390,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Downloading update...",
     ),
     "duplicate": MessageLookupByLibrary.simpleMessage("Duplicate"),
+    "duration": MessageLookupByLibrary.simpleMessage("Duration"),
     "edit": MessageLookupByLibrary.simpleMessage("Edit"),
     "editGlobalRules": MessageLookupByLibrary.simpleMessage(
       "Edit global rules",
@@ -762,6 +767,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "providers": MessageLookupByLibrary.simpleMessage("Providers"),
     "proxies": MessageLookupByLibrary.simpleMessage("Proxies"),
     "proxiesEmpty": MessageLookupByLibrary.simpleMessage("Proxies is empty"),
+    "proxy": MessageLookupByLibrary.simpleMessage("Proxy"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("Proxy chains"),
     "proxyDetectedAbnormal": MessageLookupByLibrary.simpleMessage(
       "Detected selected proxies are abnormal",
@@ -1011,6 +1017,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "servicesLabel": MessageLookupByLibrary.simpleMessage("Services"),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
+    "showOnly": m28,
     "shrink": MessageLookupByLibrary.simpleMessage("Shrink"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("SilentLaunch"),
     "silentLaunchDesc": MessageLookupByLibrary.simpleMessage(
@@ -1019,6 +1026,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "size": MessageLookupByLibrary.simpleMessage("Size"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socks Port"),
     "sort": MessageLookupByLibrary.simpleMessage("Sort"),
+    "sortedAscending": MessageLookupByLibrary.simpleMessage("Sorted ascending"),
+    "sortedDescending": MessageLookupByLibrary.simpleMessage(
+      "Sorted descending",
+    ),
     "source": MessageLookupByLibrary.simpleMessage("Source"),
     "sourceIp": MessageLookupByLibrary.simpleMessage("Source IP"),
     "specialProxy": MessageLookupByLibrary.simpleMessage("Special proxy"),
@@ -1128,13 +1139,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "unnamed": MessageLookupByLibrary.simpleMessage("Unnamed"),
     "update": MessageLookupByLibrary.simpleMessage("Update"),
-    "updatedAgo": m28,
+    "updatedAgo": m29,
     "upload": MessageLookupByLibrary.simpleMessage("Upload"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain profile through URL",
     ),
-    "urlTip": m29,
+    "urlTip": m30,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
@@ -1154,7 +1165,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "WebDAV configuration",
     ),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
-    "yearsAgo": m30,
+    "yearsAgo": m31,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
     "zh_TW": MessageLookupByLibrary.simpleMessage("Traditional Chinese"),
   };

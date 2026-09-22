@@ -620,5 +620,12 @@
   "profileDataUsedUp": "流量已用盡",
   "expiresOn": "{date} 到期",
   "noExpiry": "永不過期",
-  "updatedAgo": "更新於 {time}"
+  "updatedAgo": "更新於 {time}",
+  "proxy": "代理",
+  "duration": "時長",
+  "closeConnection": "關閉連線",
+  "showOnly": "僅顯示「{value}」",
+  "copyDestination": "複製目標位址",
+  "sortedAscending": "升冪",
+  "sortedDescending": "降冪"
 }
