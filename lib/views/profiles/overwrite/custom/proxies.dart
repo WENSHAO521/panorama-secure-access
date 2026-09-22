@@ -380,7 +380,7 @@ class _AddProxiesViewState extends ConsumerState<_AddProxiesView>
             trailing: CommonMinIconButtonTheme(
               child: IconButton.filledTonal(
                 onPressed: onAdd,
-                icon: const Icon(Icons.add, size: 18),
+                icon: const Icon(AppIcons.add, size: 18),
               ),
             ),
           ),

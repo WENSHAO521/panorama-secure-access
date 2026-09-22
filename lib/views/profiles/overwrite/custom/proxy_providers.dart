@@ -350,7 +350,7 @@ class _AddProxyProvidersViewState extends ConsumerState<_AddProxyProvidersView>
             trailing: CommonMinIconButtonTheme(
               child: IconButton.filledTonal(
                 onPressed: onAdd,
-                icon: const Icon(Icons.add, size: 18),
+                icon: const Icon(AppIcons.add, size: 18),
               ),
             ),
           ),

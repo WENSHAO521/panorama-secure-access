@@ -126,7 +126,7 @@ class _ProfilesViewState extends State<ProfilesView> {
   Widget _buildFAB() {
     return CommonFloatingActionButton(
       onPressed: _handleShowAddExtendPage,
-      icon: const Icon(Icons.add),
+      icon: const Icon(AppIcons.add),
       label: context.appLocalizations.addProfile,
     );
   }

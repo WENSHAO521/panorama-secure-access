@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'app_icons.dart';
 import 'effect.dart';
 import 'list.dart';
 import 'theme.dart';
@@ -388,7 +389,7 @@ class _ListInputPageState extends ConsumerState<ListInputPage> {
             CommonMinIconButtonTheme(
               child: IconButton.filledTonal(
                 onPressed: _handleDelete,
-                icon: const Icon(Icons.delete),
+                icon: const Icon(AppIcons.delete),
               ),
             ),
             const SizedBox(width: 2),
@@ -640,7 +641,7 @@ class _MapInputPageState extends ConsumerState<MapInputPage> {
             CommonMinIconButtonTheme(
               child: IconButton.filledTonal(
                 onPressed: _handleDelete,
-                icon: const Icon(Icons.delete),
+                icon: const Icon(AppIcons.delete),
               ),
             ),
             const SizedBox(width: 2),

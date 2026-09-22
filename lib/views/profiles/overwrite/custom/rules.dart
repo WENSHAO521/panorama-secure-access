@@ -169,7 +169,7 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
           CommonMinIconButtonTheme(
             child: IconButton.filledTonal(
               onPressed: _handleDelete,
-              icon: const Icon(Icons.delete),
+              icon: const Icon(AppIcons.delete),
             ),
           ),
           const SizedBox(width: 2),
