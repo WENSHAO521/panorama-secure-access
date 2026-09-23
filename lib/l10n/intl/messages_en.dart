@@ -79,21 +79,24 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m24(label) => "${label} must be a number";
 
-  static String m25(label) => "${label} must be between 1024 and 49151";
+  static String m25(count) =>
+      "${Intl.plural(count, zero: 'Paused', one: 'Paused · 1 new line', other: 'Paused · ${count} new lines')}";
 
-  static String m26(count) => "${count} seconds";
+  static String m26(label) => "${label} must be between 1024 and 49151";
 
-  static String m27(count) => "${count} items have been selected";
+  static String m27(count) => "${count} seconds";
 
-  static String m28(available, total) => "${available} of ${total} available";
+  static String m28(count) => "${count} items have been selected";
 
-  static String m29(value) => "Show only “${value}”";
+  static String m29(available, total) => "${available} of ${total} available";
 
-  static String m30(time) => "Updated ${time}";
+  static String m30(value) => "Show only “${value}”";
 
-  static String m31(label) => "${label} must be a url";
+  static String m31(time) => "Updated ${time}";
 
-  static String m32(count) =>
+  static String m32(label) => "${label} must be a url";
+
+  static String m33(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -249,6 +252,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "checkedAt": m0,
     "clearData": MessageLookupByLibrary.simpleMessage("Clear Data"),
+    "clearLogs": MessageLookupByLibrary.simpleMessage("Clear logs"),
     "clipboardExport": MessageLookupByLibrary.simpleMessage("Export clipboard"),
     "clipboardImport": MessageLookupByLibrary.simpleMessage("Clipboard import"),
     "closeConnection": MessageLookupByLibrary.simpleMessage("Close connection"),
@@ -299,6 +303,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Control global added rules",
     ),
     "copy": MessageLookupByLibrary.simpleMessage("Copy"),
+    "copyAll": MessageLookupByLibrary.simpleMessage("Copy all"),
     "copyDestination": MessageLookupByLibrary.simpleMessage("Copy destination"),
     "copyEnvVar": MessageLookupByLibrary.simpleMessage(
       "Copying environment variables",
@@ -725,6 +730,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "palette": MessageLookupByLibrary.simpleMessage("Palette"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "paste": MessageLookupByLibrary.simpleMessage("Paste"),
+    "pause": MessageLookupByLibrary.simpleMessage("Pause"),
+    "pausedNewLines": m25,
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage(
       "Please bind WebDAV",
     ),
@@ -741,7 +748,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "portConflictTip": MessageLookupByLibrary.simpleMessage(
       "Please enter a different port",
     ),
-    "portTip": m25,
+    "portTip": m26,
     "preferH3Desc": MessageLookupByLibrary.simpleMessage(
       "Prioritize the use of DOH\'s http/3",
     ),
@@ -882,6 +889,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Override",
     ),
     "restoreSuccess": MessageLookupByLibrary.simpleMessage("Restore success"),
+    "resume": MessageLookupByLibrary.simpleMessage("Resume"),
     "routeAddress": MessageLookupByLibrary.simpleMessage("Route address"),
     "routeAddressDesc": MessageLookupByLibrary.simpleMessage(
       "Config listen route address",
@@ -1005,7 +1013,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "search": MessageLookupByLibrary.simpleMessage("Search"),
     "seconds": MessageLookupByLibrary.simpleMessage("Seconds"),
-    "secondsCount": m26,
+    "secondsCount": m27,
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
     "selectProxies": MessageLookupByLibrary.simpleMessage("Select proxies"),
     "selectProxyProviders": MessageLookupByLibrary.simpleMessage(
@@ -1021,18 +1029,18 @@ class MessageLookup extends MessageLookupByLibrary {
       "Please select sub rule",
     ),
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
-    "selectedCountTitle": m27,
+    "selectedCountTitle": m28,
     "serviceAvailability": MessageLookupByLibrary.simpleMessage(
       "Service availability",
     ),
     "serviceCheckPrivacyTip": MessageLookupByLibrary.simpleMessage(
       "Checks connect to each service directly through your current proxy. Nothing from your profiles, subscriptions or logs is sent.",
     ),
-    "servicesAvailable": m28,
+    "servicesAvailable": m29,
     "servicesLabel": MessageLookupByLibrary.simpleMessage("Services"),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
-    "showOnly": m29,
+    "showOnly": m30,
     "shrink": MessageLookupByLibrary.simpleMessage("Shrink"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("SilentLaunch"),
     "silentLaunchDesc": MessageLookupByLibrary.simpleMessage(
@@ -1155,13 +1163,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "unnamed": MessageLookupByLibrary.simpleMessage("Unnamed"),
     "update": MessageLookupByLibrary.simpleMessage("Update"),
-    "updatedAgo": m30,
+    "updatedAgo": m31,
     "upload": MessageLookupByLibrary.simpleMessage("Upload"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain profile through URL",
     ),
-    "urlTip": m31,
+    "urlTip": m32,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
@@ -1181,7 +1189,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "WebDAV configuration",
     ),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
-    "yearsAgo": m32,
+    "yearsAgo": m33,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
     "zh_TW": MessageLookupByLibrary.simpleMessage("Traditional Chinese"),
   };

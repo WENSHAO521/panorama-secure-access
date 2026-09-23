@@ -71,21 +71,24 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m24(label) => "${label}は数字でなければなりません";
 
-  static String m25(label) => "${label} は 1024 から 49151 の間でなければなりません";
+  static String m25(count) =>
+      "${Intl.plural(count, zero: '一時停止中', other: '一時停止中 · 新着 ${count} 行')}";
 
-  static String m26(count) => "${count} 秒";
+  static String m26(label) => "${label} は 1024 から 49151 の間でなければなりません";
 
-  static String m27(count) => "${count} 項目が選択されています";
+  static String m27(count) => "${count} 秒";
 
-  static String m28(available, total) => "${total} 件中 ${available} 件利用可能";
+  static String m28(count) => "${count} 項目が選択されています";
 
-  static String m29(value) => "「${value}」のみ表示";
+  static String m29(available, total) => "${total} 件中 ${available} 件利用可能";
 
-  static String m30(time) => "${time}に更新";
+  static String m30(value) => "「${value}」のみ表示";
 
-  static String m31(label) => "${label}はURLである必要があります";
+  static String m31(time) => "${time}に更新";
 
-  static String m32(count) => "${count}年前";
+  static String m32(label) => "${label}はURLである必要があります";
+
+  static String m33(count) => "${count}年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -192,6 +195,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "checkUpdateError": MessageLookupByLibrary.simpleMessage("アプリは最新版です"),
     "checkedAt": m0,
     "clearData": MessageLookupByLibrary.simpleMessage("データを消去"),
+    "clearLogs": MessageLookupByLibrary.simpleMessage("ログを消去"),
     "clipboardExport": MessageLookupByLibrary.simpleMessage("クリップボードにエクスポート"),
     "clipboardImport": MessageLookupByLibrary.simpleMessage("クリップボードからインポート"),
     "closeConnection": MessageLookupByLibrary.simpleMessage("接続を閉じる"),
@@ -238,6 +242,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "グローバル追加ルールを制御",
     ),
     "copy": MessageLookupByLibrary.simpleMessage("コピー"),
+    "copyAll": MessageLookupByLibrary.simpleMessage("すべてコピー"),
     "copyDestination": MessageLookupByLibrary.simpleMessage("宛先をコピー"),
     "copyEnvVar": MessageLookupByLibrary.simpleMessage("環境変数をコピー"),
     "copyLink": MessageLookupByLibrary.simpleMessage("リンクをコピー"),
@@ -584,6 +589,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "palette": MessageLookupByLibrary.simpleMessage("パレット"),
     "password": MessageLookupByLibrary.simpleMessage("パスワード"),
     "paste": MessageLookupByLibrary.simpleMessage("貼り付け"),
+    "pause": MessageLookupByLibrary.simpleMessage("一時停止"),
+    "pausedNewLines": m25,
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage(
       "WebDAVをバインドしてください",
     ),
@@ -598,7 +605,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "port": MessageLookupByLibrary.simpleMessage("ポート"),
     "portConflictTip": MessageLookupByLibrary.simpleMessage("別のポートを入力してください"),
-    "portTip": m25,
+    "portTip": m26,
     "preferH3Desc": MessageLookupByLibrary.simpleMessage("DOHのHTTP/3を優先使用"),
     "prerequisites": MessageLookupByLibrary.simpleMessage("前提条件"),
     "pressKeyboard": MessageLookupByLibrary.simpleMessage("キーボードを押してください"),
@@ -711,6 +718,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "restoreStrategy_compatible": MessageLookupByLibrary.simpleMessage("互換"),
     "restoreStrategy_override": MessageLookupByLibrary.simpleMessage("上書き"),
     "restoreSuccess": MessageLookupByLibrary.simpleMessage("復元に成功しました"),
+    "resume": MessageLookupByLibrary.simpleMessage("再開"),
     "routeAddress": MessageLookupByLibrary.simpleMessage("ルートアドレス"),
     "routeAddressDesc": MessageLookupByLibrary.simpleMessage("ルートアドレスを設定"),
     "routeMode": MessageLookupByLibrary.simpleMessage("ルートモード"),
@@ -824,7 +832,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "search": MessageLookupByLibrary.simpleMessage("検索"),
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
-    "secondsCount": m26,
+    "secondsCount": m27,
     "selectAll": MessageLookupByLibrary.simpleMessage("すべて選択"),
     "selectProxies": MessageLookupByLibrary.simpleMessage("プロキシを選択"),
     "selectProxyProviders": MessageLookupByLibrary.simpleMessage(
@@ -836,16 +844,16 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "selectSubRule": MessageLookupByLibrary.simpleMessage("サブルールを選択してください"),
     "selected": MessageLookupByLibrary.simpleMessage("選択済み"),
-    "selectedCountTitle": m27,
+    "selectedCountTitle": m28,
     "serviceAvailability": MessageLookupByLibrary.simpleMessage("サービスの利用可否"),
     "serviceCheckPrivacyTip": MessageLookupByLibrary.simpleMessage(
       "確認は現在のプロキシ経由で各サービスに直接接続します。プロファイル、サブスクリプション、ログの内容は送信されません。",
     ),
-    "servicesAvailable": m28,
+    "servicesAvailable": m29,
     "servicesLabel": MessageLookupByLibrary.simpleMessage("サービス"),
     "settings": MessageLookupByLibrary.simpleMessage("設定"),
     "show": MessageLookupByLibrary.simpleMessage("表示"),
-    "showOnly": m29,
+    "showOnly": m30,
     "shrink": MessageLookupByLibrary.simpleMessage("縮小"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("バックグラウンド起動"),
     "silentLaunchDesc": MessageLookupByLibrary.simpleMessage("バックグラウンドで起動"),
@@ -944,11 +952,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage("不明なネットワークエラー"),
     "unnamed": MessageLookupByLibrary.simpleMessage("無題"),
     "update": MessageLookupByLibrary.simpleMessage("更新"),
-    "updatedAgo": m30,
+    "updatedAgo": m31,
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URL経由でプロファイルを取得"),
-    "urlTip": m31,
+    "urlTip": m32,
     "useHosts": MessageLookupByLibrary.simpleMessage("ホストを使用"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("システムホストを使用"),
     "userAgent": MessageLookupByLibrary.simpleMessage("ユーザーエージェント"),
@@ -964,7 +972,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "vpnTip": MessageLookupByLibrary.simpleMessage("変更はVPN再起動後に有効"),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV設定"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
-    "yearsAgo": m32,
+    "yearsAgo": m33,
     "zh_CN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
     "zh_TW": MessageLookupByLibrary.simpleMessage("繁体字中国語"),
   };

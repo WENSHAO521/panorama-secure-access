@@ -196,6 +196,12 @@ class _PanoramaActionIcons {
   IconData get closeConnection => _icon(Icons.block);
 
   IconData get pickColor => _icon(Icons.colorize);
+
+  /// Stop a live view from updating.
+  IconData get pause => _icon(Icons.pause);
+
+  /// Let a paused live view update again.
+  IconData get resume => _icon(Icons.play_arrow);
 }
 
 class _PanoramaNetworkIcons {

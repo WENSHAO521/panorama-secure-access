@@ -634,5 +634,10 @@
   "dnsFromFallback": "アプリの DNS 設定とシステムリゾルバー（プロファイルの DNS はオフ）",
   "systemResolver": "システムリゾルバー",
   "dnsRuleCount": "{count} 件のルール",
-  "dnsConfigNote": "コアが使用している DNS 設定です。実際に応答しているリゾルバーはここでは確認しません。"
+  "dnsConfigNote": "コアが使用している DNS 設定です。実際に応答しているリゾルバーはここでは確認しません。",
+  "pause": "一時停止",
+  "resume": "再開",
+  "pausedNewLines": "{count, plural, =0{一時停止中} other{一時停止中 · 新着 {count} 行}}",
+  "copyAll": "すべてコピー",
+  "clearLogs": "ログを消去"
 }

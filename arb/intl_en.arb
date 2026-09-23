@@ -634,5 +634,10 @@
   "dnsFromFallback": "App DNS settings plus the system resolver (the profile has DNS off)",
   "systemResolver": "System resolver",
   "dnsRuleCount": "{count, plural, =1{1 rule} other{{count} rules}}",
-  "dnsConfigNote": "This is the DNS configuration the core runs with. Which resolver actually answers is not checked here."
+  "dnsConfigNote": "This is the DNS configuration the core runs with. Which resolver actually answers is not checked here.",
+  "pause": "Pause",
+  "resume": "Resume",
+  "pausedNewLines": "{count, plural, =0{Paused} =1{Paused · 1 new line} other{Paused · {count} new lines}}",
+  "copyAll": "Copy all",
+  "clearLogs": "Clear logs"
 }

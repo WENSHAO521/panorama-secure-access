@@ -5160,6 +5160,39 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Pause`
+  String get pause {
+    return Intl.message('Pause', name: 'pause', desc: '', args: []);
+  }
+
+  /// `Resume`
+  String get resume {
+    return Intl.message('Resume', name: 'resume', desc: '', args: []);
+  }
+
+  /// `{count, plural, =0{Paused} =1{Paused · 1 new line} other{Paused · {count} new lines}}`
+  String pausedNewLines(num count) {
+    return Intl.plural(
+      count,
+      zero: 'Paused',
+      one: 'Paused · 1 new line',
+      other: 'Paused · $count new lines',
+      name: 'pausedNewLines',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Copy all`
+  String get copyAll {
+    return Intl.message('Copy all', name: 'copyAll', desc: '', args: []);
+  }
+
+  /// `Clear logs`
+  String get clearLogs {
+    return Intl.message('Clear logs', name: 'clearLogs', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

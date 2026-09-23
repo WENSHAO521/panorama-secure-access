@@ -71,21 +71,24 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m24(label) => "${label}必须为数字";
 
-  static String m25(label) => "${label} 必须在 1024 到 49151 之间";
+  static String m25(count) =>
+      "${Intl.plural(count, zero: '已暂停', other: '已暂停 · ${count} 条新日志')}";
 
-  static String m26(count) => "${count} 秒";
+  static String m26(label) => "${label} 必须在 1024 到 49151 之间";
 
-  static String m27(count) => "已选择 ${count} 项";
+  static String m27(count) => "${count} 秒";
 
-  static String m28(available, total) => "${available} / ${total} 可用";
+  static String m28(count) => "已选择 ${count} 项";
 
-  static String m29(value) => "仅显示“${value}”";
+  static String m29(available, total) => "${available} / ${total} 可用";
 
-  static String m30(time) => "更新于 ${time}";
+  static String m30(value) => "仅显示“${value}”";
 
-  static String m31(label) => "${label}必须为URL";
+  static String m31(time) => "更新于 ${time}";
 
-  static String m32(count) => "${count} 年前";
+  static String m32(label) => "${label}必须为URL";
+
+  static String m33(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -182,6 +185,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "checkUpdateError": MessageLookupByLibrary.simpleMessage("当前应用已经是最新版了"),
     "checkedAt": m0,
     "clearData": MessageLookupByLibrary.simpleMessage("清除数据"),
+    "clearLogs": MessageLookupByLibrary.simpleMessage("清空日志"),
     "clipboardExport": MessageLookupByLibrary.simpleMessage("导出剪贴板"),
     "clipboardImport": MessageLookupByLibrary.simpleMessage("剪贴板导入"),
     "closeConnection": MessageLookupByLibrary.simpleMessage("关闭连接"),
@@ -216,6 +220,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "contentScheme": MessageLookupByLibrary.simpleMessage("内容主题"),
     "controlGlobalAddedRules": MessageLookupByLibrary.simpleMessage("控制全局附加规则"),
     "copy": MessageLookupByLibrary.simpleMessage("复制"),
+    "copyAll": MessageLookupByLibrary.simpleMessage("全部复制"),
     "copyDestination": MessageLookupByLibrary.simpleMessage("复制目标地址"),
     "copyEnvVar": MessageLookupByLibrary.simpleMessage("复制环境变量"),
     "copyLink": MessageLookupByLibrary.simpleMessage("复制链接"),
@@ -518,6 +523,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "palette": MessageLookupByLibrary.simpleMessage("调色板"),
     "password": MessageLookupByLibrary.simpleMessage("密码"),
     "paste": MessageLookupByLibrary.simpleMessage("粘贴"),
+    "pause": MessageLookupByLibrary.simpleMessage("暂停"),
+    "pausedNewLines": m25,
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage("请绑定WebDAV"),
     "pleaseEnterScriptName": MessageLookupByLibrary.simpleMessage("请输入脚本名称"),
     "pleaseInputAdminPassword": MessageLookupByLibrary.simpleMessage(
@@ -528,7 +535,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "port": MessageLookupByLibrary.simpleMessage("端口"),
     "portConflictTip": MessageLookupByLibrary.simpleMessage("请输入不同的端口"),
-    "portTip": m25,
+    "portTip": m26,
     "preferH3Desc": MessageLookupByLibrary.simpleMessage("优先使用DOH的http/3"),
     "prerequisites": MessageLookupByLibrary.simpleMessage("前置条件"),
     "pressKeyboard": MessageLookupByLibrary.simpleMessage("请按下按键"),
@@ -627,6 +634,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "restoreStrategy_compatible": MessageLookupByLibrary.simpleMessage("兼容"),
     "restoreStrategy_override": MessageLookupByLibrary.simpleMessage("覆盖"),
     "restoreSuccess": MessageLookupByLibrary.simpleMessage("恢复成功"),
+    "resume": MessageLookupByLibrary.simpleMessage("继续"),
     "routeAddress": MessageLookupByLibrary.simpleMessage("路由地址"),
     "routeAddressDesc": MessageLookupByLibrary.simpleMessage("配置监听路由地址"),
     "routeMode": MessageLookupByLibrary.simpleMessage("路由模式"),
@@ -718,7 +726,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "search": MessageLookupByLibrary.simpleMessage("搜索"),
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
-    "secondsCount": m26,
+    "secondsCount": m27,
     "selectAll": MessageLookupByLibrary.simpleMessage("全选"),
     "selectProxies": MessageLookupByLibrary.simpleMessage("选择代理"),
     "selectProxyProviders": MessageLookupByLibrary.simpleMessage("选择代理集"),
@@ -726,16 +734,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "selectSplitStrategy": MessageLookupByLibrary.simpleMessage("请选择分流策略"),
     "selectSubRule": MessageLookupByLibrary.simpleMessage("请选择子规则"),
     "selected": MessageLookupByLibrary.simpleMessage("已选择"),
-    "selectedCountTitle": m27,
+    "selectedCountTitle": m28,
     "serviceAvailability": MessageLookupByLibrary.simpleMessage("服务可用性"),
     "serviceCheckPrivacyTip": MessageLookupByLibrary.simpleMessage(
       "检测会通过当前代理直接访问各服务，不会发送配置、订阅或日志中的任何内容。",
     ),
-    "servicesAvailable": m28,
+    "servicesAvailable": m29,
     "servicesLabel": MessageLookupByLibrary.simpleMessage("服务"),
     "settings": MessageLookupByLibrary.simpleMessage("设置"),
     "show": MessageLookupByLibrary.simpleMessage("显示"),
-    "showOnly": m29,
+    "showOnly": m30,
     "shrink": MessageLookupByLibrary.simpleMessage("紧凑"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("静默启动"),
     "silentLaunchDesc": MessageLookupByLibrary.simpleMessage("后台启动"),
@@ -828,11 +836,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage("未知网络错误"),
     "unnamed": MessageLookupByLibrary.simpleMessage("未命名"),
     "update": MessageLookupByLibrary.simpleMessage("更新"),
-    "updatedAgo": m30,
+    "updatedAgo": m31,
     "upload": MessageLookupByLibrary.simpleMessage("上传"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("通过URL获取配置文件"),
-    "urlTip": m31,
+    "urlTip": m32,
     "useHosts": MessageLookupByLibrary.simpleMessage("使用Hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("使用系统Hosts"),
     "userAgent": MessageLookupByLibrary.simpleMessage("用户代理"),
@@ -848,7 +856,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "vpnTip": MessageLookupByLibrary.simpleMessage("重启VPN后改变生效"),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV配置"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名单模式"),
-    "yearsAgo": m32,
+    "yearsAgo": m33,
     "zh_CN": MessageLookupByLibrary.simpleMessage("中文简体"),
     "zh_TW": MessageLookupByLibrary.simpleMessage("中文繁体"),
   };

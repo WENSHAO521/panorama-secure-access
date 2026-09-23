@@ -634,5 +634,10 @@
   "dnsFromFallback": "应用 DNS 设置加系统解析器（配置文件未启用 DNS）",
   "systemResolver": "系统解析器",
   "dnsRuleCount": "{count} 条规则",
-  "dnsConfigNote": "这是内核使用的 DNS 配置。此处不检测实际应答的解析器。"
+  "dnsConfigNote": "这是内核使用的 DNS 配置。此处不检测实际应答的解析器。",
+  "pause": "暂停",
+  "resume": "继续",
+  "pausedNewLines": "{count, plural, =0{已暂停} other{已暂停 · {count} 条新日志}}",
+  "copyAll": "全部复制",
+  "clearLogs": "清空日志"
 }

@@ -75,21 +75,24 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m24(label) => "${label}은(는) 숫자여야 합니다";
 
-  static String m25(label) => "${label}은(는) 1024에서 49151 사이여야 합니다";
+  static String m25(count) =>
+      "${Intl.plural(count, zero: '일시 중지됨', other: '일시 중지됨 · 새 줄 ${count}개')}";
 
-  static String m26(count) => "${count}초";
+  static String m26(label) => "${label}은(는) 1024에서 49151 사이여야 합니다";
 
-  static String m27(count) => "${count}개 항목이 선택되었습니다";
+  static String m27(count) => "${count}초";
 
-  static String m28(available, total) => "${total}개 중 ${available}개 이용 가능";
+  static String m28(count) => "${count}개 항목이 선택되었습니다";
 
-  static String m29(value) => "“${value}”만 표시";
+  static String m29(available, total) => "${total}개 중 ${available}개 이용 가능";
 
-  static String m30(time) => "${time} 업데이트됨";
+  static String m30(value) => "“${value}”만 표시";
 
-  static String m31(label) => "${label}은(는) URL 형식이어야 합니다";
+  static String m31(time) => "${time} 업데이트됨";
 
-  static String m32(count) =>
+  static String m32(label) => "${label}은(는) URL 형식이어야 합니다";
+
+  static String m33(count) =>
       "${Intl.plural(count, one: '1년 전', other: '${count}년 전')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -211,6 +214,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "checkedAt": m0,
     "clearData": MessageLookupByLibrary.simpleMessage("데이터 지우기"),
+    "clearLogs": MessageLookupByLibrary.simpleMessage("로그 지우기"),
     "clipboardExport": MessageLookupByLibrary.simpleMessage("클립보드로 내보내기"),
     "clipboardImport": MessageLookupByLibrary.simpleMessage("클립보드에서 가져오기"),
     "closeConnection": MessageLookupByLibrary.simpleMessage("연결 닫기"),
@@ -257,6 +261,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "전역 추가 규칙 제어",
     ),
     "copy": MessageLookupByLibrary.simpleMessage("복사"),
+    "copyAll": MessageLookupByLibrary.simpleMessage("모두 복사"),
     "copyDestination": MessageLookupByLibrary.simpleMessage("대상 복사"),
     "copyEnvVar": MessageLookupByLibrary.simpleMessage("환경 변수 복사 중"),
     "copyLink": MessageLookupByLibrary.simpleMessage("링크 복사"),
@@ -609,6 +614,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "palette": MessageLookupByLibrary.simpleMessage("팔레트"),
     "password": MessageLookupByLibrary.simpleMessage("비밀번호"),
     "paste": MessageLookupByLibrary.simpleMessage("붙여넣기"),
+    "pause": MessageLookupByLibrary.simpleMessage("일시 중지"),
+    "pausedNewLines": m25,
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage("WebDAV를 연결해 주세요"),
     "pleaseEnterScriptName": MessageLookupByLibrary.simpleMessage(
       "스크립트 이름을 입력해 주세요",
@@ -621,7 +628,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "port": MessageLookupByLibrary.simpleMessage("포트"),
     "portConflictTip": MessageLookupByLibrary.simpleMessage("다른 포트를 입력해 주세요"),
-    "portTip": m25,
+    "portTip": m26,
     "preferH3Desc": MessageLookupByLibrary.simpleMessage(
       "DOH의 http/3 사용을 우선합니다",
     ),
@@ -738,6 +745,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "restoreStrategy_compatible": MessageLookupByLibrary.simpleMessage("호환"),
     "restoreStrategy_override": MessageLookupByLibrary.simpleMessage("덮어쓰기"),
     "restoreSuccess": MessageLookupByLibrary.simpleMessage("복원 성공"),
+    "resume": MessageLookupByLibrary.simpleMessage("재개"),
     "routeAddress": MessageLookupByLibrary.simpleMessage("라우트 주소"),
     "routeAddressDesc": MessageLookupByLibrary.simpleMessage(
       "리스닝 라우트 주소를 설정합니다",
@@ -841,7 +849,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "search": MessageLookupByLibrary.simpleMessage("검색"),
     "seconds": MessageLookupByLibrary.simpleMessage("초"),
-    "secondsCount": m26,
+    "secondsCount": m27,
     "selectAll": MessageLookupByLibrary.simpleMessage("전체 선택"),
     "selectProxies": MessageLookupByLibrary.simpleMessage("프록시 선택"),
     "selectProxyProviders": MessageLookupByLibrary.simpleMessage("프록시 제공자 선택"),
@@ -851,16 +859,16 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "selectSubRule": MessageLookupByLibrary.simpleMessage("하위 규칙을 선택해 주세요"),
     "selected": MessageLookupByLibrary.simpleMessage("선택됨"),
-    "selectedCountTitle": m27,
+    "selectedCountTitle": m28,
     "serviceAvailability": MessageLookupByLibrary.simpleMessage("서비스 이용 가능 여부"),
     "serviceCheckPrivacyTip": MessageLookupByLibrary.simpleMessage(
       "현재 프록시를 통해 각 서비스에 직접 연결해 확인합니다. 프로필, 구독, 로그 내용은 전송되지 않습니다.",
     ),
-    "servicesAvailable": m28,
+    "servicesAvailable": m29,
     "servicesLabel": MessageLookupByLibrary.simpleMessage("서비스"),
     "settings": MessageLookupByLibrary.simpleMessage("설정"),
     "show": MessageLookupByLibrary.simpleMessage("표시"),
-    "showOnly": m29,
+    "showOnly": m30,
     "shrink": MessageLookupByLibrary.simpleMessage("축소"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("조용히 시작"),
     "silentLaunchDesc": MessageLookupByLibrary.simpleMessage("백그라운드에서 시작합니다"),
@@ -967,11 +975,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "unnamed": MessageLookupByLibrary.simpleMessage("이름 없음"),
     "update": MessageLookupByLibrary.simpleMessage("업데이트"),
-    "updatedAgo": m30,
+    "updatedAgo": m31,
     "upload": MessageLookupByLibrary.simpleMessage("업로드"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URL을 통해 프로필을 가져옵니다"),
-    "urlTip": m31,
+    "urlTip": m32,
     "useHosts": MessageLookupByLibrary.simpleMessage("Hosts 사용"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("시스템 Hosts 사용"),
     "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
@@ -987,7 +995,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "vpnTip": MessageLookupByLibrary.simpleMessage("VPN을 재시작해야 변경 사항이 적용됩니다"),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV 설정"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("화이트리스트 모드"),
-    "yearsAgo": m32,
+    "yearsAgo": m33,
     "zh_CN": MessageLookupByLibrary.simpleMessage("중국어 간체"),
     "zh_TW": MessageLookupByLibrary.simpleMessage("중국어 번체"),
   };

@@ -634,5 +634,10 @@
   "dnsFromFallback": "應用 DNS 設定加系統解析器（設定檔未啟用 DNS）",
   "systemResolver": "系統解析器",
   "dnsRuleCount": "{count} 條規則",
-  "dnsConfigNote": "這是核心使用的 DNS 設定。此處不檢測實際回應的解析器。"
+  "dnsConfigNote": "這是核心使用的 DNS 設定。此處不檢測實際回應的解析器。",
+  "pause": "暫停",
+  "resume": "繼續",
+  "pausedNewLines": "{count, plural, =0{已暫停} other{已暫停 · {count} 條新日誌}}",
+  "copyAll": "全部複製",
+  "clearLogs": "清除日誌"
 }
