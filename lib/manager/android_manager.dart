@@ -39,10 +39,14 @@ class _AndroidContainerState extends ConsumerState<AndroidManager>
       }
     });
     service?.addListener(this);
+    app?.onPackagesChanged = () {
+      ref.read(systemActionProvider.notifier).reloadPackages();
+    };
   }
 
   @override
   Future<void> dispose() async {
+    app?.onPackagesChanged = null;
     service?.removeListener(this);
     super.dispose();
   }

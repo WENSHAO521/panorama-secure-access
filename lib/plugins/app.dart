@@ -11,6 +11,9 @@ class App {
   late MethodChannel methodChannel;
   Function()? onExit;
 
+  /// An app was installed, updated or removed (Android).
+  Function()? onPackagesChanged;
+
   App._internal() {
     methodChannel = const MethodChannel('$packageName/app');
     methodChannel.setMethodCallHandler((call) async {
@@ -19,6 +22,8 @@ class App {
           if (onExit != null) {
             await onExit!();
           }
+        case 'packagesChanged':
+          onPackagesChanged?.call();
         default:
           throw MissingPluginException();
       }

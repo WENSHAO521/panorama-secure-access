@@ -610,6 +610,15 @@ class SystemAction extends _$SystemAction {
     return ref.read(packagesProvider);
   }
 
+  /// Refreshes the installed-app list after the system reports a change,
+  /// if it was loaded; an unloaded list is fetched fresh on first use.
+  Future<void> reloadPackages() async {
+    if (ref.read(packagesProvider).isEmpty) return;
+    final packages = await app?.getPackages();
+    if (packages == null || !ref.mounted) return;
+    ref.read(packagesProvider.notifier).value = packages;
+  }
+
   Future<void> handleExit([bool needSave = false]) async {
     Future.delayed(const Duration(seconds: 3), () {
       system.exit();

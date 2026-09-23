@@ -3,9 +3,10 @@ package com.follow.clash.plugins
 import android.Manifest
 import android.app.Activity
 import android.app.ActivityManager
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
-import android.content.pm.ApplicationInfo
-import android.content.pm.ComponentInfo
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.VpnService
 import android.os.Build
@@ -20,14 +21,14 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.net.toUri
-import com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile
 import com.follow.clash.R
 import com.follow.clash.common.Components
 import com.follow.clash.common.GlobalState
 import com.follow.clash.common.QuickAction
 import com.follow.clash.common.quickIntent
+import com.follow.clash.common.registerReceiverCompat
 import com.follow.clash.getPackageIconPath
-import com.follow.clash.models.Package
+import com.follow.clash.packages.PackageResolver
 import com.follow.clash.showToast
 import com.google.gson.Gson
 import io.flutter.embedding.android.FlutterActivity
@@ -44,7 +45,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.lang.ref.WeakReference
-import java.util.zip.ZipFile
 
 class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware {
 
@@ -63,61 +63,33 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
 
     private var requestNotificationCallback: (() -> Unit)? = null
 
-    private val packages = mutableListOf<Package>()
+    private val packageResolver by lazy {
+        PackageResolver(
+            GlobalState.application.packageManager,
+            GlobalState.application.packageName,
+        )
+    }
 
-    private val skipPrefixList = listOf(
-        "com.google",
-        "com.android.chrome",
-        "com.android.vending",
-        "com.microsoft",
-        "com.apple",
-        "com.zhiliaoapp.musically", // Banned by China
-    )
+    private var packageChangeContext: Context? = null
 
-    private val chinaAppPrefixList = listOf(
-        "com.tencent",
-        "com.alibaba",
-        "com.umeng",
-        "com.qihoo",
-        "com.ali",
-        "com.alipay",
-        "com.amap",
-        "com.sina",
-        "com.weibo",
-        "com.vivo",
-        "com.xiaomi",
-        "com.huawei",
-        "com.taobao",
-        "com.secneo",
-        "s.h.e.l.l",
-        "com.stub",
-        "com.kiwisec",
-        "com.secshell",
-        "com.wrapper",
-        "cn.securitystack",
-        "com.mogosec",
-        "com.secoen",
-        "com.netease",
-        "com.mx",
-        "com.qq.e",
-        "com.baidu",
-        "com.bytedance",
-        "com.bugly",
-        "com.miui",
-        "com.oppo",
-        "com.coloros",
-        "com.iqoo",
-        "com.meizu",
-        "com.gionee",
-        "cn.nubia",
-        "com.oplus",
-        "andes.oplus",
-        "com.unionpay",
-        "cn.wps"
-    )
-
-    private val chinaAppRegex by lazy {
-        ("(" + chinaAppPrefixList.joinToString("|").replace(".", "\\.") + ").*").toRegex()
+    // Apps installed, updated or removed while Panorama runs: drop the cached
+    // list and tell the app, so per-app routing never shows a stale list.
+    private val packageChangeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent == null ||
+                intent.data?.schemeSpecificPart == GlobalState.application.packageName
+            ) {
+                return
+            }
+            // An update sends ADDED (replacing) and then REPLACED; act once.
+            val addedByUpdate = intent.action == Intent.ACTION_PACKAGE_ADDED &&
+                intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)
+            if (addedByUpdate) {
+                return
+            }
+            packageResolver.invalidate()
+            channel.invokeMethod("packagesChanged", null)
+        }
     }
 
     private var isBlockNotification: Boolean = false
@@ -293,35 +265,15 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     }
 
 
-    private fun getPackages(): List<Package> {
-        val packageManager = GlobalState.application.packageManager
-        if (packages.isNotEmpty()) return packages
-        packageManager?.getInstalledPackages(PackageManager.GET_META_DATA or PackageManager.GET_PERMISSIONS)
-            ?.filter {
-                it.packageName != GlobalState.application.packageName && it.packageName != "android"
-            }?.map {
-                Package(
-                    packageName = it.packageName,
-                    label = it.applicationInfo?.loadLabel(packageManager).toString(),
-                    system = (it.applicationInfo?.flags?.and(ApplicationInfo.FLAG_SYSTEM)) != 0,
-                    lastUpdateTime = it.lastUpdateTime,
-                    internet = it.requestedPermissions?.contains(Manifest.permission.INTERNET) == true
-                )
-            }?.let { packages.addAll(it) }
-        return packages
-    }
-
     private suspend fun getPackagesToJson(): String {
         return withContext(Dispatchers.Default) {
-            Gson().toJson(getPackages())
+            Gson().toJson(packageResolver.installedPackages)
         }
     }
 
     private suspend fun getChinaPackageNames(): String {
         return withContext(Dispatchers.Default) {
-            val packages: List<String> =
-                getPackages().map { it.packageName }.filter { isChinaPackage(it) }
-            Gson().toJson(packages)
+            Gson().toJson(packageResolver.getChinaPackageNames())
         }
     }
 
@@ -376,79 +328,28 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     }
 
 
-    @Suppress("DEPRECATION")
-    private fun isChinaPackage(packageName: String): Boolean {
-        val packageManager = GlobalState.application.packageManager ?: return false
-        skipPrefixList.forEach {
-            if (packageName == it || packageName.startsWith("$it.")) return false
-        }
-        val packageManagerFlags =
-            PackageManager.MATCH_UNINSTALLED_PACKAGES or PackageManager.GET_ACTIVITIES or PackageManager.GET_SERVICES or PackageManager.GET_RECEIVERS or PackageManager.GET_PROVIDERS
-        if (packageName.matches(chinaAppRegex)) {
-            return true
-        }
-        try {
-            val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                packageManager.getPackageInfo(
-                    packageName, PackageManager.PackageInfoFlags.of(packageManagerFlags.toLong())
-                )
-            } else {
-                packageManager.getPackageInfo(
-                    packageName, packageManagerFlags
-                )
-            }
-            mutableListOf<ComponentInfo>().apply {
-                packageInfo.services?.let { addAll(it) }
-                packageInfo.activities?.let { addAll(it) }
-                packageInfo.receivers?.let { addAll(it) }
-                packageInfo.providers?.let { addAll(it) }
-            }.forEach {
-                if (it.name.matches(chinaAppRegex)) return true
-            }
-            packageInfo.applicationInfo?.publicSourceDir?.let {
-                ZipFile(File(it)).use {
-                    for (packageEntry in it.entries()) {
-                        if (packageEntry.name.startsWith("firebase-")) return false
-                    }
-                    for (packageEntry in it.entries()) {
-                        if (!(packageEntry.name.startsWith("classes") && packageEntry.name.endsWith(
-                                ".dex"
-                            ))
-                        ) {
-                            continue
-                        }
-                        if (packageEntry.size > 15000000) {
-                            return true
-                        }
-                        val input = it.getInputStream(packageEntry).buffered()
-                        val dexFile = try {
-                            DexBackedDexFile.fromInputStream(null, input)
-                        } catch (e: Exception) {
-                            return false
-                        }
-                        for (clazz in dexFile.classes) {
-                            val clazzName =
-                                clazz.type.substring(1, clazz.type.length - 1).replace("/", ".")
-                                    .replace("$", ".")
-                            if (clazzName.matches(chinaAppRegex)) return true
-                        }
-                    }
-                }
-            }
-        } catch (_: Exception) {
-            return false
-        }
-        return false
-    }
-
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         scope = CoroutineScope(Dispatchers.Default)
         channel =
             MethodChannel(flutterPluginBinding.binaryMessenger, "${Components.PACKAGE_NAME}/app")
         channel.setMethodCallHandler(this)
+        watchPackageChanges(flutterPluginBinding.applicationContext)
+    }
+
+    private fun watchPackageChanges(context: Context) {
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_ADDED)
+            addAction(Intent.ACTION_PACKAGE_REPLACED)
+            addAction(Intent.ACTION_PACKAGE_FULLY_REMOVED)
+            addDataScheme("package")
+        }
+        context.registerReceiverCompat(packageChangeReceiver, filter)
+        packageChangeContext = context
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        packageChangeContext?.unregisterReceiver(packageChangeReceiver)
+        packageChangeContext = null
         channel.setMethodCallHandler(null)
         scope.cancel()
     }
