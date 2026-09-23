@@ -227,13 +227,14 @@ void main() {
 
   group('buildConfigOverrides', () {
     test('produces correct overrides', () {
-      const config = Config(
-        themeProps: ThemeProps(),
+      final config = Config(
+        themeProps: const ThemeProps(),
         currentProfileId: 7,
         overrideDns: true,
+        backupHistory: BackupHistory(localBackupAt: DateTime(2026, 9, 23)),
       );
       final overrides = buildConfigOverrides(config);
-      expect(overrides.length, 12);
+      expect(overrides.length, 13);
 
       final overrideContainer = ProviderContainer(overrides: overrides);
       addTearDown(overrideContainer.dispose);
@@ -245,6 +246,10 @@ void main() {
         config.patchClashConfig,
       );
       expect(overrideContainer.read(excludeSSIDsProvider), config.excludeSSIDs);
+      expect(
+        overrideContainer.read(backupHistorySettingProvider),
+        config.backupHistory,
+      );
       expect(
         overrideContainer.read(appSettingProvider).onlyStatisticsProxy,
         false,

@@ -307,6 +307,47 @@ const _$DynamicSchemeVariantEnumMap = {
   DynamicSchemeVariant.fruitSalad: 'fruitSalad',
 };
 
+_BackupHistory _$BackupHistoryFromJson(Map<String, dynamic> json) =>
+    _BackupHistory(
+      localBackupAt: json['localBackupAt'] == null
+          ? null
+          : DateTime.parse(json['localBackupAt'] as String),
+      localRestoreAt: json['localRestoreAt'] == null
+          ? null
+          : DateTime.parse(json['localRestoreAt'] as String),
+      remoteBackupAt: json['remoteBackupAt'] == null
+          ? null
+          : DateTime.parse(json['remoteBackupAt'] as String),
+      remoteRestoreAt: json['remoteRestoreAt'] == null
+          ? null
+          : DateTime.parse(json['remoteRestoreAt'] as String),
+      remoteError: $enumDecodeNullable(
+        _$BackupErrorKindEnumMap,
+        json['remoteError'],
+      ),
+      remoteErrorAt: json['remoteErrorAt'] == null
+          ? null
+          : DateTime.parse(json['remoteErrorAt'] as String),
+    );
+
+Map<String, dynamic> _$BackupHistoryToJson(_BackupHistory instance) =>
+    <String, dynamic>{
+      'localBackupAt': instance.localBackupAt?.toIso8601String(),
+      'localRestoreAt': instance.localRestoreAt?.toIso8601String(),
+      'remoteBackupAt': instance.remoteBackupAt?.toIso8601String(),
+      'remoteRestoreAt': instance.remoteRestoreAt?.toIso8601String(),
+      'remoteError': _$BackupErrorKindEnumMap[instance.remoteError],
+      'remoteErrorAt': instance.remoteErrorAt?.toIso8601String(),
+    };
+
+const _$BackupErrorKindEnumMap = {
+  BackupErrorKind.unreachable: 'unreachable',
+  BackupErrorKind.unauthorized: 'unauthorized',
+  BackupErrorKind.notFound: 'notFound',
+  BackupErrorKind.server: 'server',
+  BackupErrorKind.failed: 'failed',
+};
+
 _Config _$ConfigFromJson(Map<String, dynamic> json) => _Config(
   currentProfileId: (json['currentProfileId'] as num?)?.toInt(),
   overrideDns: json['overrideDns'] as bool? ?? false,
@@ -350,6 +391,9 @@ _Config _$ConfigFromJson(Map<String, dynamic> json) => _Config(
           ?.map((e) => e as String)
           .toList() ??
       const [],
+  backupHistory: json['backupHistory'] == null
+      ? const BackupHistory()
+      : BackupHistory.fromJson(json['backupHistory'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$ConfigToJson(_Config instance) => <String, dynamic>{
@@ -365,4 +409,5 @@ Map<String, dynamic> _$ConfigToJson(_Config instance) => <String, dynamic>{
   'windowProps': instance.windowProps,
   'patchClashConfig': instance.patchClashConfig,
   'excludeSSIDs': instance.excludeSSIDs,
+  'backupHistory': instance.backupHistory,
 };

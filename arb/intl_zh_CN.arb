@@ -642,5 +642,16 @@
   "clearLogs": "清空日志",
   "row": "列表行",
   "nodeDetails": "节点详情",
-  "copyName": "复制名称"
+  "copyName": "复制名称",
+  "davChecking": "检测中…",
+  "davReachable": "可连接",
+  "davUnreachable": "无法连接",
+  "notYet": "尚未进行",
+  "lastDone": "上次：{time}",
+  "lastAttemptFailed": "上次失败：{reason}",
+  "backupErrorUnreachable": "无法连接服务器",
+  "backupErrorUnauthorized": "账号或密码被拒绝",
+  "backupErrorNotFound": "服务器上没有备份文件",
+  "backupErrorServer": "服务器错误",
+  "backupErrorFailed": "未知错误"
 }

@@ -230,6 +230,37 @@ abstract class ThemeProps with _$ThemeProps {
   }
 }
 
+/// When backups and restores last succeeded, and the last WebDAV failure
+/// (brief §75-76). Kept with the app's settings but never taken from a
+/// restored backup: it describes this device.
+@freezed
+abstract class BackupHistory with _$BackupHistory {
+  const factory BackupHistory({
+    DateTime? localBackupAt,
+    DateTime? localRestoreAt,
+    DateTime? remoteBackupAt,
+    DateTime? remoteRestoreAt,
+    BackupErrorKind? remoteError,
+    DateTime? remoteErrorAt,
+  }) = _BackupHistory;
+
+  factory BackupHistory.fromJson(Map<String, Object?> json) =>
+      _$BackupHistoryFromJson(json);
+}
+
+extension BackupHistoryExt on BackupHistory {
+  /// The last WebDAV attempt failed: the error is newer than the last
+  /// WebDAV success.
+  bool get hasRemoteError {
+    final errorAt = remoteErrorAt;
+    if (remoteError == null || errorAt == null) return false;
+    for (final success in [remoteBackupAt, remoteRestoreAt]) {
+      if (success != null && !success.isBefore(errorAt)) return false;
+    }
+    return true;
+  }
+}
+
 @freezed
 abstract class Config with _$Config {
   const factory Config({
@@ -247,6 +278,7 @@ abstract class Config with _$Config {
     @Default(defaultWindowProps) WindowProps windowProps,
     @Default(defaultClashConfig) PatchClashConfig patchClashConfig,
     @Default([]) List<String> excludeSSIDs,
+    @Default(BackupHistory()) BackupHistory backupHistory,
   }) = _Config;
 
   factory Config.fromJson(Map<String, Object?> json) => _$ConfigFromJson(json);

@@ -155,6 +155,10 @@ enum ProxiesType { tab, list }
 
 enum ProxiesLayout { loose, standard, tight }
 
+/// Why the last WebDAV backup or restore failed, as a category: raw error
+/// text can carry the server address, so it isn't stored.
+enum BackupErrorKind { unreachable, unauthorized, notFound, server, failed }
+
 enum ProxyCardType {
   expand,
   shrink,

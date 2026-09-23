@@ -642,5 +642,16 @@
   "clearLogs": "ログを消去",
   "row": "行",
   "nodeDetails": "ノードの詳細",
-  "copyName": "名前をコピー"
+  "copyName": "名前をコピー",
+  "davChecking": "確認中…",
+  "davReachable": "接続可能",
+  "davUnreachable": "接続できません",
+  "notYet": "未実行",
+  "lastDone": "前回：{time}",
+  "lastAttemptFailed": "前回失敗：{reason}",
+  "backupErrorUnreachable": "サーバーに接続できません",
+  "backupErrorUnauthorized": "認証が拒否されました",
+  "backupErrorNotFound": "サーバーにバックアップファイルがありません",
+  "backupErrorServer": "サーバーエラー",
+  "backupErrorFailed": "不明なエラー"
 }

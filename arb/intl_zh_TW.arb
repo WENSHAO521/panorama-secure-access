@@ -642,5 +642,16 @@
   "clearLogs": "清除日誌",
   "row": "列表行",
   "nodeDetails": "節點詳情",
-  "copyName": "複製名稱"
+  "copyName": "複製名稱",
+  "davChecking": "檢測中…",
+  "davReachable": "可連線",
+  "davUnreachable": "無法連線",
+  "notYet": "尚未進行",
+  "lastDone": "上次：{time}",
+  "lastAttemptFailed": "上次失敗：{reason}",
+  "backupErrorUnreachable": "無法連線伺服器",
+  "backupErrorUnauthorized": "帳號或密碼被拒絕",
+  "backupErrorNotFound": "伺服器上沒有備份檔案",
+  "backupErrorServer": "伺服器錯誤",
+  "backupErrorFailed": "未知錯誤"
 }

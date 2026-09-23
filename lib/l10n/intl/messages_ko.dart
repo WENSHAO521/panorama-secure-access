@@ -62,37 +62,41 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m19(subRule) => "${subRule}은(는) 잘못된 SUB_RULE입니다";
 
-  static String m20(appName) =>
+  static String m20(reason) => "마지막 시도 실패: ${reason}";
+
+  static String m21(time) => "마지막: ${time}";
+
+  static String m22(appName) =>
       "1. 시스템 설정 > 개인정보 보호 및 보안을 엽니다\n2. 위치 서비스를 선택합니다\n3. 오른쪽 목록에서 ${appName}을(를) 찾아 체크합니다\n\n설정을 완료한 후 앱으로 돌아와 평소대로 이용해 주세요. 협조해 주셔서 감사합니다.";
 
-  static String m21(count) =>
+  static String m23(count) =>
       "${Intl.plural(count, one: '1분 전', other: '${count}분 전')}";
 
-  static String m22(count) =>
+  static String m24(count) =>
       "${Intl.plural(count, one: '1개월 전', other: '${count}개월 전')}";
 
-  static String m23(label) => "아직 ${label}이(가) 없습니다";
+  static String m25(label) => "아직 ${label}이(가) 없습니다";
 
-  static String m24(label) => "${label}은(는) 숫자여야 합니다";
+  static String m26(label) => "${label}은(는) 숫자여야 합니다";
 
-  static String m25(count) =>
+  static String m27(count) =>
       "${Intl.plural(count, zero: '일시 중지됨', other: '일시 중지됨 · 새 줄 ${count}개')}";
 
-  static String m26(label) => "${label}은(는) 1024에서 49151 사이여야 합니다";
+  static String m28(label) => "${label}은(는) 1024에서 49151 사이여야 합니다";
 
-  static String m27(count) => "${count}초";
+  static String m29(count) => "${count}초";
 
-  static String m28(count) => "${count}개 항목이 선택되었습니다";
+  static String m30(count) => "${count}개 항목이 선택되었습니다";
 
-  static String m29(available, total) => "${total}개 중 ${available}개 이용 가능";
+  static String m31(available, total) => "${total}개 중 ${available}개 이용 가능";
 
-  static String m30(value) => "“${value}”만 표시";
+  static String m32(value) => "“${value}”만 표시";
 
-  static String m31(time) => "${time} 업데이트됨";
+  static String m33(time) => "${time} 업데이트됨";
 
-  static String m32(label) => "${label}은(는) URL 형식이어야 합니다";
+  static String m34(label) => "${label}은(는) URL 형식이어야 합니다";
 
-  static String m33(count) =>
+  static String m35(count) =>
       "${Intl.plural(count, one: '1년 전', other: '${count}년 전')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -178,6 +182,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "backupAndRestore": MessageLookupByLibrary.simpleMessage("백업 및 복원"),
     "backupAndRestoreDesc": MessageLookupByLibrary.simpleMessage(
       "WebDAV 또는 파일을 통해 데이터를 동기화합니다",
+    ),
+    "backupErrorFailed": MessageLookupByLibrary.simpleMessage("알 수 없는 오류"),
+    "backupErrorNotFound": MessageLookupByLibrary.simpleMessage(
+      "서버에 백업 파일이 없음",
+    ),
+    "backupErrorServer": MessageLookupByLibrary.simpleMessage("서버 오류"),
+    "backupErrorUnauthorized": MessageLookupByLibrary.simpleMessage("로그인이 거부됨"),
+    "backupErrorUnreachable": MessageLookupByLibrary.simpleMessage(
+      "서버에 연결할 수 없음",
     ),
     "backupSuccess": MessageLookupByLibrary.simpleMessage("백업 성공"),
     "basicConfig": MessageLookupByLibrary.simpleMessage("기본 설정"),
@@ -291,6 +304,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "이 앱은 앱 안정성 향상을 위해 Firebase Crashlytics를 사용하여 충돌 정보를 수집합니다.\n수집되는 데이터에는 기기 정보와 충돌 세부 정보가 포함되며, 개인 민감 정보는 포함되지 않습니다.\n설정에서 이 기능을 비활성화할 수 있습니다.",
     ),
     "dataCollectionTip": MessageLookupByLibrary.simpleMessage("데이터 수집 안내"),
+    "davChecking": MessageLookupByLibrary.simpleMessage("확인 중…"),
+    "davReachable": MessageLookupByLibrary.simpleMessage("연결 가능"),
+    "davUnreachable": MessageLookupByLibrary.simpleMessage("연결할 수 없음"),
     "daysAgo": m2,
     "defaultNameserver": MessageLookupByLibrary.simpleMessage("기본 네임서버"),
     "defaultNameserverDesc": MessageLookupByLibrary.simpleMessage("DNS 서버 확인용"),
@@ -488,6 +504,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "key": MessageLookupByLibrary.simpleMessage("키"),
     "ko": MessageLookupByLibrary.simpleMessage("한국어"),
     "language": MessageLookupByLibrary.simpleMessage("언어"),
+    "lastAttemptFailed": m20,
+    "lastDone": m21,
     "layout": MessageLookupByLibrary.simpleMessage("레이아웃"),
     "light": MessageLookupByLibrary.simpleMessage("라이트"),
     "list": MessageLookupByLibrary.simpleMessage("목록"),
@@ -507,7 +525,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "locationPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "시스템 요구 사항에 따라 Wi-Fi 이름을 가져오려면 위치 권한을 허용해야 합니다.",
     ),
-    "locationPermissionGuide": m20,
+    "locationPermissionGuide": m22,
     "locationPermissionRequired": MessageLookupByLibrary.simpleMessage(
       "위치 권한 필요",
     ),
@@ -533,11 +551,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "minimizeOnExitDesc": MessageLookupByLibrary.simpleMessage(
       "기본 시스템 종료 동작을 변경합니다",
     ),
-    "minutesAgo": m21,
+    "minutesAgo": m23,
     "mixedPort": MessageLookupByLibrary.simpleMessage("Mixed 포트"),
     "mode": MessageLookupByLibrary.simpleMessage("모드"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("단색"),
-    "monthsAgo": m22,
+    "monthsAgo": m24,
     "more": MessageLookupByLibrary.simpleMessage("더 보기"),
     "name": MessageLookupByLibrary.simpleMessage("이름"),
     "nameserver": MessageLookupByLibrary.simpleMessage("네임서버"),
@@ -582,11 +600,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "notSelectedTip": MessageLookupByLibrary.simpleMessage(
       "현재 프록시 그룹은 선택할 수 없습니다.",
     ),
+    "notYet": MessageLookupByLibrary.simpleMessage("아직 없음"),
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "프로필이 없습니다. 프로필을 추가해 주세요",
     ),
-    "nullTip": m23,
-    "numberTip": m24,
+    "nullTip": m25,
+    "numberTip": m26,
     "onDemand": MessageLookupByLibrary.simpleMessage("온디맨드"),
     "onDemandDesc": MessageLookupByLibrary.simpleMessage(
       "특정 상황에 대한 프로그램 실행 상태를 설정합니다",
@@ -617,7 +636,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "password": MessageLookupByLibrary.simpleMessage("비밀번호"),
     "paste": MessageLookupByLibrary.simpleMessage("붙여넣기"),
     "pause": MessageLookupByLibrary.simpleMessage("일시 중지"),
-    "pausedNewLines": m25,
+    "pausedNewLines": m27,
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage("WebDAV를 연결해 주세요"),
     "pleaseEnterScriptName": MessageLookupByLibrary.simpleMessage(
       "스크립트 이름을 입력해 주세요",
@@ -630,7 +649,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "port": MessageLookupByLibrary.simpleMessage("포트"),
     "portConflictTip": MessageLookupByLibrary.simpleMessage("다른 포트를 입력해 주세요"),
-    "portTip": m26,
+    "portTip": m28,
     "preferH3Desc": MessageLookupByLibrary.simpleMessage(
       "DOH의 http/3 사용을 우선합니다",
     ),
@@ -852,7 +871,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "search": MessageLookupByLibrary.simpleMessage("검색"),
     "seconds": MessageLookupByLibrary.simpleMessage("초"),
-    "secondsCount": m27,
+    "secondsCount": m29,
     "selectAll": MessageLookupByLibrary.simpleMessage("전체 선택"),
     "selectProxies": MessageLookupByLibrary.simpleMessage("프록시 선택"),
     "selectProxyProviders": MessageLookupByLibrary.simpleMessage("프록시 제공자 선택"),
@@ -862,16 +881,16 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "selectSubRule": MessageLookupByLibrary.simpleMessage("하위 규칙을 선택해 주세요"),
     "selected": MessageLookupByLibrary.simpleMessage("선택됨"),
-    "selectedCountTitle": m28,
+    "selectedCountTitle": m30,
     "serviceAvailability": MessageLookupByLibrary.simpleMessage("서비스 이용 가능 여부"),
     "serviceCheckPrivacyTip": MessageLookupByLibrary.simpleMessage(
       "현재 프록시를 통해 각 서비스에 직접 연결해 확인합니다. 프로필, 구독, 로그 내용은 전송되지 않습니다.",
     ),
-    "servicesAvailable": m29,
+    "servicesAvailable": m31,
     "servicesLabel": MessageLookupByLibrary.simpleMessage("서비스"),
     "settings": MessageLookupByLibrary.simpleMessage("설정"),
     "show": MessageLookupByLibrary.simpleMessage("표시"),
-    "showOnly": m30,
+    "showOnly": m32,
     "shrink": MessageLookupByLibrary.simpleMessage("축소"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("조용히 시작"),
     "silentLaunchDesc": MessageLookupByLibrary.simpleMessage("백그라운드에서 시작합니다"),
@@ -978,11 +997,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "unnamed": MessageLookupByLibrary.simpleMessage("이름 없음"),
     "update": MessageLookupByLibrary.simpleMessage("업데이트"),
-    "updatedAgo": m31,
+    "updatedAgo": m33,
     "upload": MessageLookupByLibrary.simpleMessage("업로드"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URL을 통해 프로필을 가져옵니다"),
-    "urlTip": m32,
+    "urlTip": m34,
     "useHosts": MessageLookupByLibrary.simpleMessage("Hosts 사용"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("시스템 Hosts 사용"),
     "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
@@ -998,7 +1017,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "vpnTip": MessageLookupByLibrary.simpleMessage("VPN을 재시작해야 변경 사항이 적용됩니다"),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV 설정"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("화이트리스트 모드"),
-    "yearsAgo": m33,
+    "yearsAgo": m35,
     "zh_CN": MessageLookupByLibrary.simpleMessage("중국어 간체"),
     "zh_TW": MessageLookupByLibrary.simpleMessage("중국어 번체"),
   };

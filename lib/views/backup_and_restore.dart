@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/dav_client.dart';
+import 'package:fl_clash/design/colors/panorama_colors.dart';
 import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
@@ -10,6 +11,7 @@ import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/widgets/builder.dart';
 import 'package:fl_clash/widgets/dialog.dart';
 import 'package:fl_clash/widgets/fade_box.dart';
 import 'package:fl_clash/widgets/glass.dart';
@@ -70,7 +72,15 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
         if (path.isEmpty) {
           return false;
         }
-        return client.backup(path);
+        final history = ref.read(backupHistorySettingProvider.notifier);
+        try {
+          final ok = await client.backup(path);
+          if (ok) history.recordSuccess(BackupEvent.remoteBackup);
+          return ok;
+        } catch (e) {
+          history.recordRemoteError(e);
+          rethrow;
+        }
       },
       tag: LoadingTag.backup_restore,
       title: appLocalizations.backup,
@@ -90,10 +100,17 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
         if (client == null) {
           return false;
         }
-        await client.restore();
+        final history = ref.read(backupHistorySettingProvider.notifier);
+        try {
+          await client.restore();
+        } catch (e) {
+          history.recordRemoteError(e);
+          rethrow;
+        }
         await globalState.container
             .read(backupActionProvider.notifier)
             .restore(option);
+        history.recordSuccess(BackupEvent.remoteRestore);
         return true;
       },
       tag: LoadingTag.backup_restore,
@@ -129,6 +146,9 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
           path,
         );
         if (value == null) return false;
+        ref
+            .read(backupHistorySettingProvider.notifier)
+            .recordSuccess(BackupEvent.localBackup);
         return true;
       },
       title: appLocalizations.backup,
@@ -152,6 +172,9 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
         await globalState.container
             .read(backupActionProvider.notifier)
             .restore(option);
+        ref
+            .read(backupHistorySettingProvider.notifier)
+            .recordSuccess(BackupEvent.localRestore);
         return true;
       },
       tag: LoadingTag.backup_restore,
@@ -206,6 +229,7 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
     final appLocalizations = context.appLocalizations;
     final dav = ref.watch(davSettingProvider);
     final isLoading = ref.watch(loadingProvider(LoadingTag.backup_restore));
+    final history = ref.watch(backupHistorySettingProvider);
     return CommonScaffold(
       isLoading: isLoading,
       title: appLocalizations.backupAndRestore,
@@ -239,7 +263,13 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(appLocalizations.connectivity),
+                    Flexible(
+                      child: Text(
+                        appLocalizations.connectivity,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                     ValueListenableBuilder(
                       valueListenable: _davConnection,
                       builder: (_, isCompleter, _) {
@@ -267,6 +297,19 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
                         );
                       },
                     ),
+                    const SizedBox(width: 6),
+                    // The dot alone relies on colour (brief §100).
+                    Flexible(
+                      child: ValueListenableBuilder(
+                        valueListenable: _davConnection,
+                        builder: (_, isReachable, _) =>
+                            Text(switch (isReachable) {
+                              null => appLocalizations.davChecking,
+                              true => appLocalizations.davReachable,
+                              false => appLocalizations.davUnreachable,
+                            }),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -277,6 +320,11 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
                 child: Text(appLocalizations.edit),
               ),
             ),
+            if (history.hasRemoteError)
+              _RemoteErrorItem(
+                kind: history.remoteError!,
+                at: history.remoteErrorAt!,
+              ),
             const SizedBox(height: 4),
             ListItem.input(
               title: Text(appLocalizations.file),
@@ -297,6 +345,7 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
               },
               title: Text(appLocalizations.backup),
               subtitle: Text(appLocalizations.remoteBackupDesc),
+              trailing: _LastDone(history.remoteBackupAt),
             ),
             ListItem(
               onTap: () {
@@ -304,6 +353,7 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
               },
               title: Text(appLocalizations.restore),
               subtitle: Text(appLocalizations.restoreFromWebDAVDesc),
+              trailing: _LastDone(history.remoteRestoreAt),
             ),
           ],
           ListHeader(title: appLocalizations.local),
@@ -313,6 +363,7 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
             },
             title: Text(appLocalizations.backup),
             subtitle: Text(appLocalizations.localBackupDesc),
+            trailing: _LastDone(history.localBackupAt),
           ),
           ListItem(
             onTap: () {
@@ -320,6 +371,7 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
             },
             title: Text(appLocalizations.restore),
             subtitle: Text(appLocalizations.restoreFromFileDesc),
+            trailing: _LastDone(history.localRestoreAt),
           ),
           ListHeader(title: appLocalizations.options),
           Consumer(
@@ -345,6 +397,58 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
           ),
         ],
       ),
+    );
+  }
+}
+
+/// When an action last succeeded on this device (brief §76).
+class _LastDone extends StatelessWidget {
+  final DateTime? at;
+
+  const _LastDone(this.at);
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.appLocalizations;
+    final style = context.textTheme.bodySmall?.copyWith(
+      color: context.colorScheme.labelSecondary,
+    );
+    final at = this.at;
+    if (at == null) return Text(l.notYet, style: style);
+    return Tooltip(
+      message: at.showFull,
+      child: TickBuilder(
+        duration: const Duration(minutes: 1),
+        builder: (context, _) =>
+            Text(l.lastDone(at.getLastUpdateTimeDesc(context)), style: style),
+      ),
+    );
+  }
+}
+
+class _RemoteErrorItem extends StatelessWidget {
+  final BackupErrorKind kind;
+  final DateTime at;
+
+  const _RemoteErrorItem({required this.kind, required this.at});
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.appLocalizations;
+    final reason = switch (kind) {
+      BackupErrorKind.unreachable => l.backupErrorUnreachable,
+      BackupErrorKind.unauthorized => l.backupErrorUnauthorized,
+      BackupErrorKind.notFound => l.backupErrorNotFound,
+      BackupErrorKind.server => l.backupErrorServer,
+      BackupErrorKind.failed => l.backupErrorFailed,
+    };
+    return ListItem(
+      leading: Icon(
+        PanoramaIcons.status.failed,
+        color: context.colorScheme.error,
+      ),
+      title: Text(l.lastAttemptFailed(reason)),
+      subtitle: Text(at.getLastUpdateTimeDesc(context)),
     );
   }
 }

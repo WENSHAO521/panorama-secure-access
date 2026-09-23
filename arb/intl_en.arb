@@ -642,5 +642,16 @@
   "clearLogs": "Clear logs",
   "row": "Rows",
   "nodeDetails": "Node details",
-  "copyName": "Copy name"
+  "copyName": "Copy name",
+  "davChecking": "Checking…",
+  "davReachable": "Reachable",
+  "davUnreachable": "Can't connect",
+  "notYet": "Not yet",
+  "lastDone": "Last: {time}",
+  "lastAttemptFailed": "Last attempt failed: {reason}",
+  "backupErrorUnreachable": "server unreachable",
+  "backupErrorUnauthorized": "sign-in rejected",
+  "backupErrorNotFound": "no backup file on the server",
+  "backupErrorServer": "server error",
+  "backupErrorFailed": "unknown error"
 }

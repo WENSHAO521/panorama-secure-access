@@ -65,37 +65,41 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m19(subRule) => "${subRule} является недопустимым подправилом";
 
-  static String m20(appName) =>
+  static String m20(reason) => "Последняя попытка не удалась: ${reason}";
+
+  static String m21(time) => "Последний раз: ${time}";
+
+  static String m22(appName) =>
       "1. Откройте Системные настройки > Конфиденциальность и безопасность\n2. Выберите Службы геолокации\n3. Найдите ${appName} в списке справа и отметьте его\n\nПосле завершения настройки вернитесь в приложение и продолжайте пользоваться им как обычно. Спасибо за понимание.";
 
-  static String m21(count) =>
+  static String m23(count) =>
       "${Intl.plural(count, one: '${count} минута назад', few: '${count} минуты назад', many: '${count} минут назад', other: '${count} минуты назад')}";
 
-  static String m22(count) =>
+  static String m24(count) =>
       "${Intl.plural(count, one: '${count} месяц назад', few: '${count} месяца назад', many: '${count} месяцев назад', other: '${count} месяца назад')}";
 
-  static String m23(label) => "${label} пока отсутствуют";
+  static String m25(label) => "${label} пока отсутствуют";
 
-  static String m24(label) => "${label} должно быть числом";
+  static String m26(label) => "${label} должно быть числом";
 
-  static String m25(count) =>
+  static String m27(count) =>
       "${Intl.plural(count, zero: 'Пауза', one: 'Пауза · ${count} новая строка', few: 'Пауза · ${count} новые строки', many: 'Пауза · ${count} новых строк', other: 'Пауза · ${count} новой строки')}";
 
-  static String m26(label) => "${label} должен быть числом от 1024 до 49151";
+  static String m28(label) => "${label} должен быть числом от 1024 до 49151";
 
-  static String m27(count) => "${count} секунд";
+  static String m29(count) => "${count} секунд";
 
-  static String m28(count) => "Выбрано ${count} элементов";
+  static String m30(count) => "Выбрано ${count} элементов";
 
-  static String m29(available, total) => "Доступно ${available} из ${total}";
+  static String m31(available, total) => "Доступно ${available} из ${total}";
 
-  static String m30(value) => "Только «${value}»";
+  static String m32(value) => "Только «${value}»";
 
-  static String m31(time) => "Обновлено ${time}";
+  static String m33(time) => "Обновлено ${time}";
 
-  static String m32(label) => "${label} должен быть URL";
+  static String m34(label) => "${label} должен быть URL";
 
-  static String m33(count) =>
+  static String m35(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -209,6 +213,19 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "backupAndRestoreDesc": MessageLookupByLibrary.simpleMessage(
       "Синхронизация данных через WebDAV или файлы",
+    ),
+    "backupErrorFailed": MessageLookupByLibrary.simpleMessage(
+      "неизвестная ошибка",
+    ),
+    "backupErrorNotFound": MessageLookupByLibrary.simpleMessage(
+      "на сервере нет файла резервной копии",
+    ),
+    "backupErrorServer": MessageLookupByLibrary.simpleMessage("ошибка сервера"),
+    "backupErrorUnauthorized": MessageLookupByLibrary.simpleMessage(
+      "вход отклонён",
+    ),
+    "backupErrorUnreachable": MessageLookupByLibrary.simpleMessage(
+      "сервер недоступен",
     ),
     "backupSuccess": MessageLookupByLibrary.simpleMessage(
       "Резервное копирование успешно",
@@ -348,6 +365,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "dataCollectionTip": MessageLookupByLibrary.simpleMessage(
       "Уведомление о сборе данных",
     ),
+    "davChecking": MessageLookupByLibrary.simpleMessage("Проверка…"),
+    "davReachable": MessageLookupByLibrary.simpleMessage("Доступен"),
+    "davUnreachable": MessageLookupByLibrary.simpleMessage("Нет соединения"),
     "daysAgo": m2,
     "defaultNameserver": MessageLookupByLibrary.simpleMessage(
       "Сервер имен по умолчанию",
@@ -605,6 +625,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "key": MessageLookupByLibrary.simpleMessage("Ключ"),
     "ko": MessageLookupByLibrary.simpleMessage("Корейский"),
     "language": MessageLookupByLibrary.simpleMessage("Язык"),
+    "lastAttemptFailed": m20,
+    "lastDone": m21,
     "layout": MessageLookupByLibrary.simpleMessage("Макет"),
     "light": MessageLookupByLibrary.simpleMessage("Светлый"),
     "list": MessageLookupByLibrary.simpleMessage("Список"),
@@ -626,7 +648,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "locationPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "В соответствии с требованиями системы, для получения имени Wi-Fi необходимо предоставить разрешение на определение местоположения.",
     ),
-    "locationPermissionGuide": m20,
+    "locationPermissionGuide": m22,
     "locationPermissionRequired": MessageLookupByLibrary.simpleMessage(
       "Требуется разрешение на геолокацию",
     ),
@@ -664,11 +686,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "minimizeOnExitDesc": MessageLookupByLibrary.simpleMessage(
       "Изменить стандартное событие выхода из системы",
     ),
-    "minutesAgo": m21,
+    "minutesAgo": m23,
     "mixedPort": MessageLookupByLibrary.simpleMessage("Смешанный порт"),
     "mode": MessageLookupByLibrary.simpleMessage("Режим"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("Монохром"),
-    "monthsAgo": m22,
+    "monthsAgo": m24,
     "more": MessageLookupByLibrary.simpleMessage("Еще"),
     "name": MessageLookupByLibrary.simpleMessage("Имя"),
     "nameserver": MessageLookupByLibrary.simpleMessage("Сервер имен"),
@@ -727,11 +749,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "notSelectedTip": MessageLookupByLibrary.simpleMessage(
       "Текущая группа прокси не может быть выбрана.",
     ),
+    "notYet": MessageLookupByLibrary.simpleMessage("Ещё не было"),
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "Нет профиля, пожалуйста, добавьте профиль",
     ),
-    "nullTip": m23,
-    "numberTip": m24,
+    "nullTip": m25,
+    "numberTip": m26,
     "onDemand": MessageLookupByLibrary.simpleMessage("По требованию"),
     "onDemandDesc": MessageLookupByLibrary.simpleMessage(
       "Настройка режима работы приложения для определённых сценариев",
@@ -776,7 +799,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "password": MessageLookupByLibrary.simpleMessage("Пароль"),
     "paste": MessageLookupByLibrary.simpleMessage("Вставить"),
     "pause": MessageLookupByLibrary.simpleMessage("Пауза"),
-    "pausedNewLines": m25,
+    "pausedNewLines": m27,
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage(
       "Пожалуйста, привяжите WebDAV",
     ),
@@ -793,7 +816,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "portConflictTip": MessageLookupByLibrary.simpleMessage(
       "Введите другой порт",
     ),
-    "portTip": m26,
+    "portTip": m28,
     "preferH3Desc": MessageLookupByLibrary.simpleMessage(
       "Приоритетное использование HTTP/3 для DOH",
     ),
@@ -1075,7 +1098,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "search": MessageLookupByLibrary.simpleMessage("Поиск"),
     "seconds": MessageLookupByLibrary.simpleMessage("Секунд"),
-    "secondsCount": m27,
+    "secondsCount": m29,
     "selectAll": MessageLookupByLibrary.simpleMessage("Выбрать все"),
     "selectProxies": MessageLookupByLibrary.simpleMessage("Выбрать прокси"),
     "selectProxyProviders": MessageLookupByLibrary.simpleMessage(
@@ -1091,18 +1114,18 @@ class MessageLookup extends MessageLookupByLibrary {
       "Пожалуйста, выберите подправило",
     ),
     "selected": MessageLookupByLibrary.simpleMessage("Выбрано"),
-    "selectedCountTitle": m28,
+    "selectedCountTitle": m30,
     "serviceAvailability": MessageLookupByLibrary.simpleMessage(
       "Доступность сервисов",
     ),
     "serviceCheckPrivacyTip": MessageLookupByLibrary.simpleMessage(
       "Проверки обращаются к каждому сервису напрямую через текущий прокси. Данные профилей, подписок и журналов не передаются.",
     ),
-    "servicesAvailable": m29,
+    "servicesAvailable": m31,
     "servicesLabel": MessageLookupByLibrary.simpleMessage("Сервисы"),
     "settings": MessageLookupByLibrary.simpleMessage("Настройки"),
     "show": MessageLookupByLibrary.simpleMessage("Показать"),
-    "showOnly": m30,
+    "showOnly": m32,
     "shrink": MessageLookupByLibrary.simpleMessage("Сжать"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("Тихий запуск"),
     "silentLaunchDesc": MessageLookupByLibrary.simpleMessage(
@@ -1237,13 +1260,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "unnamed": MessageLookupByLibrary.simpleMessage("Без имени"),
     "update": MessageLookupByLibrary.simpleMessage("Обновить"),
-    "updatedAgo": m31,
+    "updatedAgo": m33,
     "upload": MessageLookupByLibrary.simpleMessage("Загрузка"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Получить профиль через URL",
     ),
-    "urlTip": m32,
+    "urlTip": m34,
     "useHosts": MessageLookupByLibrary.simpleMessage("Использовать hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage(
       "Использовать системные hosts",
@@ -1267,7 +1290,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage(
       "Режим белого списка",
     ),
-    "yearsAgo": m33,
+    "yearsAgo": m35,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Упрощенный китайский"),
     "zh_TW": MessageLookupByLibrary.simpleMessage("Традиционный китайский"),
   };

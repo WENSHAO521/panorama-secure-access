@@ -642,5 +642,16 @@
   "clearLogs": "Очистить журнал",
   "row": "Строки",
   "nodeDetails": "Сведения об узле",
-  "copyName": "Копировать имя"
+  "copyName": "Копировать имя",
+  "davChecking": "Проверка…",
+  "davReachable": "Доступен",
+  "davUnreachable": "Нет соединения",
+  "notYet": "Ещё не было",
+  "lastDone": "Последний раз: {time}",
+  "lastAttemptFailed": "Последняя попытка не удалась: {reason}",
+  "backupErrorUnreachable": "сервер недоступен",
+  "backupErrorUnauthorized": "вход отклонён",
+  "backupErrorNotFound": "на сервере нет файла резервной копии",
+  "backupErrorServer": "ошибка сервера",
+  "backupErrorFailed": "неизвестная ошибка"
 }

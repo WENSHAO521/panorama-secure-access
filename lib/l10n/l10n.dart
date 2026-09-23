@@ -5213,6 +5213,101 @@ class AppLocalizations {
   String get copyName {
     return Intl.message('Copy name', name: 'copyName', desc: '', args: []);
   }
+
+  /// `Checking…`
+  String get davChecking {
+    return Intl.message('Checking…', name: 'davChecking', desc: '', args: []);
+  }
+
+  /// `Reachable`
+  String get davReachable {
+    return Intl.message('Reachable', name: 'davReachable', desc: '', args: []);
+  }
+
+  /// `Can't connect`
+  String get davUnreachable {
+    return Intl.message(
+      'Can\'t connect',
+      name: 'davUnreachable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not yet`
+  String get notYet {
+    return Intl.message('Not yet', name: 'notYet', desc: '', args: []);
+  }
+
+  /// `Last: {time}`
+  String lastDone(Object time) {
+    return Intl.message(
+      'Last: $time',
+      name: 'lastDone',
+      desc: '',
+      args: [time],
+    );
+  }
+
+  /// `Last attempt failed: {reason}`
+  String lastAttemptFailed(Object reason) {
+    return Intl.message(
+      'Last attempt failed: $reason',
+      name: 'lastAttemptFailed',
+      desc: '',
+      args: [reason],
+    );
+  }
+
+  /// `server unreachable`
+  String get backupErrorUnreachable {
+    return Intl.message(
+      'server unreachable',
+      name: 'backupErrorUnreachable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `sign-in rejected`
+  String get backupErrorUnauthorized {
+    return Intl.message(
+      'sign-in rejected',
+      name: 'backupErrorUnauthorized',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `no backup file on the server`
+  String get backupErrorNotFound {
+    return Intl.message(
+      'no backup file on the server',
+      name: 'backupErrorNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `server error`
+  String get backupErrorServer {
+    return Intl.message(
+      'server error',
+      name: 'backupErrorServer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `unknown error`
+  String get backupErrorFailed {
+    return Intl.message(
+      'unknown error',
+      name: 'backupErrorFailed',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

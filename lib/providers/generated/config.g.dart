@@ -372,6 +372,59 @@ abstract class _$DavSetting extends $Notifier<DAVProps?> {
   }
 }
 
+@ProviderFor(BackupHistorySetting)
+final backupHistorySettingProvider = BackupHistorySettingProvider._();
+
+final class BackupHistorySettingProvider
+    extends $NotifierProvider<BackupHistorySetting, BackupHistory> {
+  BackupHistorySettingProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'backupHistorySettingProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$backupHistorySettingHash();
+
+  @$internal
+  @override
+  BackupHistorySetting create() => BackupHistorySetting();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(BackupHistory value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<BackupHistory>(value),
+    );
+  }
+}
+
+String _$backupHistorySettingHash() =>
+    r'485748324f46e76cb4891330846a1892a81d4c70';
+
+abstract class _$BackupHistorySetting extends $Notifier<BackupHistory> {
+  BackupHistory build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<BackupHistory, BackupHistory>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<BackupHistory, BackupHistory>,
+              BackupHistory,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
+
 @ProviderFor(OverrideDns)
 final overrideDnsProvider = OverrideDnsProvider._();
 
@@ -670,4 +723,4 @@ final class _ConfigProvider extends $FunctionalProvider<Config, Config, Config>
   }
 }
 
-String _$_configHash() => r'7f29da1e31a3393fb36ab43c21f0d1b38223afec';
+String _$_configHash() => r'977df9c486d43829f699539191491aa5b6a030ab';

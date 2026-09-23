@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -63,6 +65,49 @@ class DavSetting extends _$DavSetting with AutoDisposeNotifierMixin {
   }
 }
 
+enum BackupEvent { localBackup, localRestore, remoteBackup, remoteRestore }
+
+@riverpod
+class BackupHistorySetting extends _$BackupHistorySetting
+    with AutoDisposeNotifierMixin {
+  @override
+  BackupHistory build() {
+    return const BackupHistory();
+  }
+
+  void recordSuccess(BackupEvent event, {DateTime? at}) {
+    final now = at ?? DateTime.now();
+    value = switch (event) {
+      BackupEvent.localBackup => value.copyWith(localBackupAt: now),
+      BackupEvent.localRestore => value.copyWith(localRestoreAt: now),
+      BackupEvent.remoteBackup => value.copyWith(remoteBackupAt: now),
+      BackupEvent.remoteRestore => value.copyWith(remoteRestoreAt: now),
+    };
+  }
+
+  void recordRemoteError(Object error, {DateTime? at}) {
+    value = value.copyWith(
+      remoteError: classifyBackupError(error),
+      remoteErrorAt: at ?? DateTime.now(),
+    );
+  }
+}
+
+BackupErrorKind classifyBackupError(Object error) {
+  if (error is! DioException) return BackupErrorKind.failed;
+  final status = error.response?.statusCode;
+  if (status == 401 || status == 403) return BackupErrorKind.unauthorized;
+  if (status == 404) return BackupErrorKind.notFound;
+  if (status != null && status >= 500) return BackupErrorKind.server;
+  return switch (error.type) {
+    DioExceptionType.connectionTimeout ||
+    DioExceptionType.sendTimeout ||
+    DioExceptionType.receiveTimeout ||
+    DioExceptionType.connectionError => BackupErrorKind.unreachable,
+    _ => BackupErrorKind.failed,
+  };
+}
+
 @riverpod
 class OverrideDns extends _$OverrideDns with AutoDisposeNotifierMixin {
   @override
@@ -119,6 +164,7 @@ Config _config(Ref ref) {
   final proxiesStyleProps = ref.watch(proxiesStyleSettingProvider);
   final patchClashConfig = ref.watch(patchClashConfigProvider);
   final excludeSSIDs = ref.watch(excludeSSIDsProvider);
+  final backupHistory = ref.watch(backupHistorySettingProvider);
   return Config(
     appSettingProps: appSettingProps,
     windowProps: windowProps,
@@ -132,6 +178,7 @@ Config _config(Ref ref) {
     proxiesStyleProps: proxiesStyleProps,
     patchClashConfig: patchClashConfig,
     excludeSSIDs: excludeSSIDs,
+    backupHistory: backupHistory,
   );
 }
 
@@ -155,5 +202,8 @@ List<Override> buildConfigOverrides(Config config) {
       (_, _) => config.patchClashConfig,
     ),
     excludeSSIDsProvider.overrideWithBuild((_, _) => config.excludeSSIDs),
+    backupHistorySettingProvider.overrideWithBuild(
+      (_, _) => config.backupHistory,
+    ),
   ];
 }
