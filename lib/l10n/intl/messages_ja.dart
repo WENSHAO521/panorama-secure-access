@@ -88,11 +88,15 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m32(value) => "「${value}」のみ表示";
 
-  static String m33(time) => "${time}に更新";
+  static String m33(name) => "ノード：${name}";
 
-  static String m34(label) => "${label}はURLである必要があります";
+  static String m34(name) => "プロファイル：${name}";
 
-  static String m35(count) => "${count}年前";
+  static String m35(time) => "${time}に更新";
+
+  static String m36(label) => "${label}はURLである必要があります";
+
+  static String m37(count) => "${count}年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -265,6 +269,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "copySuccess": MessageLookupByLibrary.simpleMessage("コピー成功"),
     "core": MessageLookupByLibrary.simpleMessage("コア"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("コアステータス"),
+    "coreStopped": MessageLookupByLibrary.simpleMessage("コアが停止しました"),
     "country": MessageLookupByLibrary.simpleMessage("国"),
     "crashTest": MessageLookupByLibrary.simpleMessage("クラッシュテスト"),
     "crashlytics": MessageLookupByLibrary.simpleMessage("クラッシュ分析"),
@@ -963,6 +968,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "tools": MessageLookupByLibrary.simpleMessage("ツール"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxyポート"),
     "trafficUsage": MessageLookupByLibrary.simpleMessage("トラフィック使用量"),
+    "trayNode": m33,
+    "trayProfile": m34,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunDesc": MessageLookupByLibrary.simpleMessage("管理者モードでのみ有効"),
     "turnOff": MessageLookupByLibrary.simpleMessage("オフ"),
@@ -976,11 +983,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage("不明なネットワークエラー"),
     "unnamed": MessageLookupByLibrary.simpleMessage("無題"),
     "update": MessageLookupByLibrary.simpleMessage("更新"),
-    "updatedAgo": m33,
+    "updatedAgo": m35,
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URL経由でプロファイルを取得"),
-    "urlTip": m34,
+    "urlTip": m36,
     "useHosts": MessageLookupByLibrary.simpleMessage("ホストを使用"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("システムホストを使用"),
     "userAgent": MessageLookupByLibrary.simpleMessage("ユーザーエージェント"),
@@ -996,7 +1003,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "vpnTip": MessageLookupByLibrary.simpleMessage("変更はVPN再起動後に有効"),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV設定"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
-    "yearsAgo": m35,
+    "yearsAgo": m37,
     "zh_CN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
     "zh_TW": MessageLookupByLibrary.simpleMessage("繁体字中国語"),
   };

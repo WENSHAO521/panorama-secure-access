@@ -88,11 +88,15 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m32(value) => "僅顯示「${value}」";
 
-  static String m33(time) => "更新於 ${time}";
+  static String m33(name) => "節點：${name}";
 
-  static String m34(label) => "${label}必須為URL";
+  static String m34(name) => "設定檔：${name}";
 
-  static String m35(count) => "${count} 年前";
+  static String m35(time) => "更新於 ${time}";
+
+  static String m36(label) => "${label}必須為URL";
+
+  static String m37(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -239,6 +243,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "copySuccess": MessageLookupByLibrary.simpleMessage("複製成功"),
     "core": MessageLookupByLibrary.simpleMessage("核心"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("核心狀態"),
+    "coreStopped": MessageLookupByLibrary.simpleMessage("核心已停止"),
     "country": MessageLookupByLibrary.simpleMessage("區域"),
     "crashTest": MessageLookupByLibrary.simpleMessage("崩潰測試"),
     "crashlytics": MessageLookupByLibrary.simpleMessage("崩潰分析"),
@@ -851,6 +856,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "tools": MessageLookupByLibrary.simpleMessage("工具"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxy埠"),
     "trafficUsage": MessageLookupByLibrary.simpleMessage("流量統計"),
+    "trayNode": m33,
+    "trayProfile": m34,
     "tun": MessageLookupByLibrary.simpleMessage("虛擬網絡卡"),
     "tunDesc": MessageLookupByLibrary.simpleMessage("僅在管理員模式生效"),
     "turnOff": MessageLookupByLibrary.simpleMessage("關閉"),
@@ -862,11 +869,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage("未知網路錯誤"),
     "unnamed": MessageLookupByLibrary.simpleMessage("未命名"),
     "update": MessageLookupByLibrary.simpleMessage("更新"),
-    "updatedAgo": m33,
+    "updatedAgo": m35,
     "upload": MessageLookupByLibrary.simpleMessage("上傳"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("透過URL獲取配置檔案"),
-    "urlTip": m34,
+    "urlTip": m36,
     "useHosts": MessageLookupByLibrary.simpleMessage("使用Hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("使用系統Hosts"),
     "userAgent": MessageLookupByLibrary.simpleMessage("使用者代理"),
@@ -882,7 +889,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "vpnTip": MessageLookupByLibrary.simpleMessage("重啟VPN後改變生效"),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV配置"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名單模式"),
-    "yearsAgo": m35,
+    "yearsAgo": m37,
     "zh_CN": MessageLookupByLibrary.simpleMessage("中文簡體"),
     "zh_TW": MessageLookupByLibrary.simpleMessage("中文繁體"),
   };

@@ -92,11 +92,15 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m32(value) => "“${value}”만 표시";
 
-  static String m33(time) => "${time} 업데이트됨";
+  static String m33(name) => "노드: ${name}";
 
-  static String m34(label) => "${label}은(는) URL 형식이어야 합니다";
+  static String m34(name) => "프로필: ${name}";
 
-  static String m35(count) =>
+  static String m35(time) => "${time} 업데이트됨";
+
+  static String m36(label) => "${label}은(는) URL 형식이어야 합니다";
+
+  static String m37(count) =>
       "${Intl.plural(count, one: '1년 전', other: '${count}년 전')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -282,6 +286,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "copySuccess": MessageLookupByLibrary.simpleMessage("복사 성공"),
     "core": MessageLookupByLibrary.simpleMessage("코어"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("코어 상태"),
+    "coreStopped": MessageLookupByLibrary.simpleMessage("코어가 중지됨"),
     "country": MessageLookupByLibrary.simpleMessage("국가"),
     "crashTest": MessageLookupByLibrary.simpleMessage("충돌 테스트"),
     "crashlytics": MessageLookupByLibrary.simpleMessage("충돌 분석"),
@@ -982,6 +987,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "tools": MessageLookupByLibrary.simpleMessage("도구"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxy 포트"),
     "trafficUsage": MessageLookupByLibrary.simpleMessage("트래픽 사용량"),
+    "trayNode": m33,
+    "trayProfile": m34,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunDesc": MessageLookupByLibrary.simpleMessage("관리자 모드에서만 유효합니다"),
     "turnOff": MessageLookupByLibrary.simpleMessage("끄기"),
@@ -997,11 +1004,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "unnamed": MessageLookupByLibrary.simpleMessage("이름 없음"),
     "update": MessageLookupByLibrary.simpleMessage("업데이트"),
-    "updatedAgo": m33,
+    "updatedAgo": m35,
     "upload": MessageLookupByLibrary.simpleMessage("업로드"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URL을 통해 프로필을 가져옵니다"),
-    "urlTip": m34,
+    "urlTip": m36,
     "useHosts": MessageLookupByLibrary.simpleMessage("Hosts 사용"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("시스템 Hosts 사용"),
     "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
@@ -1017,7 +1024,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "vpnTip": MessageLookupByLibrary.simpleMessage("VPN을 재시작해야 변경 사항이 적용됩니다"),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV 설정"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("화이트리스트 모드"),
-    "yearsAgo": m35,
+    "yearsAgo": m37,
     "zh_CN": MessageLookupByLibrary.simpleMessage("중국어 간체"),
     "zh_TW": MessageLookupByLibrary.simpleMessage("중국어 번체"),
   };

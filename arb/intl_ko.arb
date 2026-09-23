@@ -653,5 +653,8 @@
   "backupErrorUnauthorized": "로그인이 거부됨",
   "backupErrorNotFound": "서버에 백업 파일이 없음",
   "backupErrorServer": "서버 오류",
-  "backupErrorFailed": "알 수 없는 오류"
+  "backupErrorFailed": "알 수 없는 오류",
+  "coreStopped": "코어가 중지됨",
+  "trayProfile": "프로필: {name}",
+  "trayNode": "노드: {name}"
 }

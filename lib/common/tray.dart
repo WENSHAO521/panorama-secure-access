@@ -31,6 +31,8 @@ class Tray {
     await trayManager.destroy();
   }
 
+  /// Three icons: off, on, on with TUN. Connecting and error use the off
+  /// icon; the menu's first line and the tooltip say which (§85).
   String getTryIcon({required bool isStart, required bool tunEnable}) {
     if (system.isMacOS || !isStart) {
       return 'assets/images/icon/status_1.$trayIconSuffix';
@@ -41,9 +43,36 @@ class Tray {
     return 'assets/images/icon/status_3.$trayIconSuffix';
   }
 
+  static bool _showsOnIcon(ConnectionPhase phase) => switch (phase) {
+    ConnectionPhase.connected ||
+    ConnectionPhase.suspended ||
+    ConnectionPhase.disconnecting => true,
+    _ => false,
+  };
+
+  static String phaseLabel(ConnectionPhase phase) {
+    final l = currentAppLocalizations;
+    return switch (phase) {
+      ConnectionPhase.connected => l.connected,
+      ConnectionPhase.suspended => l.suspended,
+      ConnectionPhase.connecting => l.stateConnecting,
+      ConnectionPhase.disconnecting => l.stateDisconnecting,
+      ConnectionPhase.notConnected => l.stateNotConnected,
+      ConnectionPhase.error => l.coreStopped,
+    };
+  }
+
+  /// "Panorama Secure Access · Connected · JP-01"
+  static String tooltipOf(TrayState trayState) => [
+    appName,
+    phaseLabel(trayState.phase),
+    if (trayState.phase == ConnectionPhase.connected) ?trayState.nodeName,
+  ].join(' · ');
+
   Future _updateSystemTray({
     required bool isStart,
     required bool tunEnable,
+    required String tooltip,
   }) async {
     if (Platform.isLinux) {
       await trayManager.destroy();
@@ -53,7 +82,7 @@ class Tray {
       isTemplate: system.isMacOS,
     );
     if (!Platform.isLinux) {
-      await trayManager.setToolTip(appName);
+      await trayManager.setToolTip(tooltip);
     }
   }
 
@@ -64,10 +93,12 @@ class Tray {
     if (system.isAndroid) {
       return;
     }
+    final isOn = _showsOnIcon(trayState.phase);
     if (!system.isLinux) {
       await _updateSystemTray(
-        isStart: trayState.isStart,
+        isStart: isOn,
         tunEnable: trayState.tunEnable,
+        tooltip: tooltipOf(trayState),
       );
     }
     final List<MenuItem> menuItems = [];
@@ -76,21 +107,53 @@ class Tray {
     final systemAction = ref.read(systemActionProvider.notifier);
     final setupAction = ref.read(setupActionProvider.notifier);
     final appLocalizations = currentAppLocalizations;
-    final showMenuItem = MenuItem(
-      label: appLocalizations.show,
-      onClick: (_) {
-        window?.show();
-      },
+    // Brief §84: state, profile and node first, then the one action.
+    menuItems.add(MenuItem(label: phaseLabel(trayState.phase), disabled: true));
+    if (trayState.profileName != null) {
+      menuItems.add(
+        MenuItem(
+          label: appLocalizations.trayProfile(trayState.profileName!),
+          disabled: true,
+        ),
+      );
+    }
+    if (trayState.nodeName != null) {
+      menuItems.add(
+        MenuItem(
+          label: appLocalizations.trayNode(trayState.nodeName!),
+          disabled: true,
+        ),
+      );
+    }
+    menuItems.add(switch (trayState.phase) {
+      ConnectionPhase.error => MenuItem(
+        label: appLocalizations.restart,
+        onClick: (_) {
+          ref.read(coreActionProvider.notifier).restartCore();
+        },
+      ),
+      ConnectionPhase.connecting || ConnectionPhase.disconnecting => MenuItem(
+        label: phaseLabel(trayState.phase),
+        disabled: true,
+      ),
+      _ => MenuItem(
+        label: isOn
+            ? appLocalizations.disconnectAction
+            : appLocalizations.connectAction,
+        onClick: (_) {
+          commonAction.updateStart();
+        },
+      ),
+    });
+    menuItems.add(MenuItem.separator());
+    menuItems.add(
+      MenuItem(
+        label: appLocalizations.show,
+        onClick: (_) {
+          window?.show();
+        },
+      ),
     );
-    menuItems.add(showMenuItem);
-    final startMenuItem = MenuItem.checkbox(
-      label: trayState.isStart ? appLocalizations.stop : appLocalizations.start,
-      onClick: (_) async {
-        commonAction.updateStart();
-      },
-      checked: false,
-    );
-    menuItems.add(startMenuItem);
     if (system.isMacOS) {
       final speedStatistics = MenuItem.checkbox(
         label: appLocalizations.speedStatistics,
@@ -193,8 +256,9 @@ class Tray {
     await trayManager.setContextMenu(menu);
     if (system.isLinux) {
       await _updateSystemTray(
-        isStart: trayState.isStart,
+        isStart: isOn,
         tunEnable: trayState.tunEnable,
+        tooltip: tooltipOf(trayState),
       );
     }
     updateTrayTitle(showTrayTitle: trayState.showTrayTitle, traffic: traffic);

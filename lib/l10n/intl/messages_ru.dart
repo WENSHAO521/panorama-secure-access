@@ -95,11 +95,15 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m32(value) => "Только «${value}»";
 
-  static String m33(time) => "Обновлено ${time}";
+  static String m33(name) => "Узел: ${name}";
 
-  static String m34(label) => "${label} должен быть URL";
+  static String m34(name) => "Профиль: ${name}";
 
-  static String m35(count) =>
+  static String m35(time) => "Обновлено ${time}";
+
+  static String m36(label) => "${label} должен быть URL";
+
+  static String m37(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -339,6 +343,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "copySuccess": MessageLookupByLibrary.simpleMessage("Копирование успешно"),
     "core": MessageLookupByLibrary.simpleMessage("Ядро"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("Основной статус"),
+    "coreStopped": MessageLookupByLibrary.simpleMessage("Ядро остановлено"),
     "country": MessageLookupByLibrary.simpleMessage("Страна"),
     "crashTest": MessageLookupByLibrary.simpleMessage("Тест на сбои"),
     "crashlytics": MessageLookupByLibrary.simpleMessage("Анализ сбоев"),
@@ -1241,6 +1246,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "trafficUsage": MessageLookupByLibrary.simpleMessage(
       "Использование трафика",
     ),
+    "trayNode": m33,
+    "trayProfile": m34,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunDesc": MessageLookupByLibrary.simpleMessage(
       "действительно только в режиме администратора",
@@ -1260,13 +1267,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "unnamed": MessageLookupByLibrary.simpleMessage("Без имени"),
     "update": MessageLookupByLibrary.simpleMessage("Обновить"),
-    "updatedAgo": m33,
+    "updatedAgo": m35,
     "upload": MessageLookupByLibrary.simpleMessage("Загрузка"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Получить профиль через URL",
     ),
-    "urlTip": m34,
+    "urlTip": m36,
     "useHosts": MessageLookupByLibrary.simpleMessage("Использовать hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage(
       "Использовать системные hosts",
@@ -1290,7 +1297,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage(
       "Режим белого списка",
     ),
-    "yearsAgo": m35,
+    "yearsAgo": m37,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Упрощенный китайский"),
     "zh_TW": MessageLookupByLibrary.simpleMessage("Традиционный китайский"),
   };

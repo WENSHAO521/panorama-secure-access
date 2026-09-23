@@ -653,5 +653,8 @@
   "backupErrorUnauthorized": "账号或密码被拒绝",
   "backupErrorNotFound": "服务器上没有备份文件",
   "backupErrorServer": "服务器错误",
-  "backupErrorFailed": "未知错误"
+  "backupErrorFailed": "未知错误",
+  "coreStopped": "内核已停止",
+  "trayProfile": "配置：{name}",
+  "trayNode": "节点：{name}"
 }

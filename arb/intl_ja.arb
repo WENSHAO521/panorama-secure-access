@@ -653,5 +653,8 @@
   "backupErrorUnauthorized": "認証が拒否されました",
   "backupErrorNotFound": "サーバーにバックアップファイルがありません",
   "backupErrorServer": "サーバーエラー",
-  "backupErrorFailed": "不明なエラー"
+  "backupErrorFailed": "不明なエラー",
+  "coreStopped": "コアが停止しました",
+  "trayProfile": "プロファイル：{name}",
+  "trayNode": "ノード：{name}"
 }

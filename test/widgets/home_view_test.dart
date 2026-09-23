@@ -42,6 +42,7 @@ void main() {
   ProviderContainer build({
     bool isStart = false,
     List<Profile> profiles = const [_profile],
+    bool coreDown = false,
   }) {
     return ProviderContainer(
       overrides: [
@@ -54,6 +55,12 @@ void main() {
         serviceRouteKeyProvider.overrideWithValue('1|rule|Proxy=Auto'),
         isStartProvider.overrideWith((ref) => isStart),
         suspendProvider.overrideWith((ref) => false),
+        if (coreDown) ...[
+          initProvider.overrideWithBuild((_, _) => true),
+          coreStatusProvider.overrideWithBuild(
+            (_, _) => CoreStatus.disconnected,
+          ),
+        ],
       ],
     );
   }
@@ -133,6 +140,12 @@ void main() {
     expect(button.onPressed, isNull);
     // Don't let the debounced status change reach the (absent) core.
     debouncer.cancel(FunctionTag.updateStatus);
+
+    // The core never answers: after the timeout Home shows the real state.
+    await tester.pump(connectionPendingTimeout);
+    await tester.pump();
+    expect(find.text('Connecting…'), findsNothing);
+    expect(find.text('Connect'), findsOneWidget);
   });
 
   testWidgets('connected: stable state with Disconnect', (tester) async {
@@ -144,5 +157,13 @@ void main() {
     // Nothing keeps animating once connected (brief §25).
     expect(find.byType(CircularProgressIndicator), findsNothing);
     expect(tester.binding.hasScheduledFrame, isFalse);
+  });
+
+  testWidgets('core stopped: says so and offers Restart (§24)', (tester) async {
+    await pumpHome(tester, build(coreDown: true));
+
+    expect(find.text('Core stopped'), findsOneWidget);
+    expect(find.text('Restart'), findsOneWidget);
+    expect(find.text('Connect'), findsNothing);
   });
 }

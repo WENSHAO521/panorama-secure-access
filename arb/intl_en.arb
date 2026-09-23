@@ -653,5 +653,8 @@
   "backupErrorUnauthorized": "sign-in rejected",
   "backupErrorNotFound": "no backup file on the server",
   "backupErrorServer": "server error",
-  "backupErrorFailed": "unknown error"
+  "backupErrorFailed": "unknown error",
+  "coreStopped": "Core stopped",
+  "trayProfile": "Profile: {name}",
+  "trayNode": "Node: {name}"
 }

@@ -5308,6 +5308,36 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Core stopped`
+  String get coreStopped {
+    return Intl.message(
+      'Core stopped',
+      name: 'coreStopped',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profile: {name}`
+  String trayProfile(Object name) {
+    return Intl.message(
+      'Profile: $name',
+      name: 'trayProfile',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Node: {name}`
+  String trayNode(Object name) {
+    return Intl.message(
+      'Node: $name',
+      name: 'trayNode',
+      desc: '',
+      args: [name],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

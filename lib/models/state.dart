@@ -134,6 +134,9 @@ abstract class TrayState with _$TrayState {
     required List<Group> groups,
     required Map<String, String> selectedMap,
     required bool showTrayTitle,
+    @Default(ConnectionPhase.notConnected) ConnectionPhase phase,
+    String? profileName,
+    String? nodeName,
   }) = _TrayState;
 }
 

@@ -542,6 +542,21 @@ enum LoadingTag {
 
 enum CoreStatus { connecting, connected, disconnected }
 
+/// The connection as the user sees it (brief §24-25, §85). One source for
+/// Home, the tray menu and the tray icon, so they never disagree.
+enum ConnectionPhase {
+  notConnected,
+  connecting,
+  connected,
+  disconnecting,
+
+  /// Connected, but the core is paused (e.g. the device is asleep).
+  suspended,
+
+  /// The app is running but the core isn't: it crashed or failed to start.
+  error,
+}
+
 enum RuleScene { added, disabled, custom }
 
 enum ItemPosition {

@@ -653,5 +653,8 @@
   "backupErrorUnauthorized": "帳號或密碼被拒絕",
   "backupErrorNotFound": "伺服器上沒有備份檔案",
   "backupErrorServer": "伺服器錯誤",
-  "backupErrorFailed": "未知錯誤"
+  "backupErrorFailed": "未知錯誤",
+  "coreStopped": "核心已停止",
+  "trayProfile": "設定檔：{name}",
+  "trayNode": "節點：{name}"
 }

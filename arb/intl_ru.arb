@@ -653,5 +653,8 @@
   "backupErrorUnauthorized": "вход отклонён",
   "backupErrorNotFound": "на сервере нет файла резервной копии",
   "backupErrorServer": "ошибка сервера",
-  "backupErrorFailed": "неизвестная ошибка"
+  "backupErrorFailed": "неизвестная ошибка",
+  "coreStopped": "Ядро остановлено",
+  "trayProfile": "Профиль: {name}",
+  "trayNode": "Узел: {name}"
 }

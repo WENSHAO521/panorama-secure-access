@@ -11,6 +11,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'app.dart';
 import 'config.dart';
+import 'connection.dart';
 import 'database.dart';
 
 part 'generated/state.g.dart';
@@ -136,6 +137,11 @@ TrayState trayState(Ref ref) {
   final groups = ref.watch(currentGroupsStateProvider).value;
   final brightness = ref.watch(systemBrightnessProvider);
   final selectedMap = ref.watch(selectedMapProvider);
+  final phase = ref.watch(connectionPhaseProvider);
+  final profileName = ref.watch(
+    currentProfileProvider.select((profile) => profile?.realLabel),
+  );
+  final nodeName = ref.watch(currentRouteProvider.select((r) => r?.node));
 
   return TrayState(
     mode: clashConfigVm3.a,
@@ -149,6 +155,9 @@ TrayState trayState(Ref ref) {
     groups: groups,
     selectedMap: selectedMap,
     showTrayTitle: appSettingVm3.c,
+    phase: phase,
+    profileName: profileName,
+    nodeName: nodeName,
   );
 }
 

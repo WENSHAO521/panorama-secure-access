@@ -23,10 +23,10 @@ class CommonAction extends _$CommonAction {
   @override
   void build() {}
 
+  /// Tray and hotkey toggle. Goes through the same request as Home's button,
+  /// so every surface shows the same pending state (§85).
   void updateStart() {
-    ref
-        .read(setupActionProvider.notifier)
-        .updateStatus(!ref.read(isStartProvider));
+    ref.read(connectionRequestProvider.notifier).toggle();
   }
 
   void updateSpeedStatistics() {

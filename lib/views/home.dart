@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/design/colors/panorama_colors.dart';
 import 'package:fl_clash/design/icons/panorama_icons.dart';
@@ -15,10 +13,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 const _maxContentWidth = 640.0;
-
-/// A pending connect/disconnect gives up waiting after this, and the view
-/// falls back to the core's real state.
-const _pendingTimeout = Duration(seconds: 20);
 
 /// The first thing users see: whether they're connected, through what, and
 /// one control to change it (brief §23-25). Sections, not a card wall;
@@ -83,113 +77,51 @@ void _openNetworkInsight(BuildContext context, WidgetRef ref) {
 // Connection status + main control
 // ---------------------------------------------------------------------------
 
-enum HomeConnectionState {
-  notConnected,
-  connecting,
-  connected,
-  disconnecting,
-  suspended,
-}
-
-class _ConnectionHeader extends ConsumerStatefulWidget {
+class _ConnectionHeader extends ConsumerWidget {
   const _ConnectionHeader();
 
-  @override
-  ConsumerState<_ConnectionHeader> createState() => _ConnectionHeaderState();
-}
-
-class _ConnectionHeaderState extends ConsumerState<_ConnectionHeader> {
-  /// The state the user asked for and the core hasn't reached yet.
-  bool? _target;
-  Timer? _pendingTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    ref.listenManual(isStartProvider, (_, isStart) {
-      if (_target == isStart) {
-        _clearPending();
-      }
-    });
+  void _toggle(WidgetRef ref) {
+    ref.read(connectionRequestProvider.notifier).toggle();
   }
 
   @override
-  void dispose() {
-    _pendingTimer?.cancel();
-    super.dispose();
-  }
-
-  void _clearPending() {
-    _pendingTimer?.cancel();
-    _pendingTimer = null;
-    if (mounted && _target != null) {
-      setState(() => _target = null);
-    }
-  }
-
-  void _toggle() {
-    final target = !ref.read(isStartProvider);
-    setState(() => _target = target);
-    _pendingTimer?.cancel();
-    _pendingTimer = Timer(_pendingTimeout, _clearPending);
-    debouncer.call(FunctionTag.updateStatus, () {
-      globalState.container
-          .read(setupActionProvider.notifier)
-          .updateStatus(target, isInit: !ref.read(initProvider));
-    }, duration: commonDuration);
-  }
-
-  HomeConnectionState _state(bool isStart, bool suspend) {
-    final target = _target;
-    if (target != null && target != isStart) {
-      return target
-          ? HomeConnectionState.connecting
-          : HomeConnectionState.disconnecting;
-    }
-    if (isStart && suspend) {
-      return HomeConnectionState.suspended;
-    }
-    return isStart
-        ? HomeConnectionState.connected
-        : HomeConnectionState.notConnected;
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final appLocalizations = context.appLocalizations;
     final colors = context.colorScheme;
+    final state = ref.watch(connectionPhaseProvider);
     final isStart = ref.watch(isStartProvider);
-    final suspend = ref.watch(suspendProvider);
-    final state = _state(isStart, suspend);
-    final isPending =
-        state == HomeConnectionState.connecting ||
-        state == HomeConnectionState.disconnecting;
+    final isPending = state.isPending;
 
     final (IconData icon, Color color, String title) = switch (state) {
-      HomeConnectionState.connected => (
+      ConnectionPhase.connected => (
         PanoramaIcons.connection.connected,
         colors.success,
         appLocalizations.connected,
       ),
-      HomeConnectionState.suspended => (
+      ConnectionPhase.suspended => (
         PanoramaIcons.status.partial,
         colors.warning,
         appLocalizations.suspended,
       ),
-      HomeConnectionState.connecting => (
+      ConnectionPhase.connecting => (
         PanoramaIcons.connection.connecting,
         colors.labelSecondary,
         appLocalizations.stateConnecting,
       ),
-      HomeConnectionState.disconnecting => (
+      ConnectionPhase.disconnecting => (
         PanoramaIcons.connection.connecting,
         colors.labelSecondary,
         appLocalizations.stateDisconnecting,
       ),
-      HomeConnectionState.notConnected => (
+      ConnectionPhase.notConnected => (
         PanoramaIcons.connection.disconnected,
         colors.labelSecondary,
         appLocalizations.stateNotConnected,
+      ),
+      ConnectionPhase.error => (
+        PanoramaIcons.connection.error,
+        colors.danger,
+        appLocalizations.coreStopped,
       ),
     };
 
@@ -210,7 +142,7 @@ class _ConnectionHeaderState extends ConsumerState<_ConnectionHeader> {
               ),
             ],
           ),
-          if (isStart && !isPending) ...[
+          if (isStart && !isPending && state != ConnectionPhase.error) ...[
             const SizedBox(height: 4),
             Padding(
               padding: const EdgeInsets.only(left: 40),
@@ -232,24 +164,29 @@ class _ConnectionHeaderState extends ConsumerState<_ConnectionHeader> {
           SizedBox(
             width: double.infinity,
             height: 52,
-            child: isStart && !isPending
-                ? FilledButton.tonalIcon(
-                    onPressed: _toggle,
-                    icon: Icon(PanoramaIcons.connection.power),
-                    label: Text(appLocalizations.disconnectAction),
-                  )
-                : FilledButton.icon(
-                    onPressed: isPending ? null : _toggle,
-                    icon: isPending
-                        ? const SizedBox.square(
-                            dimension: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Icon(PanoramaIcons.connection.power),
-                    label: Text(
-                      isPending ? title : appLocalizations.connectAction,
-                    ),
-                  ),
+            child: switch (state) {
+              ConnectionPhase.error => FilledButton.icon(
+                onPressed: () =>
+                    ref.read(coreActionProvider.notifier).restartCore(),
+                icon: Icon(PanoramaIcons.actions.reset),
+                label: Text(appLocalizations.restart),
+              ),
+              _ when isStart && !isPending => FilledButton.tonalIcon(
+                onPressed: () => _toggle(ref),
+                icon: Icon(PanoramaIcons.connection.power),
+                label: Text(appLocalizations.disconnectAction),
+              ),
+              _ => FilledButton.icon(
+                onPressed: isPending ? null : () => _toggle(ref),
+                icon: isPending
+                    ? const SizedBox.square(
+                        dimension: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Icon(PanoramaIcons.connection.power),
+                label: Text(isPending ? title : appLocalizations.connectAction),
+              ),
+            },
           ),
         ],
       ),
@@ -261,42 +198,6 @@ class _ConnectionHeaderState extends ConsumerState<_ConnectionHeader> {
 // Profile / node / mode
 // ---------------------------------------------------------------------------
 
-/// The node traffic actually leaves through for the main group: GLOBAL in
-/// global mode, the first visible group in rule mode, following nested
-/// groups down to a leaf. Null in direct mode or before groups load.
-({String group, String node, String? testUrl})? _currentRoute(WidgetRef ref) {
-  final mode = ref.watch(
-    patchClashConfigProvider.select((state) => state.mode),
-  );
-  final groups = ref.watch(groupsProvider);
-  final selectedMap = ref.watch(selectedMapProvider);
-  final Group? main = switch (mode) {
-    Mode.direct => null,
-    Mode.global => groups.getGroup(GroupName.GLOBAL.name),
-    Mode.rule =>
-      groups
-          .where((group) => group.hidden == false)
-          .where((group) => group.name != GroupName.GLOBAL.name)
-          .firstOrNull,
-  };
-  if (main == null) {
-    return null;
-  }
-  final resolved = computeRealSelectedProxyState(
-    main.name,
-    groups: groups,
-    selectedMap: selectedMap,
-  );
-  if (resolved.proxyName.isEmpty || resolved.proxyName == main.name) {
-    return null;
-  }
-  return (
-    group: main.name,
-    node: resolved.proxyName,
-    testUrl: resolved.testUrl,
-  );
-}
-
 class _RouteSection extends ConsumerWidget {
   const _RouteSection();
 
@@ -307,7 +208,7 @@ class _RouteSection extends ConsumerWidget {
     final mode = ref.watch(
       patchClashConfigProvider.select((state) => state.mode),
     );
-    final route = _currentRoute(ref);
+    final route = ref.watch(currentRouteProvider);
     final delay = route == null
         ? null
         : ref.watch(
