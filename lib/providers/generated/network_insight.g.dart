@@ -55,7 +55,7 @@ final class NetworkInsightSourcesProvider
 }
 
 String _$networkInsightSourcesHash() =>
-    r'a06a80a8fa0edfce02c0a4967d5d0d91701bb288';
+    r'59c4b20e6fcb8d0b20b1b65dc71468f8a08f587e';
 
 /// The route service results belong to: profile, outbound mode and every
 /// group selection. Any change means cached results no longer apply.
@@ -139,7 +139,7 @@ final class NetworkInsightIdentityProvider
 }
 
 String _$networkInsightIdentityHash() =>
-    r'a95865456b547307821bda3853b2e8113eab08cd';
+    r'b8549567138cfefe5fa740efc5e1034f2a9801ac';
 
 abstract class _$NetworkInsightIdentity
     extends $Notifier<NetworkIdentityState> {

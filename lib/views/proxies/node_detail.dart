@@ -13,8 +13,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-/// Long-press (touch) or right-click (desktop) on a proxy card.
-Future<void> showNodeDetail(BuildContext context, Proxy proxy) {
+/// From a proxy card's menu (long press / right click). [startTest] runs
+/// the node-only test as the sheet opens.
+Future<void> showNodeDetail(
+  BuildContext context,
+  Proxy proxy, {
+  bool startTest = false,
+}) {
+  if (startTest) {
+    ProviderScope.containerOf(
+      context,
+      listen: false,
+    ).read(nodeDiagnosticsProvider.notifier).test(proxy.name);
+  }
   return showSheet(
     context: context,
     props: const SheetProps(isScrollControlled: true),

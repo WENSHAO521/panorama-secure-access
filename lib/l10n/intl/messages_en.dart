@@ -309,6 +309,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Copying environment variables",
     ),
     "copyLink": MessageLookupByLibrary.simpleMessage("Copy link"),
+    "copyName": MessageLookupByLibrary.simpleMessage("Copy name"),
     "copySuccess": MessageLookupByLibrary.simpleMessage("Copy success"),
     "core": MessageLookupByLibrary.simpleMessage("Core"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("Core status"),
@@ -681,6 +682,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noResolveHostname": MessageLookupByLibrary.simpleMessage(
       "No resolve hostname",
     ),
+    "nodeDetails": MessageLookupByLibrary.simpleMessage("Node details"),
     "nodeTestNotConnected": MessageLookupByLibrary.simpleMessage(
       "Connect first to test this node.",
     ),
@@ -899,6 +901,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Bypass private route address",
     ),
     "routeMode_config": MessageLookupByLibrary.simpleMessage("Use config"),
+    "row": MessageLookupByLibrary.simpleMessage("Rows"),
     "ru": MessageLookupByLibrary.simpleMessage("Russian"),
     "rule": MessageLookupByLibrary.simpleMessage("Rule"),
     "ruleActionAndDesc": MessageLookupByLibrary.simpleMessage(

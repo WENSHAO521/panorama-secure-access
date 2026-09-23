@@ -155,7 +155,14 @@ enum ProxiesType { tab, list }
 
 enum ProxiesLayout { loose, standard, tight }
 
-enum ProxyCardType { expand, shrink, min }
+enum ProxyCardType {
+  expand,
+  shrink,
+  min,
+
+  /// One compact row per node (brief §52); the default for new installs.
+  row,
+}
 
 enum DnsMode {
   normal,

@@ -417,6 +417,70 @@ class NodeReport {
 /// A finished report older than this is shown as stale rather than reused.
 const nodeReportTtl = Duration(minutes: 20);
 
+/// The light capability hint on a proxy row (brief §52): how many AI
+/// services answered, and where streaming works. Null for a node that
+/// hasn't finished a test.
+@immutable
+class NodeCapability {
+  final int aiChecked;
+  final int aiAvailable;
+  final int streamingChecked;
+  final int streamingUsable;
+
+  /// Netflix's region when it works there, else the first usable
+  /// streaming service's region.
+  final String? streamingRegion;
+  final bool isStale;
+
+  const NodeCapability({
+    required this.aiChecked,
+    required this.aiAvailable,
+    required this.streamingChecked,
+    required this.streamingUsable,
+    this.streamingRegion,
+    this.isStale = false,
+  });
+
+  static NodeCapability? of(NodeReport? report, {DateTime? now}) {
+    final checkedAt = report?.checkedAt;
+    if (report == null || report.isRunning || checkedAt == null) return null;
+    final done = [
+      for (final r in report.services)
+        if (r.status.isDone) r,
+    ];
+    final ai = [
+      for (final r in done)
+        if (r.category == ServiceCategory.ai) r,
+    ];
+    final streaming = [
+      for (final r in done)
+        if (r.category == ServiceCategory.streaming) r,
+    ];
+    final usable = [
+      for (final r in streaming)
+        if (r.status.isUsable) r,
+    ];
+    String? region;
+    for (final r in [
+      ...usable.where((r) => r.serviceId == 'netflix'),
+      ...usable,
+    ]) {
+      if (r.regionCode != null) {
+        region = r.regionCode;
+        break;
+      }
+    }
+    return NodeCapability(
+      aiChecked: ai.length,
+      aiAvailable: ai.where((r) => r.status.isAvailable).length,
+      streamingChecked: streaming.length,
+      streamingUsable: usable.length,
+      streamingRegion: region,
+      isStale: (now ?? DateTime.now()).difference(checkedAt) > nodeReportTtl,
+    );
+  }
+}
+
 class NodeTestNotConnected implements Exception {
   const NodeTestNotConnected();
 }

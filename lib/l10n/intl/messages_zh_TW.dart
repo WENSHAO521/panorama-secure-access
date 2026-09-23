@@ -226,6 +226,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "copyDestination": MessageLookupByLibrary.simpleMessage("複製目標位址"),
     "copyEnvVar": MessageLookupByLibrary.simpleMessage("複製環境變數"),
     "copyLink": MessageLookupByLibrary.simpleMessage("複製連結"),
+    "copyName": MessageLookupByLibrary.simpleMessage("複製名稱"),
     "copySuccess": MessageLookupByLibrary.simpleMessage("複製成功"),
     "core": MessageLookupByLibrary.simpleMessage("核心"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("核心狀態"),
@@ -494,6 +495,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noRecords": MessageLookupByLibrary.simpleMessage("暫無記錄"),
     "noResolve": MessageLookupByLibrary.simpleMessage("不解析IP"),
     "noResolveHostname": MessageLookupByLibrary.simpleMessage("不解析主機名"),
+    "nodeDetails": MessageLookupByLibrary.simpleMessage("節點詳情"),
     "nodeTestNotConnected": MessageLookupByLibrary.simpleMessage(
       "請先連線，再測試此節點。",
     ),
@@ -646,6 +648,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "routeMode": MessageLookupByLibrary.simpleMessage("路由模式"),
     "routeMode_bypassPrivate": MessageLookupByLibrary.simpleMessage("繞過私有路由地址"),
     "routeMode_config": MessageLookupByLibrary.simpleMessage("使用配置"),
+    "row": MessageLookupByLibrary.simpleMessage("列表行"),
     "ru": MessageLookupByLibrary.simpleMessage("俄語"),
     "rule": MessageLookupByLibrary.simpleMessage("規則"),
     "ruleActionAndDesc": MessageLookupByLibrary.simpleMessage("邏輯規則 AND"),

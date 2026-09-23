@@ -639,5 +639,8 @@
   "resume": "재개",
   "pausedNewLines": "{count, plural, =0{일시 중지됨} other{일시 중지됨 · 새 줄 {count}개}}",
   "copyAll": "모두 복사",
-  "clearLogs": "로그 지우기"
+  "clearLogs": "로그 지우기",
+  "row": "행",
+  "nodeDetails": "노드 상세",
+  "copyName": "이름 복사"
 }

@@ -265,6 +265,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "copyDestination": MessageLookupByLibrary.simpleMessage("대상 복사"),
     "copyEnvVar": MessageLookupByLibrary.simpleMessage("환경 변수 복사 중"),
     "copyLink": MessageLookupByLibrary.simpleMessage("링크 복사"),
+    "copyName": MessageLookupByLibrary.simpleMessage("이름 복사"),
     "copySuccess": MessageLookupByLibrary.simpleMessage("복사 성공"),
     "core": MessageLookupByLibrary.simpleMessage("코어"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("코어 상태"),
@@ -569,6 +570,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noRecords": MessageLookupByLibrary.simpleMessage("기록 없음"),
     "noResolve": MessageLookupByLibrary.simpleMessage("IP 확인 안 함"),
     "noResolveHostname": MessageLookupByLibrary.simpleMessage("호스트 이름 확인 안 함"),
+    "nodeDetails": MessageLookupByLibrary.simpleMessage("노드 상세"),
     "nodeTestNotConnected": MessageLookupByLibrary.simpleMessage(
       "이 노드를 테스트하려면 먼저 연결하세요.",
     ),
@@ -755,6 +757,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "사설 라우트 주소 우회",
     ),
     "routeMode_config": MessageLookupByLibrary.simpleMessage("설정 사용"),
+    "row": MessageLookupByLibrary.simpleMessage("행"),
     "ru": MessageLookupByLibrary.simpleMessage("러시아어"),
     "rule": MessageLookupByLibrary.simpleMessage("규칙"),
     "ruleActionAndDesc": MessageLookupByLibrary.simpleMessage("논리 규칙 AND"),

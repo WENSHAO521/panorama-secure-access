@@ -456,10 +456,15 @@ Profile? currentProfile(Ref ref) {
 @riverpod
 int proxiesColumns(Ref ref) {
   final contentWidth = ref.watch(contentWidthProvider);
-  final proxiesLayout = ref.watch(
-    proxiesStyleSettingProvider.select((state) => state.layout),
+  final style = ref.watch(
+    proxiesStyleSettingProvider.select(
+      (state) => (layout: state.layout, cardType: state.cardType),
+    ),
   );
-  return utils.getProxiesColumns(contentWidth, proxiesLayout);
+  if (style.cardType == ProxyCardType.row) {
+    return utils.getProxyRowColumns(contentWidth);
+  }
+  return utils.getProxiesColumns(contentWidth, style.layout);
 }
 
 @riverpod

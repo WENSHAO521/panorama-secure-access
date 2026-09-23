@@ -5193,6 +5193,26 @@ class AppLocalizations {
   String get clearLogs {
     return Intl.message('Clear logs', name: 'clearLogs', desc: '', args: []);
   }
+
+  /// `Rows`
+  String get row {
+    return Intl.message('Rows', name: 'row', desc: '', args: []);
+  }
+
+  /// `Node details`
+  String get nodeDetails {
+    return Intl.message(
+      'Node details',
+      name: 'nodeDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy name`
+  String get copyName {
+    return Intl.message('Copy name', name: 'copyName', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

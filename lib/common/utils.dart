@@ -241,6 +241,12 @@ class Utils {
     };
   }
 
+  /// Rows need room for a name, protocol, capability hint and latency on
+  /// one line pair: about 360 px each.
+  int getProxyRowColumns(double viewWidth) {
+    return max((viewWidth / 360).floor(), 1);
+  }
+
   int getProfilesColumns(double viewWidth) {
     return max((viewWidth / 280).floor(), 1);
   }

@@ -318,6 +318,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Копирование переменных окружения",
     ),
     "copyLink": MessageLookupByLibrary.simpleMessage("Копировать ссылку"),
+    "copyName": MessageLookupByLibrary.simpleMessage("Копировать имя"),
     "copySuccess": MessageLookupByLibrary.simpleMessage("Копирование успешно"),
     "core": MessageLookupByLibrary.simpleMessage("Ядро"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("Основной статус"),
@@ -714,6 +715,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noResolveHostname": MessageLookupByLibrary.simpleMessage(
       "Не разрешать имя хоста",
     ),
+    "nodeDetails": MessageLookupByLibrary.simpleMessage("Сведения об узле"),
     "nodeTestNotConnected": MessageLookupByLibrary.simpleMessage(
       "Сначала подключитесь, чтобы проверить этот узел.",
     ),
@@ -958,6 +960,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "routeMode_config": MessageLookupByLibrary.simpleMessage(
       "Использовать конфигурацию",
     ),
+    "row": MessageLookupByLibrary.simpleMessage("Строки"),
     "ru": MessageLookupByLibrary.simpleMessage("Русский"),
     "rule": MessageLookupByLibrary.simpleMessage("Правило"),
     "ruleActionAndDesc": MessageLookupByLibrary.simpleMessage(

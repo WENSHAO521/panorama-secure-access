@@ -639,5 +639,8 @@
   "resume": "繼續",
   "pausedNewLines": "{count, plural, =0{已暫停} other{已暫停 · {count} 條新日誌}}",
   "copyAll": "全部複製",
-  "clearLogs": "清除日誌"
+  "clearLogs": "清除日誌",
+  "row": "列表行",
+  "nodeDetails": "節點詳情",
+  "copyName": "複製名稱"
 }

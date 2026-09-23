@@ -1,6 +1,8 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/colors/panorama_colors.dart';
 import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
@@ -8,6 +10,7 @@ import 'package:fl_clash/views/proxies/common.dart';
 import 'package:fl_clash/views/proxies/node_detail.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProxyCard extends StatelessWidget {
@@ -118,41 +121,100 @@ class ProxyCard extends StatelessWidget {
     globalState.showNotifier(currentAppLocalizations.notSelectedTip);
   }
 
+  /// Brief §48: latency, a node-only service test, details, copy. Opens on
+  /// long press (touch) and right click (desktop).
+  List<PopupMenuItemData> _nodeMenu(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
+    return [
+      PopupMenuItemData(
+        icon: PanoramaIcons.network.ping,
+        label: appLocalizations.delayTest,
+        onPressed: _handleTestCurrentDelay,
+      ),
+      PopupMenuItemData(
+        icon: PanoramaIcons.network.check,
+        label: appLocalizations.testNode,
+        onPressed: () => showNodeDetail(context, proxy, startTest: true),
+      ),
+      PopupMenuItemData(
+        icon: PanoramaIcons.status.info,
+        label: appLocalizations.nodeDetails,
+        onPressed: () => showNodeDetail(context, proxy),
+      ),
+      PopupMenuItemData(
+        icon: PanoramaIcons.actions.copy,
+        label: appLocalizations.copyName,
+        onPressed: () => Clipboard.setData(ClipboardData(text: proxy.name)),
+      ),
+    ];
+  }
+
+  Widget _buildRow(BuildContext context, Widget delayText) {
+    final secondary = context.textTheme.bodySmall?.copyWith(
+      color: context.colorScheme.labelSecondary,
+    );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                EmojiText(
+                  proxy.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.textTheme.bodyMedium?.toSoftBold,
+                ),
+                const SizedBox(height: 4),
+                Consumer(
+                  builder: (context, ref, _) {
+                    final report = ref.watch(
+                      nodeDiagnosticsProvider.select(
+                        (state) => state[proxy.name],
+                      ),
+                    );
+                    final capability = nodeCapabilityText(
+                      context.appLocalizations,
+                      NodeCapability.of(report),
+                    );
+                    return Text(
+                      [proxy.type, ?capability].join('  ·  '),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: secondary,
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          if (groupType.isComputedSelected)
+            _ProxyComputedMark(groupName: groupName, proxy: proxy),
+          const SizedBox(width: 8),
+          delayText,
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final measure = globalState.measure;
     final delayText = _buildDelayText();
-    final proxyNameText = _buildProxyNameText(context);
-    return Stack(
-      children: [
-        Consumer(
-          builder: (context, ref, child) {
-            final selectedProxyName = ref.watch(
-              selectedProxyNameProvider(groupName),
-            );
-            // Long-press on touch, right-click on desktop: node details and
-            // a node-only service test (brief §48).
-            return GestureDetector(
-              onSecondaryTap: () => showNodeDetail(context, proxy),
-              child: CommonCard(
-                key: key,
-                onPressed: () {
-                  _changeProxy(ref);
-                },
-                onLongPress: () => showNodeDetail(context, proxy),
-                isSelected: selectedProxyName == proxy.name,
-                child: child!,
-              ),
-            );
-          },
-          child: Container(
+    final isRow = type == ProxyCardType.row;
+    final content = isRow
+        ? _buildRow(context, delayText)
+        : Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                proxyNameText,
+                _buildProxyNameText(context),
                 const SizedBox(height: 8),
                 if (type == ProxyCardType.expand) ...[
                   SizedBox(
@@ -190,17 +252,60 @@ class ProxyCard extends StatelessWidget {
                   ),
               ],
             ),
-          ),
+          );
+    return LayoutBuilder(
+      builder: (context, constraints) => CommonPopupBox(
+        popup: CommonPopupMenu(items: _nodeMenu(context)),
+        targetBuilder: (open) => Stack(
+          children: [
+            Consumer(
+              builder: (context, ref, child) {
+                final selectedProxyName = ref.watch(
+                  selectedProxyNameProvider(groupName),
+                );
+                return GestureDetector(
+                  onSecondaryTapUp: (details) {
+                    open(offset: details.localPosition);
+                  },
+                  child: CommonCard(
+                    key: key,
+                    onPressed: () {
+                      _changeProxy(ref);
+                    },
+                    onLongPress: () {
+                      open(offset: Offset(constraints.maxWidth, 0));
+                    },
+                    isSelected: selectedProxyName == proxy.name,
+                    child: child!,
+                  ),
+                );
+              },
+              child: content,
+            ),
+            if (groupType.isComputedSelected && !isRow)
+              Positioned(
+                top: 0,
+                right: 0,
+                child: _ProxyComputedMark(groupName: groupName, proxy: proxy),
+              ),
+          ],
         ),
-        if (groupType.isComputedSelected)
-          Positioned(
-            top: 0,
-            right: 0,
-            child: _ProxyComputedMark(groupName: groupName, proxy: proxy),
-          ),
-      ],
+      ),
     );
   }
+}
+
+/// "AI 3/3  ·  Streaming JP" for a tested node; null when untested.
+/// Counts rather than ✓/✗ glyphs, which not every UI font has.
+String? nodeCapabilityText(AppLocalizations l, NodeCapability? capability) {
+  if (capability == null) return null;
+  final parts = [
+    if (capability.aiChecked > 0)
+      '${l.categoryAi} ${capability.aiAvailable}/${capability.aiChecked}',
+    if (capability.streamingChecked > 0)
+      '${l.categoryStreaming} ${capability.streamingUsable == 0 ? '0/${capability.streamingChecked}' : capability.streamingRegion ?? '${capability.streamingUsable}/${capability.streamingChecked}'}',
+  ];
+  return parts.isEmpty ? null : parts.join('  ·  ');
 }
 
 class _ProxyDesc extends ConsumerWidget {

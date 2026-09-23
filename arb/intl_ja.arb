@@ -639,5 +639,8 @@
   "resume": "再開",
   "pausedNewLines": "{count, plural, =0{一時停止中} other{一時停止中 · 新着 {count} 行}}",
   "copyAll": "すべてコピー",
-  "clearLogs": "ログを消去"
+  "clearLogs": "ログを消去",
+  "row": "行",
+  "nodeDetails": "ノードの詳細",
+  "copyName": "名前をコピー"
 }

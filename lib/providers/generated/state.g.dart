@@ -1501,7 +1501,7 @@ final class ProxiesColumnsProvider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$proxiesColumnsHash() => r'e93f980da3d857bd38957635ef944a0db60aaef3';
+String _$proxiesColumnsHash() => r'b7611f87b9ef8c71c297169683fda157131ca02b';
 
 @ProviderFor(realSelectedProxyState)
 final realSelectedProxyStateProvider = RealSelectedProxyStateFamily._();

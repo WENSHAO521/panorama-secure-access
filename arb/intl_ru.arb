@@ -639,5 +639,8 @@
   "resume": "Продолжить",
   "pausedNewLines": "{count, plural, =0{Пауза} one{Пауза · {count} новая строка} few{Пауза · {count} новые строки} many{Пауза · {count} новых строк} other{Пауза · {count} новой строки}}",
   "copyAll": "Копировать всё",
-  "clearLogs": "Очистить журнал"
+  "clearLogs": "Очистить журнал",
+  "row": "Строки",
+  "nodeDetails": "Сведения об узле",
+  "copyName": "Копировать имя"
 }
