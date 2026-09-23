@@ -5338,6 +5338,26 @@ class AppLocalizations {
       args: [name],
     );
   }
+
+  /// `Stop following new entries`
+  String get stopFollowing {
+    return Intl.message(
+      'Stop following new entries',
+      name: 'stopFollowing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Follow new entries`
+  String get followNewLines {
+    return Intl.message(
+      'Follow new entries',
+      name: 'followNewLines',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

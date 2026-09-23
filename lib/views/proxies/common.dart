@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -19,8 +21,11 @@ double getItemHeight(ProxyCardType proxyCardType) {
     ProxyCardType.expand => baseHeight + measure.labelSmallHeight + 6,
     ProxyCardType.shrink => baseHeight,
     ProxyCardType.min => baseHeight - measure.bodyMediumHeight,
-    ProxyCardType.row =>
+    // At least a 48 px latency target plus padding (§99).
+    ProxyCardType.row => max(
       20 + measure.bodyMediumHeight + 4 + measure.bodySmallHeight + 2,
+      62,
+    ),
   };
 }
 

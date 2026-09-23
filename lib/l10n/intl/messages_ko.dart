@@ -420,6 +420,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "findProcessModeDesc": MessageLookupByLibrary.simpleMessage(
       "활성화하면 일정한 성능 손실이 발생합니다",
     ),
+    "followNewLines": MessageLookupByLibrary.simpleMessage("새 항목 따라가기"),
     "fontFamily": MessageLookupByLibrary.simpleMessage("글꼴"),
     "forceRestartCoreTip": MessageLookupByLibrary.simpleMessage(
       "코어를 강제로 재시작하시겠습니까?",
@@ -944,6 +945,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "지원되지 않는 지역",
     ),
     "stop": MessageLookupByLibrary.simpleMessage("중지"),
+    "stopFollowing": MessageLookupByLibrary.simpleMessage("새 항목 따라가기 중지"),
     "stopVpn": MessageLookupByLibrary.simpleMessage("VPN 중지 중..."),
     "style": MessageLookupByLibrary.simpleMessage("스타일"),
     "subRule": MessageLookupByLibrary.simpleMessage("하위 규칙"),

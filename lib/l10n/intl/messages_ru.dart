@@ -515,6 +515,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "findProcessModeDesc": MessageLookupByLibrary.simpleMessage(
       "При включении возможны небольшие потери производительности",
     ),
+    "followNewLines": MessageLookupByLibrary.simpleMessage(
+      "Следить за новыми записями",
+    ),
     "fontFamily": MessageLookupByLibrary.simpleMessage("Семейство шрифтов"),
     "forceRestartCoreTip": MessageLookupByLibrary.simpleMessage(
       "Вы уверены, что хотите принудительно перезапустить ядро?",
@@ -1189,6 +1192,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Регион не поддерживается",
     ),
     "stop": MessageLookupByLibrary.simpleMessage("Стоп"),
+    "stopFollowing": MessageLookupByLibrary.simpleMessage(
+      "Не следить за новыми записями",
+    ),
     "stopVpn": MessageLookupByLibrary.simpleMessage("Остановка VPN..."),
     "style": MessageLookupByLibrary.simpleMessage("Стиль"),
     "subRule": MessageLookupByLibrary.simpleMessage("Подправило"),

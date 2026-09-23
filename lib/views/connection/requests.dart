@@ -98,6 +98,9 @@ class _RequestsViewState extends ConsumerState<RequestsView> {
           return FadeRotationScaleBox(
             child: FloatingActionButton(
               key: ValueKey(autoScrollToEnd),
+              tooltip: autoScrollToEnd
+                  ? context.appLocalizations.stopFollowing
+                  : context.appLocalizations.followNewLines,
               onPressed: () {
                 _requestsStateNotifier.value = _requestsStateNotifier.value
                     .copyWith(

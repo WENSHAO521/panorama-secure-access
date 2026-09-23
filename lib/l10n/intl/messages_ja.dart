@@ -405,6 +405,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "findProcessModeDesc": MessageLookupByLibrary.simpleMessage(
       "有効化するとパフォーマンスが若干低下します",
     ),
+    "followNewLines": MessageLookupByLibrary.simpleMessage("新着を追従"),
     "fontFamily": MessageLookupByLibrary.simpleMessage("フォントファミリー"),
     "forceRestartCoreTip": MessageLookupByLibrary.simpleMessage(
       "コアを強制再起動してもよろしいですか？",
@@ -929,6 +930,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "statusRegional": MessageLookupByLibrary.simpleMessage("地域限定"),
     "statusUnsupportedRegion": MessageLookupByLibrary.simpleMessage("非対応地域"),
     "stop": MessageLookupByLibrary.simpleMessage("停止"),
+    "stopFollowing": MessageLookupByLibrary.simpleMessage("新着の追従を停止"),
     "stopVpn": MessageLookupByLibrary.simpleMessage("VPNを停止中..."),
     "style": MessageLookupByLibrary.simpleMessage("スタイル"),
     "subRule": MessageLookupByLibrary.simpleMessage("サブルール"),

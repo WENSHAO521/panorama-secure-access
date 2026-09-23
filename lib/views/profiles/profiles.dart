@@ -336,18 +336,21 @@ class ProfileItem extends StatelessWidget {
           builder: (context, constraints) => CommonPopupBox(
             popup: popup,
             targetBuilder: (openMenu) => GestureDetector(
+              // Right click only; the card itself is the screen-reader target.
+              excludeFromSemantics: true,
               onSecondaryTapUp: (details) {
                 openMenu(offset: details.localPosition);
               },
               child: CommonCard(
                 key: Key(profile.id.toString()),
                 isSelected: profile.id == groupValue,
+                semanticLabel: profile.realLabel,
                 onPressed: () => onChanged(profile.id),
                 onLongPress: () {
                   openMenu(offset: Offset(constraints.maxWidth, 0));
                 },
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 4, 12),
+                  padding: const EdgeInsets.fromLTRB(16, 12, 0, 12),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -358,13 +361,13 @@ class ProfileItem extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        width: 40,
-                        height: 40,
+                        width: 48,
+                        height: 48,
                         child: FadeThroughBox(
                           child: isUpdating
                               ? const Padding(
                                   key: ValueKey('loading'),
-                                  padding: EdgeInsets.all(10),
+                                  padding: EdgeInsets.all(14),
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
                                   ),

@@ -656,5 +656,7 @@
   "backupErrorFailed": "unknown error",
   "coreStopped": "Core stopped",
   "trayProfile": "Profile: {name}",
-  "trayNode": "Node: {name}"
+  "trayNode": "Node: {name}",
+  "stopFollowing": "Stop following new entries",
+  "followNewLines": "Follow new entries"
 }

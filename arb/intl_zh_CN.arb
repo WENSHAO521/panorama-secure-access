@@ -656,5 +656,7 @@
   "backupErrorFailed": "未知错误",
   "coreStopped": "内核已停止",
   "trayProfile": "配置：{name}",
-  "trayNode": "节点：{name}"
+  "trayNode": "节点：{name}",
+  "stopFollowing": "停止跟随最新",
+  "followNewLines": "跟随最新"
 }

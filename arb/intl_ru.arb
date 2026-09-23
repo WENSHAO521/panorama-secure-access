@@ -656,5 +656,7 @@
   "backupErrorFailed": "неизвестная ошибка",
   "coreStopped": "Ядро остановлено",
   "trayProfile": "Профиль: {name}",
-  "trayNode": "Узел: {name}"
+  "trayNode": "Узел: {name}",
+  "stopFollowing": "Не следить за новыми записями",
+  "followNewLines": "Следить за новыми записями"
 }

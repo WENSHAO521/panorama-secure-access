@@ -494,6 +494,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "findProcessModeDesc": MessageLookupByLibrary.simpleMessage(
       "There is a certain performance loss after opening",
     ),
+    "followNewLines": MessageLookupByLibrary.simpleMessage(
+      "Follow new entries",
+    ),
     "fontFamily": MessageLookupByLibrary.simpleMessage("FontFamily"),
     "forceRestartCoreTip": MessageLookupByLibrary.simpleMessage(
       "Are you sure you want to force restart the core?",
@@ -1128,6 +1131,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Unsupported region",
     ),
     "stop": MessageLookupByLibrary.simpleMessage("Stop"),
+    "stopFollowing": MessageLookupByLibrary.simpleMessage(
+      "Stop following new entries",
+    ),
     "stopVpn": MessageLookupByLibrary.simpleMessage("Stopping VPN..."),
     "style": MessageLookupByLibrary.simpleMessage("Style"),
     "subRule": MessageLookupByLibrary.simpleMessage("Sub rule"),

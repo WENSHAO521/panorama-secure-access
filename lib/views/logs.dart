@@ -191,6 +191,9 @@ class _LogsViewState extends ConsumerState<LogsView> {
           return FadeRotationScaleBox(
             child: FloatingActionButton(
               key: ValueKey(autoScrollToEnd),
+              tooltip: autoScrollToEnd
+                  ? context.appLocalizations.stopFollowing
+                  : context.appLocalizations.followNewLines,
               onPressed: () {
                 _logsStateNotifier.value = _logsStateNotifier.value.copyWith(
                   autoScrollToEnd: !_logsStateNotifier.value.autoScrollToEnd,

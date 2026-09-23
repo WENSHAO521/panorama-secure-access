@@ -35,9 +35,12 @@ class ProxyCard extends StatelessWidget {
     proxyDelayTest(proxy, testUrl);
   }
 
-  Widget _buildDelayText() {
+  /// [touchTarget]: rows give the latency control a full 48 px target (§99);
+  /// the grid sizes keep their compact layout.
+  Widget _buildDelayText({bool touchTarget = false}) {
+    final box = touchTarget ? 48.0 : measure.labelSmallHeight;
     return SizedBox(
-      height: measure.labelSmallHeight,
+      height: box,
       child: Consumer(
         builder: (context, ref, _) {
           final delay = ref.watch(
@@ -49,24 +52,44 @@ class ProxyCard extends StatelessWidget {
                 : Alignment.centerRight,
             child: delay == 0 || delay == null
                 ? SizedBox(
-                    height: measure.labelSmallHeight,
-                    width: measure.labelSmallHeight,
+                    height: box,
+                    width: box,
                     child: delay == 0
-                        ? const CircularProgressIndicator(strokeWidth: 2)
+                        ? Padding(
+                            padding: EdgeInsets.all(
+                              (box - measure.labelSmallHeight) / 2,
+                            ),
+                            child: const CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
                         : IconButton(
+                            tooltip: context.appLocalizations.delayTest,
                             icon: Icon(PanoramaIcons.network.quickTest),
                             iconSize: globalState.measure.labelSmallHeight,
                             padding: EdgeInsets.zero,
                             onPressed: _handleTestCurrentDelay,
                           ),
                   )
-                : GestureDetector(
-                    onTap: _handleTestCurrentDelay,
-                    child: Text(
-                      delay > 0 ? '$delay ms' : 'Timeout',
-                      style: context.textTheme.labelSmall?.copyWith(
-                        overflow: TextOverflow.ellipsis,
-                        color: utils.getDelayColor(delay),
+                : Semantics(
+                    button: true,
+                    label: context.appLocalizations.delayTest,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: _handleTestCurrentDelay,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(minWidth: box),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          widthFactor: 1,
+                          child: Text(
+                            delay > 0 ? '$delay ms' : 'Timeout',
+                            style: context.textTheme.labelSmall?.copyWith(
+                              overflow: TextOverflow.ellipsis,
+                              color: utils.getDelayColor(delay),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -149,12 +172,13 @@ class ProxyCard extends StatelessWidget {
     ];
   }
 
-  Widget _buildRow(BuildContext context, Widget delayText) {
+  Widget _buildRow(BuildContext context) {
+    final delayText = _buildDelayText(touchTarget: true);
     final secondary = context.textTheme.bodySmall?.copyWith(
       color: context.colorScheme.labelSecondary,
     );
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.fromLTRB(12, 7, 4, 7),
       child: Row(
         children: [
           Expanded(
@@ -206,7 +230,7 @@ class ProxyCard extends StatelessWidget {
     final delayText = _buildDelayText();
     final isRow = type == ProxyCardType.row;
     final content = isRow
-        ? _buildRow(context, delayText)
+        ? _buildRow(context)
         : Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -264,11 +288,14 @@ class ProxyCard extends StatelessWidget {
                   selectedProxyNameProvider(groupName),
                 );
                 return GestureDetector(
+                  // Right click only; the card itself is the screen-reader target.
+                  excludeFromSemantics: true,
                   onSecondaryTapUp: (details) {
                     open(offset: details.localPosition);
                   },
                   child: CommonCard(
                     key: key,
+                    semanticLabel: '${proxy.name}, ${proxy.type}',
                     onPressed: () {
                       _changeProxy(ref);
                     },

@@ -656,5 +656,7 @@
   "backupErrorFailed": "不明なエラー",
   "coreStopped": "コアが停止しました",
   "trayProfile": "プロファイル：{name}",
-  "trayNode": "ノード：{name}"
+  "trayNode": "ノード：{name}",
+  "stopFollowing": "新着の追従を停止",
+  "followNewLines": "新着を追従"
 }

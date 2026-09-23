@@ -235,6 +235,7 @@ class CommonScaffoldState extends State<CommonScaffold> {
     if (_isSearch) {
       return genActions([
         IconButton(
+          tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
           onPressed: _handleClear,
           icon: Icon(PanoramaIcons.actions.close),
         ),
@@ -243,6 +244,7 @@ class CommonScaffoldState extends State<CommonScaffold> {
     return genActions([
       if (hasSearch && widget.searchState?.autoAddSearch == true)
         IconButton(
+          tooltip: context.appLocalizations.search,
           onPressed: () {
             _updateSearchState((state) => state?.copyWith(query: ''));
           },

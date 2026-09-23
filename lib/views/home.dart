@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/adaptive/panorama_breakpoints.dart';
 import 'package:fl_clash/design/colors/panorama_colors.dart';
 import 'package:fl_clash/design/icons/panorama_icons.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -203,6 +204,10 @@ class _RouteSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final segmentHeight =
+        PanoramaLayoutClass.of(context) == PanoramaLayoutClass.compact
+        ? 48.0
+        : 28.0;
     final appLocalizations = context.appLocalizations;
     final profile = ref.watch(currentProfileProvider);
     final mode = ref.watch(
@@ -242,7 +247,6 @@ class _RouteSection extends ConsumerWidget {
         ListItem(
           title: Text(appLocalizations.outboundMode),
           subtitle: Container(
-            height: 36,
             margin: const EdgeInsets.only(top: 8),
             child: CommonTabBar<Mode>(
               groupValue: mode,
@@ -250,10 +254,16 @@ class _RouteSection extends ConsumerWidget {
               backgroundColor: context.colorScheme.surfaceContainerHighest,
               children: {
                 for (final item in Mode.values)
-                  item: Text(
-                    Intl.message(item.name),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  item: SizedBox(
+                    // Touch layouts get 48 px segments (§99).
+                    height: segmentHeight,
+                    child: Center(
+                      child: Text(
+                        Intl.message(item.name),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ),
               },
               onValueChanged: (value) {
@@ -391,22 +401,27 @@ class _OptionsSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ListHeader(title: appLocalizations.options),
-        ListItem(
-          title: Text(appLocalizations.systemProxy),
-          trailing: Switch(
-            value: systemProxy,
-            onChanged: (value) => ref
-                .read(networkSettingProvider.notifier)
-                .update((state) => state.copyWith(systemProxy: value)),
+        // One node per row, so the switch is read with its label.
+        MergeSemantics(
+          child: ListItem(
+            title: Text(appLocalizations.systemProxy),
+            trailing: Switch(
+              value: systemProxy,
+              onChanged: (value) => ref
+                  .read(networkSettingProvider.notifier)
+                  .update((state) => state.copyWith(systemProxy: value)),
+            ),
           ),
         ),
-        ListItem(
-          title: Text(appLocalizations.tun),
-          trailing: Switch(
-            value: tun,
-            onChanged: (value) => ref
-                .read(patchClashConfigProvider.notifier)
-                .update((state) => state.copyWith.tun(enable: value)),
+        MergeSemantics(
+          child: ListItem(
+            title: Text(appLocalizations.tun),
+            trailing: Switch(
+              value: tun,
+              onChanged: (value) => ref
+                  .read(patchClashConfigProvider.notifier)
+                  .update((state) => state.copyWith.tun(enable: value)),
+            ),
           ),
         ),
       ],

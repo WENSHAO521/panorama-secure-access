@@ -98,7 +98,12 @@ class CommonCard extends StatefulWidget {
     this.onLongPress,
     this.shape,
     this.isError = false,
+    this.semanticLabel,
   }) : isSelected = isSelected ?? false;
+
+  /// Read out for the whole card by screen readers (§99). Placed inside the
+  /// button, so it lands on the node that owns the tap.
+  final String? semanticLabel;
 
   final bool enterAnimated;
   final bool isSelected;
@@ -245,6 +250,14 @@ class _CommonCardState extends State<CommonCard> {
           ),
           Flexible(flex: 1, child: widget.child),
         ],
+      );
+    }
+
+    if (widget.semanticLabel != null) {
+      childWidget = Semantics(
+        label: widget.semanticLabel,
+        selected: isSelected,
+        child: childWidget,
       );
     }
 

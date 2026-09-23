@@ -656,5 +656,7 @@
   "backupErrorFailed": "알 수 없는 오류",
   "coreStopped": "코어가 중지됨",
   "trayProfile": "프로필: {name}",
-  "trayNode": "노드: {name}"
+  "trayNode": "노드: {name}",
+  "stopFollowing": "새 항목 따라가기 중지",
+  "followNewLines": "새 항목 따라가기"
 }
