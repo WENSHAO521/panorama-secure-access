@@ -125,8 +125,10 @@ class HomePage extends StatelessWidget {
 
 /// Tells a navigation page whether it is the one on screen, so pollers
 /// (ActivePollingMixin) and refreshers in pages kept alive offscreen go
-/// quiet. A Consumer of its own: PageView doesn't rebuild kept-alive
-/// offscreen pages, so the flag can't come from the parent's build.
+/// quiet, and mutes its tickers so spinners and other animations there
+/// don't keep scheduling frames while the window idles (brief §105). A
+/// Consumer of its own: PageView doesn't rebuild kept-alive offscreen
+/// pages, so the flag can't come from the parent's build.
 class HomePageActivity extends ConsumerWidget {
   final PageLabel label;
   final Widget child;
@@ -138,7 +140,10 @@ class HomePageActivity extends ConsumerWidget {
     final isActive = ref.watch(
       currentPageLabelProvider.select((current) => current == label),
     );
-    return PageActivityScope(isActive: isActive, child: child);
+    return TickerMode(
+      enabled: isActive,
+      child: PageActivityScope(isActive: isActive, child: child),
+    );
   }
 }
 

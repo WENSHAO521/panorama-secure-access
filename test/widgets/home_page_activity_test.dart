@@ -38,4 +38,37 @@ void main() {
     await tester.pump();
     expect(seen, {PageLabel.home: false, PageLabel.activity: true});
   });
+
+  testWidgets('an offscreen page schedules no animation frames (§105)', (
+    tester,
+  ) async {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const Directionality(
+          textDirection: TextDirection.ltr,
+          child: HomePageActivity(
+            label: PageLabel.activity,
+            child: CommonCircleLoading(),
+          ),
+        ),
+      ),
+    );
+    // A repeating spinner on the page that isn't current: nothing to draw.
+    expect(tester.binding.hasScheduledFrame, isFalse);
+
+    container
+        .read(currentPageLabelProvider.notifier)
+        .toPage(PageLabel.activity);
+    await tester.pump();
+    expect(tester.binding.hasScheduledFrame, isTrue);
+
+    container.read(currentPageLabelProvider.notifier).toPage(PageLabel.home);
+    await tester.pump();
+    await tester.pump();
+    expect(tester.binding.hasScheduledFrame, isFalse);
+  });
 }
