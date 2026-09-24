@@ -135,10 +135,18 @@ void main() {
 
     test('laptop for medium width', () {
       expect(utils.getViewMode(700).name, 'laptop');
+      expect(utils.getViewMode(1000).name, 'laptop');
     });
 
     test('desktop for large width', () {
-      expect(utils.getViewMode(1000).name, 'desktop');
+      expect(utils.getViewMode(1200).name, 'desktop');
+    });
+
+    test('follows PanoramaLayoutClass at both boundaries', () {
+      expect(utils.getViewMode(599.9).name, 'mobile');
+      expect(utils.getViewMode(600).name, 'laptop');
+      expect(utils.getViewMode(1023.9).name, 'laptop');
+      expect(utils.getViewMode(1024).name, 'desktop');
     });
   });
 

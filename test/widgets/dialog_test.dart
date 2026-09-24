@@ -59,7 +59,7 @@ void main() {
     testWidgets('shrinks below the cap on a small desktop window', (
       tester,
     ) async {
-      // maxMobileWidth (600) plus the 40px margin already lands exactly on
+      // The compact breakpoint (600) plus the 40px margin already lands exactly on
       // the 560 default cap, so a window has to opt into the wider isLarge
       // (640) cap to actually observe the margin winning over the cap
       // while still staying in desktop (> 600px) mode: 650 - 40 = 610,
@@ -73,7 +73,7 @@ void main() {
     });
 
     testWidgets('is screen width minus safe inset on mobile', (tester) async {
-      // <= maxMobileWidth (600) switches isMobileViewProvider to mobile.
+      // Below the compact breakpoint (600) isMobileViewProvider is mobile.
       final width = await pumpAndGetDialogWidth(
         tester,
         viewSize: const Size(400, 800),

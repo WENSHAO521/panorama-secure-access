@@ -192,6 +192,9 @@ class AppSidebarContainer extends ConsumerWidget {
       return child;
     }
     final currentIndex = navigationState.currentIndex;
+    // Expanded: a sidebar, labels beside the icons. Medium: a rail whose
+    // labels the user can show or hide (brief §93-94).
+    final isSidebar = navigationState.viewMode == ViewMode.desktop;
     final showLabel = ref.watch(appSettingProvider).showLabel;
     return Row(
       children: [
@@ -244,9 +247,9 @@ class AppSidebarContainer extends ConsumerWidget {
                             onDestinationSelected: (index) {
                               _handleToPage(navigationItems[index].label);
                             },
-                            extended: false,
+                            extended: isSidebar,
                             selectedIndex: currentIndex,
-                            labelType: showLabel
+                            labelType: !isSidebar && showLabel
                                 ? NavigationRailLabelType.all
                                 : NavigationRailLabelType.none,
                           ),
@@ -255,21 +258,23 @@ class AppSidebarContainer extends ConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
-                IconButton(
-                  onPressed: () {
-                    ref
-                        .read(appSettingProvider.notifier)
-                        .update(
-                          (state) =>
-                              state.copyWith(showLabel: !state.showLabel),
-                        );
-                  },
-                  icon: Icon(
-                    PanoramaIcons.navigation.railLabels,
-                    color: context.colorScheme.onSurfaceVariant,
+                if (!isSidebar) ...[
+                  const SizedBox(height: 16),
+                  IconButton(
+                    onPressed: () {
+                      ref
+                          .read(appSettingProvider.notifier)
+                          .update(
+                            (state) =>
+                                state.copyWith(showLabel: !state.showLabel),
+                          );
+                    },
+                    icon: Icon(
+                      PanoramaIcons.navigation.railLabels,
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
                   ),
-                ),
+                ],
                 const SizedBox(height: 16),
               ],
             ),

@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/design.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/manager/manager.dart';
 import 'package:fl_clash/models/state.dart';
@@ -40,7 +41,7 @@ extension BuildContextExtension on BuildContext {
   void showSnackBar(String message, {SnackBarAction? action}) {
     final width = viewWidth;
     EdgeInsets margin;
-    if (width < 600) {
+    if (PanoramaLayoutClass.fromWidth(width) == PanoramaLayoutClass.compact) {
       margin = const EdgeInsets.only(bottom: 16, right: 16, left: 16);
     } else {
       margin = EdgeInsets.only(bottom: 16, left: 16, right: width - 316);

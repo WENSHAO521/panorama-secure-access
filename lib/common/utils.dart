@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/design/design.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -227,9 +228,11 @@ class Utils {
   }
 
   ViewMode getViewMode(double viewWidth) {
-    if (viewWidth <= maxMobileWidth) return ViewMode.mobile;
-    if (viewWidth <= maxLaptopWidth) return ViewMode.laptop;
-    return ViewMode.desktop;
+    return switch (PanoramaLayoutClass.fromWidth(viewWidth)) {
+      PanoramaLayoutClass.compact => ViewMode.mobile,
+      PanoramaLayoutClass.medium => ViewMode.laptop,
+      PanoramaLayoutClass.expanded => ViewMode.desktop,
+    };
   }
 
   int getProxiesColumns(double viewWidth, ProxiesLayout proxiesLayout) {
