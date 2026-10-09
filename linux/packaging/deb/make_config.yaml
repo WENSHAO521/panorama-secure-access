@@ -1,8 +1,8 @@
 display_name: Panorama Secure Access
 package_name: FlClash
 maintainer:
-  name: chen08209
-  email: chen08209@gmail.com
+  name: Panorama Scholarly Group
+  email: psa@panorama-sg.com
 
 priority: optional
 section: x11
@@ -11,11 +11,24 @@ essential: false
 icon: ./assets/images/icon.png
 
 dependencies:
-  - libayatana-appindicator3-dev
-  - libkeybinder-3.0-dev
+  - libayatana-appindicator3-1
+  - libsecret-1-0
+
+# The Helper unit is written on demand by the app, not at install time, so only
+# its teardown belongs here; the binary is already gone when postrm runs.
+postuninstall_scripts:
+  - 'case "${1:-}" in remove|purge) ;; *) exit 0 ;; esac'
+  - 'systemctl disable --now flclash-helper.service >/dev/null 2>&1 || true'
+  - 'rm -f /etc/systemd/system/flclash-helper.service'
+  - 'systemctl daemon-reload >/dev/null 2>&1 || true'
+
+supported_mime_type:
+  - x-scheme-handler/clash
+  - x-scheme-handler/clashmeta
+  - x-scheme-handler/flclash
 
 keywords:
-  - FlClash
+  - Panorama Secure Access
   - Clash
   - ClashMeta
   - Proxy

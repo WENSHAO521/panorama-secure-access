@@ -6,8 +6,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:fl_clash/common/picker.dart';
 import 'package:test/test.dart';
 
-base class _TestPlatformFile extends PlatformFile {
-  _TestPlatformFile(this._file);
+base class _LocalPlatformFile extends PlatformFile {
+  _LocalPlatformFile(this._file);
 
   final File _file;
 
@@ -21,16 +21,14 @@ base class _TestPlatformFile extends PlatformFile {
   XFile get xFile => XFile(_file.path);
 
   @override
-  int? lengthSync() => null;
-
-  @override
   Future<int> length() => _file.length();
 
   @override
   Future<Uint8List> readAsBytes() => _file.readAsBytes();
 
   @override
-  Stream<Uint8List> readAsByteStream() => _file.openRead().map(Uint8List.fromList);
+  Stream<Uint8List> readAsByteStream() =>
+      _file.openRead().map(Uint8List.fromList);
 }
 
 void main() {
@@ -44,7 +42,7 @@ void main() {
       final file = File('${directory.path}/profile.yaml');
       await file.writeAsString('mixed-port: 7890');
 
-      final platformFile = _TestPlatformFile(file);
+      final platformFile = _LocalPlatformFile(file);
 
       final bytes = await platformFile.readBytes();
 

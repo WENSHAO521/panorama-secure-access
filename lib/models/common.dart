@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
-import 'package:flutter/material.dart';
+import 'package:fl_clash/icons/glyph.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'clash_config.dart';
@@ -15,9 +18,8 @@ part 'generated/common.g.dart';
 @freezed
 abstract class NavigationItem with _$NavigationItem {
   const factory NavigationItem({
-    required Icon icon,
+    required Glyph glyph,
     required PageLabel label,
-    final String? description,
     required WidgetBuilder builder,
     @Default(true) bool keep,
     String? path,
@@ -41,9 +43,7 @@ abstract class Package with _$Package {
 }
 
 extension PackagesExt on List<Package> {
-  List<Package> getViewList({
-    required List<String> pinedList,
-    required AccessSortType sortType,
+  Iterable<Package> whereVisible({
     required bool isFilterSystemApp,
     required bool isFilterNonInternetApp,
   }) {
@@ -51,9 +51,22 @@ extension PackagesExt on List<Package> {
       (item) =>
           (isFilterSystemApp ? item.system == false : true) &&
           (isFilterNonInternetApp ? item.internet == true : true),
+    );
+  }
+
+  List<Package> getViewList({
+    required List<String> pinedList,
+    required AccessSortType sortType,
+    required bool isFilterSystemApp,
+    required bool isFilterNonInternetApp,
+  }) {
+    final pinned = pinedList.toSet();
+    return whereVisible(
+      isFilterSystemApp: isFilterSystemApp,
+      isFilterNonInternetApp: isFilterNonInternetApp,
     ).sorted((a, b) {
-      final isSelectA = pinedList.contains(a.packageName);
-      final isSelectB = pinedList.contains(b.packageName);
+      final isSelectA = pinned.contains(a.packageName);
+      final isSelectB = pinned.contains(b.packageName);
 
       if (isSelectA != isSelectB) {
         return isSelectA ? -1 : 1;
@@ -113,15 +126,12 @@ abstract class TrackerInfo with _$TrackerInfo {
 }
 
 extension TrackerInfoExt on TrackerInfo {
-  String get desc {
-    var text = '${metadata.network}://';
-    final ips = [
-      metadata.host,
-      metadata.destinationIP,
-    ].where((ip) => ip.isNotEmpty);
-    text += ips.join('/');
-    text += ':${metadata.destinationPort}';
-    return text;
+  String get title {
+    final host = metadata.host;
+    if (host.isNotEmpty) {
+      return host;
+    }
+    return metadata.destinationIP;
   }
 
   String get progressText {
@@ -132,31 +142,41 @@ extension TrackerInfoExt on TrackerInfo {
     }
     return process.trim();
   }
+
+  List<String> get searchFields => [
+    metadata.network,
+    metadata.host,
+    metadata.destinationIP,
+    metadata.destinationPort,
+    metadata.sourceIP,
+    metadata.sourcePort,
+    metadata.process,
+    metadata.processPath,
+    metadata.remoteDestination,
+    metadata.destinationIPASN,
+    ...metadata.destinationGeoIP,
+    metadata.specialProxy,
+    metadata.specialRules,
+    rule,
+    rulePayload,
+    ...chains,
+  ];
 }
 
 String _logDateTime(dynamic _) {
   return DateTime.now().showFull;
 }
 
-// String _logId(_) {
-//   return utils.id;
-// }
-
 @freezed
 abstract class Log with _$Log {
   const factory Log({
-    // @JsonKey(fromJson: _logId) required String id,
     @JsonKey(name: 'LogLevel') @Default(LogLevel.info) LogLevel logLevel,
     @JsonKey(name: 'Payload') @Default('') String payload,
     @JsonKey(fromJson: _logDateTime) required String dateTime,
   }) = _Log;
 
   factory Log.app(String payload) {
-    return Log(
-      payload: payload,
-      dateTime: _logDateTime(null),
-      // id: _logId(null),
-    );
+    return Log(payload: payload, dateTime: _logDateTime(null));
   }
 
   factory Log.fromJson(Map<String, Object?> json) => _$LogFromJson(json);
@@ -172,15 +192,26 @@ abstract class LogsState with _$LogsState {
   }) = _LogsState;
 }
 
+final _logSearchTexts = Expando<String>();
+
 extension LogsStateExt on LogsState {
+  bool get isSearching => keywords.isNotEmpty || SearchQuery(query).isNotEmpty;
+
   List<Log> get list {
-    final lowQuery = query.toLowerCase();
-    return logs.where((log) {
-      final logLevelName = log.logLevel.name;
-      return {logLevelName}.containsAll(keywords) &&
-          ((log.payload.toLowerCase().contains(lowQuery)) ||
-              logLevelName.contains(lowQuery));
-    }).toList();
+    final searchQuery = SearchQuery(query);
+    if (keywords.isEmpty && searchQuery.isEmpty) {
+      return logs;
+    }
+    return logs
+        .where(
+          (log) => keywords.every((keyword) => keyword == log.logLevel.name),
+        )
+        .whereMatches(
+          searchQuery,
+          (log) => [log.payload, log.logLevel.name],
+          texts: _logSearchTexts,
+        )
+        .toList();
   }
 }
 
@@ -194,53 +225,228 @@ abstract class TrackerInfosState with _$TrackerInfosState {
   }) = _TrackerInfosState;
 }
 
+final _trackerInfoSearchTexts = Expando<String>();
+
 extension TrackerInfosStateExt on TrackerInfosState {
+  bool get isSearching => keywords.isNotEmpty || SearchQuery(query).isNotEmpty;
+
   List<TrackerInfo> get list {
-    final lowerQuery = query.toLowerCase().trim();
-    final lowQuery = query.toLowerCase();
-    return trackerInfos.where((trackerInfo) {
-      final chains = trackerInfo.chains;
-      final process = trackerInfo.metadata.process;
-      final networkText = trackerInfo.metadata.network.toLowerCase();
-      final hostText = trackerInfo.metadata.host.toLowerCase();
-      final destinationIPText = trackerInfo.metadata.destinationIP
-          .toLowerCase();
-      final processText = trackerInfo.metadata.process.toLowerCase();
-      final chainsText = chains.join('').toLowerCase();
-      return {...chains, process}.containsAll(keywords) &&
-          (networkText.contains(lowerQuery) ||
-              hostText.contains(lowerQuery) ||
-              destinationIPText.contains(lowQuery) ||
-              processText.contains(lowerQuery) ||
-              chainsText.contains(lowerQuery));
-    }).toList();
+    final searchQuery = SearchQuery(query);
+    if (keywords.isEmpty && searchQuery.isEmpty) {
+      return trackerInfos;
+    }
+    return trackerInfos
+        .where(
+          (trackerInfo) => keywords.every(
+            (keyword) =>
+                keyword == trackerInfo.metadata.process ||
+                trackerInfo.chains.contains(keyword),
+          ),
+        )
+        .whereMatches(
+          searchQuery,
+          (trackerInfo) => trackerInfo.searchFields,
+          texts: _trackerInfoSearchTexts,
+        )
+        .toList();
+  }
+}
+
+@freezed
+abstract class DnsQuery with _$DnsQuery {
+  const factory DnsQuery({
+    required String domain,
+    required String type,
+    @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)
+    DnsQueryInitiator? initiator,
+    @Default('') String upstream,
+    @Default(false) bool cached,
+    @Default([]) List<String> answers,
+    @Default('') String rcode,
+    @Default('') String error,
+    @Default(0) int delay,
+    required DateTime time,
+  }) = _DnsQuery;
+
+  factory DnsQuery.fromJson(Map<String, Object?> json) =>
+      _$DnsQueryFromJson(json);
+}
+
+extension DnsQueryExt on DnsQuery {
+  bool get hasFailureRcode => rcode.isNotEmpty && rcode != 'NOERROR';
+
+  bool get isFailed => error.isNotEmpty || hasFailureRcode;
+
+  List<String> get tags => [type, ...resultTags];
+
+  List<String> get resultTags {
+    final initiator = this.initiator;
+    return [
+      if (initiator != null) initiator.label,
+      if (cached) currentAppLocalizations.cache,
+      if (hasFailureRcode) rcode,
+    ];
+  }
+
+  List<String> get searchFields => [
+    domain,
+    ...tags,
+    rcode,
+    upstream,
+    error,
+    ...answers,
+  ];
+}
+
+@freezed
+abstract class DnsQueriesState with _$DnsQueriesState {
+  const factory DnsQueriesState({
+    @Default([]) List<DnsQuery> dnsQueries,
+    @Default([]) List<String> keywords,
+    @Default('') String query,
+    @Default(true) bool autoScrollToEnd,
+  }) = _DnsQueriesState;
+}
+
+extension DnsQueriesStateExt on DnsQueriesState {
+  bool get isSearching => keywords.isNotEmpty || SearchQuery(query).isNotEmpty;
+
+  List<DnsQuery> get list {
+    final searchQuery = SearchQuery(query);
+    if (keywords.isEmpty && searchQuery.isEmpty) {
+      return dnsQueries;
+    }
+    return dnsQueries
+        .where((dnsQuery) => keywords.every(dnsQuery.tags.contains))
+        .whereMatches(searchQuery, (dnsQuery) => dnsQuery.searchFields)
+        .toList();
   }
 }
 
 const defaultDavFileName = 'backup.zip';
+const _davPasswordFormatVersion = 'v1';
+const _davPasswordNonceLength = 16;
+const _davPasswordObfuscationMask = <int>[
+  0x9d,
+  0x42,
+  0xe7,
+  0x1b,
+  0x68,
+  0xb4,
+  0x35,
+  0xca,
+  0x7f,
+  0x20,
+  0xd1,
+  0x56,
+  0x83,
+  0xfa,
+  0x0c,
+  0xa9,
+];
 
-@freezed
+// This only prevents accidental plain-text disclosure. It is deliberately not
+// a security boundary against reverse engineering or same-user access.
+String _encodeDavPassword(String password) {
+  if (password.isEmpty) {
+    return '';
+  }
+  final random = Random.secure();
+  final nonce = List<int>.generate(
+    _davPasswordNonceLength,
+    (_) => random.nextInt(256),
+    growable: false,
+  );
+  final passwordBytes = utf8.encode(password);
+  final obfuscated = List<int>.generate(
+    passwordBytes.length,
+    (index) =>
+        passwordBytes[index] ^
+        nonce[index % nonce.length] ^
+        _davPasswordObfuscationMask[index % _davPasswordObfuscationMask.length],
+    growable: false,
+  );
+  return [
+    _davPasswordFormatVersion,
+    base64UrlEncode(nonce),
+    base64UrlEncode(obfuscated),
+  ].join('.');
+}
+
+String _decodeDavPassword(String? value) {
+  if (value == null || value.isEmpty) {
+    return '';
+  }
+  final parts = value.split('.');
+  if (parts.length != 3 || parts[0] != _davPasswordFormatVersion) {
+    return value;
+  }
+  try {
+    final nonce = base64Url.decode(parts[1]);
+    final obfuscated = base64Url.decode(parts[2]);
+    if (nonce.length != _davPasswordNonceLength) {
+      return '';
+    }
+    final passwordBytes = List<int>.generate(
+      obfuscated.length,
+      (index) =>
+          obfuscated[index] ^
+          nonce[index % nonce.length] ^
+          _davPasswordObfuscationMask[index %
+              _davPasswordObfuscationMask.length],
+      growable: false,
+    );
+    return utf8.decode(passwordBytes);
+  } on FormatException {
+    return '';
+  }
+}
+
+@Freezed(toStringOverride: false)
 abstract class DAVProps with _$DAVProps {
+  const DAVProps._();
+
   const factory DAVProps({
     required String uri,
     required String user,
-    required String password,
+    @JsonKey(fromJson: _decodeDavPassword, toJson: _encodeDavPassword)
+    @Default('')
+    String password,
     @Default(defaultDavFileName) String fileName,
   }) = _DAVProps;
 
   factory DAVProps.fromJson(Map<String, Object?> json) =>
       _$DAVPropsFromJson(json);
+
+  @override
+  String toString() =>
+      'DAVProps(uri: $uri, user: $user, password: ***, fileName: $fileName)';
 }
 
 @freezed
 abstract class FileInfo with _$FileInfo {
-  const factory FileInfo({required int size, required DateTime lastModified}) =
+  const factory FileInfo({required int size, DateTime? lastModified}) =
       _FileInfo;
 }
 
-extension FileInfoExt on FileInfo {
-  String getDesc(BuildContext context) =>
-      '${size.traffic.show}  ·  ${lastModified.getLastUpdateTimeDesc(context)}';
+extension FileInfoFileExt on File {
+  Future<FileInfo?> getFileInfo() async {
+    if (!await exists()) {
+      return null;
+    }
+    final size = await length();
+    final lastModified = await _getValidLastModified();
+    return FileInfo(size: size, lastModified: lastModified);
+  }
+
+  Future<DateTime?> _getValidLastModified() async {
+    try {
+      final value = await lastModified();
+      return value.year > 1970 ? value : null;
+    } on FileSystemException {
+      return null;
+    }
+  }
 }
 
 @freezed
@@ -265,10 +471,6 @@ abstract class Traffic with _$Traffic {
 extension TrafficExt on Traffic {
   String get speedText {
     return '↑ ${up.traffic.show}/s   ↓ ${down.traffic.show}/s';
-  }
-
-  String get desc {
-    return '${up.traffic.show} ↑ ${down.traffic.show} ↓';
   }
 
   String get trayTitle {
@@ -374,7 +576,7 @@ abstract class IpInfo with _$IpInfo {
     };
   }
 
-  static IpInfo fromIpApiCoJson(Map<String, dynamic> json) {
+  static IpInfo fromGeoJsJson(Map<String, dynamic> json) {
     return switch (json) {
       {'ip': final String ip, 'country_code': final String countryCode} =>
         IpInfo(ip: ip, countryCode: countryCode),
@@ -398,9 +600,9 @@ abstract class IpInfo with _$IpInfo {
     };
   }
 
-  static IpInfo fromMyIpJson(Map<String, dynamic> json) {
+  static IpInfo fromCountryIsJson(Map<String, dynamic> json) {
     return switch (json) {
-      {'ip': final String ip, 'cc': final String countryCode} => IpInfo(
+      {'ip': final String ip, 'country': final String countryCode} => IpInfo(
         ip: ip,
         countryCode: countryCode,
       ),
@@ -423,6 +625,34 @@ abstract class IpInfo with _$IpInfo {
         countryCode: countryCode,
       ),
       _ => throw const FormatException('invalid json'),
+    };
+  }
+
+  static IpInfo fromIpQueryJson(Map<String, dynamic> json) {
+    return switch (json) {
+      {
+        'ip': final String ip,
+        'location': {'country_code': final String countryCode},
+      } =>
+        IpInfo(ip: ip, countryCode: countryCode),
+      _ => throw const FormatException('invalid json'),
+    };
+  }
+
+  static IpInfo fromCloudflareTrace(String body) {
+    final fields = <String, String>{};
+    for (final line in const LineSplitter().convert(body)) {
+      final separator = line.indexOf('=');
+      if (separator > 0) {
+        fields[line.substring(0, separator)] = line.substring(separator + 1);
+      }
+    }
+    return switch (fields) {
+      {'ip': final ip, 'loc': final countryCode} => IpInfo(
+        ip: ip,
+        countryCode: countryCode,
+      ),
+      _ => throw const FormatException('invalid trace'),
     };
   }
 }
@@ -450,24 +680,12 @@ abstract class Field with _$Field {
   }) = _Field;
 }
 
-class PopupMenuItemData {
-  const PopupMenuItemData({
-    this.icon,
-    required this.label,
-    this.onPressed,
-    this.danger = false,
-    this.subItems = const [],
-  });
-
-  final String label;
-  final VoidCallback? onPressed;
-  final IconData? icon;
-  final bool danger;
-  final List<PopupMenuItemData> subItems;
-}
-
 class CloseWindowIntent extends Intent {
   const CloseWindowIntent();
+}
+
+class EscapeBackIntent extends Intent {
+  const EscapeBackIntent();
 }
 
 @freezed
@@ -497,15 +715,18 @@ abstract class Script with _$Script {
     required int id,
     required String label,
     required DateTime lastUpdateTime,
+    String? url,
+    int? order,
   }) = _Script;
 
   factory Script.fromJson(Map<String, Object?> json) => _$ScriptFromJson(json);
 
-  factory Script.create({required String label}) {
+  factory Script.create({required String label, String? url}) {
     return Script(
       id: snowflake.id,
       label: label,
       lastUpdateTime: DateTime.now(),
+      url: url,
     );
   }
 }
@@ -521,20 +742,28 @@ extension ScriptsExt on List<Script> {
     }
     return null;
   }
+
+  bool hasLabel(String label, {Script? except}) {
+    return any((script) => script.id != except?.id && script.label == label);
+  }
+
+  String uniqueLabel(String name, {required String fallback}) {
+    return uniqueLabelFor(
+      name,
+      fallback: fallback,
+      taken: (label) => hasLabel(label),
+    );
+  }
 }
 
 extension ScriptExt on Script {
   String get fileName => '$id.js';
 
+  String get updatingKey => 'script_$id';
+
   Future<String> get path async => appPath.getScriptPath(id.toString());
 
-  Future<String?> get content async {
-    final file = File(await path);
-    if (await file.exists()) {
-      return file.readAsString();
-    }
-    return null;
-  }
+  Future<String?> get content async => readTextFileTask(await path);
 
   Future<Script> save(String content) async {
     final file = File(await path);
@@ -545,6 +774,11 @@ extension ScriptExt on Script {
     return copyWith(lastUpdateTime: DateTime.now());
   }
 
+  Future<Script> update() async {
+    final response = await request.getTextResponseForUrl(url!);
+    return save(response.data ?? '');
+  }
+
   Future<Script> saveWithPath(String copyPath) async {
     final file = File(await path);
     if (!await file.exists()) {
@@ -552,6 +786,100 @@ extension ScriptExt on Script {
     }
     await File(copyPath).copy(copyPath);
     return copyWith(lastUpdateTime: DateTime.now());
+  }
+}
+
+@freezed
+abstract class ClashProvider with _$ClashProvider {
+  const factory ClashProvider({
+    required int id,
+    required ProviderKind kind,
+    required String label,
+    @Default('') String url,
+    RuleProviderBehavior? behavior,
+    RuleProviderFormat? format,
+    int? order,
+  }) = _ClashProvider;
+
+  factory ClashProvider.create({
+    required ProviderKind kind,
+    required String label,
+    String url = '',
+  }) {
+    return ClashProvider(
+      id: snowflake.id,
+      kind: kind,
+      label: label,
+      url: url,
+      behavior: kind == ProviderKind.rule
+          ? RuleProviderBehavior.classical
+          : null,
+      format: kind == ProviderKind.rule ? RuleProviderFormat.yaml : null,
+    );
+  }
+}
+
+RuleProviderFormat? ruleProviderFormatOf(String sourceName) {
+  final dot = sourceName.lastIndexOf('.');
+  if (dot <= 0) {
+    return null;
+  }
+  return switch (sourceName.substring(dot + 1).toLowerCase()) {
+    'mrs' => RuleProviderFormat.mrs,
+    'txt' || 'list' || 'conf' => RuleProviderFormat.text,
+    'yaml' || 'yml' => RuleProviderFormat.yaml,
+    _ => null,
+  };
+}
+
+extension ClashProviderExt on ClashProvider {
+  /// Keyed by url so an edited url downloads afresh instead of reusing the
+  /// cached body the old one left behind.
+  String get fileName => '$id@$url'.toMd5();
+
+  bool get isRemote => url.isNotEmpty;
+
+  /// An mrs set is a zstd stream, which no text editor can round-trip.
+  bool get isTextContent => format != RuleProviderFormat.mrs;
+
+  Future<String> get path => appPath.getProviderCachePath(kind, fileName);
+
+  Future<String?> get content async => readTextFileTask(await path);
+
+  Future<void> saveContent(List<int> bytes) async {
+    await File(await path).safeWriteAsBytes(bytes);
+  }
+
+  ClashProvider withFileFormat(String sourceName) {
+    return withFormat(
+      ruleProviderFormatOf(sourceName) ?? RuleProviderFormat.yaml,
+    );
+  }
+
+  /// The core takes mrs only under domain or ipcidr.
+  ClashProvider withFormat(RuleProviderFormat nextFormat) {
+    if (kind != ProviderKind.rule) {
+      return this;
+    }
+    final behaviors = nextFormat.behaviors;
+    return copyWith(
+      format: nextFormat,
+      behavior: behaviors.contains(behavior) ? behavior : behaviors.first,
+    );
+  }
+
+  Map<String, dynamic> definition(String path) {
+    final vehicle = isRemote
+        ? {'type': 'http', 'url': url, 'path': path}
+        : {'type': 'file', 'path': path};
+    return switch (kind) {
+      ProviderKind.proxy => {...vehicle},
+      ProviderKind.rule => {
+        ...vehicle,
+        'behavior': (behavior ?? RuleProviderBehavior.classical).name,
+        'format': (format ?? RuleProviderFormat.yaml).name,
+      },
+    };
   }
 }
 
@@ -592,7 +920,9 @@ abstract class UpdatingMessage with _$UpdatingMessage {
 @freezed
 abstract class IconButtonData with _$IconButtonData {
   const factory IconButtonData({
-    required IconData icon,
-    required VoidCallback onPressed,
+    required Glyph glyph,
+    required VoidCallback? onPressed,
+    String? tooltip,
+    @Default(false) bool isLoading,
   }) = _IconButtonData;
 }

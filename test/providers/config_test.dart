@@ -22,7 +22,7 @@ void main() {
       expect(value.onlyStatisticsProxy, false);
       expect(value.autoLaunch, false);
       expect(value.closeConnections, true);
-      expect(value.isAnimateToPage, true);
+      expect(value.tabAnimation, TabAnimation.slide);
     });
 
     test('can update state', () {
@@ -115,12 +115,13 @@ void main() {
       const davProps = DAVProps(
         uri: 'https://dav.example.com',
         user: 'user',
-        password: 'password',
+        password: 'secret',
       );
 
       container.read(davSettingProvider.notifier).update((_) => davProps);
 
       expect(container.read(davSettingProvider), davProps);
+      expect(container.read(configProvider).davProps?.password, 'secret');
     });
   });
 
@@ -231,15 +232,17 @@ void main() {
         themeProps: ThemeProps(),
         currentProfileId: 7,
         overrideDns: true,
+        overrideNtp: true,
       );
       final overrides = buildConfigOverrides(config);
-      expect(overrides.length, 12);
+      expect(overrides.length, 13);
 
       final overrideContainer = ProviderContainer(overrides: overrides);
       addTearDown(overrideContainer.dispose);
 
       expect(overrideContainer.read(currentProfileIdProvider), 7);
       expect(overrideContainer.read(overrideDnsProvider), true);
+      expect(overrideContainer.read(overrideNtpProvider), true);
       expect(
         overrideContainer.read(patchClashConfigProvider),
         config.patchClashConfig,

@@ -1,55 +1,53 @@
 import 'dart:async';
+import 'dart:io' as io;
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:flutter/foundation.dart';
-import 'package:webdav_client/webdav_client.dart';
 
 typedef DAVClientFactory = DAVClient Function(DAVProps props);
 
 class DAVClient {
-  late Client client;
-  late String fileName;
+  DAVClient(DAVProps dav)
+    : _transport = DAVTransport(
+        uri: dav.uri,
+        user: dav.user,
+        password: dav.password,
+      ),
+      fileName = dav.fileName;
 
-  DAVClient(DAVProps dav) {
-    client = newClient(dav.uri, user: dav.user, password: dav.password);
-    fileName = dav.fileName;
-    client.setHeaders({'accept-charset': 'utf-8', 'Content-Type': 'text/xml'});
-    client.setConnectTimeout(8000);
-    client.setSendTimeout(60000);
-    client.setReceiveTimeout(60000);
-  }
+  final DAVTransport _transport;
+  final String fileName;
 
   Future<bool> ping() async {
     try {
-      await client.ping();
+      await _transport.options('/');
       return true;
-    } catch (_) {
+    } catch (e) {
+      commonPrint.log(
+        'dav ping error ${e.toString()}',
+        logLevel: LogLevel.warning,
+      );
       return false;
     }
   }
 
-  String get root => '/FlClash';
+  String get root => '/$appName';
 
   String get backupFile => '$root/$fileName';
 
-  Future<bool> backup(String localFilePath) async {
-    await client.mkdir(root);
-    await client.writeFromFile(localFilePath, backupFile);
-    return true;
+  Future<void> upload(String localPath) async {
+    await _transport.mkcol(root);
+    await _transport.put(backupFile, await io.File(localPath).readAsBytes());
   }
 
-  Future<bool> restore() async {
-    await client.mkdir(root);
-    final backupFilePath = await appPath.backupFilePath;
-    await client.read2File(backupFile, backupFilePath);
-    return true;
+  Future<void> download(String localPath) async {
+    final bytes = await _transport.get(backupFile);
+    await io.File(localPath).safeWriteAsBytes(bytes);
   }
 }
 
-/// Guards WebDAV "ping" connection checks against stale/out-of-order async
-/// results — without this, a slow ping for an old credential set can
-/// overwrite the result of a newer one entered right after it.
 class DAVConnectionController extends ValueNotifier<bool?> {
   DAVConnectionController({DAVClientFactory? createClient})
     : _createClient = createClient ?? DAVClient.new,

@@ -1,47 +1,17 @@
-# app_name / executable_name intentionally stay "FlClash": they must match
-# BINARY_NAME in windows/CMakeLists.txt (the real compiled/installed exe
-# name) and the process names in inno_setup.iss's KillProcesses. Only
-# display_name/publisher_name (what installer UI and Add/Remove Programs
-# show) are Panorama-branded here; see setup.dart for the matching
-# rationale on distribute_options.yaml's app_name.
-#
-# NOTE: MakeExeConfig.fromJson (flutter_distributor fork,
-# packages/flutter_app_packager/lib/src/makers/exe/make_exe_config.dart)
-# reads `publisher_name`/`publisher_url`, not `publisher`. The previous
-# `publisher:` key here was silently ignored, so AppPublisher (the
-# Add/Remove Programs "Publisher" column) was rendering blank regardless
-# of its value — renamed to the key the loader actually reads.
 script_template: inno_setup.iss
 app_id: 728B3532-C74B-4870-9068-BE70FE12A3E6
 app_name: FlClash
-publisher_name: Panorama Scholarly Group
-# TODO: replace with the real Panorama Scholarly Group homepage/support URL
-# once one exists — left pointing at the upstream open-source project for
-# now rather than fabricating a URL.
-publisher_url: https://github.com/chen08209/FlClash
+publisher: Panorama Scholarly Group
+publisher_url: https://github.com/WENSHAO521/panorama-secure-access
 display_name: Panorama Secure Access
 executable_name: FlClash.exe
 output_base_file_name: FlClash.exe
-# Fresh-install default only (Inno Setup's DefaultDirName). Upgrades are
-# matched by app_id, not this path: Inno Setup reads the previously
-# installed directory back out of the existing uninstall registry key and
-# reuses it, so an existing FlClash-directory install continues upgrading
-# in place — this does not rename or migrate it. Must keep the {autopf64}
-# constant prefix; MakeExeConfig uses this value verbatim with no implicit
-# Program-Files prefixing when set.
-install_dir_name: '{autopf64}\Panorama Secure Access'
-# Unlike locales[].file below, MakeExeConfig.fromJson joins this value onto
-# `Directory.current` (the repo root that `dart setup.dart windows` runs
-# from) rather than leaving it for Inno Setup to resolve relative to the
-# generated .iss's own location — so this must be relative to the repo
-# root, not to this make_config.yaml file or to dist/. A leading `..\`
-# here (as if relative to dist/, one level below repo root) overshoots
-# past the repo root once GitHub Actions' checkout path is on the runner
-# (D:\a\<repo>\<repo>\...), producing a SetupIconFile that points outside
-# the checkout entirely and failing ISCC with a cryptic "Updating icons
-# (Setup.e32): The system cannot find the path specified."
+# Resolved against the project root: flutter_distributor turns this into an
+# absolute path via Directory.current.
 setup_icon_file: windows\runner\resources\app_icon.ico
 locales:
+  # Written into the .iss verbatim, so this one stays relative to the generated
+  # script in dist/.
   - lang: zh
     file: ..\windows\packaging\exe\ChineseSimplified.isl
   - lang: en

@@ -13,7 +13,6 @@ OutputBaseFilename={{OUTPUT_BASE_FILENAME}}
 Compression=lzma
 SolidCompression=yes
 SetupIconFile={{SETUP_ICON_FILE}}
-UninstallDisplayIcon={app}\{{EXECUTABLE_NAME}}
 WizardStyle=modern
 PrivilegesRequired={{PRIVILEGES_REQUIRED}}
 ArchitecturesAllowed={{ARCH}}
@@ -34,22 +33,29 @@ begin
   end;
 end;
 
-procedure RemoveHelperService;
+procedure UnregisterHelperService;
 var
+  HelperPath: String;
   ResultCode: Integer;
 begin
-  Exec('sc.exe', 'stop FlClashHelperService', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
-  Exec('sc.exe', 'delete FlClashHelperService', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  HelperPath := ExpandConstant('{app}\\FlClashHelperService.exe');
+  if FileExists(HelperPath) then
+  begin
+    Exec(HelperPath, 'uninstall', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  end;
 end;
 
-function InitializeSetup(): Boolean;
+function PrepareToInstall(var NeedsRestart: Boolean): String;
 begin
-  // Kill any running app/core/helper processes before touching the service,
-  // so a live helper process doesn't hold a handle that makes the service
-  // deletion below fail or leave a stale registration behind that blocks
-  // TUN/core startup after reinstall.
+  UnregisterHelperService;
   KillProcesses;
-  RemoveHelperService;
+  Result := '';
+end;
+
+function InitializeUninstall(): Boolean;
+begin
+  UnregisterHelperService;
+  KillProcesses;
   Result := True;
 end;
 

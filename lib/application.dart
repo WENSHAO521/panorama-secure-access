@@ -3,19 +3,54 @@ import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/core/core.dart';
+import 'package:fl_clash/common/window.dart';
+import 'package:fl_clash/bootstrap.dart';
+import 'package:fl_clash/common/system_dns.dart';
+import 'package:fl_clash/icons/icons.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/manager/hotkey_manager.dart';
 import 'package:fl_clash/manager/manager.dart';
 import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
-import 'package:fl_clash/widgets/glass.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:fl_clash/widgets/focus.dart';
+import 'package:fl_clash/widgets/keyboard_inset_hold.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'pages/pages.dart';
+
+Widget buildManagerStack({
+  required bool isDesktop,
+  required Future<void> Function(List<ConnectivityResult> results)
+  onConnectivityChanged,
+  required Widget child,
+}) {
+  final platformApp = isDesktop
+      ? WindowHeaderContainer(child: child)
+      : VpnManager(child: child);
+  final state = AppStateManager(
+    child: CoreManager(
+      child: ConnectivityManager(
+        onConnectivityChanged: onConnectivityChanged,
+        child: platformApp,
+      ),
+    ),
+  );
+  final platformState = isDesktop
+      ? WindowManager(
+          child: TrayManager(
+            child: HotKeyManager(child: ProxyManager(child: state)),
+          ),
+        )
+      : AndroidManager(child: TileManager(child: state));
+  return AppEnvManager(
+    child: LocaleManager(
+      child: StatusManager(child: ThemeManager(child: platformState)),
+    ),
+  );
+}
 
 class Application extends ConsumerStatefulWidget {
   const Application({super.key});
@@ -23,6 +58,17 @@ class Application extends ConsumerStatefulWidget {
   @override
   ConsumerState<Application> createState() => ApplicationState();
 }
+
+const _actionIconTheme = ActionIconThemeData(
+  backButtonIconBuilder: _backButtonIcon,
+  closeButtonIconBuilder: _closeButtonIcon,
+);
+
+Widget _backButtonIcon(BuildContext context) =>
+    GlyphIcon(AppGlyphs.backFor(Theme.of(context).platform));
+
+Widget _closeButtonIcon(BuildContext context) =>
+    const GlyphIcon(AppGlyphs.close);
 
 class ApplicationState extends ConsumerState<Application> {
   Timer? _autoUpdateProfilesTaskTimer;
@@ -37,185 +83,78 @@ class ApplicationState extends ConsumerState<Application> {
     },
   );
 
-  ColorScheme _getAppColorScheme({
-    required Brightness brightness,
-    int? primaryColor,
-  }) {
+  ColorScheme _getAppColorScheme({required Brightness brightness}) {
     return ref.read(genColorSchemeProvider(brightness));
-  }
-
-  // Fills in ThemeData sub-themes (chips, dialogs, sheets) that Flutter
-  // otherwise defaults to opaque Material colors, so they read as part of
-  // the glass shell instead of standing out against it.
-  //
-  // Deliberately NOT included: InputDecorationTheme. Every TextField in
-  // this app already defines its own decoration (border, fill, padding) —
-  // a global filled/fillColor/OutlineInputBorder here would paint a second,
-  // differently-shaped border/fill underneath each field's own, producing
-  // double borders and broken sizing (see the config/profile editor
-  // regression). Glass-styled inputs are opt-in via `glassInputDecoration()`
-  // (lib/widgets/glass.dart), applied per field, never globally.
-  ThemeData _buildThemeData(ColorScheme colorScheme) {
-    final brightness = colorScheme.brightness;
-    final borderSide = BorderSide(
-      color: colorScheme.outlineVariant.withValues(
-        alpha: GlassTokens.borderOpacityFor(brightness),
-      ),
-    );
-    // Material 3's own default button shape is a full StadiumBorder pill —
-    // fine for chips/segmented controls/status pills, but every
-    // Filled/Outlined/Elevated/TextButton in the app inherits it too,
-    // which is the "don't make every button a pill" rule the design spec
-    // calls out. One shared shape at the theme level fixes every button
-    // app-wide instead of passing `shape:` at each of the ~24 call sites.
-    final buttonShape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(GlassTokens.radiusButton),
-    );
-    return ThemeData(
-      useMaterial3: true,
-      // Inter (OFL-licensed, bundled in assets/fonts/) instead of the
-      // Material default (Roboto/San Francisco/Segoe depending on
-      // platform) for a consistent brand look across desktop and mobile.
-      // Only covers Latin/Cyrillic/Greek — CJK glyphs (zh/ja locales) fall
-      // through to the platform's system font automatically, the same way
-      // they already render today.
-      fontFamily: 'Inter',
-      pageTransitionsTheme: _pageTransitionsTheme,
-      // Transparent so every Scaffold reveals the AmbientBackground
-      // painted once behind the app shell (see HomePage) instead of
-      // painting its own opaque surface color over it.
-      scaffoldBackgroundColor: Colors.transparent,
-      colorScheme: colorScheme,
-      chipTheme: ChipThemeData(
-        // Chips are lightweight, often-repeated controls, not mini glass
-        // panels — a low tint (same family as GlassSurfaceType.repeated)
-        // instead of a near-opaque fill.
-        backgroundColor: colorScheme.surfaceContainerHighest.withValues(
-          alpha: GlassTokens.opacityFor(GlassSurfaceType.repeated, brightness),
-        ),
-        selectedColor: colorScheme.primary.withValues(alpha: 0.16),
-        side: borderSide,
-      ),
-      dialogTheme: const DialogThemeData(
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-      ),
-      bottomSheetTheme: BottomSheetThemeData(
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        // Both showModalBottomSheet and our ModalSideSheetRoute fall back to
-        // this when no explicit barrierColor is passed. Flutter's own
-        // default (Colors.black54) reads as an excessively grey/dark scrim;
-        // low, brightness-aware alpha keeps the page behind recognizable.
-        modalBarrierColor: Colors.black.withValues(
-          alpha: GlassTokens.modalBarrierOpacityFor(brightness),
-        ),
-      ),
-      dividerTheme: DividerThemeData(
-        color: colorScheme.outlineVariant.withValues(
-          alpha: GlassTokens.dividerOpacityFor(brightness),
-        ),
-      ),
-      filledButtonTheme: FilledButtonThemeData(
-        style: FilledButton.styleFrom(shape: buttonShape),
-      ),
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(shape: buttonShape),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(shape: buttonShape),
-      ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(shape: buttonShape),
-      ),
-    );
   }
 
   @override
   void initState() {
     super.initState();
+    SystemNavigator.setFrameworkHandlesBack(true);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (globalState.navigatorKey.currentContext != null) {
-        await globalState.attach();
+        await bootstrap.attach();
       } else {
         exit(0);
       }
       _autoUpdateProfilesTask();
       _initLink();
-      app?.initShortcuts();
+      if (!safeModeBuild) {
+        unawaited(app?.initShortcuts());
+      }
     });
   }
 
   void _initLink() {
     linkManager.initAppLinksListen((url) async {
-      final res = await globalState.showMessage(
+      unawaited(window?.show());
+      final message = currentAppLocalizations.createProfileFromUrlTip(url);
+      final parts = message.split(url);
+      final res = await dialogs.showMessage(
         title: currentAppLocalizations.addProfile,
         message: TextSpan(
           children: [
-            TextSpan(text: currentAppLocalizations.doYouWantToPass),
+            TextSpan(text: parts.first),
             TextSpan(
-              text: ' $url ',
+              text: url,
               style: TextStyle(
                 color: context.colorScheme.primary,
                 decoration: TextDecoration.underline,
                 decorationColor: context.colorScheme.primary,
               ),
             ),
-            TextSpan(text: currentAppLocalizations.createProfile),
+            if (parts.length > 1) TextSpan(text: parts.last),
           ],
         ),
       );
       if (res != true) return;
-      ref.read(profilesActionProvider.notifier).addProfileFormURL(url);
+      unawaited(
+        ref.read(profilesActionProvider.notifier).addProfileFormURL(url),
+      );
     });
   }
 
   void _autoUpdateProfilesTask() {
     _autoUpdateProfilesTaskTimer = Timer(const Duration(minutes: 20), () async {
       await ref.read(profilesActionProvider.notifier).autoUpdateProfiles();
+      if (!mounted) {
+        return;
+      }
       _autoUpdateProfilesTask();
     });
   }
 
-  Widget _buildPlatformState({required Widget child}) {
-    if (system.isDesktop) {
-      return WindowManager(
-        child: TrayManager(
-          child: HotKeyManager(child: ProxyManager(child: child)),
-        ),
-      );
+  Future<void> _handleConnectivityChanged(
+    List<ConnectivityResult> results,
+  ) async {
+    commonPrint.log('connectivityChanged ${results.toString()}');
+    unawaited(systemDnsCoordinator?.resync() ?? Future.value());
+    unawaited(ref.read(systemActionProvider.notifier).updateLocalIp());
+    final hasVpn = results.contains(ConnectivityResult.vpn);
+    if (_preHasVpn == hasVpn) {
+      ref.read(routeTrackerProvider.notifier).bumpHostEpoch();
     }
-    return AndroidManager(child: TileManager(child: child));
-  }
-
-  Widget _buildState({required Widget child}) {
-    return AppStateManager(
-      child: CoreManager(
-        child: ConnectivityManager(
-          onConnectivityChanged: (results) async {
-            commonPrint.log('connectivityChanged ${results.toString()}');
-            ref.read(systemActionProvider.notifier).updateLocalIp();
-            final hasVpn = results.contains(ConnectivityResult.vpn);
-            if (_preHasVpn == hasVpn) {
-              ref.read(checkIpNumProvider.notifier).add();
-            }
-            _preHasVpn = hasVpn;
-          },
-          child: child,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPlatformApp({required Widget child}) {
-    if (system.isDesktop) {
-      return WindowHeaderContainer(child: child);
-    }
-    return VpnManager(child: child);
-  }
-
-  Widget _buildApp({required Widget child}) {
-    return StatusManager(child: ThemeManager(child: child));
+    _preHasVpn = hasVpn;
   }
 
   @override
@@ -229,39 +168,36 @@ class ApplicationState extends ConsumerState<Application> {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           navigatorKey: globalState.navigatorKey,
+          onNavigationNotification: (_) => true,
           localizationsDelegates: const [
             AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
+            ...GlobalMaterialLocalizations.delegates,
           ],
-          builder: (_, child) {
-            return AppEnvManager(
-              child: _buildApp(
-                child: _buildPlatformState(
-                  child: _buildState(child: _buildPlatformApp(child: child!)),
-                ),
-              ),
+          builder: (context, child) {
+            return buildManagerStack(
+              isDesktop: system.isDesktop,
+              onConnectivityChanged: _handleConnectivityChanged,
+              child: RemoteFocusAdapter(enabled: system.isTV, child: child!),
             );
           },
-          scrollBehavior: BaseScrollBehavior(),
+          scrollBehavior: const BaseScrollBehavior(),
           title: appName,
-          locale: utils.getLocaleForString(locale),
+          locale: getLocaleForString(locale),
           supportedLocales: AppLocalizations.delegate.supportedLocales,
           themeMode: themeProps.themeMode,
-          theme: _buildThemeData(
-            _getAppColorScheme(
-              brightness: Brightness.light,
-              primaryColor: themeProps.primaryColor,
-            ),
-          ),
-          darkTheme: _buildThemeData(
-            _getAppColorScheme(
-              brightness: Brightness.dark,
-              primaryColor: themeProps.primaryColor,
-            ).toPureBlack(themeProps.pureBlack),
-          ),
-          home: child!,
+          theme: ThemeData(
+            useMaterial3: true,
+            pageTransitionsTheme: _pageTransitionsTheme,
+            actionIconTheme: _actionIconTheme,
+            colorScheme: _getAppColorScheme(brightness: Brightness.light),
+          ).withAppShapes,
+          darkTheme: ThemeData(
+            useMaterial3: true,
+            pageTransitionsTheme: _pageTransitionsTheme,
+            actionIconTheme: _actionIconTheme,
+            colorScheme: _getAppColorScheme(brightness: Brightness.dark),
+          ).withAppShapes,
+          home: KeyboardInsetHold(child: child!),
         );
       },
       child: const HomePage(),
@@ -269,11 +205,9 @@ class ApplicationState extends ConsumerState<Application> {
   }
 
   @override
-  Future<void> dispose() async {
+  void dispose() {
     linkManager.destroy();
     _autoUpdateProfilesTaskTimer?.cancel();
-    await coreController.destroy();
-    await ref.read(systemActionProvider.notifier).handleExit();
     super.dispose();
   }
 }

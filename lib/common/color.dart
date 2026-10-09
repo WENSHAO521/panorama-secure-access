@@ -1,46 +1,48 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:dynamic_color/dynamic_color.dart';
+import 'package:material_color_utilities/hct/hct.dart';
+import 'package:material_ui/material_ui.dart';
 
 extension ColorExtension on Color {
   Color get opacity80 {
-    return withAlpha(204);
+    return withValues(alpha: 0.8);
   }
 
   Color get opacity60 {
-    return withAlpha(153);
+    return withValues(alpha: 0.6);
   }
 
   Color get opacity50 {
-    return withAlpha(128);
+    return withValues(alpha: 0.5);
   }
 
   Color get opacity38 {
-    return withAlpha(97);
+    return withValues(alpha: 0.38);
   }
 
   Color get opacity30 {
-    return withAlpha(77);
+    return withValues(alpha: 0.3);
   }
 
   Color get opacity12 {
-    return withAlpha(31);
+    return withValues(alpha: 0.12);
   }
 
   Color get opacity15 {
-    return withAlpha(38);
+    return withValues(alpha: 0.15);
   }
 
   Color get opacity10 {
-    return withAlpha(15);
+    return withValues(alpha: 0.1);
   }
 
   Color get opacity3 {
-    return withAlpha(76);
+    return withValues(alpha: 0.03);
   }
 
   Color get opacity0 {
-    return withAlpha(0);
+    return withValues(alpha: 0);
   }
 
   int get value32bit {
@@ -84,15 +86,6 @@ extension ColorExtension on Color {
         .toUpperCase();
   }
 
-  Color darken([final int amount = 10]) {
-    if (amount <= 0) return this;
-    if (amount > 100) return Colors.black;
-    final HSLColor hsl = HSLColor.fromColor(this);
-    return hsl
-        .withLightness(min(1, max(0, hsl.lightness - amount / 100)))
-        .toColor();
-  }
-
   Color blendDarken(BuildContext context, {double factor = 0.1}) {
     final brightness = Theme.of(context).brightness;
     return Color.lerp(
@@ -101,38 +94,43 @@ extension ColorExtension on Color {
       factor,
     )!;
   }
-
-  Color blendLighten(BuildContext context, {double factor = 0.1}) {
-    final brightness = Theme.of(context).brightness;
-    return Color.lerp(
-      this,
-      brightness == Brightness.dark ? Colors.black : Colors.white,
-      factor,
-    )!;
-  }
 }
 
 extension ColorSchemeExtension on ColorScheme {
-  ColorScheme toPureBlack(bool isPrueBlack) => isPrueBlack
-      ? copyWith(
-          surface: Colors.black,
-          surfaceContainer: surfaceContainer.darken(5),
-        )
-      : this;
+  ColorScheme toPureBlack(bool isPureBlack) {
+    if (!isPureBlack || brightness != Brightness.dark) {
+      return this;
+    }
+    final shift = Hct.fromInt(surface.toARGB32()).tone;
+    Color lower(Color color) {
+      final hct = Hct.fromInt(color.toARGB32());
+      return Color(
+        Hct.from(hct.hue, hct.chroma, max(0, hct.tone - shift)).toInt(),
+      );
+    }
 
-  /// Connected / success state. Deliberately a fixed color, not harmonized
-  /// with the seed color: "connected" needs to read as a stable green no
-  /// matter what primary color the user picks (including red or purple).
-  Color get statusConnected => switch (brightness) {
-    Brightness.dark => const Color(0xFF4FD19A),
-    Brightness.light => const Color(0xFF16875E),
-  };
+    return copyWith(
+      surface: Colors.black,
+      surfaceDim: Colors.black,
+      surfaceContainerLowest: Colors.black,
+      surfaceContainerLow: lower(surfaceContainerLow),
+      surfaceContainer: lower(surfaceContainer),
+      surfaceContainerHigh: lower(surfaceContainerHigh),
+      surfaceContainerHighest: lower(surfaceContainerHighest),
+      surfaceBright: lower(surfaceBright),
+    );
+  }
 
-  /// Warning / caution state (e.g. a "reject" rule action). Fixed for the
-  /// same reason as [statusConnected]. Use [ColorScheme.error] directly for
-  /// failure states.
-  Color get statusWarning => switch (brightness) {
-    Brightness.dark => const Color(0xFFF4BF63),
-    Brightness.light => const Color(0xFFC57A00),
-  };
+  Color get modalScrim => scrim.withValues(alpha: 0.32);
+
+  Color get success => Colors.green.harmonizeWith(primary);
+
+  Color get warning => Colors.orange.harmonizeWith(primary);
+
+  Color? delayColor(int? delay) {
+    if (delay == null) return null;
+    if (delay < 0) return error;
+    if (delay < 600) return success;
+    return warning;
+  }
 }

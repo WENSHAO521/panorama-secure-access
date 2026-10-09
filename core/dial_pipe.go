@@ -1,19 +1,13 @@
-//go:build windows && !cgo
+//go:build windows && !(android && cgo)
 
 package main
 
 import (
-	"io"
-	"time"
+	"net"
 
 	"github.com/Microsoft/go-winio"
 )
 
-func dial(path string) (io.ReadWriteCloser, error) {
-	// A short per-attempt timeout so the retry loop in startServer controls
-	// the overall retry budget precisely, rather than each attempt eating
-	// into it unpredictably (DialPipe defaults to 2s per attempt with a nil
-	// timeout).
-	timeout := 500 * time.Millisecond
-	return winio.DialPipe(path, &timeout)
+func dial(path string) (net.Conn, error) {
+	return winio.DialPipe(path, nil)
 }

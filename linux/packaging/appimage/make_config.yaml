@@ -2,8 +2,13 @@ display_name: Panorama Secure Access
 
 icon: ./assets/images/icon.png
 
+supported_mime_type:
+  - x-scheme-handler/clash
+  - x-scheme-handler/clashmeta
+  - x-scheme-handler/flclash
+
 keywords:
-  - FlClash
+  - Panorama Secure Access
   - Clash
   - ClashMeta
   - Proxy

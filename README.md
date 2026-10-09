@@ -1,150 +1,128 @@
-<div>
+<div align="center">
 
-[**简体中文**](README_zh_CN.md)
+<img src="assets/images/icon.png" alt="Panorama Secure Access" width="88">
+
+# Panorama Secure Access
+
+A multi-platform proxy client based on ClashMeta. Simple to use, open source and ad-free.
+
+**English** · [简体中文](README_zh_CN.md)
+
+[![Release](https://img.shields.io/github/v/release/WENSHAO521/panorama-secure-access?style=flat-square&label=release)](https://github.com/WENSHAO521/panorama-secure-access/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access/releases)
+[![License](https://img.shields.io/github/license/WENSHAO521/panorama-secure-access?style=flat-square)](LICENSE)
+
+[Download](#download) · [Changelog](CHANGELOG.md) · [Build from source](#build-from-source)
 
 </div>
 
-## Panorama Secure Access
-
-[![Downloads](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access/releases/)[![Last Version](https://img.shields.io/github/release/WENSHAO521/panorama-secure-access/all.svg?style=flat-square)](https://github.com/WENSHAO521/panorama-secure-access/releases/)[![License](https://img.shields.io/github/license/WENSHAO521/panorama-secure-access?style=flat-square)](LICENSE)
-
-A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free. A rebranded fork
-of [FlClash](https://github.com/chen08209/FlClash) — see [License & Credits](#license--credits).
-
-## Disclaimer
-
-This software (Panorama Secure Access) is produced by **Panorama Scholarly Group** for internal testing and educational use only, and is not intended for any commercial use or public distribution. The software is provided "AS IS", without warranty of any kind, express or implied. Users are solely responsible for any risks and legal liabilities arising from their use of this software, and must ensure such use complies with all applicable local laws and regulations. Panorama Scholarly Group and its developers assume no liability for any direct or indirect damages resulting from the use, or inability to use, this software.
-
-on Desktop:
-<p style="text-align: center;">
-    <img alt="desktop" src="snapshots/desktop.gif">
-</p>
-
-on Mobile:
-<p style="text-align: center;">
-    <img alt="mobile" src="snapshots/mobile.gif">
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="snapshots/preview-dark.png">
+    <img alt="Panorama Secure Access dashboard on a MacBook and a phone" src="snapshots/preview.png" width="92%">
+  </picture>
 </p>
 
 ## Features
 
-✈️ Multi-platform: Android, Windows, macOS and Linux
-
-💻 Adaptive multiple screen sizes, Multiple color themes available
-
-💡 Based on Material You Design, [Surfboard](https://github.com/getsurfboard/surfboard)-like UI
-
-☁️ Supports data sync via WebDAV
-
-✨ Support subscription link, Dark mode
-
-## Use
-
-### Linux
-
-⚠️ Make sure to install the following dependencies before using them
-
-   ```bash
-    sudo apt-get install libayatana-appindicator3-dev
-    sudo apt-get install libkeybinder-3.0-dev
-   ```
-
-### Android
-
-Support the following actions
-
-   ```bash
-    com.follow.clash.action.START
-    
-    com.follow.clash.action.STOP
-    
-    com.follow.clash.action.TOGGLE
-   ```
+- **One app for Android, Windows, macOS and Linux**, with x64 and ARM64 builds on the desktop.
+- **mihomo (Clash.Meta) core** with rule routing, proxy groups, latency tests, system proxy and TUN mode.
+- **Profiles** from a subscription link or a file, with a built-in editor, override scripts, and custom rules,
+  proxies and proxy groups.
+- **Live views** of connections, requests, DNS queries and logs.
+- **Material You design** with dynamic color, light and dark themes, and layouts that adapt from phones to desktops.
+- **Backup and restore** through WebDAV or a local file.
+- **Platform touches**: a Quick Settings tile, per-app proxy and Android TV support on Android; a tray menu and
+  global hotkeys on the desktop.
+- **Open source and ad-free**, licensed under GPL-3.0.
 
 ## Download
 
-<a href="https://github.com/WENSHAO521/panorama-secure-access/releases"><img alt="Get it on GitHub" src="snapshots/get-it-on-github.svg" width="200px"/></a>
+Get the latest build from [GitHub Releases](https://github.com/WENSHAO521/panorama-secure-access/releases/latest).
 
-### Homebrew
+| Platform | Packages | Notes |
+| --- | --- | --- |
+| Android | APK for `arm64-v8a`, `armeabi-v7a` and `x86_64` | Most phones use `arm64-v8a`. |
+| Windows 10 and later | Installer (`.exe`) or portable `.zip`, for x64 and ARM64 | Pick ARM64 on Snapdragon and other ARM laptops. |
+| macOS 12 and later | DMG for Apple Silicon and Intel | |
+| Linux | `.deb`, `.rpm` and AppImage, for x64 and ARM64 | See the tray note below. |
+
+<p>
+  <a href="https://github.com/WENSHAO521/panorama-secure-access/releases/latest"><img alt="Get it on GitHub" src="snapshots/get-it-on-github.svg" height="56"></a>
+</p>
+
+**Linux tray icon**
+
+The `.deb` package installs its own dependencies. With the AppImage or the `.rpm`, install the AyatanaAppIndicator
+library so the tray icon can show:
 
 ```bash
-brew tap chen08209/tap
-brew install --cask flclash
+sudo apt-get install libayatana-appindicator3-1   # Debian and Ubuntu
+sudo dnf install libayatana-appindicator-gtk3     # Fedora
 ```
 
-## Build
+## Usage
 
-1. Update submodules
-   ```bash
-   git submodule update --init --recursive
-   ```
+**Import a profile from a link.** Opening a link in this form imports the subscription into Panorama Secure Access. The `clashmeta://`
+and `flclash://` schemes work the same way.
 
-2. Install `Flutter` and `Golang` environment
+```text
+clash://install-config?url=<URL-encoded subscription link>
+```
 
-3. Build Application
+**Automate on Android.** Tasker, MacroDroid and similar apps can start, stop or toggle the proxy by starting an
+activity with one of these actions:
 
-    - android
+```text
+com.follow.clash.action.START
+com.follow.clash.action.STOP
+com.follow.clash.action.TOGGLE
+```
 
-        1. Install `Android SDK`, `Android NDK`
+From a computer, the same works over adb:
 
-        2. Set `ANDROID_NDK` environment variable
+```bash
+adb shell am start -a com.follow.clash.action.TOGGLE
+```
 
-        3. Run build script
+## Build from source
 
-           ```bash
-           dart setup.dart android
-           ```
+You need [Flutter](https://docs.flutter.dev/get-started/install) 3.47 (release builds use 3.47.4),
+[Go](https://go.dev/dl/) 1.26 and [Rust](https://rustup.rs/) installed through rustup. Each platform builds on its own
+host, except Android, which builds anywhere.
 
-    - windows
+```bash
+git clone --recursive https://github.com/WENSHAO521/panorama-secure-access.git
+cd panorama-secure-access
+flutter pub get
+dart setup.dart android   # or windows, macos, linux
+```
 
-        1. Requires a Windows client
+Packages land in `dist/`. The Go core and the Rust libraries are compiled as part of the Flutter build.
 
-        2. Install `GCC`, `Inno Setup`
+| Platform | Also needed |
+| --- | --- |
+| Android | Android SDK with the NDK. Add `--arch arm64` to build a single ABI. |
+| Windows | GCC (MinGW-w64) for the core and [Inno Setup](https://jrsoftware.org/isinfo.php) 6 for the installer. |
+| macOS | Xcode and Node.js. The script installs `appdmg` through npm. |
+| Linux | Debian or Ubuntu. The script installs the build packages with apt and downloads `appimagetool`. |
 
-        3. Run build script
+Run `dart setup.dart --help` for the remaining options, such as `--targets` to build only some package formats.
 
-           ```bash
-           dart setup.dart windows
-           ```
+## Support
 
-    - linux
+Starring the repository is the easiest way to support the project. Bugs and feature requests go to
+[GitHub Issues](https://github.com/WENSHAO521/panorama-secure-access/issues).
 
-        1. Requires a Linux client
+<a href="https://star-history.com/#WENSHAO521/panorama-secure-access&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=WENSHAO521/panorama-secure-access&type=Date&theme=dark">
+    <img alt="Star history" src="https://api.star-history.com/svg?repos=WENSHAO521/panorama-secure-access&type=Date" width="640">
+  </picture>
+</a>
 
-        2. Dependencies are auto-installed by setup script, or manually:
-           ```bash
-           sudo apt-get install -y libayatana-appindicator3-dev libkeybinder-3.0-dev
-           ```
+## License
 
-        3. Run build script
+Panorama Secure Access is released under the [GPL-3.0 license](LICENSE).
 
-           ```bash
-           dart setup.dart linux
-           ```
-
-    - macOS
-
-        1. Requires a macOS client
-
-        2. Run build script
-
-           ```bash
-           dart setup.dart macos
-           ```
-
-## License & Credits
-
-Panorama Secure Access is a rebranded, modified fork of [FlClash](https://github.com/chen08209/FlClash) by chen08209,
-itself built on [Clash.Meta / mihomo](https://github.com/MetaCubeX/mihomo). The original project and this fork are
-both licensed under the [GNU General Public License v3.0](LICENSE); as a derivative of GPL-3.0 code, this fork
-remains under GPL-3.0. Modifications in this fork (rebranding, icons, default theme, disclaimer) are
-© Panorama Scholarly Group, distributed under the same license.
-
-## Star
-
-The easiest way to support developers is to click on the star (⭐) at the top of the page.
-
-<p style="text-align: center;">
-    <a href="https://api.star-history.com/svg?repos=WENSHAO521/panorama-secure-access&Date">
-        <img alt="start" width=50% src="https://api.star-history.com/svg?repos=WENSHAO521/panorama-secure-access&Date"/>
-    </a>
-</p>
+Based on [FlClash](https://github.com/chen08209/FlClash) by chen08209 (GPL-3.0).
