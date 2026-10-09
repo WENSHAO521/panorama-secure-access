@@ -2,6 +2,7 @@ display_name: Panorama Secure Access
 package_name: FlClash
 maintainer:
   name: Panorama Scholarly Group
+  email: psa@panorama-sg.com
 
 priority: optional
 section: x11
