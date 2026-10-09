@@ -452,6 +452,14 @@ jobs:
           pattern: artifact-*
           merge-multiple: true
 
+      - name: Rename artifacts
+        run: |
+          cd ./dist
+          for f in FlClash-*; do
+            [ -e "$f" ] && mv "$f" "PanoramaSecureAccess-${f#FlClash-}"
+          done
+          ls -1
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
