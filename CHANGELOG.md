@@ -4,7 +4,11 @@
 
 **Features**
 
-- **app** Sync with upstream FlClash 0.8.99 with the new sidebar, dock and dashboard cards, DNS query log and tray hotkeys (85581fc)
+- **app** Redesigned navigation with a sidebar and floating dock, new dashboard cards, a DNS query log and system tray hotkeys (85581fc)
+
+**Bug Fixes**
+
+- **core** Patch known vulnerabilities in the Go networking and cryptography dependencies (golang.org/x/crypto 0.57.0, golang.org/x/net 0.60.0) (477cdcf)
 
 <!-- changelog:frozen -->
 <!-- Entries below predate the structured pipeline. Their wording is kept as written; only the heading and list style were normalized. -->
