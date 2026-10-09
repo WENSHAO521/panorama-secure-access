@@ -1,12 +1,17 @@
+import 'dart:async';
+
 import 'package:animations/animations.dart';
-import 'package:fl_clash/providers/app.dart';
-import 'package:fl_clash/state.dart';
-import 'package:fl_clash/widgets/glass.dart';
-import 'package:flutter/material.dart';
+import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/widgets/drag_back.dart';
+import 'package:fl_clash/widgets/keyboard_inset_hold.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
+
+final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 class BaseNavigator {
   static Future<T?> push<T>(BuildContext context, Widget child) async {
-    if (!globalState.container.read(isMobileViewProvider)) {
+    if (!context.isMobileView) {
       return Navigator.of(
         context,
       ).push<T>(CommonDesktopRoute(builder: (context) => child));
@@ -15,86 +20,39 @@ class BaseNavigator {
       context,
     ).push<T>(CommonRoute(builder: (context) => child));
   }
-
-  // static Future<T?> modal<T>(BuildContext context, Widget child) async {
-  //   if (globalState.appState.viewMode != ViewMode.mobile) {
-  //     return await globalState.showCommonDialog<T>(
-  //       child: CommonModal(
-  //         child: child,
-  //       ),
-  //     );
-  //   }
-  //   return await Navigator.of(context).push<T>(
-  //     CommonRoute(
-  //       builder: (context) => child,
-  //     ),
-  //   );
-  // }
 }
 
-/// This is the app-wide default `MaterialPageRoute`/`MaterialPage`
-/// transition (set for every supported platform in
-/// `Application._pageTransitionsTheme`), so it fires on the large majority
-/// of in-app navigation — desktop's per-tab nested Navigator, Settings
-/// sub-screens, anywhere a plain `Navigator.push` happens. A faithful
-/// copy of `package:animations`' own [SharedAxisPageTransitionsBuilder]
-/// (its `buildTransitions` is exactly this one `SharedAxisTransition`
-/// call), except the incoming/outgoing page is wrapped in a
-/// [RepaintBoundary] first: [SharedAxisTransition] fades/slides/scales its
-/// child every animation frame, and without a boundary sitting directly
-/// under it, that means fully repainting the whole page — including every
-/// BackdropFilter-blurred glass surface on it — from scratch each frame
-/// instead of caching one rasterized layer and cheaply re-blending it.
-/// Same reasoning as the RepaintBoundary added in `CommonRoute`/
-/// `CommonDesktopRoute` below and in `_HomePageView`'s tab cross-fade
-/// (pages/home.dart) — this is the third and most-travelled of the app's
-/// three page-transition paths.
-class _RepaintBoundarySharedAxisPageTransitionsBuilder
-    extends PageTransitionsBuilder {
-  const _RepaintBoundarySharedAxisPageTransitionsBuilder();
-
-  @override
-  Widget buildTransitions<T>(
-    PageRoute<T>? route,
-    BuildContext? context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-  ) {
-    return SharedAxisTransition(
-      animation: animation,
-      secondaryAnimation: secondaryAnimation,
-      transitionType: SharedAxisTransitionType.horizontal,
-      fillColor: Colors.transparent,
-      child: RepaintBoundary(child: child),
-    );
+// Work a page starts on arrival drops frames while the route still animates.
+Future<void> whenRouteSettled(BuildContext context) async {
+  final route = ModalRoute.of(context);
+  // HeroController builds a pushed route offstage for its first frame, with
+  // the animation pinned to completed, so it only tells the truth after that.
+  while (route != null && route.offstage && route.isActive) {
+    await SchedulerBinding.instance.endOfFrame;
   }
-}
-
-const commonSharedXPageTransitions =
-    _RepaintBoundarySharedAxisPageTransitionsBuilder();
-
-/// `prefers-reduced-motion` support for the app's own custom route/popup
-/// transitions, which — unlike Flutter's built-in widgets — don't consult
-/// [MediaQueryData.disableAnimations] on their own. [PageRoute] duration
-/// getters have no [BuildContext] parameter, so this reads the navigator's
-/// own context (the same pattern already used by
-/// `ApplicationState.initState`) rather than threading one through; a
-/// route pushed before the first frame (context still null) just keeps its
-/// normal duration; this cannot fail, only run once with the default. Only
-/// covers page and popup-menu transitions, not every `Animated*` micro-
-/// interaction in the app — see the durations in `common/constant.dart` for
-/// the rest.
-Duration reducedMotionDuration(Duration duration) {
-  final context = globalState.navigatorKey.currentContext;
-  if (context != null &&
-      (MediaQuery.maybeOf(context)?.disableAnimations ?? false)) {
-    return Duration.zero;
+  final animation = route?.animation;
+  if (animation == null || !animation.isAnimating) {
+    return;
   }
-  return duration;
+  final completer = Completer<void>();
+  void handleStatus(AnimationStatus status) {
+    if (status.isAnimating) {
+      return;
+    }
+    animation.removeStatusListener(handleStatus);
+    completer.complete();
+  }
+
+  animation.addStatusListener(handleStatus);
+  return completer.future;
 }
 
-class CommonDesktopRoute<T> extends PageRoute<T> {
+const commonSharedXPageTransitions = SharedAxisPageTransitionsBuilder(
+  transitionType: SharedAxisTransitionType.horizontal,
+  fillColor: Colors.transparent,
+);
+
+class CommonDesktopRoute<T> extends PageRoute<T> with DragBackRouteMixin<T> {
   final Widget Function(BuildContext context) builder;
 
   CommonDesktopRoute({required this.builder});
@@ -105,46 +63,30 @@ class CommonDesktopRoute<T> extends PageRoute<T> {
   @override
   String? get barrierLabel => null;
 
-  // The route's own Scaffold background is transparent (see
-  // scaffoldBackgroundColor in application.dart) so its glass surfaces read
-  // against an ambient backdrop — but buildPage below now paints that
-  // backdrop itself, so this route is fully opaque and Flutter can safely
-  // offstage whatever sits behind it once the push transition finishes.
-  @override
-  bool get opaque => true;
-
   @override
   Widget buildPage(
     BuildContext context,
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    // AmbientBackground must sit outside the FadeTransition, not inside it.
-    // Because this route is opaque, Flutter stops painting whatever sits
-    // behind it as soon as it's pushed — it doesn't wait for the transition
-    // to finish. If the background were part of the faded subtree, the very
-    // first frames (animation value near 0) would paint neither the old
-    // route (offstaged already) nor the new one (still near-transparent),
-    // flashing the bare window colour. Keeping it outside means this route
-    // paints a fully opaque backdrop from frame one; only the page content
-    // on top fades in.
     return Semantics(
       scopesRoute: true,
       explicitChildNodes: true,
-      child: Stack(
-        children: [
-          const Positioned.fill(child: AmbientBackground()),
-          // RepaintBoundary directly under FadeTransition (not around it):
-          // without it, every glass-blurred surface on the incoming page
-          // gets fully repainted on every fade frame instead of being
-          // cached as one layer and cheaply re-blended — see the same fix
-          // in _HomePageView's tab cross-fade (pages/home.dart).
-          FadeTransition(
-            opacity: animation,
-            child: RepaintBoundary(child: builder(context)),
-          ),
-        ],
-      ),
+      child: KeyboardInsetHold(child: builder(context)),
+    );
+  }
+
+  @override
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    return dragBackDetector(
+      isDragBackActive
+          ? dragBackSlide(context, animation, child)
+          : FadeTransition(opacity: animation, child: child),
     );
   }
 
@@ -152,15 +94,13 @@ class CommonDesktopRoute<T> extends PageRoute<T> {
   bool get maintainState => true;
 
   @override
-  Duration get transitionDuration =>
-      reducedMotionDuration(const Duration(milliseconds: 200));
+  Duration get transitionDuration => const Duration(milliseconds: 200);
 
   @override
-  Duration get reverseTransitionDuration =>
-      reducedMotionDuration(const Duration(milliseconds: 200));
+  Duration get reverseTransitionDuration => const Duration(milliseconds: 200);
 }
 
-class CommonRoute<T> extends PageRoute<T> {
+class CommonRoute<T> extends PageRoute<T> with DragBackRouteMixin<T> {
   final Widget Function(BuildContext context) builder;
 
   CommonRoute({required this.builder});
@@ -171,14 +111,6 @@ class CommonRoute<T> extends PageRoute<T> {
   @override
   String? get barrierLabel => null;
 
-  // Mobile has no per-tab nested Navigator (see _HomePageView), so pushing
-  // here goes on the root Navigator directly below HomePage. buildPage below
-  // paints its own AmbientBackground rather than relying on HomePage's
-  // showing through, so this route is fully opaque and Flutter can safely
-  // offstage HomePage once the push transition finishes.
-  @override
-  bool get opaque => true;
-
   @override
   bool get maintainState => true;
 
@@ -188,45 +120,38 @@ class CommonRoute<T> extends PageRoute<T> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    // See CommonDesktopRoute.buildPage: AmbientBackground must stay outside
-    // the SharedAxisTransition. This route is opaque, so Flutter stops
-    // painting HomePage underneath as soon as this route is pushed, not
-    // once the transition settles — if the background were inside the
-    // transition too, the near-transparent early frames would show neither
-    // page and flash the bare window colour. Keeping it outside means this
-    // route is fully opaque from frame one; only the page content slides in.
     return Semantics(
       scopesRoute: true,
       explicitChildNodes: true,
-      child: Stack(
-        children: [
-          const Positioned.fill(child: AmbientBackground()),
-          // RepaintBoundary directly under the transition (not around it),
-          // same reasoning as CommonDesktopRoute above: SharedAxisTransition
-          // fades/slides/scales its child every frame, and without a
-          // boundary right there, that means fully repainting the whole
-          // incoming glass-heavy page each frame instead of blending one
-          // cached layer — this is the mobile push-navigation path, i.e.
-          // "opening a sub-page", not just the bottom-tab switch.
-          SharedAxisTransition(
-            animation: animation,
-            secondaryAnimation: secondaryAnimation,
-            transitionType: SharedAxisTransitionType.horizontal,
-            fillColor: Colors.transparent,
-            child: RepaintBoundary(child: builder(context)),
-          ),
-        ],
-      ),
+      child: KeyboardInsetHold(child: builder(context)),
     );
   }
 
   @override
-  Duration get transitionDuration =>
-      reducedMotionDuration(const Duration(milliseconds: 300));
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    return dragBackDetector(
+      isDragBackActive
+          ? dragBackSlide(context, animation, child)
+          : SharedAxisTransition(
+              animation: animation,
+              secondaryAnimation: secondaryAnimation,
+              transitionType: SharedAxisTransitionType.horizontal,
+              fillColor: context.colorScheme.surface,
+              child: child,
+            ),
+    );
+  }
 
   @override
-  Duration get reverseTransitionDuration =>
-      reducedMotionDuration(const Duration(milliseconds: 300));
+  Duration get transitionDuration => const Duration(milliseconds: 300);
+
+  @override
+  Duration get reverseTransitionDuration => const Duration(milliseconds: 300);
 }
 
 final Animatable<Offset> _kRightMiddleTween = Tween<Offset>(

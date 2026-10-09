@@ -1,15 +1,18 @@
-import 'dart:async';
-
+import 'package:dio/dio.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/state.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
-/// A timed-out core call is an expected liveness hiccup, not a real
-/// failure, so it's logged quietly instead of as a warning.
-LogLevel coreFailureLogLevel(Object? error) {
-  return error is TimeoutException ? LogLevel.debug : LogLevel.warning;
+String compactError(Object error) {
+  if (error is DioException) {
+    final statusCode = error.response?.statusCode;
+    return statusCode != null
+        ? 'DioException(${error.type.name}, HTTP $statusCode)'
+        : 'DioException(${error.type.name})';
+  }
+  return error.toString();
 }
 
 class CommonPrint {

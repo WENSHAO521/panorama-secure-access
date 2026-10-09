@@ -1,149 +1,116 @@
-<div>
+<div align="center">
 
-[**English**](README.md)
+<img src="assets/images/icon.png" alt="Panorama Secure Access" width="88">
+
+# Panorama Secure Access
+
+基于 ClashMeta 的多平台代理客户端，简单易用，开源无广告。
+
+[English](README.md) · **简体中文**
+
+[![Release](https://img.shields.io/github/v/release/WENSHAO521/panorama-secure-access?style=flat-square&label=release)](https://github.com/WENSHAO521/panorama-secure-access/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access/releases)
+[![License](https://img.shields.io/github/license/WENSHAO521/panorama-secure-access?style=flat-square)](LICENSE)
+
+[下载](#下载) · [更新日志](CHANGELOG.md) · [从源码构建](#从源码构建)
 
 </div>
 
-## Panorama Secure Access
-
-[![Downloads](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access/releases/)[![Last Version](https://img.shields.io/github/release/WENSHAO521/panorama-secure-access/all.svg?style=flat-square)](https://github.com/WENSHAO521/panorama-secure-access/releases/)[![License](https://img.shields.io/github/license/WENSHAO521/panorama-secure-access?style=flat-square)](LICENSE)
-
-基于ClashMeta的多平台代理客户端，简单易用，开源无广告。本项目为 [FlClash](https://github.com/chen08209/FlClash) 的重新品牌化分支，
-详见下方[许可证与鸣谢](#许可证与鸣谢)。
-
-## 免责声明
-
-本软件（Panorama Secure Access）由 **Panorama Scholarly Group** 出品，仅供内部人员测试与学习使用，不用于任何商业用途或公开传播。本软件按“原样”提供，不附带任何明示或默示的担保。使用者应自行承担因使用本软件而产生的一切风险及法律责任，并确保其使用行为符合所在地区的法律法规。Panorama Scholarly Group 及其开发者对因使用或无法使用本软件而导致的任何直接或间接损失不承担任何责任。
-
-on Desktop:
-<p style="text-align: center;">
-    <img alt="desktop" src="snapshots/desktop.gif">
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="snapshots/preview-dark.png">
+    <img alt="Panorama Secure Access 在 MacBook 与手机上的仪表盘" src="snapshots/preview.png" width="92%">
+  </picture>
 </p>
 
-on Mobile:
-<p style="text-align: center;">
-    <img alt="mobile" src="snapshots/mobile.gif">
+## 功能
+
+- **一个应用覆盖 Android、Windows、macOS 和 Linux**，桌面端同时提供 x64 与 ARM64 版本。
+- **mihomo（Clash.Meta）内核**：规则分流、代理组、延迟测试、系统代理与 TUN 模式。
+- **配置管理**：通过订阅链接或文件导入配置，内置编辑器，支持覆写脚本以及自定义规则、代理和代理组。
+- **实时查看**连接、请求、DNS 查询和日志。
+- **Material You 设计**：支持动态取色、浅色与深色主题，布局随屏幕从手机到桌面自适应。
+- **备份与恢复**：通过 WebDAV 或本地文件。
+- **平台细节**：Android 上有快捷设置磁贴、分应用代理和 Android TV 支持；桌面端有托盘菜单和全局快捷键。
+- **开源无广告**，以 GPL-3.0 协议发布。
+
+## 下载
+
+从 [GitHub Releases](https://github.com/WENSHAO521/panorama-secure-access/releases/latest) 获取最新版本，或打开
+
+| 平台 | 安装包 | 说明 |
+| --- | --- | --- |
+| Android | `arm64-v8a`、`armeabi-v7a`、`x86_64` 三种 APK | 绝大多数手机选 `arm64-v8a`。|
+| Windows 10 及以上 | 安装版（`.exe`）或便携版（`.zip`），分 x64 与 ARM64 | 骁龙等 ARM 架构笔记本选 ARM64。 |
+| macOS 12 及以上 | Apple Silicon 与 Intel 两种 DMG |  |
+| Linux | `.deb`、`.rpm` 和 AppImage，分 x64 与 ARM64 | 托盘依赖见下方说明。 |
+
+<p>
+  <a href="https://github.com/WENSHAO521/panorama-secure-access/releases/latest"><img alt="Get it on GitHub" src="snapshots/get-it-on-github.svg" height="56"></a>
 </p>
 
-## Features
+**Linux 托盘图标**
 
-✈️ 多平台: Android, Windows, macOS and Linux
-
-💻 自适应多个屏幕尺寸,多种颜色主题可供选择
-
-💡 基本 Material You 设计, 类[Surfboard](https://github.com/getsurfboard/surfboard)用户界面
-
-☁️ 支持通过WebDAV同步数据
-
-✨ 支持一键导入订阅, 深色模式
-
-## Use
-
-### Linux
-
-⚠️ 使用前请确保安装以下依赖
-
-   ```bash
-    sudo apt-get install libayatana-appindicator3-dev
-    sudo apt-get install libkeybinder-3.0-dev
-   ```
-
-### Android
-
-支持下列操作
-
-   ```bash
-    com.follow.clash.action.START
-    
-    com.follow.clash.action.STOP
-    
-    com.follow.clash.action.TOGGLE
-   ```
-
-## Download
-
-<a href="https://github.com/WENSHAO521/panorama-secure-access/releases"><img alt="Get it on GitHub" src="snapshots/get-it-on-github.svg" width="200px"/></a>
-
-### Homebrew
+`.deb` 安装包会自动安装所需依赖。使用 AppImage 或 `.rpm` 时，需要先安装 AyatanaAppIndicator 库，托盘图标才能显示：
 
 ```bash
-brew tap chen08209/tap
-brew install --cask flclash
+sudo apt-get install libayatana-appindicator3-1   # Debian 与 Ubuntu
+sudo dnf install libayatana-appindicator-gtk3     # Fedora
 ```
 
-## Build
+## 使用
 
-1. 更新 submodules
-   ```bash
-   git submodule update --init --recursive
-   ```
+**通过链接导入配置。** 打开下面格式的链接，即可把订阅导入 Panorama Secure Access。`clashmeta://` 和 `flclash://` 开头的链接同样可用。
 
-2. 安装 `Flutter` 以及 `Golang` 环境
+```text
+clash://install-config?url=<经过 URL 编码的订阅链接>
+```
 
-3. 构建应用
+**Android 自动化。** Tasker、MacroDroid 等应用可以用下面的 Action 启动 Activity，从而启动、停止或切换代理：
 
-    - android
+```text
+com.follow.clash.action.START
+com.follow.clash.action.STOP
+com.follow.clash.action.TOGGLE
+```
 
-        1. 安装  `Android SDK` ,  `Android NDK`
+在电脑上也可以通过 adb 触发：
 
-        2. 设置 `ANDROID_NDK` 环境变量
+```bash
+adb shell am start -a com.follow.clash.action.TOGGLE
+```
 
-        3. 运行构建脚本
+## 从源码构建
 
-           ```bash
-           dart setup.dart android
-           ```
+需要 [Flutter](https://docs.flutter.dev/get-started/install) 3.47（正式版构建使用 3.47.4）、[Go](https://go.dev/dl/) 1.26，
+以及通过 rustup 安装的 [Rust](https://rustup.rs/)。桌面端需要在对应系统上构建，Android 在任意系统上都能构建。
 
-    - windows
+```bash
+git clone --recursive https://github.com/WENSHAO521/panorama-secure-access.git
+cd panorama-secure-access
+flutter pub get
+dart setup.dart android   # 或 windows、macos、linux
+```
 
-        1. 你需要一个windows客户端
+安装包输出到 `dist/`。Go 内核和 Rust 库会在 Flutter 构建过程中一并编译。
 
-        2. 安装 `GCC`，`Inno Setup`
+| 平台 | 额外依赖 |
+| --- | --- |
+| Android | 带 NDK 的 Android SDK。加上 `--arch arm64` 可以只构建单个 ABI。 |
+| Windows | 编译内核用的 GCC（MinGW-w64），以及打包安装程序用的 [Inno Setup](https://jrsoftware.org/isinfo.php) 6。 |
+| macOS | Xcode 与 Node.js。脚本会通过 npm 安装 `appdmg`。 |
+| Linux | Debian 或 Ubuntu。脚本会用 apt 安装构建所需的软件包，并下载 `appimagetool`。 |
 
-        3. 运行构建脚本
+其余选项可以运行 `dart setup.dart --help` 查看，例如用 `--targets` 只构建部分安装包格式。
 
-           ```bash
-           dart setup.dart windows
-           ```
+## 支持
 
-    - linux
+给仓库点一个 Star 是支持项目最简单的方式。问题讨论和更新通知
+Bug 与功能建议请提交到 [GitHub Issues](https://github.com/WENSHAO521/panorama-secure-access/issues)。
 
-        1. 你需要一个linux客户端
 
-        2. 依赖会由 setup 脚本自动安装，也可以手动安装：
-           ```bash
-           sudo apt-get install -y libayatana-appindicator3-dev libkeybinder-3.0-dev
-           ```
+## 许可证
 
-        3. 运行构建脚本
+Panorama Secure Access 以 [GPL-3.0 协议](LICENSE)发布。
 
-           ```bash
-           dart setup.dart linux
-           ```
-
-    - macOS
-
-        1. 你需要一个macOS客户端
-
-        2. 运行构建脚本
-
-           ```bash
-           dart setup.dart macos
-           ```
-
-## 许可证与鸣谢
-
-Panorama Secure Access 是 [FlClash](https://github.com/chen08209/FlClash)（作者 chen08209）的重新品牌化修改版分支，FlClash
-本身基于 [Clash.Meta / mihomo](https://github.com/MetaCubeX/mihomo) 构建。原项目与本分支均采用
-[GNU 通用公共许可证 v3.0](LICENSE) 授权；作为 GPL-3.0 代码的衍生作品，本分支继续沿用 GPL-3.0。本分支中的修改部分（品牌重塑、图标、
-默认主题、免责声明等）版权归 Panorama Scholarly Group 所有，同样以该许可证发布。
-
-## Star
-
-支持开发者的最简单方式是点击页面顶部的星标（⭐）。
-
-<p style="text-align: center;">
-    <a href="https://api.star-history.com/svg?repos=WENSHAO521/panorama-secure-access&Date">
-        <img alt="start" width=50% src="https://api.star-history.com/svg?repos=WENSHAO521/panorama-secure-access&Date"/>
-    </a>
-</p>
+基于 [FlClash](https://github.com/chen08209/FlClash)（chen08209，GPL-3.0）。

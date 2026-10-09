@@ -1,28 +1,32 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/icons/icons.dart';
 import 'package:fl_clash/state.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:flutter/services.dart';
 
 import 'fade_box.dart';
-import 'glass.dart';
+import 'scaffold.dart';
 import 'text.dart';
 
 class Info {
   final String label;
-  final IconData? iconData;
+  final Glyph? glyph;
 
-  const Info({required this.label, this.iconData});
+  const Info({required this.label, this.glyph});
 }
 
 class InfoHeader extends StatelessWidget {
   final Info info;
   final List<Widget> actions;
   final EdgeInsets? padding;
+  final double? space;
 
   const InfoHeader({
     super.key,
     required this.info,
     this.padding,
+    this.space,
     List<Widget>? actions,
   }) : actions = actions ?? const [];
 
@@ -43,9 +47,9 @@ class InfoHeader extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.max,
               children: [
-                if (info.iconData != null) ...[
-                  Icon(
-                    info.iconData,
+                if (info.glyph case final glyph?) ...[
+                  GlyphIcon(
+                    glyph,
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   const SizedBox(width: 8),
@@ -73,6 +77,7 @@ class InfoHeader extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
+                spacing: space ?? appBarActionSpace,
                 children: [...actions],
               ),
             ),
@@ -82,7 +87,9 @@ class InfoHeader extends StatelessWidget {
   }
 }
 
-class CommonCard extends StatefulWidget {
+const commonCardIconSize = 20.0;
+
+class CommonCard extends StatelessWidget {
   const CommonCard({
     super.key,
     bool? isSelected,
@@ -90,16 +97,21 @@ class CommonCard extends StatefulWidget {
     this.onPressed,
     this.selectWidget,
     this.radius,
-    required this.child,
     this.padding,
     this.enterAnimated = false,
     this.info,
+    this.infoPadding,
     this.onLongPress,
     this.shape,
     this.isError = false,
+    this.enterActionsOnRight = false,
+    this.skipTraversal = false,
+    required this.child,
   }) : isSelected = isSelected ?? false;
 
   final bool enterAnimated;
+  final bool enterActionsOnRight;
+  final bool skipTraversal;
   final bool isSelected;
   final bool isError;
   final void Function()? onPressed;
@@ -108,33 +120,10 @@ class CommonCard extends StatefulWidget {
   final Widget child;
   final EdgeInsets? padding;
   final Info? info;
+  final EdgeInsets? infoPadding;
   final CommonCardType type;
   final double? radius;
   final OutlinedBorder? shape;
-
-  @override
-  State<CommonCard> createState() => _CommonCardState();
-}
-
-class _CommonCardState extends State<CommonCard> {
-  // Shared with the FilledButton/OutlinedButton below via `statesController:`
-  // so the hover/press micro-interaction painted by _LiquidCardInteraction
-  // (edge/specular boost on hover, tiny material compression on press) can
-  // read the exact same state the button itself reacts to, instead of
-  // duplicating hover/press detection with a second MouseRegion/GestureDetector.
-  final _statesController = WidgetStatesController();
-
-  @override
-  void dispose() {
-    _statesController.dispose();
-    super.dispose();
-  }
-
-  bool get isSelected => widget.isSelected;
-
-  bool get isError => widget.isError;
-
-  CommonCardType get type => widget.type;
 
   BorderSide _buildBorderSide(BuildContext context, Set<WidgetState> states) {
     final colorScheme = context.colorScheme;
@@ -170,29 +159,12 @@ class _CommonCardState extends State<CommonCard> {
     return BorderSide(
       color: isSelected
           ? colorScheme.primary
-          // Subtle outlineVariant instead of a solid neutral tone — this
-          // card's own low-alpha GlassSurface.repeated fill is meant to
-          // read as a lightweight control, not a mini glass panel with its
-          // own bright border competing with whatever it's nested inside
-          // (e.g. the strategy buttons in a BottomSheet group picker).
-          : colorScheme.outlineVariant.withValues(
-              alpha: GlassTokens.borderOpacityFor(colorScheme.brightness),
-            ),
+          : colorScheme.surfaceContainerHighest,
     );
   }
 
   Color? _buildBackgroundColor(BuildContext context) {
     final colorScheme = context.colorScheme;
-    // if (isError) {
-    //   if (type == CommonCardType.filled) {
-    //     return isSelected
-    //         ? colorScheme.errorContainer.opacity80
-    //         : colorScheme.errorContainer;
-    //   }
-    //   return isSelected
-    //       ? colorScheme.errorContainer.opacity60
-    //       : colorScheme.errorContainer.opacity12;
-    // }
     if (type == CommonCardType.filled) {
       if (isSelected) {
         return colorScheme.secondaryContainer.opacity80;
@@ -230,72 +202,47 @@ class _CommonCardState extends State<CommonCard> {
     return colorScheme.primary;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    var childWidget = widget.child;
-
-    if (widget.info != null) {
-      childWidget = Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          InfoHeader(
-            padding: baseInfoEdgeInsets.copyWith(bottom: 0),
-            info: widget.info!,
-          ),
-          Flexible(flex: 1, child: widget.child),
-        ],
-      );
-    }
-
-    if (widget.selectWidget != null && isSelected) {
-      final List<Widget> children = [];
-      children.add(childWidget);
-      children.add(Positioned.fill(child: widget.selectWidget!));
-      childWidget = Stack(children: children);
-    }
-
-    final cardShape =
-        widget.shape ??
-        RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(
-            widget.radius ?? GlassTokens.radiusCard,
-          ),
-        );
-
-    final card = switch (type == CommonCardType.filled) {
+  Widget _buildButton(
+    BuildContext context,
+    Widget childWidget,
+    FocusNode? focusNode,
+  ) {
+    return switch (type == CommonCardType.filled) {
       true => FilledButton(
-        onLongPress: widget.onLongPress,
-        statesController: _statesController,
+        focusNode: focusNode,
+        onLongPress: onLongPress,
         clipBehavior: Clip.antiAlias,
         style:
             FilledButton.styleFrom(
-              padding: widget.padding ?? EdgeInsets.zero,
-              shape: cardShape,
-              iconSize: 20,
+              padding: padding ?? EdgeInsets.zero,
+              shape: shape ?? AppShape.all(radius ?? AppCorner.md),
+              iconSize: commonCardIconSize,
               iconColor: _buildIconColor(context),
               foregroundColor: _buildForegroundColor(context),
               side: BorderSide.none,
               elevation: 0,
             ).copyWith(
-              backgroundColor: const WidgetStatePropertyAll(Colors.transparent),
+              backgroundColor: WidgetStatePropertyAll(
+                _buildBackgroundColor(context),
+              ),
               side: WidgetStateProperty.resolveWith(
                 (states) => _buildBorderSide(context, states),
               ),
             ),
-        onPressed: widget.onPressed,
+        onPressed: onPressed,
         child: childWidget,
       ),
       false => OutlinedButton(
-        onLongPress: widget.onLongPress,
-        statesController: _statesController,
+        focusNode: focusNode,
+        onLongPress: onLongPress,
         clipBehavior: Clip.antiAlias,
         style:
             OutlinedButton.styleFrom(
-              padding: widget.padding ?? EdgeInsets.zero,
-              shape: cardShape,
-              iconSize: 20,
+              padding: padding ?? EdgeInsets.zero,
+              shape: shape ?? AppShape.all(radius ?? AppCorner.md),
+              iconSize: commonCardIconSize,
               iconColor: _buildIconColor(context),
-              backgroundColor: Colors.transparent,
+              backgroundColor: _buildBackgroundColor(context),
               foregroundColor: _buildForegroundColor(context),
               elevation: 0,
             ).copyWith(
@@ -303,165 +250,109 @@ class _CommonCardState extends State<CommonCard> {
                 (states) => _buildBorderSide(context, states),
               ),
             ),
-        onPressed: widget.onPressed,
+        onPressed: onPressed,
         child: childWidget,
       ),
     };
+  }
 
-    // GlassSurfaceType.repeated on purpose: CommonCard can appear dozens of
-    // times at once (proxy grids, provider lists), and stacking that many
-    // backdrop filters is a real scroll-jank risk, so this never blurs. Its
-    // opacity is also deliberately low — CommonCard nests inside panel/modal
-    // GlassSurfaces (settings groups, bottom sheets) constantly, and a
-    // repeated child anywhere near panel-level opacity compounds with its
-    // parent into a near-opaque block instead of reading as "glass inside
-    // glass".
-    //
-    // showBorder: false — the OutlinedButton/FilledButton above already owns
-    // the border via _buildBorderSide (its `side:` on the same cardShape).
-    // Leaving GlassSurface's own default border on top double-paints the
-    // identical outlineVariant stroke, compositing to roughly double the
-    // intended alpha on every idle card.
-    final glassCard = GlassSurface.repeated(
-      shape: cardShape,
-      color: _buildBackgroundColor(context),
-      showBorder: false,
-      child: card,
-    );
+  @override
+  Widget build(BuildContext context) {
+    var childWidget = child;
 
-    // The material-response layer: a tiny press compression plus a hover
-    // edge/specular boost, both driven by the same WidgetStatesController
-    // the button above already updates — no second hover/press detector,
-    // no BackdropFilter, no per-frame repaint, so this stays cheap even
-    // when dozens of these are on screen (proxy grids, provider lists).
-    final interactiveCard = _LiquidCardInteraction(
-      statesController: _statesController,
-      shape: cardShape,
-      child: glassCard,
-    );
+    if (info != null) {
+      childWidget = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          InfoHeader(
+            padding: infoPadding ?? baseInfoEdgeInsets.copyWith(bottom: 0),
+            info: info!,
+          ),
+          Flexible(flex: 1, child: child),
+        ],
+      );
+    }
 
-    return switch (widget.enterAnimated) {
-      true => FadeScaleEnterBox(child: interactiveCard),
-      false => interactiveCard,
+    if (selectWidget != null && isSelected) {
+      final List<Widget> children = [];
+      children.add(childWidget);
+      children.add(Positioned.fill(child: selectWidget!));
+      childWidget = Stack(children: children);
+    }
+
+    final button = skipTraversal
+        ? _SkipTraversalScope(
+            builder: (focusNode) =>
+                _buildButton(context, childWidget, focusNode),
+          )
+        : _buildButton(context, childWidget, null);
+    final card = !enterActionsOnRight
+        ? button
+        : Focus(
+            canRequestFocus: false,
+            onKeyEvent: (_, event) {
+              if (event is! KeyDownEvent ||
+                  event.logicalKey != LogicalKeyboardKey.arrowRight) {
+                return KeyEventResult.ignored;
+              }
+              final focusNode = FocusManager.instance.primaryFocus;
+              final context = focusNode?.context;
+              if (focusNode == null || context == null) {
+                return KeyEventResult.ignored;
+              }
+              final action = focusNode.descendants
+                  .where((node) => node.skipTraversal && node.canRequestFocus)
+                  .firstOrNull;
+              if (action != null) {
+                action.requestFocus();
+                return KeyEventResult.handled;
+              }
+              if (focusNode.skipTraversal ||
+                  context.findAncestorWidgetOfExactType<IconButton>() != null) {
+                return KeyEventResult.ignored;
+              }
+              return focusNode.nextFocus()
+                  ? KeyEventResult.handled
+                  : KeyEventResult.ignored;
+            },
+            child: button,
+          );
+
+    return switch (enterAnimated) {
+      true => FadeScaleEnterBox(child: card),
+      false => card,
     };
   }
 }
 
-/// CommonCard's hover/press material response. Listens to the same
-/// [WidgetStatesController] the card's FilledButton/OutlinedButton reacts
-/// to (via `statesController:`) instead of adding a second
-/// MouseRegion/GestureDetector, and only ever repaints this one card when
-/// its own state changes — never the list/grid it sits in.
-///
-/// Pressed: a ~1% [AnimatedScale] compression (bounded to the
-/// spec's 0.985–0.995 band via [GlassTokens.pressedScale]) — material
-/// tension, not a bouncy button.
-/// Hovered (desktop only — mobile never emits a hover state): a static,
-/// low-opacity directional gradient over the card's own shape, standing
-/// in for "edge/specular increases" without giving every repeated card its
-/// own [CustomPainter] or pointer-tracked specular layer the way
-/// [GlassSurfaceType.crystal]/[GlassSurfaceType.modal] surfaces get.
-class _LiquidCardInteraction extends StatefulWidget {
-  final WidgetStatesController statesController;
-  final OutlinedBorder shape;
-  final Widget child;
-
-  const _LiquidCardInteraction({
-    required this.statesController,
-    required this.shape,
-    required this.child,
-  });
-
+/// A focus node left out of the traversal that walks between cards: a card
+/// that must not be a stop, or an action inside a card reached by arrow right.
+class SkipTraversalFocusNode extends FocusNode {
   @override
-  State<_LiquidCardInteraction> createState() => _LiquidCardInteractionState();
+  bool get skipTraversal => true;
 }
 
-class _LiquidCardInteractionState extends State<_LiquidCardInteraction> {
-  @override
-  void initState() {
-    super.initState();
-    widget.statesController.addListener(_onStatesChanged);
-  }
+class _SkipTraversalScope extends StatefulWidget {
+  const _SkipTraversalScope({required this.builder});
+
+  final Widget Function(FocusNode focusNode) builder;
 
   @override
-  void didUpdateWidget(covariant _LiquidCardInteraction oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.statesController != widget.statesController) {
-      oldWidget.statesController.removeListener(_onStatesChanged);
-      widget.statesController.addListener(_onStatesChanged);
-    }
-  }
+  State<_SkipTraversalScope> createState() => _SkipTraversalScopeState();
+}
+
+class _SkipTraversalScopeState extends State<_SkipTraversalScope> {
+  final FocusNode _focusNode = SkipTraversalFocusNode();
 
   @override
   void dispose() {
-    widget.statesController.removeListener(_onStatesChanged);
+    _focusNode.dispose();
     super.dispose();
   }
 
-  void _onStatesChanged() => setState(() {});
-
   @override
   Widget build(BuildContext context) {
-    final states = widget.statesController.value;
-    final reducedMotion =
-        MediaQuery.maybeOf(context)?.disableAnimations ?? false;
-    final isPressed = !reducedMotion && states.contains(WidgetState.pressed);
-    // Press-compression applies on every platform (mobile included — see
-    // spec item 10), but the hover overlay below is desktop-only weight:
-    // touch never sets WidgetState.hovered, so on mobile that Stack +
-    // AnimatedOpacity + DecoratedBox(gradient) was being built and laid
-    // out — never painted, but never free either — for every single card
-    // in every proxy/provider list on every screen. Skipping construction
-    // entirely there (not just animating it to invisible) is what actually
-    // recovers that cost, since Flutter still has to build/layout a widget
-    // subtree even at opacity 0.
-    if (!system.isDesktop) {
-      return AnimatedScale(
-        scale: isPressed ? GlassTokens.pressedScale : 1.0,
-        duration: GlassTokens.pressDuration,
-        curve: GlassTokens.materialTransitionCurve,
-        child: widget.child,
-      );
-    }
-    final isHovered =
-        !reducedMotion &&
-        (states.contains(WidgetState.hovered) ||
-            states.contains(WidgetState.focused));
-    final brightness = context.colorScheme.brightness;
-    return AnimatedScale(
-      scale: isPressed ? GlassTokens.pressedScale : 1.0,
-      duration: GlassTokens.pressDuration,
-      curve: GlassTokens.materialTransitionCurve,
-      child: Stack(
-        children: [
-          widget.child,
-          Positioned.fill(
-            child: IgnorePointer(
-              child: AnimatedOpacity(
-                opacity: isHovered ? 1 : 0,
-                duration: GlassTokens.hoverDuration,
-                curve: GlassTokens.materialTransitionCurve,
-                child: DecoratedBox(
-                  decoration: ShapeDecoration(
-                    shape: widget.shape,
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withValues(
-                          alpha: brightness == Brightness.dark ? 0.05 : 0.10,
-                        ),
-                        Colors.white.withValues(alpha: 0),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    return widget.builder(_focusNode);
   }
 }
 
@@ -472,10 +363,10 @@ class SelectIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Theme.of(context).colorScheme.inversePrimary,
-      shape: const CircleBorder(),
+      shape: AppShape.circle,
       child: Container(
         padding: const EdgeInsets.all(4),
-        child: const Icon(Icons.check, size: 16),
+        child: const GlyphIcon(AppGlyphs.check, size: 16),
       ),
     );
   }
@@ -494,10 +385,7 @@ class SettingsBlock extends StatelessWidget {
       child: Column(
         children: [
           InfoHeader(info: Info(label: title)),
-          GlassSurface.panel(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(GlassTokens.radiusCard),
-            ),
+          Card(
             color: context.colorScheme.surfaceContainer,
             child: Column(children: settings),
           ),

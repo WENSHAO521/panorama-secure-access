@@ -92,15 +92,8 @@ BEGIN
             VALUE "CompanyName", "Panorama Scholarly Group" "\0"
             VALUE "FileDescription", "Panorama Secure Access" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "PanoramaSecureAccess" "\0"
+            VALUE "InternalName", "clash" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 Panorama Scholarly Group. All rights reserved." "\0"
-            // Kept as the real compiled/installed filename (BINARY_NAME in
-            // windows/CMakeLists.txt, matched by executable_name in
-            // windows/packaging/exe/make_config.yaml). VERSIONINFO's
-            // OriginalFilename is a claim about the actual on-disk name of
-            // this binary, not display branding — AV/EDR tooling treats a
-            // mismatch here as a tamper/spoofing signal, so it must keep
-            // tracking the real filename rather than the marketing name.
             VALUE "OriginalFilename", "FlClash.exe" "\0"
             VALUE "ProductName", "Panorama Secure Access" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

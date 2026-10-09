@@ -11,23 +11,20 @@ class Picker {
     return FilePicker.pickFile(initialDirectory: await appPath.downloadDirPath);
   }
 
-  Future<String?> saveFile(String fileName, Uint8List bytes) async {
+  Future<Uri?> saveFile(String fileName, Uint8List bytes) async {
     final uri = await FilePicker.saveFile(
       fileName: fileName,
       initialDirectory: await appPath.downloadDirPath,
       bytes: bytes,
     );
-    if (uri == null) {
-      return null;
-    }
-    if (!system.isAndroid) {
+    if (!system.isAndroid && uri != null && uri.scheme == 'file') {
       final file = File(uri.toFilePath());
       await file.safeWriteAsBytes(bytes);
     }
-    return uri.toString();
+    return uri;
   }
 
-  Future<String?> saveFileWithPath(String fileName, String localPath) async {
+  Future<Uri?> saveFileWithPath(String fileName, String localPath) async {
     final localFile = File(localPath);
     if (!await localFile.exists()) {
       await localFile.create(recursive: true);
@@ -39,7 +36,7 @@ class Picker {
       bytes: bytes,
     );
     await localFile.safeDelete();
-    return uri?.toString();
+    return uri;
   }
 
   Future<String?> pickerConfigQRCode() async {
@@ -47,16 +44,19 @@ class Picker {
     if (xFile == null) {
       return null;
     }
-    final controller = MobileScannerController();
-    final capture = await controller.analyzeImage(
+    // Not through a throwaway MobileScannerController: disposing one clears
+    // the platform scan window of a scanner page that is still open.
+    final capture = await MobileScannerPlatform.instance.analyzeImage(
       xFile.path,
-      formats: [BarcodeFormat.qrCode],
+      formats: const [BarcodeFormat.qrCode],
     );
-    final result = capture?.barcodes.first.rawValue;
-    if (result == null || !result.isUrl) {
-      throw currentAppLocalizations.pleaseUploadValidQrcode;
+    final url = profileUrlFromQrCodes(
+      capture?.barcodes.map((barcode) => barcode.rawValue) ?? const [],
+    );
+    if (url == null) {
+      throw MessageException(currentAppLocalizations.pleaseUploadValidQrcode);
     }
-    return result;
+    return url;
   }
 }
 

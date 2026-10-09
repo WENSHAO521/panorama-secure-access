@@ -1,121 +1,245 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/icons/icons.dart';
 import 'package:fl_clash/manager/app_manager.dart';
 import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/providers/providers.dart';
-import 'package:fl_clash/state.dart';
+import 'package:fl_clash/views/dashboard/widgets/start_button.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 typedef OnSelected = void Function(int index);
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
-  void _handleToPage(PageLabel pageLabel) {
-    globalState.container
-        .read(currentPageLabelProvider.notifier)
-        .toPage(pageLabel);
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hasViewSize = ref.watch(
+      viewSizeProvider.select((size) => !size.isEmpty),
+    );
+    if (!hasViewSize) {
+      return const SizedBox.shrink();
+    }
+    return HomeBackScopeContainer(
+      child: AppSidebarContainer(
+        child: _HomeShell(
+          child: Consumer(
+            builder: (_, ref, _) {
+              final navigationItems = ref
+                  .watch(currentNavigationItemsStateProvider)
+                  .value;
+              final isMobile = ref.watch(isMobileViewProvider);
+              final floating = ref.watch(
+                appSettingProvider.select(
+                  (state) => state.floatingNavigationBar,
+                ),
+              );
+              return _HomePageView(
+                navigationItems: navigationItems,
+                pageBuilder: (_, index) {
+                  final navigationItem = navigationItems[index];
+                  return _NavigationPage(
+                    key: ValueKey(navigationItem.label),
+                    item: navigationItem,
+                    isMobile: isMobile,
+                    docked: isMobile && floating,
+                    view: navigationItem.builder(context),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeShell extends ConsumerWidget {
+  const _HomeShell({required this.child});
+
+  final Widget child;
+
+  void _handleToPage(PageLabel pageLabel, WidgetRef ref) {
+    ref.read(currentPageLabelProvider.notifier).toPage(pageLabel);
   }
 
   @override
-  Widget build(BuildContext context) {
-    return HomeBackScopeContainer(
-      child: Stack(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(navigationStateProvider);
+    final isMobile = state.viewMode == ViewMode.mobile;
+    final navigationItems = state.navigationItems;
+    final floating = ref.watch(
+      appSettingProvider.select((state) => state.floatingNavigationBar),
+    );
+    final hasProfile = ref.watch(
+      profilesProvider.select((profiles) => profiles.isNotEmpty),
+    );
+    final isDashboard = ref.watch(
+      currentPageLabelProvider.select((label) => label == PageLabel.dashboard),
+    );
+    return Material(
+      color: context.colorScheme.surface,
+      child: Column(
         children: [
-          const Positioned.fill(child: AmbientBackground()),
-          AppSidebarContainer(
-            child: Material(
-              color: Colors.transparent,
-              child: Consumer(
-                builder: (context, ref, child) {
-                  final state = ref.watch(navigationStateProvider);
-                  final isMobile = state.viewMode == ViewMode.mobile;
-                  final navigationItems = state.navigationItems;
-                  final currentIndex = state.currentIndex;
-                  final bottomNavigationBar = LiquidGlassChrome(
-                    edge: LiquidGlassChromeEdge.top,
-                    child: NavigationBarTheme(
-                      data: _NavigationBarDefaultsM3(context),
-                      child: NavigationBar(
-                        destinations: navigationItems
-                            .map(
-                              (e) => NavigationDestination(
-                                icon: e.icon,
-                                selectedIcon: LiquidGlassSelectedIcon(
-                                  icon: e.icon,
-                                ),
-                                label: Intl.message(e.label.name),
-                              ),
-                            )
-                            .toList(),
-                        onDestinationSelected: (index) {
-                          _handleToPage(navigationItems[index].label);
+          Expanded(
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: FocusTraversalGroup(
+                    policy: PageTraversalPolicy(),
+                    child: BottomInsetScope(
+                      inset: isMobile && floating
+                          ? NavigationDock.insetOf(context)
+                          : 0,
+                      child: _BodyPadding(isMobile: isMobile, child: child),
+                    ),
+                  ),
+                ),
+                PositionedDirectional(
+                  start: 0,
+                  end: 0,
+                  bottom: 0,
+                  child: AnimatedVisibility.bottomNavigation(
+                    visible: isMobile && floating,
+                    child: _NavigationPadding(
+                      child: NavigationDock(
+                        destinations: [
+                          for (final item in navigationItems)
+                            NavigationDockDestination(
+                              glyph: item.glyph,
+                              label: item.label.label,
+                            ),
+                        ],
+                        selectedIndex: state.currentIndex,
+                        onSelected: (index) {
+                          _handleToPage(navigationItems[index].label, ref);
                         },
-                        selectedIndex: currentIndex,
+                        trailing: hasProfile && isDashboard
+                            ? const StartButton()
+                            : null,
                       ),
                     ),
-                  );
-                  if (isMobile) {
-                    return Column(
-                      children: [
-                        Flexible(
-                          flex: 1,
-                          child: MediaQuery.removePadding(
-                            removeTop: false,
-                            removeBottom: true,
-                            removeLeft: true,
-                            removeRight: true,
-                            context: context,
-                            child: child!,
-                          ),
-                        ),
-                        MediaQuery.removePadding(
-                          removeTop: true,
-                          removeBottom: false,
-                          removeLeft: true,
-                          removeRight: true,
-                          context: context,
-                          child: bottomNavigationBar,
-                        ),
-                      ],
-                    );
-                  } else {
-                    return child!;
-                  }
-                },
-                child: Consumer(
-                  builder: (_, ref, _) {
-                    final navigationItems = ref
-                        .watch(currentNavigationItemsStateProvider)
-                        .value;
-                    final isMobile = ref.watch(isMobileViewProvider);
-                    return _HomePageView(
-                      navigationItems: navigationItems,
-                      pageBuilder: (_, index) {
-                        final navigationItem = navigationItems[index];
-                        final navigationView = navigationItem.builder(context);
-                        final view = KeepScope(
-                          keep: navigationItem.keep,
-                          child: isMobile
-                              ? navigationView
-                              : Navigator(
-                                  pages: [MaterialPage(child: navigationView)],
-                                  onDidRemovePage: (_) {},
-                                ),
-                        );
-                        return view;
-                      },
-                    );
-                  },
+                  ),
                 ),
+              ],
+            ),
+          ),
+          AnimatedVisibility.bottomNavigation(
+            visible: isMobile && !floating,
+            child: _NavigationPadding(
+              child: NavigationBar(
+                destinations: [
+                  for (final (index, item) in navigationItems.indexed)
+                    NavigationDestination(
+                      icon: AnimatedGlyph(
+                        glyph: item.glyph,
+                        filled: index == state.currentIndex,
+                      ),
+                      label: item.label.label,
+                    ),
+                ],
+                selectedIndex: state.currentIndex,
+                onDestinationSelected: (index) {
+                  _handleToPage(navigationItems[index].label, ref);
+                },
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _BodyPadding extends StatelessWidget {
+  const _BodyPadding({required this.isMobile, required this.child});
+
+  final bool isMobile;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.removePadding(
+      removeTop: false,
+      removeBottom: isMobile,
+      removeLeft: isMobile,
+      removeRight: isMobile,
+      context: context,
+      child: child,
+    );
+  }
+}
+
+class _NavigationPadding extends StatelessWidget {
+  const _NavigationPadding({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.removePadding(
+      removeTop: true,
+      removeBottom: false,
+      removeLeft: true,
+      removeRight: true,
+      context: context,
+      child: child,
+    );
+  }
+}
+
+class _NavigationPage extends StatelessWidget {
+  const _NavigationPage({
+    super.key,
+    required this.item,
+    required this.isMobile,
+    required this.docked,
+    required this.view,
+  });
+
+  final NavigationItem item;
+  final bool isMobile;
+  final bool docked;
+  final Widget view;
+
+  @override
+  Widget build(BuildContext context) {
+    final scopedView = PageFocusScope(
+      child: DockedPageScope(docked: docked, child: view),
+    );
+    final keptView = KeepScope(
+      key: ValueKey(item.label),
+      keep: item.keep,
+      child: isMobile
+          ? scopedView
+          : Navigator(
+              key: ValueKey('${item.label.name}_navigator'),
+              pages: [MaterialPage(child: scopedView)],
+              onDidRemovePage: (_) {},
+            ),
+    );
+    return Consumer(
+      builder: (_, ref, child) {
+        final isActive = ref.watch(
+          currentPageLabelProvider.select((label) => label == item.label),
+        );
+        // A kept-alive page off screen still ticks its animations, and
+        // each tick asks for a frame.
+        return PageActivityScope(
+          isActive: isActive,
+          child: TickerMode(
+            enabled: isActive,
+            child: ExcludeFocus(
+              excluding: !isActive,
+              child: KeyboardInsetHold(child: child!),
+            ),
+          ),
+        );
+      },
+      child: keptView,
     );
   }
 }
@@ -133,17 +257,11 @@ class _HomePageView extends ConsumerStatefulWidget {
   ConsumerState createState() => _HomePageViewState();
 }
 
-// Matches upstream FlClash's tab-switch timing (kTabScrollDuration +
-// Curves.easeOut) rather than the app's iOS-style push-route curve — this
-// animation now only ever runs on mobile (see _toPage), where it competes
-// every frame with the bottom NavigationBar's always-on BackdropFilter
-// blur for GPU time, so it stays on the cheaper, well-trodden curve instead
-// of a bespoke one.
-const _kPageTransitionDuration = kTabScrollDuration;
-const _kPageTransitionCurve = Curves.easeOut;
-
 class _HomePageViewState extends ConsumerState<_HomePageView> {
   late PageController _pageController;
+
+  List<int>? _order;
+  int _slide = 0;
 
   @override
   void initState() {
@@ -160,6 +278,7 @@ class _HomePageViewState extends ConsumerState<_HomePageView> {
   void didUpdateWidget(covariant _HomePageView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.navigationItems.length != widget.navigationItems.length) {
+      _order = null;
       _updatePageController();
     }
   }
@@ -182,22 +301,39 @@ class _HomePageViewState extends ConsumerState<_HomePageView> {
     if (index == -1) {
       return;
     }
-    final isAnimateToPage = ref.read(appSettingProvider).isAnimateToPage;
-    // Upstream FlClash only animates this switch on mobile (a touch-driven
-    // tab bar reads naturally as a slide) and jumps instantly everywhere
-    // else. This fork had dropped the isMobile check, so every desktop
-    // nav-rail click paid for a 320ms slide+cross-fade over glass/blur-heavy
-    // pages instead of the instant switch users expect from mouse/keyboard
-    // navigation — that's the "switching feels laggy" regression.
+    final tabAnimation = ref.read(appSettingProvider).tabAnimation;
     final isMobile = ref.read(isMobileViewProvider);
-    if (isAnimateToPage && isMobile && !ignoreAnimateTo) {
-      await _pageController.animateToPage(
-        index,
-        duration: _kPageTransitionDuration,
-        curve: _kPageTransitionCurve,
-      );
-    } else {
+    final slide = ++_slide;
+    final page = _pageController.hasClients
+        ? _pageController.page?.round() ?? index
+        : index;
+    final current = _order?[page] ?? page;
+    if (_order != null) {
+      setState(() => _order = null);
+      _pageController.jumpToPage(current);
+    }
+    if (!isMobile || ignoreAnimateTo) {
       _pageController.jumpToPage(index);
+      return;
+    }
+    // As TabBarView does, so no page between is built and painted on the way.
+    if ((index - current).abs() > 1) {
+      final adjacent = index > current ? index - 1 : index + 1;
+      setState(() {
+        _order = List.generate(widget.navigationItems.length, (item) => item)
+          ..[adjacent] = current
+          ..[current] = adjacent;
+      });
+      _pageController.jumpToPage(adjacent);
+    }
+    final fade = tabAnimation == TabAnimation.fade;
+    await _pageController.animateToPage(
+      index,
+      duration: fade ? fadeTabDuration : kTabScrollDuration,
+      curve: fade ? fadeTabCurve : Curves.easeOut,
+    );
+    if (mounted && slide == _slide && _order != null) {
+      setState(() => _order = null);
     }
   }
 
@@ -217,92 +353,78 @@ class _HomePageViewState extends ConsumerState<_HomePageView> {
     final itemCount = ref.watch(
       currentNavigationItemsStateProvider.select((state) => state.value.length),
     );
+    final fade = ref.watch(
+      appSettingProvider.select(
+        (state) => state.tabAnimation == TabAnimation.fade,
+      ),
+    );
     return PageView.builder(
       controller: _pageController,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: itemCount,
+      findChildIndexCallback: (key) {
+        if (key is! ValueKey<PageLabel>) {
+          return null;
+        }
+        final index = widget.navigationItems.indexWhere(
+          (item) => item.label == key.value,
+        );
+        if (index == -1) {
+          return null;
+        }
+        return _order?.indexOf(index) ?? index;
+      },
       itemBuilder: (context, index) {
-        // No manual cross-fade here (there used to be one, via
-        // AnimatedBuilder + Opacity tracking _pageController): this switch
-        // only ever animates on mobile now (see _toPage), where every one
-        // of its ~18 frames had to alpha-composite two full pages worth of
-        // BackdropFilter glass on top of the slide PageView already does
-        // for free. Upstream FlClash doesn't cross-fade this transition
-        // either — a plain slide reads fine and is the difference between
-        // this feeling instant and feeling laggy on real phones. The
-        // RepaintBoundary still earns its keep: it caches each page as one
-        // rasterized layer so the slide only ever costs a cheap
-        // compositor-side translate instead of repainting glass on every
-        // frame.
-        return RepaintBoundary(child: widget.pageBuilder(context, index));
+        final page = widget.pageBuilder(context, _order?[index] ?? index);
+        return _FadeTabPage(
+          key: page.key,
+          controller: _pageController,
+          position: index,
+          enabled: fade,
+          child: page,
+        );
       },
     );
   }
 }
 
-class _NavigationBarDefaultsM3 extends NavigationBarThemeData {
-  _NavigationBarDefaultsM3(this.context)
-    : super(
-        height: kHomeNavigationBarHeight,
-        elevation: 3.0,
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-      );
+/// Cancels the page view's slide so a tab switch cross-fades in place, and
+/// wraps every page even when off so switching the setting keeps their state.
+class _FadeTabPage extends StatelessWidget {
+  const _FadeTabPage({
+    super.key,
+    required this.controller,
+    required this.position,
+    required this.enabled,
+    required this.child,
+  });
 
-  final BuildContext context;
-  late final ColorScheme _colors = Theme.of(context).colorScheme;
-  late final TextTheme _textTheme = Theme.of(context).textTheme;
+  final PageController controller;
+  final int position;
+  final bool enabled;
+  final Widget child;
 
-  // Transparent: the surrounding LiquidGlassChrome (see HomePage) now owns
-  // the blur/tint/illumination/edge — painting a second, flat-color fill
-  // here would sit on top of that layered material and flatten it back
-  // into a plain tinted rectangle.
-  @override
-  Color? get backgroundColor => Colors.transparent;
-
-  @override
-  Color? get shadowColor => Colors.transparent;
-
-  @override
-  Color? get surfaceTintColor => Colors.transparent;
-
-  @override
-  WidgetStateProperty<IconThemeData?>? get iconTheme {
-    return WidgetStateProperty.resolveWith((Set<WidgetState> states) {
-      return IconThemeData(
-        size: 24.0,
-        // Was onSecondaryContainer, paired with the old solid
-        // secondaryContainer indicator pill. The indicator is now a soft
-        // primary-tinted wash (GlassTokens.navIndicatorColorFor), so the
-        // selected icon follows suit instead of pairing with a container
-        // colour that's no longer what's actually behind it.
-        color: states.contains(WidgetState.disabled)
-            ? _colors.onSurfaceVariant.opacity38
-            : states.contains(WidgetState.selected)
-            ? _colors.primary
-            : _colors.onSurfaceVariant,
-      );
-    });
+  double get _delta {
+    if (!controller.hasClients || !controller.position.hasContentDimensions) {
+      return 0;
+    }
+    final page = controller.page ?? position.toDouble();
+    return (position - page).clamp(-1.0, 1.0);
   }
 
   @override
-  Color? get indicatorColor => GlassTokens.navIndicatorColorFor(_colors);
-
-  @override
-  ShapeBorder? get indicatorShape => GlassTokens.navIndicatorShape;
-
-  @override
-  WidgetStateProperty<TextStyle?>? get labelTextStyle {
-    return WidgetStateProperty.resolveWith((Set<WidgetState> states) {
-      final TextStyle style = _textTheme.labelMedium!;
-      return style.apply(
-        overflow: TextOverflow.ellipsis,
-        color: states.contains(WidgetState.disabled)
-            ? _colors.onSurfaceVariant.opacity38
-            : states.contains(WidgetState.selected)
-            ? _colors.onSurface
-            : _colors.onSurfaceVariant,
-      );
-    });
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (_, child) {
+        final delta = enabled ? _delta : 0.0;
+        return FractionalTranslation(
+          translation: Offset(-delta, 0),
+          child: Opacity(opacity: 1 - delta.abs(), child: child),
+        );
+      },
+      child: child,
+    );
   }
 }
 
@@ -321,10 +443,12 @@ class HomeBackScopeContainer extends ConsumerWidget {
         final canPop = Navigator.canPop(realContext);
         if (canPop) {
           Navigator.of(realContext).pop();
+        } else if (system.isTV && pageLabel != PageLabel.dashboard) {
+          ref
+              .read(currentPageLabelProvider.notifier)
+              .toPage(PageLabel.dashboard);
         } else {
-          await globalState.container
-              .read(systemActionProvider.notifier)
-              .handleClose();
+          await ref.read(systemActionProvider.notifier).handleClose();
         }
         return false;
       },
