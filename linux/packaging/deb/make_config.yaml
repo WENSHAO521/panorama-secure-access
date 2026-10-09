@@ -1,8 +1,7 @@
 display_name: Panorama Secure Access
 package_name: FlClash
 maintainer:
-  name: chen08209
-  email: chen08209@gmail.com
+  name: Panorama Scholarly Group
 
 priority: optional
 section: x11

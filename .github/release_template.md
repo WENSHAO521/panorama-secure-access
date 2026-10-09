@@ -1,6 +1,6 @@
 <div align=center>
 
-[![Release Downloads](https://img.shields.io/github/downloads/chen08209/FlClash/vVERSION/total?style=flat-square&logo=github)](https://img.shields.io/github/downloads/chen08209/FlClash/vVERSION/)
+[![Release Downloads](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/vVERSION/total?style=flat-square&logo=github)](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/vVERSION/)
 
 </div>
 
