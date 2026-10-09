@@ -11,8 +11,9 @@
 [![Release](https://img.shields.io/github/v/release/WENSHAO521/panorama-secure-access?style=flat-square&label=release)](https://github.com/WENSHAO521/panorama-secure-access/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access/releases)
 [![License](https://img.shields.io/github/license/WENSHAO521/panorama-secure-access?style=flat-square)](LICENSE)
+[![Telegram](https://img.shields.io/badge/Telegram-channel-26A5E4?style=flat-square&logo=telegram&logoColor=white)](https://t.me/FlClash)
 
-[下载](#下载) · [更新日志](CHANGELOG.md) · [从源码构建](#从源码构建)
+[官网](https://chen08209.github.io/FlClash/zh) · [下载](#下载) · [更新日志](CHANGELOG.md) · [从源码构建](#从源码构建)
 
 </div>
 
@@ -37,17 +38,26 @@
 ## 下载
 
 从 [GitHub Releases](https://github.com/WENSHAO521/panorama-secure-access/releases/latest) 获取最新版本，或打开
+[官网](https://chen08209.github.io/FlClash/zh#download)，它会自动为你的设备选好安装包。
 
 | 平台 | 安装包 | 说明 |
 | --- | --- | --- |
-| Android | `arm64-v8a`、`armeabi-v7a`、`x86_64` 三种 APK | 绝大多数手机选 `arm64-v8a`。|
+| Android | `arm64-v8a`、`armeabi-v7a`、`x86_64` 三种 APK | 绝大多数手机选 `arm64-v8a`。也可以通过下方的 F-Droid 仓库安装。 |
 | Windows 10 及以上 | 安装版（`.exe`）或便携版（`.zip`），分 x64 与 ARM64 | 骁龙等 ARM 架构笔记本选 ARM64。 |
-| macOS 12 及以上 | Apple Silicon 与 Intel 两种 DMG |  |
+| macOS 12 及以上 | Apple Silicon 与 Intel 两种 DMG | 也可以通过 Homebrew 安装。 |
 | Linux | `.deb`、`.rpm` 和 AppImage，分 x64 与 ARM64 | 托盘依赖见下方说明。 |
 
 <p>
+  <a href="https://chen08209.github.io/FlClash-fdroid-repo/repo?fingerprint=789D6D32668712EF7672F9E58DEEB15FBD6DCEEC5AE7A4371EA72F2AAE8A12FD"><img alt="Get it on F-Droid" src="snapshots/get-it-on-fdroid.svg" height="56"></a>
   <a href="https://github.com/WENSHAO521/panorama-secure-access/releases/latest"><img alt="Get it on GitHub" src="snapshots/get-it-on-github.svg" height="56"></a>
 </p>
+
+**Homebrew**
+
+```bash
+brew tap chen08209/tap
+brew install --cask flclash
+```
 
 **Linux 托盘图标**
 
@@ -105,9 +115,15 @@ dart setup.dart android   # 或 windows、macos、linux
 
 ## 支持
 
-给仓库点一个 Star 是支持项目最简单的方式。问题讨论和更新通知
+给仓库点一个 Star 是支持项目最简单的方式。问题讨论和更新通知请关注 [Telegram 频道](https://t.me/FlClash)，
 Bug 与功能建议请提交到 [GitHub Issues](https://github.com/WENSHAO521/panorama-secure-access/issues)。
 
+<a href="https://star-history.com/#WENSHAO521/panorama-secure-access&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=WENSHAO521/panorama-secure-access&type=Date&theme=dark">
+    <img alt="Star history" src="https://api.star-history.com/svg?repos=WENSHAO521/panorama-secure-access&type=Date" width="640">
+  </picture>
+</a>
 
 ## 许可证
 
