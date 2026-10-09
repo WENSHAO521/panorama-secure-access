@@ -8,7 +8,7 @@ import 'render.dart';
 
 /// Versions up to and including this tag are frozen: they predate the
 /// structured pipeline and are kept verbatim at the bottom of `CHANGELOG.md`.
-const frozenBoundaryTag = 'v0.8.96';
+const frozenBoundaryTag = 'v3.3.26';
 
 const changelogDataPath = 'changelog.json';
 

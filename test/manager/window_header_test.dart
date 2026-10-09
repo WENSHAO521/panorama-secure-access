@@ -661,7 +661,10 @@ void main() {
     testWidgets('the app name clears the traffic lights in a mobile view', (
       tester,
     ) async {
-      await pumpBar(tester, width: 420);
+      // The test font draws 14 logical pixels per character, so the app name
+      // is about twice as wide here as on screen; the window has to be wide
+      // enough to centre it past the traffic lights.
+      await pumpBar(tester, width: 520);
 
       expect(
         tester.getRect(find.text(appName)).left,
