@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.4.0 (2026-10-09)
+
+**Features**
+
+- **app** Sync with upstream FlClash 0.8.99: new sidebar and floating dock, more dashboard cards, editor word wrap and snippets, DNS query log, proxied service checks, and tray hotkeys
+
+**Bug Fixes**
+
+- **core** DNS lookups no longer fail on networks that report no DNS servers
+- **core,android** Push notifications reconnect in Doze
+- **backup,database** Restores never apply halfway
+
 ## v0.8.99 (2026-10-03)
 
 **Features**
