@@ -80,7 +80,10 @@ void main() {
 
     final shown = container
         .read(commonActionProvider.notifier)
-        .checkUpdateResultHandle(data: release(_bodyWith(_payload)));
+        .checkUpdateResultHandle(
+          data: release(_bodyWith(_payload)),
+          isUser: true,
+        );
     await tester.pumpAndSettle();
 
     expect(find.textContaining('v0.8.96'), findsOneWidget);
@@ -97,7 +100,10 @@ void main() {
 
     final shown = container
         .read(commonActionProvider.notifier)
-        .checkUpdateResultHandle(data: release(_bodyWith(_payload)));
+        .checkUpdateResultHandle(
+          data: release(_bodyWith(_payload)),
+          isUser: true,
+        );
     await tester.pumpAndSettle();
 
     // Entry copy comes from the release payload and is English only; the group
@@ -116,7 +122,7 @@ void main() {
 
     final shown = container
         .read(commonActionProvider.notifier)
-        .checkUpdateResultHandle(data: release(_bulletsOnly));
+        .checkUpdateResultHandle(data: release(_bulletsOnly), isUser: true);
     await tester.pumpAndSettle();
 
     expect(find.textContaining('- Override scripts'), findsOneWidget);
@@ -125,19 +131,30 @@ void main() {
     await shown;
   });
 
-  testWidgets('stops reminding when an automatic check is dismissed', (
+  testWidgets('an automatic check never interrupts with a dialog', (
     tester,
   ) async {
     final container = await pumpApp(tester);
 
-    final shown = container
+    await container
         .read(commonActionProvider.notifier)
         .checkUpdateResultHandle(data: release(_bodyWith(_payload)));
     await tester.pumpAndSettle();
-    await tapCancel(tester);
-    await shown;
 
-    expect(container.read(appSettingProvider).autoCheckUpdate, isFalse);
+    expect(find.byType(AlertDialog), findsNothing);
+    expect(container.read(appSettingProvider).autoCheckUpdate, isTrue);
+  });
+
+  testWidgets('shows the release notes from the update card', (tester) async {
+    final container = await pumpApp(tester);
+
+    container
+        .read(commonActionProvider.notifier)
+        .showReleaseNotes('v0.8.96', _bodyWith(_payload));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Override scripts'), findsOneWidget);
+    expect(find.byType(TextButton), findsOneWidget);
   });
 
   testWidgets('a manual check keeps the setting and reports a failure', (

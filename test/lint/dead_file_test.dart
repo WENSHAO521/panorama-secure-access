@@ -25,7 +25,7 @@ Iterable<File> _dartFiles({required bool includeGenerated}) sync* {
       final generated =
           entity.path.endsWith('.g.dart') ||
           entity.path.endsWith('.freezed.dart') ||
-          entity.path.contains('/generated/');
+          entity.uri.path.contains('/generated/');
       if (generated && !includeGenerated) continue;
       yield entity;
     }

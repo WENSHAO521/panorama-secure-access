@@ -11,7 +11,7 @@ void main() {
     for (final entity in Directory('lib').listSync(recursive: true)) {
       if (entity is! File ||
           !entity.path.endsWith('.dart') ||
-          entity.path.contains('/generated/')) {
+          entity.uri.path.contains('/generated/')) {
         continue;
       }
       final lines = entity.readAsLinesSync();

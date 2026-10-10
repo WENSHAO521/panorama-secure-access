@@ -62,7 +62,7 @@ Iterable<File> _dartFilesIn(String root) sync* {
   for (final entity in directory.listSync(recursive: true)) {
     if (entity is File &&
         entity.path.endsWith('.dart') &&
-        !entity.path.contains('/generated/')) {
+        !entity.uri.path.contains('/generated/')) {
       yield entity;
     }
   }
@@ -91,7 +91,7 @@ void main() {
 
     for (final root in ['lib/common', 'lib/enum', 'lib/models']) {
       for (final file in _dartFilesIn(root)) {
-        final relative = p.relative(file.path);
+        final relative = p.posix.joinAll(p.split(p.relative(file.path)));
         if (_platformModules.contains(relative)) {
           continue;
         }
@@ -149,7 +149,7 @@ void main() {
         "import 'package:fl_clash/manager/manager.dart';",
       )) {
         offenders.add(
-          '${p.relative(file.path)} — import the one manager it needs, not the '
+          '${p.posix.joinAll(p.split(p.relative(file.path)))} — import the one manager it needs, not the '
           'barrel that reaches every platform manager',
         );
       }
