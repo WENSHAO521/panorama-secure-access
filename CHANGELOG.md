@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.4.2 (2026-10-10)
+
+**Features**
+
+- **update** Updates now download in the background with a progress card and install in one tap (f2882e7)
+
 ## v3.4.1 (2026-10-10)
 
 **Features**

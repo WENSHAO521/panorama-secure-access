@@ -2,6 +2,24 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.4.2",
+      "tag": "v3.4.2",
+      "date": "2026-10-10",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "f2882e7",
+              "scope": "update",
+              "text": "Updates now download in the background with a progress card and install in one tap"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.4.1",
       "tag": "v3.4.1",
       "date": "2026-10-10",
