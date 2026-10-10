@@ -220,11 +220,17 @@ void main() {
       expect(config['hosts']['router.local'], ['192.168.1.1', '192.168.1.2']);
       expect(config['sniffer']['sniff']['HTTP']['ports'], ['80', '443']);
       expect(
-        config['proxy-providers']['remote']['path'],
+        (config['proxy-providers']['remote']['path'] as String).replaceAll(
+          Platform.pathSeparator,
+          '/',
+        ),
         startsWith('/profiles/providers/7/proxies/'),
       );
       expect(
-        config['rule-providers']['remote']['path'],
+        (config['rule-providers']['remote']['path'] as String).replaceAll(
+          Platform.pathSeparator,
+          '/',
+        ),
         startsWith('/profiles/providers/7/rules/'),
       );
       expect(config['rules'], [
