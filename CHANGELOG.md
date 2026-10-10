@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.4.1 (2026-10-10)
+
+**Features**
+
+- **branding** New keyhole logo across the app, tray and launcher icons (e1178b4)
+
 ## v3.4.0 (2026-10-09)
 
 **Features**

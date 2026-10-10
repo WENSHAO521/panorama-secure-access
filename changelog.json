@@ -2,6 +2,24 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.4.1",
+      "tag": "v3.4.1",
+      "date": "2026-10-10",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "e1178b4",
+              "scope": "branding",
+              "text": "New keyhole logo across the app, tray and launcher icons"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.4.0",
       "tag": "v3.4.0",
       "date": "2026-10-09",
