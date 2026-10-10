@@ -8,9 +8,6 @@ import 'package:material_ui/material_ui.dart';
 
 const _badgeSize = 48.0;
 const _barHeight = 8.0;
-const _barGradient = LinearGradient(
-  colors: [Color(0xFF6A5CF0), Color(0xFF19C8DC)],
-);
 
 /// Floats the background download status above the page content.
 class UpdateCardHost extends ConsumerWidget {
@@ -301,10 +298,12 @@ class _UpdateBar extends StatelessWidget {
               child: FractionallySizedBox(
                 widthFactor: animated.clamp(0.04, 1.0),
                 heightFactor: 1,
-                child: const DecoratedBox(
+                child: DecoratedBox(
                   decoration: ShapeDecoration(
                     shape: AppShape.full,
-                    gradient: _barGradient,
+                    gradient: LinearGradient(
+                      colors: [colorScheme.primary, colorScheme.tertiary],
+                    ),
                   ),
                 ),
               ),
