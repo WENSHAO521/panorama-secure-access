@@ -777,5 +777,14 @@
   "large": "大",
   "extraLarge": "特大",
   "switchProfile": "プロファイルを切り替え",
-  "lastUpdated": "最終更新"
+  "lastUpdated": "最終更新",
+  "updateNow": "今すぐ更新",
+  "installNow": "今すぐインストール",
+  "updateDownloading": "アップデートをダウンロード中",
+  "updateVerifying": "ダウンロードを検証中",
+  "updateReady": "インストールの準備ができました",
+  "updateFailed": "ダウンロードに失敗しました",
+  "updateWhatsNew": "更新内容",
+  "updateRetryHint": "ネットワークを確認して再試行してください",
+  "updateLater": "後で"
 }

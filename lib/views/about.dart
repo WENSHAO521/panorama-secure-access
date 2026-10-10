@@ -28,6 +28,11 @@ class AboutView extends ConsumerWidget {
 
   Future<void> _checkUpdate(BuildContext context, WidgetRef ref) async {
     if (ref.read(loadingProvider(LoadingTag.checkUpdate))) return;
+    final updates = ref.read(updateControllerProvider.notifier);
+    if (ref.read(updateControllerProvider) != null) {
+      updates.show();
+      return;
+    }
     final commonAction = ref.read(commonActionProvider.notifier);
     final data = await globalState.loadingRun<Map<String, dynamic>?>(
       request.checkForUpdate,

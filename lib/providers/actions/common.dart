@@ -118,39 +118,51 @@ class CommonAction extends _$CommonAction {
     ];
   }
 
+  void showReleaseNotes(String tag, String? body) {
+    final context = globalState.navigatorKey.currentContext;
+    if (context == null) return;
+    unawaited(
+      dialogs.showMessage(
+        title: currentAppLocalizations.discoverNewVersion,
+        message: _releaseSpan(context, tag, body),
+        cancelable: false,
+      ),
+    );
+  }
+
   Future<void> checkUpdateResultHandle({
     Map<String, dynamic>? data,
     bool isUser = false,
   }) async {
-    if (data != null) {
-      final context = globalState.navigatorKey.currentContext!;
-      final res = await dialogs.showMessage(
+    if (data == null) {
+      if (isUser) {
+        unawaited(
+          dialogs.showMessage(
+            title: currentAppLocalizations.checkUpdate,
+            message: TextSpan(text: currentAppLocalizations.checkUpdateError),
+          ),
+        );
+      }
+      return;
+    }
+    final updates = ref.read(updateControllerProvider.notifier);
+    if (isUser) {
+      final confirmed = await dialogs.showMessage(
         title: currentAppLocalizations.discoverNewVersion,
         message: _releaseSpan(
-          context,
+          globalState.navigatorKey.currentContext!,
           data['tag_name'] as String,
           data['body'] as String?,
         ),
-        confirmText: currentAppLocalizations.goDownload,
-        cancelText: isUser ? null : currentAppLocalizations.noLongerRemind,
+        confirmText: currentAppLocalizations.updateNow,
       );
-      if (res == true) {
-        unawaited(
-          launchUrl(
-            Uri.parse('https://github.com/$repository/releases/latest'),
-          ),
-        );
-      } else if (!isUser && res == false) {
-        ref
-            .read(appSettingProvider.notifier)
-            .update((state) => state.copyWith(autoCheckUpdate: false));
-      }
-    } else if (isUser) {
+      if (confirmed != true) return;
+    }
+    final download = isUser || await updates.canDownloadInBackground();
+    final offered = await updates.offer(data, download: download);
+    if (!offered && isUser) {
       unawaited(
-        dialogs.showMessage(
-          title: currentAppLocalizations.checkUpdate,
-          message: TextSpan(text: currentAppLocalizations.checkUpdateError),
-        ),
+        launchUrl(Uri.parse('https://github.com/$repository/releases/latest')),
       );
     }
   }

@@ -755,9 +755,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Введите содержимое правила",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installNow": MessageLookupByLibrary.simpleMessage("Установить"),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -1550,6 +1552,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("Без названия"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("Открепить окно"),
     "update": MessageLookupByLibrary.simpleMessage("Обновить"),
+    "updateDownloading": MessageLookupByLibrary.simpleMessage(
+      "Загрузка обновления",
+    ),
+    "updateFailed": MessageLookupByLibrary.simpleMessage(
+      "Не удалось загрузить",
+    ),
+    "updateLater": MessageLookupByLibrary.simpleMessage("Позже"),
+    "updateNow": MessageLookupByLibrary.simpleMessage("Обновить"),
+    "updateReady": MessageLookupByLibrary.simpleMessage("Готово к установке"),
+    "updateRetryHint": MessageLookupByLibrary.simpleMessage(
+      "Проверьте сеть и повторите попытку.",
+    ),
+    "updateVerifying": MessageLookupByLibrary.simpleMessage(
+      "Проверка загрузки",
+    ),
+    "updateWhatsNew": MessageLookupByLibrary.simpleMessage("Что нового"),
     "upload": MessageLookupByLibrary.simpleMessage("Отдача"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("Получить профиль по URL"),

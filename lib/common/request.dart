@@ -68,6 +68,28 @@ class Request {
     }
   }
 
+  Future<void> download(
+    String url,
+    String savePath, {
+    CancelToken? cancelToken,
+    void Function(int received, int total)? onProgress,
+  }) async {
+    try {
+      await _clashDio.download(
+        url,
+        savePath,
+        cancelToken: cancelToken,
+        onReceiveProgress: onProgress,
+      );
+    } catch (e) {
+      commonPrint.log(
+        'download error ${compactError(e)}',
+        logLevel: LogLevel.warning,
+      );
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>?> checkForUpdate() async {
     try {
       final response = await dio.get(

@@ -124,6 +124,17 @@ class _HomeShell extends ConsumerWidget {
                     ),
                   ),
                 ),
+                PositionedDirectional(
+                  start: isMobile ? 12 : null,
+                  end: 12,
+                  bottom: isMobile && floating
+                      ? NavigationDock.insetOf(context) + 8
+                      : 12,
+                  child: SizedBox(
+                    width: isMobile ? null : 380,
+                    child: const UpdateCardHost(),
+                  ),
+                ),
               ],
             ),
           ),

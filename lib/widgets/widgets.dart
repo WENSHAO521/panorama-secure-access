@@ -56,4 +56,5 @@ export 'tab.dart';
 export 'text.dart';
 export 'text_loupe.dart';
 export 'theme.dart';
+export 'update_card.dart';
 export 'wave.dart';

@@ -554,6 +554,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "initiator": MessageLookupByLibrary.simpleMessage("发起方"),
     "inputProxyGroupName": MessageLookupByLibrary.simpleMessage("输入策略组名称"),
     "inputRuleContent": MessageLookupByLibrary.simpleMessage("输入规则内容"),
+    "installNow": MessageLookupByLibrary.simpleMessage("立即安装"),
     "installedAppsPermissionDeniedMessage":
         MessageLookupByLibrary.simpleMessage(
           "读取应用列表权限已被拒绝，无法获取已安装的应用。请前往系统设置手动开启。",
@@ -1114,6 +1115,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("未命名"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("取消置顶"),
     "update": MessageLookupByLibrary.simpleMessage("更新"),
+    "updateDownloading": MessageLookupByLibrary.simpleMessage("正在下载更新"),
+    "updateFailed": MessageLookupByLibrary.simpleMessage("下载失败"),
+    "updateLater": MessageLookupByLibrary.simpleMessage("稍后"),
+    "updateNow": MessageLookupByLibrary.simpleMessage("立即更新"),
+    "updateReady": MessageLookupByLibrary.simpleMessage("更新已就绪"),
+    "updateRetryHint": MessageLookupByLibrary.simpleMessage("请检查网络后重试"),
+    "updateVerifying": MessageLookupByLibrary.simpleMessage("正在校验文件"),
+    "updateWhatsNew": MessageLookupByLibrary.simpleMessage("更新内容"),
     "upload": MessageLookupByLibrary.simpleMessage("上传"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("通过URL获取配置文件"),

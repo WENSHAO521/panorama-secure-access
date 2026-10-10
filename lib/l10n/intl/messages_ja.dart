@@ -615,6 +615,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "プロキシグループ名を入力してください",
     ),
     "inputRuleContent": MessageLookupByLibrary.simpleMessage("ルールの内容を入力してください"),
+    "installNow": MessageLookupByLibrary.simpleMessage("今すぐインストール"),
     "installedAppsPermissionDeniedMessage":
         MessageLookupByLibrary.simpleMessage(
           "アプリ一覧の権限が拒否されたため、インストール済みアプリを取得できません。システム設定から手動で許可してください。",
@@ -1249,6 +1250,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("名称未設定"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("固定を解除"),
     "update": MessageLookupByLibrary.simpleMessage("更新"),
+    "updateDownloading": MessageLookupByLibrary.simpleMessage("アップデートをダウンロード中"),
+    "updateFailed": MessageLookupByLibrary.simpleMessage("ダウンロードに失敗しました"),
+    "updateLater": MessageLookupByLibrary.simpleMessage("後で"),
+    "updateNow": MessageLookupByLibrary.simpleMessage("今すぐ更新"),
+    "updateReady": MessageLookupByLibrary.simpleMessage("インストールの準備ができました"),
+    "updateRetryHint": MessageLookupByLibrary.simpleMessage(
+      "ネットワークを確認して再試行してください",
+    ),
+    "updateVerifying": MessageLookupByLibrary.simpleMessage("ダウンロードを検証中"),
+    "updateWhatsNew": MessageLookupByLibrary.simpleMessage("更新内容"),
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URLからプロファイルを取得します"),

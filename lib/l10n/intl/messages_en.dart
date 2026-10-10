@@ -732,9 +732,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Enter the rule content",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
-    ),
+    "installNow": MessageLookupByLibrary.simpleMessage("Install now"),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "This system hides the installed app list until the permission is granted. Authorize it to configure the per-app proxy.",
     ),
@@ -1469,6 +1471,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("Unnamed"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("Unpin window"),
     "update": MessageLookupByLibrary.simpleMessage("Update"),
+    "updateDownloading": MessageLookupByLibrary.simpleMessage(
+      "Downloading update",
+    ),
+    "updateFailed": MessageLookupByLibrary.simpleMessage("Download failed"),
+    "updateLater": MessageLookupByLibrary.simpleMessage("Later"),
+    "updateNow": MessageLookupByLibrary.simpleMessage("Update now"),
+    "updateReady": MessageLookupByLibrary.simpleMessage("Ready to install"),
+    "updateRetryHint": MessageLookupByLibrary.simpleMessage(
+      "Check your network and try again.",
+    ),
+    "updateVerifying": MessageLookupByLibrary.simpleMessage(
+      "Verifying download",
+    ),
+    "updateWhatsNew": MessageLookupByLibrary.simpleMessage("What\'s new"),
     "upload": MessageLookupByLibrary.simpleMessage("Upload"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage(

@@ -777,5 +777,14 @@
   "large": "大",
   "extraLarge": "超大",
   "switchProfile": "切换配置",
-  "lastUpdated": "上次更新"
+  "lastUpdated": "上次更新",
+  "updateNow": "立即更新",
+  "installNow": "立即安装",
+  "updateDownloading": "正在下载更新",
+  "updateVerifying": "正在校验文件",
+  "updateReady": "更新已就绪",
+  "updateFailed": "下载失败",
+  "updateWhatsNew": "更新内容",
+  "updateRetryHint": "请检查网络后重试",
+  "updateLater": "稍后"
 }

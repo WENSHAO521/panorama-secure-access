@@ -777,5 +777,14 @@
   "large": "Крупный",
   "extraLarge": "Очень крупный",
   "switchProfile": "Сменить профиль",
-  "lastUpdated": "Последнее обновление"
+  "lastUpdated": "Последнее обновление",
+  "updateNow": "Обновить",
+  "installNow": "Установить",
+  "updateDownloading": "Загрузка обновления",
+  "updateVerifying": "Проверка загрузки",
+  "updateReady": "Готово к установке",
+  "updateFailed": "Не удалось загрузить",
+  "updateWhatsNew": "Что нового",
+  "updateRetryHint": "Проверьте сеть и повторите попытку.",
+  "updateLater": "Позже"
 }

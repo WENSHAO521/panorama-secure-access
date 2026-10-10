@@ -7,3 +7,4 @@ export 'core.dart';
 export 'ip_quality.dart';
 export 'profile.dart';
 export 'state.dart';
+export 'update.dart';

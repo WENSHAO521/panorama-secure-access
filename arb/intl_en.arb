@@ -777,5 +777,14 @@
   "large": "Large",
   "extraLarge": "Extra large",
   "switchProfile": "Switch profile",
-  "lastUpdated": "Last updated"
+  "lastUpdated": "Last updated",
+  "updateNow": "Update now",
+  "installNow": "Install now",
+  "updateDownloading": "Downloading update",
+  "updateVerifying": "Verifying download",
+  "updateReady": "Ready to install",
+  "updateFailed": "Download failed",
+  "updateWhatsNew": "What's new",
+  "updateRetryHint": "Check your network and try again.",
+  "updateLater": "Later"
 }

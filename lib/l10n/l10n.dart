@@ -6447,6 +6447,81 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Update now`
+  String get updateNow {
+    return Intl.message('Update now', name: 'updateNow', desc: '', args: []);
+  }
+
+  /// `Install now`
+  String get installNow {
+    return Intl.message('Install now', name: 'installNow', desc: '', args: []);
+  }
+
+  /// `Downloading update`
+  String get updateDownloading {
+    return Intl.message(
+      'Downloading update',
+      name: 'updateDownloading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verifying download`
+  String get updateVerifying {
+    return Intl.message(
+      'Verifying download',
+      name: 'updateVerifying',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ready to install`
+  String get updateReady {
+    return Intl.message(
+      'Ready to install',
+      name: 'updateReady',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download failed`
+  String get updateFailed {
+    return Intl.message(
+      'Download failed',
+      name: 'updateFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What's new`
+  String get updateWhatsNew {
+    return Intl.message(
+      'What\'s new',
+      name: 'updateWhatsNew',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check your network and try again.`
+  String get updateRetryHint {
+    return Intl.message(
+      'Check your network and try again.',
+      name: 'updateRetryHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Later`
+  String get updateLater {
+    return Intl.message('Later', name: 'updateLater', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {
