@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.4.3 (2026-10-10)
+
+Internal improvements only.
+
 ## v3.4.2 (2026-10-10)
 
 **Features**
