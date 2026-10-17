@@ -74,7 +74,6 @@ class UpdateCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = context.colorScheme;
-    final textTheme = Theme.of(context).textTheme;
     final appLocalizations = context.appLocalizations;
     final controller = ref.read(updateControllerProvider.notifier);
     final showBar =
@@ -93,7 +92,7 @@ class UpdateCard extends ConsumerWidget {
           children: [
             Row(
               children: [
-                _UpdateBadge(stage: state.stage, progress: state.progress),
+                _UpdateBadge(stage: state.stage),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -103,21 +102,23 @@ class UpdateCard extends ConsumerWidget {
                         _title(appLocalizations),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: AppTextStyle.headline.of(context),
                       ),
                       const SizedBox(height: 2),
                       Text(
                         _subtitle(appLocalizations),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: textTheme.bodySmall?.copyWith(
-                          color: state.stage == UpdateStage.failed
-                              ? colorScheme.error
-                              : colorScheme.onSurfaceVariant,
-                          fontFeatures: const [FontFeature.tabularFigures()],
-                        ),
+                        style: AppTextStyle.footnote
+                            .of(context)
+                            .copyWith(
+                              color: state.stage == UpdateStage.failed
+                                  ? colorScheme.error
+                                  : colorScheme.onSurfaceVariant,
+                              fontFeatures: const [
+                                FontFeature.tabularFigures(),
+                              ],
+                            ),
                       ),
                     ],
                   ),
@@ -202,10 +203,9 @@ class _UpdateAction extends ConsumerWidget {
 }
 
 class _UpdateBadge extends StatelessWidget {
-  const _UpdateBadge({required this.stage, required this.progress});
+  const _UpdateBadge({required this.stage});
 
   final UpdateStage stage;
-  final double? progress;
 
   @override
   Widget build(BuildContext context) {
@@ -235,15 +235,7 @@ class _UpdateBadge extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           if (busy)
-            SizedBox.square(
-              dimension: _badgeSize,
-              child: CircularProgressIndicator(
-                value: progress,
-                strokeWidth: 3,
-                color: colorScheme.primary,
-                backgroundColor: colorScheme.surfaceContainerHighest,
-              ),
-            ),
+            CommonCircleLoading(size: _badgeSize, color: colorScheme.primary),
           AnimatedContainer(
             duration: const Duration(milliseconds: 250),
             width: _badgeSize - 12,
@@ -323,10 +315,12 @@ class _UpdateStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = Theme.of(context).textTheme.labelSmall?.copyWith(
-      color: context.colorScheme.onSurfaceVariant,
-      fontFeatures: const [FontFeature.tabularFigures()],
-    );
+    final style = AppTextStyle.caption1
+        .of(context)
+        .copyWith(
+          color: context.colorScheme.onSurfaceVariant,
+          fontFeatures: const [FontFeature.tabularFigures()],
+        );
     final total = state.total > 0 ? state.total : state.asset.size;
     final received = state.stage == UpdateStage.ready ? total : state.received;
     return Row(

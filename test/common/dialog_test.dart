@@ -66,11 +66,18 @@ TextButton _restateConfirmButton(WidgetTester tester) {
   return tester.widget<TextButton>(find.widgetWithText(TextButton, 'Confirm'));
 }
 
+/// The caret handle can land on the dialog's confirm button, depending on
+/// where the typed statement wraps.
+Future<void> _dismissSelectionHandles(WidgetTester tester) async {
+  FocusManager.instance.primaryFocus?.unfocus();
+  await tester.pump();
+}
+
 Future<void> _agreeAndRestate(WidgetTester tester) async {
   await tester.tap(find.text('Agree'));
   await tester.pumpAndSettle();
   await tester.enterText(find.byType(TextField), _commitmentStatement(tester));
-  await tester.pump();
+  await _dismissSelectionHandles(tester);
   await tester.tap(find.text('Confirm'));
   await tester.pumpAndSettle();
 }
@@ -306,7 +313,7 @@ void main() {
 
       final agreed = requestDisclaimerConsent();
       await tester.pumpAndSettle();
-      expect(find.text('Data collection and privacy'), findsOneWidget);
+      expect(find.text('Data and Privacy'), findsOneWidget);
       await _agreeAndRestate(tester);
       expect(await agreed, isTrue);
 
@@ -407,29 +414,29 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Agree'));
     await tester.pumpAndSettle();
-    expect(find.text('Restate the statement'), findsOneWidget);
+    expect(find.text('Confirm Statement'), findsOneWidget);
     expect(_restateConfirmButton(tester).onPressed, isNull);
 
     final field = find.byType(TextField);
-    await tester.enterText(field, 'The Software itself');
+    await tester.enterText(field, 'I agree to use');
     await tester.pump();
-    expect(find.text('Does not match the statement'), findsNothing);
+    expect(find.text('The text does not match the statement'), findsNothing);
     expect(_restateConfirmButton(tester).onPressed, isNull);
 
-    await tester.enterText(field, 'The Software itself provides');
+    await tester.enterText(field, 'I agree to sell');
     await tester.pump();
-    expect(find.text('Does not match the statement'), findsOneWidget);
+    expect(find.text('The text does not match the statement'), findsOneWidget);
 
     await tester.tap(find.text('Cancel'));
     await tester.pumpAndSettle();
-    expect(find.text('Restate the statement'), findsNothing);
+    expect(find.text('Confirm Statement'), findsNothing);
     expect(find.byType(DisclaimerView), findsOneWidget);
 
     await tester.tap(find.text('Agree'));
     await tester.pumpAndSettle();
     expect(tester.widget<TextField>(field).controller!.text, isEmpty);
     await tester.enterText(field, '${_commitmentStatement(tester)}\n');
-    await tester.pump();
+    await _dismissSelectionHandles(tester);
     expect(_restateConfirmButton(tester).onPressed, isNotNull);
     await tester.tap(find.text('Confirm'));
     await tester.pumpAndSettle();
@@ -445,11 +452,13 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Agree'));
     await tester.pumpAndSettle();
-    expect(find.text('Confirm the statement'), findsOneWidget);
+    expect(find.text('Confirm Statement'), findsOneWidget);
     expect(find.byType(TextField), findsNothing);
     expect(_restateConfirmButton(tester).onPressed, isNull);
 
-    await tester.tap(find.text('I have read and understand this statement'));
+    await tester.tap(
+      find.text('I have read and understood the statement above'),
+    );
     await tester.pump();
     expect(_restateConfirmButton(tester).onPressed, isNotNull);
     await tester.tap(find.text('Confirm'));
@@ -487,18 +496,18 @@ void main() {
     await tester.showKeyboard(field);
     tester.testTextInput.updateEditingValue(
       const TextEditingValue(
-        text: 'The Softwarexy',
-        composing: TextRange(start: 12, end: 14),
+        text: 'I agreexy',
+        composing: TextRange(start: 7, end: 9),
       ),
     );
     await tester.pump();
-    expect(find.text('Does not match the statement'), findsNothing);
+    expect(find.text('The text does not match the statement'), findsNothing);
 
     tester.testTextInput.updateEditingValue(
-      const TextEditingValue(text: 'The Softwarexy'),
+      const TextEditingValue(text: 'I agreexy'),
     );
     await tester.pump();
-    expect(find.text('Does not match the statement'), findsOneWidget);
+    expect(find.text('The text does not match the statement'), findsOneWidget);
 
     await tester.tap(find.text('Cancel'));
     await tester.pumpAndSettle();
