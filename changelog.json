@@ -2,6 +2,49 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.5.0",
+      "tag": "v3.5.0",
+      "date": "2026-10-17",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "breaking",
+          "entries": [
+            {
+              "id": "090c048",
+              "scope": "app",
+              "text": "Custom overwrites are removed; rebuild them as custom profiles"
+            }
+          ]
+        },
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "20680b8",
+              "scope": "app",
+              "text": "Redesigned dashboard, theme colors and proxy cards, French, Spanish and Korean, rewritten terms of use to sign once more, and no more Firebase analytics or crash reporting"
+            },
+            {
+              "id": "090c048",
+              "scope": "app",
+              "text": "Custom profiles, per-key DNS, NTP, sniffer and TUN settings, stacked sheets and context menus, and Android launcher shortcuts"
+            }
+          ]
+        },
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "0650852",
+              "scope": "branding",
+              "text": "The macOS menu bar, Dock and the Linux link handler show Panorama Secure Access"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.4.3",
       "tag": "v3.4.3",
       "date": "2026-10-10",
