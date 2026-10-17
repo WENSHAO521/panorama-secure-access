@@ -14,6 +14,8 @@ concurrency:
 
 env:
   IS_STABLE: ${{ !contains(github.ref, '-') }}
+  # See CI Caches in .agents/commands.md.
+  BRANCH_CACHE: ${{ !startsWith(github.ref, 'refs/tags/') }}
   FLUTTER_VERSION: '3.47.6'
   GO_VERSION: '1.27.1'
   NDK_VERSION: r28c
@@ -40,13 +42,14 @@ jobs:
         with:
           workspaces: plugins/rust_api/rust
           cache-directories: .dart_tool/hooks_runner
+          save-if: ${{ env.BRANCH_CACHE }}
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version: ${{ env.FLUTTER_VERSION }}
-          cache: true
+          cache: ${{ env.BRANCH_CACHE }}
 
       - name: Install dependencies
         run: flutter pub get
@@ -66,7 +69,7 @@ jobs:
         run: dart run tool/changelog.dart verify
 
       - name: Run tests
-        run: flutter test --reporter expanded --coverage
+        run: dart run tool/test.dart -- --reporter expanded --coverage
 
       - name: Check coverage
         run: dart run tool/check_coverage.dart coverage/lcov.info 75
@@ -84,7 +87,7 @@ jobs:
         with:
           channel: stable
           flutter-version: ${{ env.FLUTTER_VERSION }}
-          cache: true
+          cache: ${{ env.BRANCH_CACHE }}
 
       - name: Validate local Flutter packages
         run: bash tool/check_plugins.sh
@@ -98,7 +101,7 @@ jobs:
 
   desktop:
     name: Desktop ${{ matrix.platform }}
-    if: *checks
+    if: (github.event_name == 'workflow_dispatch' || !github.event.repository.private) && !(github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -120,7 +123,9 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
-          cache-dependency-path: core/go.sum
+          cache-dependency-path: |
+            core/go.sum
+            plugins/setup/setup_hooks/lib/src/go_builder.dart
 
       - name: Setup Rust cache
         uses: Swatinem/rust-cache@v2
@@ -176,6 +181,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
+          cache: ${{ env.BRANCH_CACHE }}
           cache-dependency-path: core/go.sum
 
       - name: Validate Go core wrapper
@@ -218,14 +224,17 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
-          cache-dependency-path: core/go.sum
+          cache: ${{ env.BRANCH_CACHE }}
+          cache-dependency-path: |
+            core/go.sum
+            android/core/build.gradle.kts
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version: ${{ env.FLUTTER_VERSION }}
-          cache: true
+          cache: ${{ env.BRANCH_CACHE }}
 
       - name: Install dependencies
         run: flutter pub get
@@ -245,6 +254,8 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/dev' }}
 
       - name: Run Android unit tests
         working-directory: android
@@ -279,6 +290,7 @@ jobs:
           workspaces: |
             services/helper
             plugins/rust_api/rust
+          save-if: ${{ env.BRANCH_CACHE }}
 
       - name: Check format
         run: |
@@ -302,6 +314,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: services/helper
+          save-if: ${{ env.BRANCH_CACHE }}
 
       - name: Check format
         run: cargo fmt --manifest-path services/helper/Cargo.toml -- --check
@@ -312,7 +325,6 @@ jobs:
   build:
     # Releases publish where the release links point: the public repository.
     if: github.repository == 'WENSHAO521/panorama-secure-access' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    needs: [ dart, plugins, go, android, rust, windows-helper-test ]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -334,9 +346,11 @@ jobs:
           - platform: windows
             os: windows-11-arm
             arch: arm64
+            flutter-channel: master
           - platform: linux
             os: ubuntu-24.04-arm
             arch: arm64
+            flutter-channel: master
 
     steps:
       - name: Setup rust
@@ -357,14 +371,11 @@ jobs:
         if: startsWith(matrix.platform,'android')
         env:
           KEYSTORE: ${{ secrets.KEYSTORE }}
-          SERVICE_JSON: ${{ secrets.SERVICE_JSON }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          # Secrets are only configured on the upstream repo. When this workflow
-          # runs on a fork/mirror without them, skip signing instead of
-          # clobbering the checked-in placeholder files with empty/invalid ones.
+          # Without the signing secrets the release build stays unsigned.
           if [ -n "$KEYSTORE" ]; then
             echo "$KEYSTORE" | base64 --decode > android/app/keystore.jks
             echo "keyAlias=$KEY_ALIAS" >> android/local.properties
@@ -373,40 +384,13 @@ jobs:
           else
             echo "KEYSTORE secret not set, skipping release signing (unsigned build)."
           fi
-          if [ -n "$SERVICE_JSON" ]; then
-            # Accept either the raw google-services.json content or a base64
-            # encoding of it, since it's easy to paste the wrong one into the
-            # secret.
-            case "$SERVICE_JSON" in
-              '{'*) echo "$SERVICE_JSON" > /tmp/google-services.json ;;
-              *) echo "$SERVICE_JSON" | base64 --decode > /tmp/google-services.json ;;
-            esac
-            # The Firebase project behind SERVICE_JSON has to actually have an
-            # Android app registered for this applicationId, or the Google
-            # Services Gradle plugin hard-fails the build with "No matching
-            # client found". Fall back to the placeholder instead of breaking
-            # the build when it doesn't match.
-            if grep -q '"com.follow.clash"' /tmp/google-services.json; then
-              mv /tmp/google-services.json android/app/google-services.json
-            else
-              echo "SERVICE_JSON has no client for com.follow.clash, keeping placeholder google-services.json."
-            fi
-          else
-            echo "SERVICE_JSON secret not set, keeping placeholder google-services.json."
-          fi
 
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
+          cache: ${{ env.BRANCH_CACHE }}
           cache-dependency-path: core/go.sum
-
-      - name: Setup Rust cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          key: ${{ matrix.platform }}-${{ matrix.arch || 'all' }}
-          workspaces: services/helper
-          cache-directories: .dart_tool/hooks_runner
 
       - name: Setup Gradle
         if: startsWith(matrix.platform,'android')
@@ -421,9 +405,9 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: master
+          channel: ${{ matrix.flutter-channel || 'stable' }}
           flutter-version: ${{ env.FLUTTER_VERSION }}
-          cache: true
+          cache: ${{ env.BRANCH_CACHE }}
 
       - name: Setup Xcode
         if: startsWith(matrix.platform,'macos')
@@ -450,6 +434,18 @@ jobs:
         if: matrix.platform == 'macos' && matrix.arch == 'amd64'
         run: plutil -replace FLTEnableImpeller -bool NO macos/Runner/Info.plist
 
+      # The core embeds this bundle and FlClashHttpOverrides.trustCoreRoots loads it for Dart.
+      # Pinned by hash, so a new bundle from https://curl.se/docs/caextract.html is a reviewed bump.
+      - name: Fetch CA certificates
+        shell: bash
+        env:
+          CA_BUNDLE: cacert-2026-09-25.pem
+          CA_BUNDLE_SHA256: a41b5d356aea97a529fe27e0f7316d2f9d946d75927476cf9cf1b90637d00505
+        run: |
+          bundle=core/Clash.Meta/component/ca/ca-certificates.crt
+          curl -fsSL --retry 3 -o "$bundle" "https://curl.se/ca/$CA_BUNDLE"
+          echo "$CA_BUNDLE_SHA256  $bundle" | sha256sum -c -
+
       - name: Setup
         env:
           ANDROID_NDK_HOME: ${{ steps.build-ndk.outputs.ndk-path }}
@@ -465,7 +461,7 @@ jobs:
   upload:
     permissions:
       contents: write
-    needs: [ build ]
+    needs: [ build, dart, plugins, go, android, rust, windows-helper-test ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -493,7 +489,7 @@ jobs:
         with:
           channel: stable
           flutter-version: ${{ env.FLUTTER_VERSION }}
-          cache: true
+          cache: ${{ env.BRANCH_CACHE }}
 
       - name: Install dependencies
         run: flutter pub get

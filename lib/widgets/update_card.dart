@@ -1,8 +1,9 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/icons/icons.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
+import 'package:fl_clash/ui/icons/icons.dart';
+import 'package:fl_clash/ui/ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -73,7 +74,7 @@ class UpdateCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = context.colorScheme;
-    final textTheme = context.textTheme;
+    final textTheme = Theme.of(context).textTheme;
     final appLocalizations = context.appLocalizations;
     final controller = ref.read(updateControllerProvider.notifier);
     final showBar =
@@ -322,7 +323,7 @@ class _UpdateStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = context.textTheme.labelSmall?.copyWith(
+    final style = Theme.of(context).textTheme.labelSmall?.copyWith(
       color: context.colorScheme.onSurfaceVariant,
       fontFeatures: const [FontFeature.tabularFigures()],
     );

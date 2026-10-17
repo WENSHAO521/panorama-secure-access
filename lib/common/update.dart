@@ -150,8 +150,8 @@ class Updater {
   }
 
   static Future<Directory> _updateDir() async {
-    final base = await appPath.tempDir.future;
-    return Directory(p.join(base.path, _updateDirName)).create(recursive: true);
+    final base = await appPath.tempDirPath;
+    return Directory(p.join(base, _updateDirName)).create(recursive: true);
   }
 
   /// Downloads [asset] and returns the verified file. An earlier download of the
