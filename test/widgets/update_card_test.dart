@@ -64,7 +64,7 @@ void main() {
     expect(find.text('Downloading update'), findsOneWidget);
     expect(find.text('3.4.1 · 50%'), findsOneWidget);
     expect(find.text('Cancel'), findsOneWidget);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.byType(CommonCircleLoading), findsOneWidget);
   });
 
   testWidgets('offers install once the download is ready', (tester) async {
@@ -85,6 +85,6 @@ void main() {
   ) async {
     await _pump(tester, _state(UpdateStage.available));
     expect(find.text('Update now'), findsOneWidget);
-    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.byType(CommonCircleLoading), findsNothing);
   });
 }
