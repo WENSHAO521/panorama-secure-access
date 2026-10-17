@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.5.1 (2026-10-17)
+
+**Features**
+
+- **app** Proxy group tabs as chips, a reworked scan page, no more password keyboard on plain text fields, popup and drag-back fixes, and the corrected strict route description in every language (11f975c)
+
 ## v3.5.0 (2026-10-17)
 
 **Breaking Changes**

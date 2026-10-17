@@ -2,6 +2,24 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.5.1",
+      "tag": "v3.5.1",
+      "date": "2026-10-17",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "11f975c",
+              "scope": "app",
+              "text": "Proxy group tabs as chips, a reworked scan page, no more password keyboard on plain text fields, popup and drag-back fixes, and the corrected strict route description in every language"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.5.0",
       "tag": "v3.5.0",
       "date": "2026-10-17",
