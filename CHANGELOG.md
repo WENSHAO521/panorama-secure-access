@@ -4,16 +4,16 @@
 
 **Breaking Changes**
 
-- **app** Custom overwrites are removed; rebuild them as custom profiles (090c048)
+- **app** Custom overwrites are removed; rebuild them as custom profiles (79686f5)
 
 **Features**
 
-- **app** Redesigned dashboard, theme colors and proxy cards, French, Spanish and Korean, rewritten terms of use to sign once more, and no more Firebase analytics or crash reporting (20680b8)
-- **app** Custom profiles, per-key DNS, NTP, sniffer and TUN settings, stacked sheets and context menus, and Android launcher shortcuts (090c048)
+- **app** Redesigned dashboard, theme colors and proxy cards, French, Spanish and Korean, rewritten terms of use to sign once more, and no more Firebase analytics or crash reporting (8798eba)
+- **app** Custom profiles, per-key DNS, NTP, sniffer and TUN settings, stacked sheets and context menus, and Android launcher shortcuts (79686f5)
 
 **Bug Fixes**
 
-- **branding** The macOS menu bar, Dock and the Linux link handler show Panorama Secure Access (0650852)
+- **branding** The macOS menu bar, Dock and the Linux link handler show Panorama Secure Access (664e575)
 
 ## v3.4.3 (2026-10-10)
 
