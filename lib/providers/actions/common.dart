@@ -28,6 +28,15 @@ class CommonAction extends _$CommonAction {
         .update((state) => state.copyWith(showTrayTitle: !state.showTrayTitle));
   }
 
+  void updateMonochromeTrayIcon() {
+    ref
+        .read(appSettingProvider.notifier)
+        .update(
+          (state) =>
+              state.copyWith(monochromeTrayIcon: !state.monochromeTrayIcon),
+        );
+  }
+
   void updateMode() {
     ref.read(patchClashConfigProvider.notifier).update((state) {
       final index = Mode.values.indexWhere((item) => item == state.mode);
@@ -74,10 +83,11 @@ class CommonAction extends _$CommonAction {
   }
 
   Future<bool> autoCheckUpdate() async {
-    if (!ref.read(appSettingProvider).autoCheckUpdate) return false;
+    final settings = ref.read(appSettingProvider);
+    if (!settings.autoCheckUpdate) return false;
     final Map<String, dynamic>? res;
     try {
-      res = await request.checkForUpdate();
+      res = await request.checkForUpdate(beta: settings.betaUpdates);
     } catch (error) {
       commonPrint.log(
         'checkForUpdate failed: ${compactError(error)}',
@@ -137,10 +147,9 @@ class CommonAction extends _$CommonAction {
     final context = globalState.navigatorKey.currentContext;
     if (context == null) return;
     unawaited(
-      dialogs.showMessage(
+      dialogs.showAlert(
         title: currentAppLocalizations.discoverNewVersion,
         message: _releaseSpan(context, tag, body),
-        cancelable: false,
       ),
     );
   }
@@ -152,7 +161,7 @@ class CommonAction extends _$CommonAction {
     if (data == null) {
       if (isUser) {
         unawaited(
-          dialogs.showMessage(
+          dialogs.showAlert(
             title: currentAppLocalizations.checkUpdate,
             message: TextSpan(text: currentAppLocalizations.checkUpdateError),
           ),
@@ -177,7 +186,12 @@ class CommonAction extends _$CommonAction {
     final offered = await updates.offer(data, download: download);
     if (!offered && isUser) {
       unawaited(
-        launchUrl(Uri.parse('https://github.com/$repository/releases/latest')),
+        launchUrl(
+          Uri.parse(
+            data['html_url'] as String? ??
+                'https://github.com/$repository/releases/latest',
+          ),
+        ),
       );
     }
   }

@@ -12,31 +12,50 @@ extension PackageInfoExtension on PackageInfo {
   ].join(' ');
 }
 
+/// Orders `major.minor.patch[-pre][+build]`; a pre-release such as `1.2.0-beta.3`
+/// sorts before its release `1.2.0`.
 int compareVersions(String version1, String version2) {
-  final List<String> v1 = version1.split('+')[0].split('.');
-  final List<String> v2 = version2.split('+')[0].split('.');
-  final int major1 = int.parse(v1[0]);
-  final int major2 = int.parse(v2[0]);
-  if (major1 != major2) {
-    return major1.compareTo(major2);
+  final (core1, pre1, build1) = _splitVersion(version1);
+  final (core2, pre2, build2) = _splitVersion(version2);
+  for (var i = 0; i < 3; i++) {
+    final part1 = i < core1.length ? int.parse(core1[i]) : 0;
+    final part2 = i < core2.length ? int.parse(core2[i]) : 0;
+    if (part1 != part2) {
+      return part1.compareTo(part2);
+    }
   }
-  final int minor1 = v1.length > 1 ? int.parse(v1[1]) : 0;
-  final int minor2 = v2.length > 1 ? int.parse(v2[1]) : 0;
-  if (minor1 != minor2) {
-    return minor1.compareTo(minor2);
+  if (pre1 != pre2) {
+    if (pre1 == null) return 1;
+    if (pre2 == null) return -1;
+    final result = _comparePreRelease(pre1, pre2);
+    if (result != 0) return result;
   }
-  final int patch1 = v1.length > 2 ? int.parse(v1[2]) : 0;
-  final int patch2 = v2.length > 2 ? int.parse(v2[2]) : 0;
-  if (patch1 != patch2) {
-    return patch1.compareTo(patch2);
-  }
-  final int build1 = version1.contains('+')
-      ? int.parse(version1.split('+')[1])
-      : 0;
-  final int build2 = version2.contains('+')
-      ? int.parse(version2.split('+')[1])
-      : 0;
   return build1.compareTo(build2);
+}
+
+(List<String>, String?, int) _splitVersion(String version) {
+  final [main, ...build] = version.split('+');
+  final dash = main.indexOf('-');
+  final core = dash < 0 ? main : main.substring(0, dash);
+  return (
+    core.split('.'),
+    dash < 0 ? null : main.substring(dash + 1),
+    build.isEmpty ? 0 : int.parse(build.first),
+  );
+}
+
+int _comparePreRelease(String pre1, String pre2) {
+  final ids1 = pre1.split('.');
+  final ids2 = pre2.split('.');
+  for (var i = 0; i < ids1.length && i < ids2.length; i++) {
+    final num1 = int.tryParse(ids1[i]);
+    final num2 = int.tryParse(ids2[i]);
+    final result = num1 != null && num2 != null
+        ? num1.compareTo(num2)
+        : ids1[i].compareTo(ids2[i]);
+    if (result != 0) return result;
+  }
+  return ids1.length.compareTo(ids2.length);
 }
 
 const releaseNotesBeginMarker = '<!-- flclash:changelog:begin -->';

@@ -25,6 +25,13 @@ void main() {
       expect(setup.createBuildEnvironment('dev'), {'APP_ENV': 'dev'});
     });
 
+    test('passes the release tag to the app', () {
+      expect(setup.createBuildEnvironment('pre', releaseTag: 'v1.2.1-beta.4'), {
+        'APP_ENV': 'pre',
+        'APP_RELEASE_TAG': 'v1.2.1-beta.4',
+      });
+    });
+
     test('omits verbose from flutter build args by default', () {
       final args = setup.createFlutterBuildArgs(
         platform: 'android',

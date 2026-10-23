@@ -133,6 +133,17 @@ void main() {
     test('handles missing minor/patch', () {
       expect(compareVersions('1', '1.0.0'), 0);
     });
+
+    test('orders a pre-release before its release', () {
+      expect(compareVersions('1.2.0-beta.3', '1.2.0'), lessThan(0));
+      expect(compareVersions('1.2.0', '1.2.0-beta.3'), greaterThan(0));
+      expect(compareVersions('1.2.0-beta.3', '1.1.9'), greaterThan(0));
+    });
+
+    test('orders pre-releases by their numeric identifiers', () {
+      expect(compareVersions('1.2.0-beta.10', '1.2.0-beta.9'), greaterThan(0));
+      expect(compareVersions('1.2.0-beta.2', '1.2.0-beta.2'), 0);
+    });
   });
 
   group('getViewMode', () {

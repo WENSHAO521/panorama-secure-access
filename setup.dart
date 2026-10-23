@@ -53,6 +53,7 @@ Future<void> main(List<String> args) async {
   }
 
   final env = results['env'] as String;
+  final releaseTag = results['release-tag'] as String?;
   final rootDir = Directory.current.path;
   final skipped = packagesNotBuildingAssets(
     File(p.join(rootDir, 'pubspec.yaml')).readAsStringSync(),
@@ -77,6 +78,7 @@ Future<void> main(List<String> args) async {
     targets,
     rootDir,
     arch,
+    releaseTag: releaseTag,
     androidArch: androidArch,
     verbose: verbose,
   );
@@ -90,6 +92,11 @@ ArgParser createSetupArgParser() {
       defaultsTo: 'pre',
       allowed: ['dev', 'pre', 'stable'],
       help: 'Application environment',
+    )
+    ..addOption(
+      'release-tag',
+      valueHelp: 'v1.2.3-beta.4',
+      help: 'Release tag the build is published under',
     )
     ..addOption(
       'targets',
@@ -124,8 +131,8 @@ List<String> createFlutterBuildArgs({
   return flutterBuildArgs;
 }
 
-Map<String, String> createBuildEnvironment(String env) {
-  return {'APP_ENV': env};
+Map<String, String> createBuildEnvironment(String env, {String? releaseTag}) {
+  return {'APP_ENV': env, 'APP_RELEASE_TAG': ?releaseTag};
 }
 
 /// Packages whose build hook `pubspec.yaml` turns into a no-op.
@@ -160,11 +167,14 @@ Future<int> _package(
   String targets,
   String rootDir,
   String arch, {
+  String? releaseTag,
   String? androidArch,
   required bool verbose,
 }) async {
   final file = File(p.join(rootDir, 'env.json'));
-  await file.writeAsString(jsonEncode(createBuildEnvironment(env)));
+  await file.writeAsString(
+    jsonEncode(createBuildEnvironment(env, releaseTag: releaseTag)),
+  );
 
   final flutterBuildArgs = createFlutterBuildArgs(
     platform: platform,
@@ -186,7 +196,7 @@ Future<int> _package(
     'git',
     'https://github.com/chen08209/flutter_distributor.git',
     '--git-ref',
-    'v0.6.11-flclash.3',
+    'v0.6.11-flclash.4',
     '--git-path',
     'packages/flutter_distributor',
   ]);

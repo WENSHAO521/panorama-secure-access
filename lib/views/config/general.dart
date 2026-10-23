@@ -83,6 +83,23 @@ class TestUrlItem extends ConsumerWidget {
   }
 }
 
+class DelayTestTimeoutItem extends ConsumerWidget {
+  const DelayTestTimeoutItem({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    return ConfigOptionsItem<int>(
+      title: (l) => l.delayTestTimeout,
+      options: delayTestTimeoutOptions,
+      textBuilder: (value) => '$value ms',
+      selector: appSettingProvider.select((state) => state.delayTestTimeout),
+      onChanged: (ref, value) => ref
+          .read(appSettingProvider.notifier)
+          .update((state) => state.copyWith(delayTestTimeout: value)),
+    );
+  }
+}
+
 class PortItem extends ConsumerWidget {
   const PortItem({super.key});
 
@@ -334,6 +351,7 @@ class GeneralView extends ConsumerWidget {
   List<Widget> _connectionItems() {
     return [
       const TestUrlItem(),
+      const DelayTestTimeoutItem(),
       _clashToggle(
         title: (l) => l.unifiedDelay,
         select: (state) => state.unifiedDelay,
@@ -376,6 +394,11 @@ class GeneralView extends ConsumerWidget {
         title: (l) => l.autoCheckUpdate,
         select: (state) => state.autoCheckUpdate,
         update: (state, value) => state.copyWith(autoCheckUpdate: value),
+      ),
+      _appSettingToggle(
+        title: (l) => l.betaUpdates,
+        select: (state) => state.betaUpdates,
+        update: (state, value) => state.copyWith(betaUpdates: value),
       ),
     ];
   }
@@ -434,9 +457,10 @@ class GeneralView extends ConsumerWidget {
     return BaseScaffold(
       title: appLocalizations.general,
       body: ListView(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-        ).copyWith(top: context.appBarInset, bottom: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
+          top: context.contentTopPadding,
+          bottom: 16 + context.bottomInset,
+        ),
         children: [
           generateSection(
             title: appLocalizations.startupAndBackground,

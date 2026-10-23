@@ -121,6 +121,40 @@ void main() {
     });
   });
 
+  group('newestRelease', () {
+    Request requestListing(List<Map<String, dynamic>> releases) {
+      return Request()
+        ..dio.httpClientAdapter = _HostAdapter({
+          'api.github.com': () => ResponseBody.fromString(
+            jsonEncode(releases),
+            200,
+            headers: {
+              Headers.contentTypeHeader: [Headers.jsonContentType],
+            },
+          ),
+        });
+    }
+
+    test('picks a beta newer than the stable release', () async {
+      final request = requestListing([
+        {'tag_name': 'v1.2.0', 'prerelease': false},
+        {'tag_name': 'v1.2.1-beta.4', 'prerelease': true},
+        {'tag_name': 'v1.2.1-beta.5', 'draft': true},
+      ]);
+
+      expect((await request.newestRelease())['tag_name'], 'v1.2.1-beta.4');
+    });
+
+    test('picks the stable release over a beta of its version', () async {
+      final request = requestListing([
+        {'tag_name': 'v1.2.1-beta.4', 'prerelease': true},
+        {'tag_name': 'v1.2.1', 'prerelease': false},
+      ]);
+
+      expect((await request.newestRelease())['tag_name'], 'v1.2.1');
+    });
+  });
+
   group('downloadTarget', () {
     test('sends a URL without credentials unchanged', () {
       final target = downloadTarget('https://example.com/a.yaml?x=1');

@@ -16,12 +16,21 @@ class GlobalState {
   static GlobalState? _instance;
   GlobalKey<NavigatorState> get navigatorKey => rootNavigatorKey;
   late String appEnv;
+
+  /// The `v*` tag CI built this binary for; empty for local builds.
+  String releaseTag = const String.fromEnvironment('APP_RELEASE_TAG');
+
   late PackageInfo packageInfo;
   late Measure measure;
   late ProviderContainer container;
   bool needInitStatus = true;
 
   bool get isPre => appEnv != 'stable';
+
+  /// Unlike [PackageInfo.version], keeps the pre-release suffix of a beta build.
+  String get appVersion => releaseTag.isEmpty
+      ? packageInfo.version
+      : releaseTag.replaceFirst('v', '');
 
   bool get canCrashCore => canCrashCoreFor(isDebug: kDebugMode, appEnv: appEnv);
 
@@ -123,7 +132,7 @@ class GlobalState {
         dialogs.showNotifier(message, level: MessageLevel.error);
       } else {
         unawaited(
-          dialogs.showMessage(
+          dialogs.showAlert(
             title: title ?? currentAppLocalizations.tip,
             message: TextSpan(text: message),
           ),
