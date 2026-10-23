@@ -28,6 +28,15 @@ class CommonAction extends _$CommonAction {
         .update((state) => state.copyWith(showTrayTitle: !state.showTrayTitle));
   }
 
+  void updateMonochromeTrayIcon() {
+    ref
+        .read(appSettingProvider.notifier)
+        .update(
+          (state) =>
+              state.copyWith(monochromeTrayIcon: !state.monochromeTrayIcon),
+        );
+  }
+
   void updateMode() {
     ref.read(patchClashConfigProvider.notifier).update((state) {
       final index = Mode.values.indexWhere((item) => item == state.mode);
@@ -137,10 +146,9 @@ class CommonAction extends _$CommonAction {
     final context = globalState.navigatorKey.currentContext;
     if (context == null) return;
     unawaited(
-      dialogs.showMessage(
+      dialogs.showAlert(
         title: currentAppLocalizations.discoverNewVersion,
         message: _releaseSpan(context, tag, body),
-        cancelable: false,
       ),
     );
   }
@@ -152,7 +160,7 @@ class CommonAction extends _$CommonAction {
     if (data == null) {
       if (isUser) {
         unawaited(
-          dialogs.showMessage(
+          dialogs.showAlert(
             title: currentAppLocalizations.checkUpdate,
             message: TextSpan(text: currentAppLocalizations.checkUpdateError),
           ),

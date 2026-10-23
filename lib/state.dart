@@ -16,6 +16,7 @@ class GlobalState {
   static GlobalState? _instance;
   GlobalKey<NavigatorState> get navigatorKey => rootNavigatorKey;
   late String appEnv;
+
   late PackageInfo packageInfo;
   late Measure measure;
   late ProviderContainer container;
@@ -123,7 +124,7 @@ class GlobalState {
         dialogs.showNotifier(message, level: MessageLevel.error);
       } else {
         unawaited(
-          dialogs.showMessage(
+          dialogs.showAlert(
             title: title ?? currentAppLocalizations.tip,
             message: TextSpan(text: message),
           ),

@@ -57,6 +57,10 @@ class LiquidGlassHost extends StatelessWidget {
   @visibleForTesting
   static bool? debugCarryBandsOverride;
 
+  /// How many panes hold a capture, under a host or not.
+  @visibleForTesting
+  static int get debugHeldCaptures => _LiquidGlassLayer._capturesHeld;
+
   @override
   Widget build(BuildContext context) {
     return _LiquidGlassHostBox(
@@ -113,15 +117,26 @@ class _RenderLiquidGlassFade extends RenderProxyBox {
       return;
     }
     if (attached) {
-      _opacity.removeListener(markNeedsPaint);
-      value.addListener(markNeedsPaint);
+      _opacity.removeListener(_handleOpacity);
+      value.addListener(_handleOpacity);
     }
     _opacity = value;
-    markNeedsPaint();
+    _handleOpacity();
   }
 
   int get _alpha =>
       ui.Color.getAlphaFromOpacity(_opacity.value.clamp(0.0, 1.0));
+
+  late bool _visible = _alpha != 0;
+
+  void _handleOpacity() {
+    markNeedsPaint();
+    final visible = _alpha != 0;
+    if (visible != _visible) {
+      _visible = visible;
+      markNeedsSemanticsUpdate();
+    }
+  }
 
   @override
   bool get alwaysNeedsCompositing => child != null;
@@ -129,12 +144,13 @@ class _RenderLiquidGlassFade extends RenderProxyBox {
   @override
   void attach(PipelineOwner owner) {
     super.attach(owner);
-    _opacity.addListener(markNeedsPaint);
+    _opacity.addListener(_handleOpacity);
+    _handleOpacity();
   }
 
   @override
   void detach() {
-    _opacity.removeListener(markNeedsPaint);
+    _opacity.removeListener(_handleOpacity);
     super.detach();
   }
 
@@ -160,7 +176,7 @@ class _RenderLiquidGlassFade extends RenderProxyBox {
 
   @override
   void visitChildrenForSemantics(RenderObjectVisitor visitor) {
-    if (_alpha != 0) {
+    if (_visible) {
       super.visitChildrenForSemantics(visitor);
     }
   }
@@ -282,6 +298,10 @@ class _LiquidGlassHostLayer extends ContainerLayer {
 
   final _atlases = <({ui.Image image, List<_Band> bands})>[];
 
+  // A pane that leaves the tree but lives on, as under a route that covers it,
+  // would hold the atlas it last drew from until it painted again.
+  var _panes = <_LiquidGlassLayer>{};
+
   @override
   void addToScene(ui.SceneBuilder builder) {
     _capture();
@@ -290,6 +310,10 @@ class _LiquidGlassHostLayer extends ContainerLayer {
 
   @override
   void dispose() {
+    for (final pane in _panes) {
+      pane._dropCaptured();
+    }
+    _panes = {};
     for (final atlas in _atlases) {
       atlas.image.dispose();
     }
@@ -297,12 +321,18 @@ class _LiquidGlassHostLayer extends ContainerLayer {
     super.dispose();
   }
 
-  /// A pane over one painted before it in the same root sits a level above
-  /// it, and reads a capture with that one drawn as glass.
+  /// A pane over one painted before it in the same root, but for one of its
+  /// own group, sits a level above it, and reads a capture with that one drawn
+  /// as glass.
   void _capture() {
     _pass++;
     final found = <_Behind>[];
     _gather(this, Matrix4.identity(), this, Matrix4.identity(), [], found);
+    final panes = {for (final entry in found) entry.pane};
+    for (final pane in _panes.difference(panes)) {
+      pane._dropCaptured();
+    }
+    _panes = panes;
     final placed = <_Behind>[];
     for (final entry in found) {
       if (_place(entry)) {
@@ -319,9 +349,11 @@ class _LiquidGlassHostLayer extends ContainerLayer {
     }
     var levels = 0;
     for (final (index, entry) in placed.indexed) {
+      final group = entry.pane.group;
       for (final before in placed.take(index)) {
         if ((identical(entry.root, this) ||
                 before.ancestors.contains(entry.root)) &&
+            (group == null || !identical(before.pane.group, group)) &&
             before.device.overlaps(entry.reach)) {
           entry.level = math.max(entry.level, before.level + 1);
         }
@@ -522,7 +554,14 @@ class _LiquidGlassHostLayer extends ContainerLayer {
       final sigma = entries.first.blurSigma;
       final drawn = <Object?>[sigma, rect.size];
       final recorder = ui.PictureRecorder();
-      final canvas = Canvas(recorder);
+      // Impeller scales a wide blur to what its layer covers (architecture.md).
+      final canvas = Canvas(recorder)
+        ..drawRect(
+          Offset.zero & rect.size,
+          Paint()
+            ..color = Colors.transparent
+            ..blendMode = BlendMode.src,
+        );
       for (final entry in entries) {
         final place = entry.place.shift(-rect.topLeft);
         drawn
@@ -848,8 +887,29 @@ class _Replay {
     while (_saves.length < _entered.length) {
       _saves.add(_apply(_entered[_saves.length]));
     }
-    canvas.drawPicture(picture);
+    final shift = _wholeTexelShift();
+    canvas
+      ..save()
+      ..translate(shift.dx, shift.dy)
+      ..drawPicture(picture)
+      ..restore();
     drawn.add(picture);
+  }
+
+  Offset _wholeTexelShift() {
+    final m = _toHost.last.storage;
+    if (m[1] != 0 || m[4] != 0 || m[3] != 0 || m[7] != 0) {
+      return Offset.zero;
+    }
+    final scale = entry.texelsPerDp;
+    double by(double translation, double stretch) {
+      final texels = translation * scale;
+      return stretch == 0
+          ? 0
+          : (texels.roundToDouble() - texels) / (scale * stretch);
+    }
+
+    return Offset(by(m[12], m[0]), by(m[13], m[5]));
   }
 
   int _apply((ContainerLayer, Matrix4?, bool) entered) {
