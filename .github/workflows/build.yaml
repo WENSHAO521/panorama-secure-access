@@ -523,7 +523,7 @@ jobs:
           if [[ "$IS_STABLE" == 'true' ]]; then
             target=(--tag "$TAG")
           else
-            dart run tool/changelog.dart build --unreleased
+            dart run tool/changelog.dart build --unreleased --version "${TAG#v}"
           fi
           dart run tool/changelog.dart render release "${target[@]}" --out release.md
 
