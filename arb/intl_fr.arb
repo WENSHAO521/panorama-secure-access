@@ -62,6 +62,7 @@
   "logcat": "Logcat",
   "logcatDesc": "Désactiver Logcat masque l’entrée Journaux.",
   "autoCheckUpdate": "Rechercher les mises à jour automatiquement",
+  "betaUpdates": "Rejoindre la bêta",
   "checkCertificate": "Vérifier les certificats TLS",
   "checkCertificateDesc": "Sans vérification TLS, les abonnements et les sauvegardes sont exposés aux attaques de l’homme du milieu.",
   "accessControl": "Contrôle d’accès",

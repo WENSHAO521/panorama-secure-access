@@ -510,6 +510,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Join the beta`
+  String get betaUpdates {
+    return Intl.message(
+      'Join the beta',
+      name: 'betaUpdates',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Verify TLS certificates`
   String get checkCertificate {
     return Intl.message(

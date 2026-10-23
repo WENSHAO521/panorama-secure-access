@@ -62,6 +62,7 @@
   "logcat": "日志捕获",
   "logcatDesc": "关闭日志捕获会隐藏日志入口。",
   "autoCheckUpdate": "自动检查更新",
+  "betaUpdates": "加入测试版",
   "checkCertificate": "校验 TLS 证书",
   "checkCertificateDesc": "关闭证书校验后，订阅和备份可能遭中间人攻击。",
   "accessControl": "访问控制",

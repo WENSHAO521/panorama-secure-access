@@ -83,10 +83,11 @@ class CommonAction extends _$CommonAction {
   }
 
   Future<bool> autoCheckUpdate() async {
-    if (!ref.read(appSettingProvider).autoCheckUpdate) return false;
+    final settings = ref.read(appSettingProvider);
+    if (!settings.autoCheckUpdate) return false;
     final Map<String, dynamic>? res;
     try {
-      res = await request.checkForUpdate();
+      res = await request.checkForUpdate(beta: settings.betaUpdates);
     } catch (error) {
       commonPrint.log(
         'checkForUpdate failed: ${compactError(error)}',
@@ -185,7 +186,12 @@ class CommonAction extends _$CommonAction {
     final offered = await updates.offer(data, download: download);
     if (!offered && isUser) {
       unawaited(
-        launchUrl(Uri.parse('https://github.com/$repository/releases/latest')),
+        launchUrl(
+          Uri.parse(
+            data['html_url'] as String? ??
+                'https://github.com/$repository/releases/latest',
+          ),
+        ),
       );
     }
   }

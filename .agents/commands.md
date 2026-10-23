@@ -321,7 +321,11 @@ new hook script needs only its test file next to it, not a workflow step.
 
 Run `flutter analyze --no-fatal-infos` before committing; CI runs the same command and fails on a warning or error.
 
-Release builds run only for `v*` tag pushes; pull requests trigger nothing.
+Release builds run only for `v*` tag pushes and pushes to the `beta` branch; pull requests trigger nothing.
+A tag with a `-` and every `beta` push publish a GitHub pre-release, which only installs that turned on the beta
+channel are offered. `tool/release_tag.sh` names a `beta` build `vX.Y.Z-beta.N`, with X.Y.Z one patch past
+`pubspec.yaml` once that version is released, and `setup.dart --release-tag` builds the tag into the app as
+`APP_RELEASE_TAG` so it compares as a pre-release and gives way to the stable release of its version.
 Root analysis excludes `plugins/**`, and root tests do not discover nested
 plugin packages, so parallel jobs validate the rest from their own package
 directories: `plugins` (local Flutter packages and the setup build tool), `go`

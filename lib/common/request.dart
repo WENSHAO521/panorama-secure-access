@@ -108,13 +108,54 @@ class Request {
   }
 
   /// Null when this build is current; throws when GitHub cannot be asked.
-  Future<Map<String, dynamic>?> checkForUpdate() async {
-    final release = await latestRelease();
+  /// With [beta], a stable release at least as new as a beta still wins.
+  Future<Map<String, dynamic>?> checkForUpdate({bool beta = false}) async {
+    final release = beta ? await newestRelease() : await latestRelease();
     final remoteVersion = release['tag_name'] as String;
-    final version = globalState.packageInfo.version;
     final hasUpdate =
-        compareVersions(remoteVersion.replaceAll('v', ''), version) > 0;
+        compareVersions(
+          remoteVersion.replaceFirst('v', ''),
+          globalState.appVersion,
+        ) >
+        0;
     return hasUpdate ? release : null;
+  }
+
+  @visibleForTesting
+  Future<Map<String, dynamic>> newestRelease() async {
+    final List<dynamic> releases;
+    try {
+      final response = await dio.get<List<dynamic>>(
+        'https://api.github.com/repos/$repository/releases',
+        queryParameters: {'per_page': 20},
+        options: Options(responseType: ResponseType.json),
+      );
+      releases = response.data!;
+    } on DioException catch (error) {
+      commonPrint.log(
+        'release list API failed: ${compactError(error)}',
+        logLevel: LogLevel.warning,
+      );
+      return latestRelease();
+    }
+    Map<String, dynamic>? newest;
+    for (final release in releases.whereType<Map<String, dynamic>>()) {
+      final tag = release['tag_name'];
+      if (release['draft'] == true || tag is! String) continue;
+      try {
+        if (newest == null ||
+            compareVersions(
+                  tag.replaceFirst('v', ''),
+                  (newest['tag_name'] as String).replaceFirst('v', ''),
+                ) >
+                0) {
+          newest = release;
+        }
+      } on FormatException {
+        continue;
+      }
+    }
+    return newest ?? latestRelease();
   }
 
   /// The release page redirect still answers once the hourly API quota is spent.
