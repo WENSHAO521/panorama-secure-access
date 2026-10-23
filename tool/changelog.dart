@@ -17,13 +17,16 @@ Future<void> main(List<String> arguments) async {
     ..addOption('version', help: 'Version being released, without the v.')
     ..addOption('date', help: 'Release date, defaults to today.');
 
-  parser
-      .addCommand('build')
-      .addFlag(
-        'unreleased',
-        negatable: false,
-        help: 'Include commits made after the newest stable tag.',
-      );
+  parser.addCommand('build')
+    ..addFlag(
+      'unreleased',
+      negatable: false,
+      help: 'Include commits made after the newest stable tag.',
+    )
+    ..addOption(
+      'version',
+      help: 'Version of the unreleased build, defaults to pubspec.yaml.',
+    );
 
   parser.addCommand('render')
     ..addOption('tag', help: 'Version tag to render, defaults to the newest.')
@@ -79,7 +82,7 @@ int _build(String root, ArgResults command) {
   PendingVersion? pending;
   if (unreleased) {
     pending = PendingVersion(
-      version: readPubspecVersion(pubspec),
+      version: command.option('version') ?? readPubspecVersion(pubspec),
       date: today(),
       prerelease: true,
     );
@@ -271,7 +274,7 @@ Usage: dart run tool/changelog.dart <command> [options]
 
 Commands:
   release --version X   Rewrite CHANGELOG.md and changelog.json.
-  build [--unreleased]  Rewrite changelog.json only.
+  build [--unreleased [--version <v>]]  Rewrite changelog.json only.
   render <release|telegram> [--tag vX] [--out file]
   verify                Check the committed changelog against git.
 
