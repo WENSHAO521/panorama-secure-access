@@ -395,11 +395,6 @@ class GeneralView extends ConsumerWidget {
         select: (state) => state.autoCheckUpdate,
         update: (state, value) => state.copyWith(autoCheckUpdate: value),
       ),
-      _appSettingToggle(
-        title: (l) => l.betaUpdates,
-        select: (state) => state.betaUpdates,
-        update: (state, value) => state.copyWith(betaUpdates: value),
-      ),
     ];
   }
 

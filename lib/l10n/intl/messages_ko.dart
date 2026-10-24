@@ -330,6 +330,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "batteryOptimizationDesc": MessageLookupByLibrary.simpleMessage(
       "배터리 최적화를 무시하면 앱이 백그라운드에서 계속 실행됩니다.",
     ),
+    "betaChannel": MessageLookupByLibrary.simpleMessage("베타"),
+    "betaJoinedTip": MessageLookupByLibrary.simpleMessage("베타 업데이트를 받습니다"),
+    "betaNotJoinedTip": MessageLookupByLibrary.simpleMessage("정식 업데이트만 받습니다"),
+    "betaProgram": MessageLookupByLibrary.simpleMessage("베타 프로그램"),
+    "betaProgramDesc": MessageLookupByLibrary.simpleMessage(
+      "정식 출시 전의 새 기능을 먼저 사용해 보고 문제를 일찍 찾는 데 도움을 주세요. 베타 버전은 정식 버전보다 불안정할 수 있습니다.",
+    ),
+    "betaProgramFooter": MessageLookupByLibrary.simpleMessage(
+      "베타가 끝나고 같은 버전 이상의 정식 버전이 출시되면 앱이 자동으로 정식 버전으로 업데이트됩니다. 언제든지 나갈 수 있으며, 나간 뒤에도 해당 정식 버전이 나올 때까지 현재 베타 버전을 계속 사용합니다.",
+    ),
     "betaUpdates": MessageLookupByLibrary.simpleMessage("베타 참여"),
     "bind": MessageLookupByLibrary.simpleMessage("연결"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("블랙리스트 모드"),
@@ -447,6 +457,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "currentOutboundDesc": MessageLookupByLibrary.simpleMessage(
       "시작 버튼이 있어 제거할 수 없습니다",
     ),
+    "currentVersion": MessageLookupByLibrary.simpleMessage("현재 버전"),
     "custom": MessageLookupByLibrary.simpleMessage("사용자 지정"),
     "customColor": MessageLookupByLibrary.simpleMessage("사용자 지정 색상"),
     "customImportDroppedSubRules": m8,
@@ -1495,6 +1506,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "분할 전략을 입력하세요",
     ),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("SSID가 비어 있습니다"),
+    "stableChannel": MessageLookupByLibrary.simpleMessage("정식"),
     "stackMode": MessageLookupByLibrary.simpleMessage("스택 모드"),
     "stackTrace": MessageLookupByLibrary.simpleMessage("스택 트레이스"),
     "standard": MessageLookupByLibrary.simpleMessage("표준"),
