@@ -405,6 +405,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "batteryOptimizationDesc": MessageLookupByLibrary.simpleMessage(
       "Игнорирование оптимизации батареи позволяет приложению работать в фоне.",
     ),
+    "betaChannel": MessageLookupByLibrary.simpleMessage("Бета"),
+    "betaJoinedTip": MessageLookupByLibrary.simpleMessage(
+      "Вы получаете бета-обновления",
+    ),
+    "betaNotJoinedTip": MessageLookupByLibrary.simpleMessage(
+      "Вы получаете только стабильные обновления",
+    ),
+    "betaProgram": MessageLookupByLibrary.simpleMessage("Бета-программа"),
+    "betaProgramDesc": MessageLookupByLibrary.simpleMessage(
+      "Пробуйте новые функции до релиза и помогайте находить проблемы заранее. Бета-версии могут быть менее стабильны, чем стабильные релизы.",
+    ),
+    "betaProgramFooter": MessageLookupByLibrary.simpleMessage(
+      "Когда бета закончится и выйдет стабильный релиз той же или более новой версии, приложение обновится до него автоматически. Выйти можно в любой момент: текущая бета останется до выхода этого стабильного релиза, затем приложение вернётся на него.",
+    ),
     "betaUpdates": MessageLookupByLibrary.simpleMessage(
       "Участвовать в бета-тестировании",
     ),
@@ -560,6 +574,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "currentOutboundDesc": MessageLookupByLibrary.simpleMessage(
       "Содержит кнопку запуска, удалить нельзя",
     ),
+    "currentVersion": MessageLookupByLibrary.simpleMessage("Текущая версия"),
     "custom": MessageLookupByLibrary.simpleMessage("Вручную"),
     "customColor": MessageLookupByLibrary.simpleMessage("Свой цвет"),
     "customImportDroppedSubRules": m8,
@@ -1005,9 +1020,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Введите содержимое правила",
     ),
     "installNow": MessageLookupByLibrary.simpleMessage("Установить"),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -1861,6 +1877,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Стратегия распределения не может быть пустой",
     ),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("Список SSID пуст"),
+    "stableChannel": MessageLookupByLibrary.simpleMessage("Стабильная"),
     "stackMode": MessageLookupByLibrary.simpleMessage("Режим стека"),
     "stackTrace": MessageLookupByLibrary.simpleMessage("Трассировка стека"),
     "standard": MessageLookupByLibrary.simpleMessage("Стандартный"),

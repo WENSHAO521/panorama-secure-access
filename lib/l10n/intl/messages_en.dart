@@ -393,6 +393,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "batteryOptimizationDesc": MessageLookupByLibrary.simpleMessage(
       "Ignore battery optimization keeps the app running in the background.",
     ),
+    "betaChannel": MessageLookupByLibrary.simpleMessage("Beta"),
+    "betaJoinedTip": MessageLookupByLibrary.simpleMessage(
+      "You receive beta updates",
+    ),
+    "betaNotJoinedTip": MessageLookupByLibrary.simpleMessage(
+      "You receive stable updates only",
+    ),
+    "betaProgram": MessageLookupByLibrary.simpleMessage("Beta program"),
+    "betaProgramDesc": MessageLookupByLibrary.simpleMessage(
+      "Try new features before they are released and help find problems early. Beta builds can be less stable than stable releases.",
+    ),
+    "betaProgramFooter": MessageLookupByLibrary.simpleMessage(
+      "When the beta ends and a stable release of the same or a newer version ships, the app updates to it automatically. You can leave at any time: you keep the current beta until that stable release is out, then return to it.",
+    ),
     "betaUpdates": MessageLookupByLibrary.simpleMessage("Join the beta"),
     "bind": MessageLookupByLibrary.simpleMessage("Bind"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("Blacklist mode"),
@@ -538,6 +552,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "currentOutboundDesc": MessageLookupByLibrary.simpleMessage(
       "Holds the start button and can\'t be removed",
     ),
+    "currentVersion": MessageLookupByLibrary.simpleMessage("Current version"),
     "custom": MessageLookupByLibrary.simpleMessage("Custom"),
     "customColor": MessageLookupByLibrary.simpleMessage("Custom color"),
     "customImportDroppedSubRules": m8,
@@ -971,9 +986,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Enter the rule content",
     ),
     "installNow": MessageLookupByLibrary.simpleMessage("Install now"),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "This system hides the installed app list until the permission is granted. Authorize it to configure the per-app proxy.",
     ),
@@ -1777,6 +1793,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Split strategy cannot be empty",
     ),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("SSIDs are empty"),
+    "stableChannel": MessageLookupByLibrary.simpleMessage("Stable"),
     "stackMode": MessageLookupByLibrary.simpleMessage("Stack mode"),
     "stackTrace": MessageLookupByLibrary.simpleMessage("Stack trace"),
     "standard": MessageLookupByLibrary.simpleMessage("Standard"),

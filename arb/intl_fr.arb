@@ -977,5 +977,13 @@
   "preferred": "Préféré",
   "addToLocalProxies": "Ajouter aux proxys locaux",
   "addedToLocalProxies": "{name} ajouté aux proxys locaux",
-  "alreadyInLocalProxies": "{name} est déjà dans les proxys locaux"
+  "alreadyInLocalProxies": "{name} est déjà dans les proxys locaux",
+  "betaProgram": "Programme bêta",
+  "betaProgramDesc": "Essayez les nouvelles fonctionnalités avant leur sortie et aidez à repérer les problèmes tôt. Les versions bêta peuvent être moins stables que les versions stables.",
+  "betaJoinedTip": "Vous recevez les mises à jour bêta",
+  "betaNotJoinedTip": "Vous recevez uniquement les mises à jour stables",
+  "betaProgramFooter": "Quand la bêta se termine et qu'une version stable identique ou plus récente sort, l'application s'y met à jour automatiquement. Vous pouvez quitter à tout moment : vous gardez la bêta actuelle jusqu'à la sortie de cette version stable, puis vous y revenez.",
+  "currentVersion": "Version actuelle",
+  "betaChannel": "Bêta",
+  "stableChannel": "Stable"
 }

@@ -977,5 +977,13 @@
   "preferred": "首选",
   "addToLocalProxies": "添加到本地代理",
   "addedToLocalProxies": "已将 {name} 添加到本地代理",
-  "alreadyInLocalProxies": "本地代理中已有 {name}"
+  "alreadyInLocalProxies": "本地代理中已有 {name}",
+  "betaProgram": "测试版计划",
+  "betaProgramDesc": "抢先体验尚未正式发布的新功能，并帮助我们提前发现问题。测试版可能不如正式版稳定。",
+  "betaJoinedTip": "你会收到测试版更新",
+  "betaNotJoinedTip": "你只会收到正式版更新",
+  "betaProgramFooter": "测试版结束、同版本或更新的正式版发布后，应用会自动更新到正式版。你可以随时退出：退出后会继续使用当前测试版，直到该正式版发布再更新回正式版。",
+  "currentVersion": "当前版本",
+  "betaChannel": "测试版",
+  "stableChannel": "正式版"
 }

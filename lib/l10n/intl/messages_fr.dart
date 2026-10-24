@@ -419,6 +419,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "batteryOptimizationDesc": MessageLookupByLibrary.simpleMessage(
       "Ignorer l’optimisation de la batterie maintient l’app active en arrière-plan.",
     ),
+    "betaChannel": MessageLookupByLibrary.simpleMessage("Bêta"),
+    "betaJoinedTip": MessageLookupByLibrary.simpleMessage(
+      "Vous recevez les mises à jour bêta",
+    ),
+    "betaNotJoinedTip": MessageLookupByLibrary.simpleMessage(
+      "Vous recevez uniquement les mises à jour stables",
+    ),
+    "betaProgram": MessageLookupByLibrary.simpleMessage("Programme bêta"),
+    "betaProgramDesc": MessageLookupByLibrary.simpleMessage(
+      "Essayez les nouvelles fonctionnalités avant leur sortie et aidez à repérer les problèmes tôt. Les versions bêta peuvent être moins stables que les versions stables.",
+    ),
+    "betaProgramFooter": MessageLookupByLibrary.simpleMessage(
+      "Quand la bêta se termine et qu\'une version stable identique ou plus récente sort, l\'application s\'y met à jour automatiquement. Vous pouvez quitter à tout moment : vous gardez la bêta actuelle jusqu\'à la sortie de cette version stable, puis vous y revenez.",
+    ),
     "betaUpdates": MessageLookupByLibrary.simpleMessage("Rejoindre la bêta"),
     "bind": MessageLookupByLibrary.simpleMessage("Lier"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("Mode liste noire"),
@@ -580,6 +594,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "currentOutboundDesc": MessageLookupByLibrary.simpleMessage(
       "Contient le bouton de démarrage et ne peut pas être retiré",
     ),
+    "currentVersion": MessageLookupByLibrary.simpleMessage("Version actuelle"),
     "custom": MessageLookupByLibrary.simpleMessage("Personnalisé"),
     "customColor": MessageLookupByLibrary.simpleMessage(
       "Couleur personnalisée",
@@ -1037,9 +1052,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Saisissez le contenu de la règle",
     ),
     "installNow": MessageLookupByLibrary.simpleMessage("Installer"),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "L’autorisation de la liste des apps a été refusée ; les apps installées ne peuvent donc pas être listées. Veuillez l’accorder manuellement dans les réglages du système.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "L’autorisation de la liste des apps a été refusée ; les apps installées ne peuvent donc pas être listées. Veuillez l’accorder manuellement dans les réglages du système.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Ce système masque la liste des apps installées tant que l’autorisation n’est pas accordée. Accordez-la pour configurer le proxy par app.",
     ),
@@ -1921,6 +1937,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "La stratégie de répartition ne peut pas être vide",
     ),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("Les SSID sont vides"),
+    "stableChannel": MessageLookupByLibrary.simpleMessage("Stable"),
     "stackMode": MessageLookupByLibrary.simpleMessage("Mode de pile"),
     "stackTrace": MessageLookupByLibrary.simpleMessage("Trace de pile"),
     "standard": MessageLookupByLibrary.simpleMessage("Standard"),
