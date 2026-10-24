@@ -321,7 +321,9 @@ new hook script needs only its test file next to it, not a workflow step.
 
 Run `flutter analyze --no-fatal-infos` before committing; CI runs the same command and fails on a warning or error.
 
-Release builds run only for `v*` tag pushes and pushes to the `beta` branch; pull requests trigger nothing.
+Release builds run only for `v*` tag pushes, pushes to the `beta` branch, and pushes to `main` whose pubspec version
+has a `changelog.json` entry but no tag yet; pull requests trigger nothing. That last case lets a merged
+`chore(release)` PR publish the stable release without anyone pushing a tag; the release step creates the tag.
 A tag with a `-` and every `beta` push publish a GitHub pre-release, which only installs that turned on the beta
 channel are offered. `tool/release_tag.sh` names a `beta` build `vX.Y.Z-beta.N`, with X.Y.Z one patch past
 `pubspec.yaml` once that version is released, and `setup.dart --release-tag` builds the tag into the app as
