@@ -10,15 +10,23 @@ import 'package:flutter_test/flutter_test.dart';
 import '../helpers/glyph_finders.dart';
 import '../helpers/test_app.dart';
 
-Future<void> _sendFind(WidgetTester tester) async {
+Future<void> _sendFind(WidgetTester tester, {bool settle = true}) async {
   final modifier = controlSingleActivator(LogicalKeyboardKey.keyF).meta
       ? LogicalKeyboardKey.metaLeft
       : LogicalKeyboardKey.controlLeft;
   await tester.sendKeyDownEvent(modifier);
   await tester.sendKeyEvent(LogicalKeyboardKey.keyF);
   await tester.sendKeyUpEvent(modifier);
-  await tester.pumpAndSettle();
+  if (settle) {
+    await tester.pumpAndSettle();
+  }
 }
+
+double _opacityAbove(WidgetTester tester, Finder finder) => tester
+    .widget<Opacity>(
+      find.ancestor(of: finder, matching: find.byType(Opacity)).first,
+    )
+    .opacity;
 
 Widget _page({
   ValueChanged<String>? onSearch,
@@ -234,7 +242,7 @@ void main() {
 
       await tester.tap(find.byTooltip('Cancel'));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pump(const Duration(milliseconds: 400));
 
       expect(tester.binding.hasScheduledFrame, isTrue);
       expect(
@@ -247,6 +255,172 @@ void main() {
       await tester.pumpAndSettle();
     },
   );
+
+  testWidgets('a bar field reopened as it starts to close comes to rest', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      TestApp(wrapInProviderScope: true, child: _page(onSearch: (_) {})),
+    );
+    await tester.tap(find.byGlyph(AppGlyphs.search));
+    await tester.pumpAndSettle();
+    final field = find.ancestor(
+      of: find.byType(TextField),
+      matching: find.byType(GooPane),
+    );
+    final open = tester.getRect(field);
+
+    await tester.tap(find.byTooltip('Cancel'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 16));
+    await _sendFind(tester, settle: false);
+    await tester.pumpAndSettle(const Duration(milliseconds: 16));
+
+    expect(tester.getRect(field), open);
+  });
+
+  testWidgets('an opening bar field shows its contents only once it grows', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      TestApp(wrapInProviderScope: true, child: _page(onSearch: (_) {})),
+    );
+    await tester.tap(find.byGlyph(AppGlyphs.search));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 60));
+
+    expect(_opacityAbove(tester, find.byType(TextField)), 0);
+    await tester.pumpAndSettle();
+    expect(_opacityAbove(tester, find.byType(TextField)), 1);
+  });
+
+  testWidgets('a closing bar search gives its group the search glyph last', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      TestApp(
+        wrapInProviderScope: true,
+        child: CommonScaffold(
+          title: 'Page',
+          searchState: AppBarSearchState(onSearch: (_) {}),
+          iconActions: [IconButtonData(glyph: AppGlyphs.add, onPressed: () {})],
+          body: const SizedBox.expand(),
+        ),
+      ),
+    );
+    await tester.tap(find.byGlyph(AppGlyphs.search));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Cancel'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 280));
+
+    expect(find.text('Page'), findsOneWidget);
+    expect(_opacityAbove(tester, find.byGlyph(AppGlyphs.search)), 0);
+    await tester.pumpAndSettle();
+    expect(_opacityAbove(tester, find.byGlyph(AppGlyphs.search)), 1);
+  });
+
+  testWidgets('a bar field on a pushed page closes into its back button', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      TestApp(
+        wrapInProviderScope: true,
+        child: Builder(
+          builder: (context) => TextButton(
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => CommonScaffold(
+                  title: 'Page',
+                  searchInBar: true,
+                  searchState: AppBarSearchState(onSearch: (_) {}),
+                  body: const SizedBox.expand(),
+                ),
+              ),
+            ),
+            child: const Text('open'),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+    final back = tester.getRect(find.byTooltip('Back'));
+    await tester.tap(find.byGlyph(AppGlyphs.search));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Cancel'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 240));
+
+    final field = find.ancestor(
+      of: find.byType(TextField),
+      matching: find.byType(GooPane),
+    );
+    expect(back.contains(tester.getCenter(field)), isTrue);
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets(
+    'a lone search button re-forms out of a droplet that overshoots',
+    (tester) async {
+      await tester.pumpWidget(
+        TestApp(wrapInProviderScope: true, child: _page(onSearch: (_) {})),
+      );
+      final button = find.byTooltip('Search');
+      final rest = tester.getRect(button);
+      await tester.tap(button);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip('Cancel'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 150));
+
+      final droplet = tester.getRect(button);
+      expect(droplet.width, lessThan(rest.width / 2));
+      expect(droplet.center.dx, greaterThan(rest.center.dx));
+      await tester.pumpAndSettle();
+      expect(tester.getRect(button), rest);
+    },
+  );
+
+  testWidgets('a lone desktop search button swells once the field is in', (
+    tester,
+  ) async {
+    const view = Size(1200, 800);
+    tester.view.physicalSize = view;
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      TestApp(
+        overrides: [viewSizeProvider.overrideWithBuild((_, _) => view)],
+        child: _page(onSearch: (_) {}),
+      ),
+    );
+    final rest = tester.getRect(find.byTooltip('Search'));
+    await tester.tap(find.byTooltip('Search'));
+    await tester.pumpAndSettle();
+    final field = find.ancestor(
+      of: find.byType(TextField),
+      matching: find.byType(GooPane),
+    );
+
+    FocusManager.instance.primaryFocus?.unfocus();
+    // The field folds back once the focus change lands, a frame on.
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+    expect(tester.getRect(field).height, rest.height);
+
+    await tester.pump(const Duration(milliseconds: 260));
+    expect(tester.getRect(field).height, greaterThan(rest.height * 1.15));
+    expect(
+      tester.getCenter(field).dx,
+      moreOrLessEquals(rest.center.dx, epsilon: 1),
+    );
+    await tester.pumpAndSettle();
+  });
 
   testWidgets('a desktop bar folds its search back once left empty', (
     tester,

@@ -255,11 +255,6 @@ class AppLocalizations {
     );
   }
 
-  /// `Check`
-  String get serviceCheck {
-    return Intl.message('Check', name: 'serviceCheck', desc: '', args: []);
-  }
-
   /// `Check all`
   String get serviceCheckAll {
     return Intl.message(
@@ -267,16 +262,6 @@ class AppLocalizations {
       name: 'serviceCheckAll',
       desc: '',
       args: [],
-    );
-  }
-
-  /// `Checked at {time}`
-  String serviceCheckedAt(Object time) {
-    return Intl.message(
-      'Checked at $time',
-      name: 'serviceCheckedAt',
-      desc: '',
-      args: [time],
     );
   }
 
@@ -620,29 +605,9 @@ class AppLocalizations {
     return Intl.message('Link', name: 'link', desc: '', args: []);
   }
 
-  /// `Obtain a profile from a subscription link or a proxy share link`
-  String get linkDesc {
-    return Intl.message(
-      'Obtain a profile from a subscription link or a proxy share link',
-      name: 'linkDesc',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `File`
   String get file {
     return Intl.message('File', name: 'file', desc: '', args: []);
-  }
-
-  /// `Upload a profile file directly`
-  String get fileDesc {
-    return Intl.message(
-      'Upload a profile file directly',
-      name: 'fileDesc',
-      desc: '',
-      args: [],
-    );
   }
 
   /// `Name`
@@ -765,16 +730,6 @@ class AppLocalizations {
     return Intl.message(
       'Send from phone',
       name: 'sendFromPhone',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Scan with your phone and send a link to this device`
-  String get sendFromPhoneDesc {
-    return Intl.message(
-      'Scan with your phone and send a link to this device',
-      name: 'sendFromPhoneDesc',
       desc: '',
       args: [],
     );
@@ -3436,6 +3391,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Apply now`
+  String get applyNow {
+    return Intl.message('Apply now', name: 'applyNow', desc: '', args: []);
+  }
+
+  /// `Applied`
+  String get applied {
+    return Intl.message('Applied', name: 'applied', desc: '', args: []);
+  }
+
   /// `Can't save`
   String get cannotSave {
     return Intl.message('Can\'t save', name: 'cannotSave', desc: '', args: []);
@@ -4584,16 +4549,6 @@ class AppLocalizations {
   /// `Custom`
   String get customProfile {
     return Intl.message('Custom', name: 'customProfile', desc: '', args: []);
-  }
-
-  /// `Assemble proxy groups and rules from app proxies and other profiles`
-  String get customProfileDesc {
-    return Intl.message(
-      'Assemble proxy groups and rules from app proxies and other profiles',
-      name: 'customProfileDesc',
-      desc: '',
-      args: [],
-    );
   }
 
   /// `Custom profile resources`
@@ -7224,6 +7179,16 @@ class AppLocalizations {
     return Intl.message(
       'Entries added here replace the TUN settings of every profile; anything not added keeps the profile\'s own setting. Entries a custom profile adds itself take precedence.',
       name: 'tunOverrideDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Entries added here replace the setting of every profile; anything not added keeps the profile's own setting, or the core default when the profile has none.`
+  String get generalOverrideDesc {
+    return Intl.message(
+      'Entries added here replace the setting of every profile; anything not added keeps the profile\'s own setting, or the core default when the profile has none.',
+      name: 'generalOverrideDesc',
       desc: '',
       args: [],
     );

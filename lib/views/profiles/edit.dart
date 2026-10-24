@@ -367,7 +367,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
             body: Builder(
               builder: (context) => ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
-                  top: context.contentTopPadding,
+                  top: context.sectionsTopPadding,
                   bottom: context.bottomInset + 16,
                 ),
                 children: [

@@ -324,7 +324,7 @@ class _CustomProfileViewState extends ConsumerState<CustomProfileView> {
               child: CustomScrollView(
                 slivers: [
                   SliverToBoxAdapter(
-                    child: SizedBox(height: context.contentTopPadding),
+                    child: SizedBox(height: context.sectionsTopPadding),
                   ),
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(
@@ -531,7 +531,7 @@ class _MoreSectionsView extends ConsumerWidget {
       title: appLocalizations.more,
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
-          top: context.contentTopPadding,
+          top: context.sectionsTopPadding,
           bottom: 16 + context.bottomInset,
         ),
         children: [

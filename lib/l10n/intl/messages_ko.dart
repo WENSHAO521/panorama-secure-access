@@ -190,25 +190,23 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m76(count) => "${Intl.plural(count, other: '문제 ${count}건')}";
 
-  static String m77(time) => "확인 시각: ${time}";
+  static String m77(count) => "${Intl.plural(count, other: '설정 ${count}개')}";
 
-  static String m78(count) => "${Intl.plural(count, other: '설정 ${count}개')}";
+  static String m78(link) => "읽을 수 있는 프록시가 없습니다: ${link}";
 
-  static String m79(link) => "읽을 수 있는 프록시가 없습니다: ${link}";
+  static String m79(label) => "${label}은(는) 하나만 입력해야 합니다";
 
-  static String m80(label) => "${label}은(는) 하나만 입력해야 합니다";
+  static String m80(value) => "최고 ${value}";
 
-  static String m81(value) => "최고 ${value}";
+  static String m81(value) => "합계 ${value}";
 
-  static String m82(value) => "합계 ${value}";
+  static String m82(transport) => "${transport} 요청 헤더";
 
-  static String m83(transport) => "${transport} 요청 헤더";
+  static String m83(label) => "${label}은(는) URL이어야 합니다";
 
-  static String m84(label) => "${label}은(는) URL이어야 합니다";
+  static String m84(count) => "${Intl.plural(count, other: '${count}년 전')}";
 
   static String m85(count) => "${Intl.plural(count, other: '${count}년 전')}";
-
-  static String m86(count) => "${Intl.plural(count, other: '${count}년 전')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -282,6 +280,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "appIconDesign": MessageLookupByLibrary.simpleMessage("앱 아이콘 디자인"),
     "appProxiesEmpty": MessageLookupByLibrary.simpleMessage("로컬 프록시 없음"),
     "appendSystemDns": MessageLookupByLibrary.simpleMessage("시스템 DNS 추가"),
+    "applied": MessageLookupByLibrary.simpleMessage("적용했습니다"),
+    "applyNow": MessageLookupByLibrary.simpleMessage("지금 적용"),
     "authentication": MessageLookupByLibrary.simpleMessage("인증"),
     "authenticationDesc": MessageLookupByLibrary.simpleMessage(
       "인증을 켜면 로컬 프록시 포트에서 사용자 이름과 비밀번호를 요구합니다.",
@@ -477,9 +477,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "customIssueReservedName": m18,
     "customIssuesSummary": m19,
     "customProfile": MessageLookupByLibrary.simpleMessage("사용자 지정"),
-    "customProfileDesc": MessageLookupByLibrary.simpleMessage(
-      "앱 프록시와 다른 프로필로 프록시 그룹과 규칙을 조합합니다",
-    ),
     "customProfileResources": MessageLookupByLibrary.simpleMessage(
       "사용자 지정 프로필 리소스",
     ),
@@ -703,7 +700,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "fakeipTtl": MessageLookupByLibrary.simpleMessage("Fake-IP TTL"),
     "fallbackFilter": MessageLookupByLibrary.simpleMessage("폴백 필터"),
     "file": MessageLookupByLibrary.simpleMessage("파일"),
-    "fileDesc": MessageLookupByLibrary.simpleMessage("프로필 파일을 직접 업로드"),
     "fileIsUpdate": MessageLookupByLibrary.simpleMessage(
       "파일이 수정되었습니다. 변경 사항을 저장하시겠습니까?",
     ),
@@ -728,6 +724,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "fr": MessageLookupByLibrary.simpleMessage("프랑스어"),
     "general": MessageLookupByLibrary.simpleMessage("일반"),
+    "generalOverrideDesc": MessageLookupByLibrary.simpleMessage(
+      "여기에 추가한 항목은 모든 프로필의 해당 설정을 대체합니다. 추가하지 않은 항목은 프로필 자체 설정을 유지하며, 프로필에 없으면 코어 기본값을 사용합니다.",
+    ),
     "geoResources": MessageLookupByLibrary.simpleMessage("Geo"),
     "geoSkipped": m30,
     "geoUpdated": m31,
@@ -934,9 +933,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "lineIssueTip": m44,
     "lineWrap": MessageLookupByLibrary.simpleMessage("자동 줄 바꿈"),
     "link": MessageLookupByLibrary.simpleMessage("링크"),
-    "linkDesc": MessageLookupByLibrary.simpleMessage(
-      "구독 링크 또는 프록시 공유 링크로 프로필 가져오기",
-    ),
     "liquidGlass": MessageLookupByLibrary.simpleMessage("Liquid Glass"),
     "list": MessageLookupByLibrary.simpleMessage("목록"),
     "listen": MessageLookupByLibrary.simpleMessage("수신"),
@@ -1402,9 +1398,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "sendFromPhoneConfirmTitle": MessageLookupByLibrary.simpleMessage(
       "휴대폰에서 받은 링크를 가져올까요?",
     ),
-    "sendFromPhoneDesc": MessageLookupByLibrary.simpleMessage(
-      "휴대폰으로 스캔해 이 기기로 링크를 보냅니다",
-    ),
     "sendFromPhoneNoNetwork": MessageLookupByLibrary.simpleMessage(
       "이 기기는 로컬 네트워크에 연결되어 있지 않습니다",
     ),
@@ -1428,9 +1421,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "serviceAllAvailable": MessageLookupByLibrary.simpleMessage("모두 사용 가능"),
     "serviceAvailable": MessageLookupByLibrary.simpleMessage("사용 가능"),
     "serviceBlocked": MessageLookupByLibrary.simpleMessage("차단됨"),
-    "serviceCheck": MessageLookupByLibrary.simpleMessage("확인"),
     "serviceCheckAll": MessageLookupByLibrary.simpleMessage("모두 확인"),
-    "serviceCheckedAt": m77,
     "serviceComingSoon": MessageLookupByLibrary.simpleMessage("출시 예정"),
     "serviceDisallowedIsp": MessageLookupByLibrary.simpleMessage("허용되지 않는 ISP"),
     "serviceFailed": MessageLookupByLibrary.simpleMessage("확인 실패"),
@@ -1448,8 +1439,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "settingEntries": MessageLookupByLibrary.simpleMessage("설정"),
     "settings": MessageLookupByLibrary.simpleMessage("설정"),
-    "settingsCount": m78,
-    "shareLinkUnreadable": m79,
+    "settingsCount": m77,
+    "shareLinkUnreadable": m78,
     "shareLinksInvalid": MessageLookupByLibrary.simpleMessage(
       "링크에서 읽을 수 있는 프록시가 없습니다",
     ),
@@ -1476,7 +1467,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "singleShareLinkOnly": MessageLookupByLibrary.simpleMessage(
       "여기에는 링크를 하나만 입력하세요. 여러 개는 목록의 빠른 편집에서 편집하세요",
     ),
-    "singleValueTip": m80,
+    "singleValueTip": m79,
     "size": MessageLookupByLibrary.simpleMessage("크기"),
     "skipCertVerify": MessageLookupByLibrary.simpleMessage("인증서 검증 건너뛰기"),
     "skipDomain": MessageLookupByLibrary.simpleMessage("건너뛸 도메인"),
@@ -1571,11 +1562,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "totalUpload": MessageLookupByLibrary.simpleMessage("업로드량"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("TProxy 포트"),
     "traffic": MessageLookupByLibrary.simpleMessage("트래픽"),
-    "trafficPeak": m81,
-    "trafficTotal": m82,
+    "trafficPeak": m80,
+    "trafficTotal": m81,
     "trafficUsage": MessageLookupByLibrary.simpleMessage("트래픽 사용량"),
     "transport": MessageLookupByLibrary.simpleMessage("전송"),
-    "transportHeaders": m83,
+    "transportHeaders": m82,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunAuthorizationFailed": MessageLookupByLibrary.simpleMessage(
       "TUN 권한을 얻지 못해 끄기로 되돌렸습니다.",
@@ -1615,7 +1606,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("업로드"),
     "uploadBandwidth": MessageLookupByLibrary.simpleMessage("업로드 대역폭"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
-    "urlTip": m84,
+    "urlTip": m83,
     "useHosts": MessageLookupByLibrary.simpleMessage("hosts 사용"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("시스템 hosts 사용"),
     "usedShort": MessageLookupByLibrary.simpleMessage("사용"),
@@ -1638,8 +1629,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "시스템에 기록하면 시스템 시계도 설정합니다. Android에서는 무시됩니다.",
     ),
-    "yearsAgo": m85,
-    "yearsAgoShort": m86,
+    "yearsAgo": m84,
+    "yearsAgoShort": m85,
     "yes": MessageLookupByLibrary.simpleMessage("예"),
     "zhCN": MessageLookupByLibrary.simpleMessage("중국어 간체"),
   };
