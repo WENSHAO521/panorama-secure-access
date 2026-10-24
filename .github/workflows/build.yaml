@@ -10,10 +10,9 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/v') && github.ref != 'refs/heads/main' }}
 
 env:
-  IS_STABLE: ${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-') }}
   # See CI Caches in .agents/commands.md.
   BRANCH_CACHE: ${{ !startsWith(github.ref, 'refs/tags/') }}
   FLUTTER_VERSION: '3.47.6'
@@ -322,11 +321,27 @@ jobs:
       - name: Run Windows service tests
         run: cargo test --manifest-path services/helper/Cargo.toml --features windows-service
 
-  build:
+  release-tag:
     # Releases publish where the release links point: the public repository.
-    # A push to the beta branch publishes a pre-release; see tool/release_tag.sh.
-    if: github.repository == 'WENSHAO521/panorama-secure-access' && github.event_name == 'push' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/beta')
+    # A beta push publishes a pre-release, and a main push the release changelog.json lists but no tag has yet; see tool/release_tag.sh.
+    if: github.repository == 'WENSHAO521/panorama-secure-access' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Release tag
+        id: tag
+        run: echo "tag=$(tool/release_tag.sh)" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: release-tag
+    if: needs.release-tag.outputs.tag != ''
     runs-on: ${{ matrix.os }}
+    env:
+      IS_STABLE: ${{ !contains(needs.release-tag.outputs.tag, '-') }}
     strategy:
       matrix:
         include:
@@ -447,15 +462,10 @@ jobs:
           curl -fsSL --retry 3 -o "$bundle" "https://curl.se/ca/$CA_BUNDLE"
           echo "$CA_BUNDLE_SHA256  $bundle" | sha256sum -c -
 
-      - name: Release tag
-        id: tag
-        shell: bash
-        run: echo "tag=$(tool/release_tag.sh)" >> "$GITHUB_OUTPUT"
-
       - name: Setup
         env:
           ANDROID_NDK_HOME: ${{ steps.build-ndk.outputs.ndk-path }}
-        run: dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} --release-tag ${{ steps.tag.outputs.tag }} -v
+        run: dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} --release-tag ${{ needs.release-tag.outputs.tag }} -v
 
       - name: Upload
         uses: actions/upload-artifact@v4
@@ -467,8 +477,10 @@ jobs:
   upload:
     permissions:
       contents: write
-    needs: [ build, dart, plugins, go, android, rust, windows-helper-test ]
+    needs: [ release-tag, build, dart, plugins, go, android, rust, windows-helper-test ]
     runs-on: ubuntu-latest
+    env:
+      IS_STABLE: ${{ !contains(needs.release-tag.outputs.tag, '-') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -482,13 +494,9 @@ jobs:
           pattern: artifact-*
           merge-multiple: true
 
-      - name: Release tag
-        id: tag
-        run: echo "tag=$(tool/release_tag.sh)" >> "$GITHUB_OUTPUT"
-
       - name: Rename artifacts
         env:
-          TAG: ${{ steps.tag.outputs.tag }}
+          TAG: ${{ needs.release-tag.outputs.tag }}
         run: |
           pubspec_version="$(sed -n 's/^version: *\([^+]*\).*/\1/p' pubspec.yaml)"
           cd ./dist
@@ -517,7 +525,7 @@ jobs:
         shell: bash
         env:
           IS_STABLE: ${{ env.IS_STABLE }}
-          TAG: ${{ steps.tag.outputs.tag }}
+          TAG: ${{ needs.release-tag.outputs.tag }}
         run: |
           target=()
           if [[ "$IS_STABLE" == 'true' ]]; then
@@ -529,7 +537,7 @@ jobs:
 
       - name: Patch release.md
         env:
-          TAG: ${{ steps.tag.outputs.tag }}
+          TAG: ${{ needs.release-tag.outputs.tag }}
         run: |
           version="${TAG#v}"
           sed "s|VERSION|$version|g" ./.github/release_template.md >> release.md
@@ -542,7 +550,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.tag.outputs.tag }}
+          tag_name: ${{ needs.release-tag.outputs.tag }}
           target_commitish: ${{ github.sha }}
           prerelease: ${{ env.IS_STABLE != 'true' }}
           files: ./dist/*
