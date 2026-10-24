@@ -7,6 +7,7 @@ import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/views/about.dart';
 import 'package:fl_clash/views/access.dart';
 import 'package:fl_clash/views/backup_and_restore.dart';
+import 'package:fl_clash/views/beta_program.dart';
 import 'package:fl_clash/views/config/general.dart';
 import 'package:fl_clash/views/hotkey.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -42,6 +43,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
       items: [
         const _DisclaimerItem(),
         if (enableDeveloperMode) const _DeveloperItem(),
+        const _BetaProgramItem(),
         const _InfoItem(),
       ],
     );
@@ -238,6 +240,28 @@ class _DisclaimerItem extends StatelessWidget {
       leading: const GlyphIcon(AppGlyphs.gavel),
       title: Text(context.appLocalizations.disclaimer),
       widget: const DisclaimerView(),
+    );
+  }
+}
+
+class _BetaProgramItem extends ConsumerWidget {
+  const _BetaProgramItem();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appLocalizations = context.appLocalizations;
+    final joined = ref.watch(
+      appSettingProvider.select((state) => state.betaUpdates),
+    );
+    return ListItem.open(
+      leading: const GlyphIcon(AppGlyphs.sparkle),
+      title: Text(appLocalizations.betaProgram),
+      subtitle: Text(
+        joined
+            ? appLocalizations.betaJoinedTip
+            : appLocalizations.betaNotJoinedTip,
+      ),
+      widget: const BetaProgramView(),
     );
   }
 }

@@ -977,5 +977,13 @@
   "preferred": "優先",
   "addToLocalProxies": "ローカルプロキシに追加",
   "addedToLocalProxies": "{name} をローカルプロキシに追加しました",
-  "alreadyInLocalProxies": "{name} はすでにローカルプロキシにあります"
+  "alreadyInLocalProxies": "{name} はすでにローカルプロキシにあります",
+  "betaProgram": "ベータプログラム",
+  "betaProgramDesc": "正式リリース前の新機能をいち早く試し、問題の早期発見に協力できます。ベータ版は正式版より不安定な場合があります。",
+  "betaJoinedTip": "ベータ版のアップデートを受け取ります",
+  "betaNotJoinedTip": "正式版のアップデートのみ受け取ります",
+  "betaProgramFooter": "ベータが終了し、同じかそれ以降のバージョンの正式版がリリースされると、アプリは自動的に正式版へ更新されます。いつでも退出でき、退出後はその正式版が出るまで現在のベータ版を使い続けます。",
+  "currentVersion": "現在のバージョン",
+  "betaChannel": "ベータ版",
+  "stableChannel": "正式版"
 }

@@ -337,6 +337,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "batteryOptimizationDesc": MessageLookupByLibrary.simpleMessage(
       "電池の最適化を無視すると、アプリがバックグラウンドで動作し続けます。",
     ),
+    "betaChannel": MessageLookupByLibrary.simpleMessage("ベータ版"),
+    "betaJoinedTip": MessageLookupByLibrary.simpleMessage("ベータ版のアップデートを受け取ります"),
+    "betaNotJoinedTip": MessageLookupByLibrary.simpleMessage(
+      "正式版のアップデートのみ受け取ります",
+    ),
+    "betaProgram": MessageLookupByLibrary.simpleMessage("ベータプログラム"),
+    "betaProgramDesc": MessageLookupByLibrary.simpleMessage(
+      "正式リリース前の新機能をいち早く試し、問題の早期発見に協力できます。ベータ版は正式版より不安定な場合があります。",
+    ),
+    "betaProgramFooter": MessageLookupByLibrary.simpleMessage(
+      "ベータが終了し、同じかそれ以降のバージョンの正式版がリリースされると、アプリは自動的に正式版へ更新されます。いつでも退出でき、退出後はその正式版が出るまで現在のベータ版を使い続けます。",
+    ),
     "betaUpdates": MessageLookupByLibrary.simpleMessage("ベータ版に参加"),
     "bind": MessageLookupByLibrary.simpleMessage("連携"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("ブラックリストモード"),
@@ -460,6 +472,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "currentOutboundDesc": MessageLookupByLibrary.simpleMessage(
       "起動ボタンがあるため削除できません",
     ),
+    "currentVersion": MessageLookupByLibrary.simpleMessage("現在のバージョン"),
     "custom": MessageLookupByLibrary.simpleMessage("カスタム"),
     "customColor": MessageLookupByLibrary.simpleMessage("カスタムカラー"),
     "customImportDroppedSubRules": m8,
@@ -1530,6 +1543,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "振り分け戦略は空にできません",
     ),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("SSIDが空です"),
+    "stableChannel": MessageLookupByLibrary.simpleMessage("正式版"),
     "stackMode": MessageLookupByLibrary.simpleMessage("スタックモード"),
     "stackTrace": MessageLookupByLibrary.simpleMessage("スタックトレース"),
     "standard": MessageLookupByLibrary.simpleMessage("標準"),

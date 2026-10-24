@@ -8187,6 +8187,76 @@ class AppLocalizations {
       args: [name],
     );
   }
+
+  /// `Beta program`
+  String get betaProgram {
+    return Intl.message(
+      'Beta program',
+      name: 'betaProgram',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try new features before they are released and help find problems early. Beta builds can be less stable than stable releases.`
+  String get betaProgramDesc {
+    return Intl.message(
+      'Try new features before they are released and help find problems early. Beta builds can be less stable than stable releases.',
+      name: 'betaProgramDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You receive beta updates`
+  String get betaJoinedTip {
+    return Intl.message(
+      'You receive beta updates',
+      name: 'betaJoinedTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You receive stable updates only`
+  String get betaNotJoinedTip {
+    return Intl.message(
+      'You receive stable updates only',
+      name: 'betaNotJoinedTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `When the beta ends and a stable release of the same or a newer version ships, the app updates to it automatically. You can leave at any time: you keep the current beta until that stable release is out, then return to it.`
+  String get betaProgramFooter {
+    return Intl.message(
+      'When the beta ends and a stable release of the same or a newer version ships, the app updates to it automatically. You can leave at any time: you keep the current beta until that stable release is out, then return to it.',
+      name: 'betaProgramFooter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current version`
+  String get currentVersion {
+    return Intl.message(
+      'Current version',
+      name: 'currentVersion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Beta`
+  String get betaChannel {
+    return Intl.message('Beta', name: 'betaChannel', desc: '', args: []);
+  }
+
+  /// `Stable`
+  String get stableChannel {
+    return Intl.message('Stable', name: 'stableChannel', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

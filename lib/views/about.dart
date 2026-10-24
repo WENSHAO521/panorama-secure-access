@@ -17,6 +17,29 @@ class Contributor {
   const Contributor({required this.avatar, required this.name});
 }
 
+Future<void> checkUpdateByUser(BuildContext context, WidgetRef ref) async {
+  if (ref.read(loadingProvider(LoadingTag.checkUpdate))) return;
+  final updates = ref.read(updateControllerProvider.notifier);
+  if (ref.read(updateControllerProvider) != null) {
+    updates.show();
+    return;
+  }
+  final commonAction = ref.read(commonActionProvider.notifier);
+  final result = await globalState.loadingRun(
+    () async => (
+      release: await request.checkForUpdate(
+        beta: ref.read(appSettingProvider).betaUpdates,
+      ),
+    ),
+    title: context.appLocalizations.checkUpdate,
+    tag: LoadingTag.checkUpdate,
+  );
+  if (result == null) return;
+  unawaited(
+    commonAction.checkUpdateResultHandle(data: result.release, isUser: true),
+  );
+}
+
 class AboutView extends ConsumerWidget {
   const AboutView({super.key});
 
@@ -24,29 +47,6 @@ class AboutView extends ConsumerWidget {
     Contributor(avatar: 'assets/images/avatar/june2.jpg', name: 'June2'),
     Contributor(avatar: 'assets/images/avatar/arue.jpg', name: 'Arue'),
   ];
-
-  Future<void> _checkUpdate(BuildContext context, WidgetRef ref) async {
-    if (ref.read(loadingProvider(LoadingTag.checkUpdate))) return;
-    final updates = ref.read(updateControllerProvider.notifier);
-    if (ref.read(updateControllerProvider) != null) {
-      updates.show();
-      return;
-    }
-    final commonAction = ref.read(commonActionProvider.notifier);
-    final result = await globalState.loadingRun(
-      () async => (
-        release: await request.checkForUpdate(
-          beta: ref.read(appSettingProvider).betaUpdates,
-        ),
-      ),
-      title: context.appLocalizations.checkUpdate,
-      tag: LoadingTag.checkUpdate,
-    );
-    if (result == null) return;
-    unawaited(
-      commonAction.checkUpdateResultHandle(data: result.release, isUser: true),
-    );
-  }
 
   Widget _buildLinkItem({
     required Glyph glyph,
@@ -81,7 +81,7 @@ class AboutView extends ConsumerWidget {
           _AboutHero(
             isCheckingUpdate: isLoading,
             onCheckUpdate: () {
-              _checkUpdate(context, ref);
+              checkUpdateByUser(context, ref);
             },
             onEnterDeveloperMode: () {
               ref

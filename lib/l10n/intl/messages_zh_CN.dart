@@ -320,6 +320,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "batteryOptimizationDesc": MessageLookupByLibrary.simpleMessage(
       "忽略电池优化可保证应用在后台运行。",
     ),
+    "betaChannel": MessageLookupByLibrary.simpleMessage("测试版"),
+    "betaJoinedTip": MessageLookupByLibrary.simpleMessage("你会收到测试版更新"),
+    "betaNotJoinedTip": MessageLookupByLibrary.simpleMessage("你只会收到正式版更新"),
+    "betaProgram": MessageLookupByLibrary.simpleMessage("测试版计划"),
+    "betaProgramDesc": MessageLookupByLibrary.simpleMessage(
+      "抢先体验尚未正式发布的新功能，并帮助我们提前发现问题。测试版可能不如正式版稳定。",
+    ),
+    "betaProgramFooter": MessageLookupByLibrary.simpleMessage(
+      "测试版结束、同版本或更新的正式版发布后，应用会自动更新到正式版。你可以随时退出：退出后会继续使用当前测试版，直到该正式版发布再更新回正式版。",
+    ),
     "betaUpdates": MessageLookupByLibrary.simpleMessage("加入测试版"),
     "bind": MessageLookupByLibrary.simpleMessage("绑定"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("黑名单模式"),
@@ -423,6 +433,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "createProfileFromUrlTip": m7,
     "creationTime": MessageLookupByLibrary.simpleMessage("创建时间"),
     "currentOutboundDesc": MessageLookupByLibrary.simpleMessage("含启动键，不可移除"),
+    "currentVersion": MessageLookupByLibrary.simpleMessage("当前版本"),
     "custom": MessageLookupByLibrary.simpleMessage("自定义"),
     "customColor": MessageLookupByLibrary.simpleMessage("自定义颜色"),
     "customImportDroppedSubRules": m8,
@@ -1383,6 +1394,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "splitStrategy": MessageLookupByLibrary.simpleMessage("分流策略"),
     "splitStrategyNotEmpty": MessageLookupByLibrary.simpleMessage("分流策略不能为空"),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("SSIDs为空"),
+    "stableChannel": MessageLookupByLibrary.simpleMessage("正式版"),
     "stackMode": MessageLookupByLibrary.simpleMessage("栈模式"),
     "stackTrace": MessageLookupByLibrary.simpleMessage("堆栈信息"),
     "standard": MessageLookupByLibrary.simpleMessage("标准"),

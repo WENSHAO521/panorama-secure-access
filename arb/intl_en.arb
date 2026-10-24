@@ -977,5 +977,13 @@
   "preferred": "Preferred",
   "addToLocalProxies": "Add to local proxies",
   "addedToLocalProxies": "Added {name} to local proxies",
-  "alreadyInLocalProxies": "{name} is already in local proxies"
+  "alreadyInLocalProxies": "{name} is already in local proxies",
+  "betaProgram": "Beta program",
+  "betaProgramDesc": "Try new features before they are released and help find problems early. Beta builds can be less stable than stable releases.",
+  "betaJoinedTip": "You receive beta updates",
+  "betaNotJoinedTip": "You receive stable updates only",
+  "betaProgramFooter": "When the beta ends and a stable release of the same or a newer version ships, the app updates to it automatically. You can leave at any time: you keep the current beta until that stable release is out, then return to it.",
+  "currentVersion": "Current version",
+  "betaChannel": "Beta",
+  "stableChannel": "Stable"
 }
