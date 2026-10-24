@@ -46,6 +46,41 @@ void main() {
     );
   });
 
+  for (final title in [null, 'title']) {
+    testWidgets(
+      'a page opening on a ${title ?? 'bare'} section starts it where content '
+      'starts',
+      (tester) async {
+        late double contentTop;
+        await tester.pumpWidget(
+          TestApp(
+            child: Scaffold(
+              body: Builder(
+                builder: (context) {
+                  contentTop = context.contentTopPadding;
+                  return ListView(
+                    padding: EdgeInsets.only(top: context.sectionsTopPadding),
+                    children: [
+                      generateSection(
+                        title: title,
+                        items: [const DecorationListItem(title: Text('row'))],
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+
+        final opening = title == null
+            ? rowRect(tester, 'row')
+            : tester.getRect(find.text(title));
+        expect(opening.top, contentTop);
+      },
+    );
+  }
+
   testWidgets('a group under its caller\'s header keeps no space of its own', (
     tester,
   ) async {

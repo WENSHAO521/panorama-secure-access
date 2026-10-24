@@ -529,7 +529,7 @@ class ListHeader extends StatelessWidget {
     final padding = this.padding ?? listHeaderPaddingOf(context);
     final lineHeight = MeasureScope.of(
       context,
-    ).textHeight(AppTextStyle.footnote);
+    ).textHeight(AppTextStyle.headline);
     final overhang = (_actionSize.button - lineHeight) / 2;
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -548,7 +548,9 @@ class ListHeader extends StatelessWidget {
                 title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: context.listCaptionStyle,
+                style: AppTextStyle.headline
+                    .of(context)
+                    .copyWith(color: context.colorScheme.onSurfaceVariant),
               ),
             ),
             ?trailing,

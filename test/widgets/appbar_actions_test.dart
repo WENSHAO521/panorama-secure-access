@@ -1,6 +1,7 @@
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -16,6 +17,29 @@ final _views = {'a mobile view': _mobile, 'a desktop view': _desktop};
 
 Finder _container(Finder button) =>
     find.descendant(of: button, matching: find.byType(Material)).first;
+
+final _markPainter = find.descendant(
+  of: find.descendant(
+    of: find.byType(TonalButtonGroup),
+    matching: find.byType(Positioned),
+  ),
+  matching: find.byType(CustomPaint),
+);
+
+Rect _markOf(WidgetTester tester) {
+  final painter = tester.renderObject<RenderBox>(_markPainter);
+  Rect? bounds;
+  expect(
+    painter,
+    paints..everything((method, arguments) {
+      if (method == #drawPath) {
+        bounds = (arguments.first as Path).getBounds();
+      }
+      return true;
+    }),
+  );
+  return MatrixUtils.transformRect(painter.getTransformTo(null), bounds!);
+}
 
 Iterable<Rect> _clipsAbove(RenderObject box) sync* {
   var child = box;
@@ -213,6 +237,97 @@ void main() {
     await gesture.up();
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('a pointer marks the button of a group under it and slides the '
+      'mark to the next', (tester) async {
+    await _pumpBar(
+      tester,
+      view: _desktop,
+      platform: TargetPlatform.android,
+      child: const CommonScaffold(
+        title: 'Title',
+        iconActions: [
+          IconButtonData(glyph: AppGlyphs.sync, onPressed: _noop),
+          IconButtonData(glyph: AppGlyphs.sort, onPressed: _noop),
+        ],
+        body: SizedBox(),
+      ),
+    );
+    final first = tester.getRect(
+      find.widgetWithGlyph(IconButton, AppGlyphs.sync),
+    );
+    final second = tester.getRect(
+      find.widgetWithGlyph(IconButton, AppGlyphs.sort),
+    );
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    addTearDown(mouse.removePointer);
+    await mouse.addPointer(location: Offset.zero);
+
+    await mouse.moveTo(first.center);
+    await tester.pumpAndSettle();
+    final marked = _markOf(tester);
+    expect(marked.center, first.center);
+    expect(first.intersect(marked), marked);
+    expect(marked.height, lessThan(first.height));
+
+    await mouse.moveTo(second.center);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 40));
+    expect(
+      _markOf(tester).center.dx,
+      inExclusiveRange(first.center.dx, second.center.dx),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      _markOf(tester).center,
+      offsetMoreOrLessEquals(second.center, epsilon: 0.1),
+    );
+
+    await mouse.moveTo(Offset.zero);
+    await tester.pumpAndSettle();
+    expect(tester.renderObject(_markPainter), paintsNothing);
+  });
+
+  testWidgets('a mark stays on its button while a closing search regrows '
+      'the group', (tester) async {
+    await tester.pumpWidget(
+      TestApp(
+        wrapInProviderScope: true,
+        child: CommonScaffold(
+          title: 'Title',
+          searchState: AppBarSearchState(onSearch: (_) {}),
+          iconActions: const [
+            IconButtonData(glyph: AppGlyphs.sync, onPressed: _noop),
+          ],
+          body: const SizedBox(),
+        ),
+      ),
+    );
+    await tester.tap(find.byGlyph(AppGlyphs.search));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Cancel'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+    final sync = find.widgetWithGlyph(IconButton, AppGlyphs.sync);
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    addTearDown(mouse.removePointer);
+    await mouse.addPointer(location: tester.getCenter(sync));
+    await tester.pump();
+
+    final group = tester.getSize(find.byType(TonalButtonGroup)).width;
+    for (var frame = 0; frame < 8; frame++) {
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(
+        _markOf(tester).center.dx,
+        moreOrLessEquals(tester.getCenter(sync).dx, epsilon: 0.5),
+      );
+    }
+    expect(
+      tester.getSize(find.byType(TonalButtonGroup)).width,
+      greaterThan(group),
+    );
+    await tester.pumpAndSettle();
   });
 
   testWidgets('raw action widgets press on their own, one gap apart', (

@@ -246,28 +246,17 @@ List<BoxShadow> dockShadows(ColorScheme colorScheme) {
   ];
 }
 
-// iOS 27 shades its glass bars only below, faintly, and no darker in dark mode.
-List<BoxShadow> dockGlassShadows(ColorScheme colorScheme) => [
-  BoxShadow(
-    color: colorScheme.shadow.withValues(alpha: 0.013),
-    blurRadius: 3.8,
-    offset: const Offset(0, 6.5),
-  ),
-];
-
 /// What the dock's parts stand on: a floating surface, or glass.
 class _DockSurface extends StatelessWidget {
   const _DockSurface({
     required this.glass,
     required this.style,
-    required this.shadows,
     required this.glow,
     required this.child,
   });
 
   final bool glass;
   final LiquidGlassStyle style;
-  final List<BoxShadow> shadows;
   final ValueListenable<LiquidGlassGlow> glow;
   final Widget child;
 
@@ -277,12 +266,8 @@ class _DockSurface extends StatelessWidget {
     if (glass) {
       return ValueListenableBuilder(
         valueListenable: glow,
-        builder: (_, glow, child) => LiquidGlass(
-          style: style,
-          shadows: shadows,
-          glow: glow,
-          child: child,
-        ),
+        builder: (_, glow, child) =>
+            LiquidGlass(style: style, glow: glow, child: child),
         child: child,
       );
     }
@@ -464,6 +449,10 @@ class ElasticPress extends StatefulWidget {
 
   static ElasticPressHandle? maybeOf(BuildContext context) =>
       context.findAncestorStateOfType<_ElasticPressState>();
+
+  /// How far a full press scales a panel whose longest side is [side].
+  static double growthOf(double side, {double maxGrowth = _maxPressGrowth}) =>
+      math.min(_pressGrowth * 2, maxGrowth / side);
 
   /// Where [box] paints under the presses around it, in its own coordinates.
   static Rect paintBoundsOf(RenderBox box) {
@@ -849,7 +838,8 @@ class _RenderPressTransform extends RenderProxyBox {
   Matrix4 get _transform {
     final panel = panelOf?.call(this) ?? Offset.zero & size;
     final swell =
-        1 + _lift * math.min(_pressGrowth * 2, maxGrowth / panel.longestSide);
+        1 +
+        _lift * ElasticPress.growthOf(panel.longestSide, maxGrowth: maxGrowth);
     final scaleX = swell * (1 + _pull.dx.abs() / panel.width * _pullStretch);
     final scaleY = swell * (1 + _pull.dy.abs() / panel.height * _pullStretch);
     final center = panel.center;
@@ -1283,7 +1273,6 @@ class _FloatingNavigationBarState extends State<FloatingNavigationBar>
     final bar = _DockSurface(
       glass: glass,
       style: LiquidGlassStyle.pill(colorScheme),
-      shadows: ultra ? dockGlassShadows(colorScheme) : const [],
       glow: _touchGlow,
       child: Material(
         color: glass
