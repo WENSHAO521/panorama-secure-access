@@ -84,7 +84,6 @@ class _ToolViewState extends ConsumerState<ToolsView> {
             return Container();
           }
           return generateSection(
-            title: context.appLocalizations.more,
             items: state.navigationItems.map(_buildNavigationMenuItem),
           );
         },
@@ -102,7 +101,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
           padding: EdgeInsets.only(
             left: 16,
             right: 16,
-            top: context.contentTopPadding,
+            top: context.sectionsTopPadding,
             bottom: 20 + context.bottomInset,
           ),
         ),

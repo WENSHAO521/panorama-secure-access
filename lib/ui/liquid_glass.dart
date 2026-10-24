@@ -1008,13 +1008,15 @@ final class LiquidGlassOutline extends LiquidGlassShape {
 }
 
 /// `GooSurface`'s pills, outlined by [path], each blending into the one before.
+/// With [firstRadius] the first is a rectangle rounded so, not a pill.
 final class LiquidGlassGoo extends LiquidGlassShape {
-  const LiquidGlassGoo(this.path, this.pills, this.blends)
+  const LiquidGlassGoo(this.path, this.pills, this.blends, {this.firstRadius})
     : assert(pills.length <= _gooPills);
 
   final Path path;
   final List<Rect> pills;
   final List<double> blends;
+  final double? firstRadius;
 
   List<double> get _uniforms {
     final octants = [
@@ -1035,8 +1037,10 @@ final class LiquidGlassGoo extends LiquidGlassShape {
           pills[index].height / 2,
         ] else ...const [0.0, 0.0, 0.0, 0.0],
       pills.length.toDouble(),
-      for (var index = 1; index < 8; index++)
+      for (var index = 1; index < _gooPills; index++)
         index < pills.length ? blends[index - 1] : 0.0,
+      firstRadius ?? 0.0,
+      0.0,
       for (final (:n, :joint, :radius, center: _) in octants) ...[
         n,
         joint.dx,
@@ -1058,7 +1062,10 @@ class LiquidGlassPane {
   Path? _profiled;
   List<double> _profile = _flatProfile;
 
-  /// A pane moving within [hold] keeps one capture (.agents/architecture.md).
+  /// A pane moving within [hold] keeps one capture (.agents/architecture.md),
+  /// taken at [holdFrost] where the shader frosts past it. A [steadyFrost]
+  /// pane frosts by [style]'s blur in the host's dp however it is scaled, so
+  /// it keeps that capture as it grows or shrinks.
   void paint(
     PaintingContext context,
     Rect rect, {
@@ -1067,6 +1074,8 @@ class LiquidGlassPane {
     List<BoxShadow> shadows = const [],
     LiquidGlassGlow glow = LiquidGlassGlow.none,
     Rect? hold,
+    double? holdFrost,
+    bool steadyFrost = false,
     LiquidGlassRim? rim,
     Object? group,
   }) {
@@ -1082,7 +1091,7 @@ class LiquidGlassPane {
           bottomRight: radius.bottomRight.clamp(maximum: limit),
         );
         _profiled = null;
-        if (hold == null) {
+        if (hold == null && shadows.isNotEmpty) {
           _paintShadows(context.canvas, rect, corners, shadows);
         }
         pane
@@ -1116,10 +1125,12 @@ class LiquidGlassPane {
       ..style = style
       ..glow = glow
       ..hold = hold
+      ..holdFrost = holdFrost
+      ..steadyFrost = steadyFrost
       ..rim = rim
       ..group = group;
     context.addLayer(pane);
-    if (hold != null) {
+    if (hold != null && shadows.isNotEmpty) {
       _paintShadows(context.canvas, rect, pane.corners, shadows);
     }
   }
@@ -1137,9 +1148,6 @@ class LiquidGlassPane {
     BorderRadius corners,
     List<BoxShadow> shadows,
   ) {
-    if (shadows.isEmpty) {
-      return;
-    }
     final shape = AppShape.of(corners);
     final reach = shadows.fold(
       0.0,
@@ -1227,6 +1235,8 @@ class _LiquidGlassLayer extends Layer {
   LiquidGlassStyle style = const LiquidGlassStyle(tint: Colors.transparent);
   LiquidGlassGlow glow = LiquidGlassGlow.none;
   Rect? hold;
+  double? holdFrost;
+  bool steadyFrost = false;
   LiquidGlassRim? rim;
   Object? group;
   _Placement? _held;
@@ -1414,6 +1424,15 @@ class _LiquidGlassLayer extends Layer {
     final haze = mapping[_hazeShare];
     if (haze > 0) {
       drawSlot(_hazeSample, Paint()..color = Color.fromRGBO(0, 0, 0, haze));
+    }
+    final veil = Color.from(
+      alpha: mapping[_veilColor + 3],
+      red: mapping[_veilColor],
+      green: mapping[_veilColor + 1],
+      blue: mapping[_veilColor + 2],
+    );
+    if (veil.a > 0) {
+      canvas.drawPaint(Paint()..color = veil);
     }
     _drawFrost(canvas, overCapture: true);
     canvas.restore();
