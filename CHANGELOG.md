@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.5.2 (2026-10-24)
+
+**Features**
+
+- **app** Optional general overrides that apply sooner, from upstream FlClash v0.9.2 (94e5002)
+- **update** A beta program page to join or leave the beta and see the current channel (b26f18a)
+- **update** A beta channel in the updater that returns to the stable release once it ships (bc2c3fd)
+- **app** DNS cache clearing, profile QR codes, phone-to-TV links, an access control bar and mihomo v1.19.33 (7054062)
+
 ## v3.5.1 (2026-10-17)
 
 **Features**
