@@ -2,6 +2,39 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.5.2",
+      "tag": "v3.5.2",
+      "date": "2026-10-24",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "94e5002",
+              "scope": "app",
+              "text": "Optional general overrides that apply sooner, from upstream FlClash v0.9.2"
+            },
+            {
+              "id": "b26f18a",
+              "scope": "update",
+              "text": "A beta program page to join or leave the beta and see the current channel"
+            },
+            {
+              "id": "bc2c3fd",
+              "scope": "update",
+              "text": "A beta channel in the updater that returns to the stable release once it ships"
+            },
+            {
+              "id": "7054062",
+              "scope": "app",
+              "text": "DNS cache clearing, profile QR codes, phone-to-TV links, an access control bar and mihomo v1.19.33"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.5.1",
       "tag": "v3.5.1",
       "date": "2026-10-17",
