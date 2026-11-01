@@ -121,15 +121,18 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    RequestFeed shown() => tester
-        .widget<SegmentedControl<RequestFeed>>(
-          find.byType(SegmentedControl<RequestFeed>),
-        )
-        .value;
-    Finder segment(String label) => find.descendant(
-      of: find.byType(SegmentedControl<RequestFeed>),
-      matching: find.text(label),
-    );
+    final bar = find.byType(AppBar);
+    bool shows(String label) => find
+        .descendant(of: bar, matching: find.text(label))
+        .evaluate()
+        .isNotEmpty;
+    Future<void> pick(String current, String label) async {
+      await tester.tap(find.descendant(of: bar, matching: find.text(current)));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(label).last);
+      await tester.pumpAndSettle();
+    }
+
     RequestFeed saved() => container.read(appSettingProvider).requestFeed;
 
     const phone = Size(390, 800);
@@ -140,23 +143,20 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
 
     await pump(null);
-    expect(shown(), RequestFeed.live);
+    expect(shows('运行中'), isTrue);
 
-    await tester.tap(segment('最近请求'));
-    await tester.pumpAndSettle();
+    await pick('运行中', '最近请求');
     expect(saved(), RequestFeed.recent);
 
     await tester.pumpWidget(const SizedBox.shrink());
     await pump(null);
-    expect(shown(), RequestFeed.recent);
+    expect(shows('最近请求'), isTrue);
 
     await tester.pumpWidget(const SizedBox.shrink());
     await pump(RequestFeed.live);
-    await tester.tap(segment('最近请求'));
-    await tester.pumpAndSettle();
+    await pick('运行中', '最近请求');
     expect(saved(), RequestFeed.recent);
-    await tester.tap(segment('运行中'));
-    await tester.pump();
+    await pick('最近请求', '运行中');
     expect(
       saved(),
       RequestFeed.recent,
@@ -714,52 +714,24 @@ void main() {
     await teardownView(tester);
   });
 
-  testWidgets('the desktop title opens a menu of the feeds and a phone with '
-      'room shows them as segments', (tester) async {
+  testWidgets('the title opens a menu of the feeds at any width', (
+    tester,
+  ) async {
     seedRequests([_tracker(id: 'a', host: 'alpha.test')]);
     final bar = find.byType(AppBar);
 
-    await pumpRequests(tester);
-    expect(find.byType(SegmentedControl<RequestFeed>), findsNothing);
-    expect(
-      find.descendant(of: bar, matching: find.text('Running')),
-      findsNothing,
-    );
-    await tester.tap(find.text('Recent requests'));
-    await tester.pumpAndSettle();
-    expect(find.text('Running'), findsOneWidget);
-    await teardownView(tester);
-
-    const phone = Size(390, 800);
-    container.read(viewSizeProvider.notifier).update((_) => phone);
-    tester.view.physicalSize = phone;
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: const TestApp(
-          locale: Locale('zh', 'CN'),
-          child: RequestsView(initialFeed: RequestFeed.recent),
-        ),
-      ),
-    );
-    await tester.pump();
-    final segments = find.descendant(
-      of: bar,
-      matching: find.byType(SegmentedControl<RequestFeed>),
-    );
-    expect(segments, findsOneWidget);
-    expect(
-      find.descendant(of: segments, matching: find.text('运行中')),
-      findsOneWidget,
-    );
-    await teardownView(tester);
-
-    await pumpRequests(tester, size: const Size(340, 800));
-    expect(segments, findsNothing);
-    expect(
-      find.descendant(of: bar, matching: find.text('Recent requests')),
-      findsOneWidget,
-    );
-    await teardownView(tester);
+    for (final size in const [_tableSize, Size(390, 800), Size(340, 800)]) {
+      await pumpRequests(tester, size: size);
+      expect(
+        find.descendant(of: bar, matching: find.text('Running')),
+        findsNothing,
+      );
+      await tester.tap(
+        find.descendant(of: bar, matching: find.text('Recent requests')),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Running'), findsOneWidget);
+      await teardownView(tester);
+    }
   });
 }

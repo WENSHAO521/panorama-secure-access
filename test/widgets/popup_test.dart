@@ -154,7 +154,9 @@ void main() {
     await tester.pumpWidget(
       TestApp(
         theme: ThemeData(
-          elevatedColorScheme: ColorScheme.dark(surfaceContainerHigh: lifted),
+          elevatedColorScheme: const ColorScheme.dark(
+            surfaceContainerHigh: lifted,
+          ),
         ),
         homeBuilder: (child) => HostScaffold(body: Center(child: child)),
         child: ElevatedSurfaceTheme(

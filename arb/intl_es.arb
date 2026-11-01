@@ -896,6 +896,8 @@
   "notRunning": "Detenido",
   "trafficPeak": "Pico: {value}",
   "trafficTotal": "Total: {value}",
+  "trafficChartStart": "−60 s",
+  "trafficChartNow": "Ahora",
   "ipQualityShort": "Calidad",
   "ipTypeUnknown": "Tipo desconocido",
   "tapIconToRetry": "Toca el icono para reintentar",

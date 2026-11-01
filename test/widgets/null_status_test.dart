@@ -422,7 +422,7 @@ void main() {
               ),
               child: ColoredBox(
                 key: ValueKey('content'),
-                color: const Color(0xFFF44336),
+                color: Color(0xFFF44336),
               ),
             ),
           ),

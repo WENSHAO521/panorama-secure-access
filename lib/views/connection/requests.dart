@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
@@ -13,11 +12,6 @@ import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-/// What the bar keeps beside its title: the back button and two actions.
-const _barReservedWidth = 180.0;
-const _feedSegmentPadding = 28.0;
-const _feedControlInsets = 8.0;
 
 class RequestsView extends ConsumerStatefulWidget {
   final ScrollController? scrollController;
@@ -127,15 +121,9 @@ class _RequestsViewState extends ConsumerState<RequestsView>
       listenable: Listenable.merge([_filters, _filters.options]),
       builder: (context, _) {
         final pinned = !ViewScope.isMobileOf(context);
-        final segmentsWidth = pinned ? null : _feedSegmentsWidth(context);
-        final inline =
-            segmentsWidth != null &&
-            segmentsWidth + _barReservedWidth <=
-                MediaQuery.sizeOf(context).width;
         return Scaffold(
           title: _labelOf(_feed),
-          titleWidget: inline ? _buildFeedSegments(segmentsWidth) : null,
-          titleMenuItems: inline ? const [] : _buildFeedMenu(),
+          titleMenuItems: _buildFeedMenu(),
           searchState: AppBarSearchState(onSearch: _search),
           keywords: _filters.keywordsOf(pinned: pinned),
           iconActions: _buildActions(),
@@ -150,38 +138,6 @@ class _RequestsViewState extends ConsumerState<RequestsView>
     RequestFeed.recent => context.appLocalizations.recentRequests,
     RequestFeed.live => context.appLocalizations.running,
   };
-
-  /// Its segments are equal, so the longer label sets the width of both.
-  double _feedSegmentsWidth(BuildContext context) {
-    var longest = 0.0;
-    for (final feed in RequestFeed.values) {
-      final painter = TextPainter(
-        text: TextSpan(
-          text: _labelOf(feed),
-          style: AppTextStyle.subheadline.of(context, emphasized: true),
-        ),
-        textDirection: Directionality.of(context),
-        textScaler: MediaQuery.textScalerOf(context),
-      )..layout();
-      longest = math.max(longest, painter.width);
-      painter.dispose();
-    }
-    return (longest + _feedSegmentPadding) * RequestFeed.values.length +
-        _feedControlInsets;
-  }
-
-  Widget _buildFeedSegments(double width) {
-    return SizedBox(
-      width: width,
-      child: SegmentedControl<RequestFeed>(
-        segments: [
-          for (final feed in RequestFeed.values) (feed, _labelOf(feed)),
-        ],
-        value: _feed,
-        onChanged: _selectFeed,
-      ),
-    );
-  }
 
   List<PopupMenuItem> _buildFeedMenu() {
     return [

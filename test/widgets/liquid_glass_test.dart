@@ -93,7 +93,7 @@ void main() {
             child: const SizedBox.square(
               dimension: 40,
               child: LiquidGlass(
-                style: LiquidGlassStyle(tint: const Color(0xFF2196F3)),
+                style: LiquidGlassStyle(tint: Color(0xFF2196F3)),
                 clipper: _Diamond(),
               ),
             ),
@@ -129,7 +129,7 @@ void main() {
             child: const SizedBox.square(
               dimension: 40,
               child: LiquidGlass(
-                style: LiquidGlassStyle(tint: const Color(0xFF2196F3)),
+                style: LiquidGlassStyle(tint: Color(0xFF2196F3)),
               ),
             ),
           ),
