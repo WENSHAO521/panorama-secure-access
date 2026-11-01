@@ -1,36 +1,24 @@
 package com.follow.clash
 
-import android.content.Context
-import android.os.Process
+import com.follow.clash.plugins.AppPlugin
+import com.follow.clash.plugins.BatteryPlugin
+import com.follow.clash.plugins.ServicePlugin
+import com.follow.clash.plugins.TilePlugin
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 
 class MainActivity : FlutterActivity() {
-    private var isExiting = false
-
-    private var keepsProcessForRun = false
-
-    override fun provideFlutterEngine(context: Context): FlutterEngine =
-        MainFlutterEngine.obtain(context, flutterShellArgs.toArray())
-
-    // Dart has closed the Core by now, so the next launch needs a new engine.
-    override fun popSystemNavigator(): Boolean {
-        isExiting = true
-        keepsProcessForRun = ServiceState.isRunRequested || ServiceController.runtime != null
-        return false
-    }
-
-    override fun shouldDestroyEngineWithHost(): Boolean = isExiting && keepsProcessForRun
-
-    override fun detachFromFlutterEngine() {
-        super.detachFromFlutterEngine()
-        finish()
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+        flutterEngine.plugins.add(AppPlugin())
+        flutterEngine.plugins.add(BatteryPlugin())
+        flutterEngine.plugins.add(ServicePlugin())
+        flutterEngine.plugins.add(TilePlugin())
+        ServiceState.attachFlutterEngine(flutterEngine)
     }
 
     override fun onDestroy() {
+        flutterEngine?.let(ServiceState::detachFlutterEngine)
         super.onDestroy()
-        if (isExiting && !keepsProcessForRun) {
-            Process.killProcess(Process.myPid())
-        }
     }
 }

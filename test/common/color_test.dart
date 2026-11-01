@@ -40,7 +40,7 @@ double _contrast(Color a, Color b) {
 
 void main() {
   test('opacity extensions use their named alpha values', () {
-    const color = const Color(0xFF2196F3);
+    const color = Color(0xFF2196F3);
     const tolerance = 0.0001;
 
     expect(color.opacity80.a, closeTo(0.8, tolerance));

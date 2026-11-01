@@ -896,6 +896,8 @@
   "notRunning": "Not running",
   "trafficPeak": "Peak {value}",
   "trafficTotal": "Total {value}",
+  "trafficChartStart": "−60 s",
+  "trafficChartNow": "Now",
   "ipQualityShort": "Quality",
   "ipTypeUnknown": "Unknown type",
   "tapIconToRetry": "Tap the icon to retry",

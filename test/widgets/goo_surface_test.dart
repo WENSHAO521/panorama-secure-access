@@ -86,7 +86,7 @@ void main() {
               child: ElasticPress(
                 child: GooPane(
                   child: ColoredBox(
-                    color: const Color(0xFF2196F3),
+                    color: Color(0xFF2196F3),
                     child: SizedBox.square(dimension: 44),
                   ),
                 ),
