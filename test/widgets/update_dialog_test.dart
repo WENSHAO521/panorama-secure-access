@@ -2,11 +2,13 @@ import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/state.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:prism_ui/prism_ui.dart';
 
+import '../helpers/host_scaffold.dart';
 import '../helpers/test_app.dart';
 
 const _runningVersion = '0.8.95';
@@ -48,7 +50,7 @@ Future<ProviderContainer> pumpApp(WidgetTester tester, {Locale? locale}) async {
       container: container,
       child: TestApp(
         locale: locale,
-        child: const Scaffold(body: SizedBox.shrink()),
+        child: const HostScaffold(body: SizedBox.shrink()),
       ),
     ),
   );

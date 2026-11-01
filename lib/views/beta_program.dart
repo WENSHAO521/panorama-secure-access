@@ -5,7 +5,7 @@ import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/ui/ui.dart';
 import 'package:fl_clash/views/about.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class BetaProgramView extends ConsumerWidget {
@@ -22,7 +22,7 @@ class BetaProgramView extends ConsumerWidget {
       appSettingProvider.select((state) => state.betaUpdates),
     );
     final isBetaBuild = globalState.appVersion.contains('-');
-    return CommonScaffold(
+    return Scaffold(
       isLoading: isLoading,
       title: appLocalizations.betaProgram,
       body: ListView(
