@@ -79,6 +79,11 @@ UpdateAsset? selectUpdateAsset(
   }
 }
 
+// inno_setup.iss waits for `updatefrom` to exit, then relaunches the app.
+String windowsUpdateArguments(int pid) {
+  return '/SILENT /SUPPRESSMSGBOXES /NORESTART /SP- /updatefrom=$pid';
+}
+
 String? findChecksum(String sums, String name) {
   for (final line in sums.split('\n')) {
     final parts = line.trim().split(RegExp(r'\s+'));
@@ -193,8 +198,7 @@ class Updater {
 
   static Future<bool> install(File file) async {
     if (system.isWindows) {
-      await Process.start(file.path, const [], mode: ProcessStartMode.detached);
-      return true;
+      return windows?.runas(file.path, windowsUpdateArguments(pid)) ?? false;
     }
     if (system.isMacOS) {
       return (await Process.run('open', [file.path])).exitCode == 0;

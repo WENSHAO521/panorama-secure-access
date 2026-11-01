@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/providers/action.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'generated/update.g.dart';
@@ -142,6 +143,10 @@ class UpdateController extends _$UpdateController {
     try {
       if (!await Updater.install(File(path))) {
         _fail('installer did not start');
+        return;
+      }
+      if (system.isWindows) {
+        await ref.read(systemActionProvider.notifier).handleExit();
       }
     } catch (error) {
       _fail(error);
