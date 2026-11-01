@@ -5,7 +5,7 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/ui/ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 
 const _badgeSize = 48.0;
 const _barHeight = 8.0;
@@ -79,10 +79,10 @@ class UpdateCard extends ConsumerWidget {
     final showBar =
         state.stage != UpdateStage.available &&
         state.stage != UpdateStage.failed;
-    return Material(
-      color: colorScheme.surfaceContainerHigh,
-      elevation: 6,
-      shadowColor: colorScheme.shadow,
+    return Surface(
+      color: SurfaceLevel.floatingOf(colorScheme).colorOf(colorScheme),
+      elevation: 3,
+      shadowColor: colorScheme.shadow.withValues(alpha: 0.6),
       shape: AppShape.lg,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 8, 12),
@@ -182,11 +182,11 @@ class _UpdateAction extends ConsumerWidget {
         icon: const GlyphIcon(AppGlyphs.cloudDownload, fill: 1),
         label: Text(appLocalizations.updateNow),
       ),
-      UpdateStage.downloading || UpdateStage.verifying => FilledButton.tonal(
+      UpdateStage.downloading || UpdateStage.verifying => TonalButton(
         onPressed: state.stage == UpdateStage.downloading
             ? controller.cancel
             : null,
-        child: Text(appLocalizations.cancel),
+        label: appLocalizations.cancel,
       ),
       UpdateStage.ready => FilledButton.icon(
         onPressed: controller.install,
@@ -235,7 +235,7 @@ class _UpdateBadge extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           if (busy)
-            CommonCircleLoading(size: _badgeSize, color: colorScheme.primary),
+            ActivityIndicator(size: _badgeSize, color: colorScheme.primary),
           AnimatedContainer(
             duration: const Duration(milliseconds: 250),
             width: _badgeSize - 12,

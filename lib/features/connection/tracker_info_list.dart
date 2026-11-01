@@ -1,8 +1,11 @@
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/providers/config.dart';
+import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:super_sliver_list/super_sliver_list.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'tracker_info_item.dart';
 import 'tracker_info_table.dart';
@@ -12,10 +15,6 @@ class TrackerInfoListController extends ValueNotifier<TrackerInfosState> {
 
   void search(String query) {
     value = value.copyWith(query: query);
-  }
-
-  void updateKeywords(List<String> keywords) {
-    value = value.copyWith(keywords: keywords);
   }
 
   void setTrackerInfos(List<TrackerInfo> trackerInfos) {
@@ -43,6 +42,18 @@ class TrackerInfoListController extends ValueNotifier<TrackerInfosState> {
   }
 }
 
+RecordFilterController<TrackerInfo> trackerInfoFilterController(
+  WidgetRef ref,
+  String pageId,
+) {
+  return RecordFilterController(
+    facets: trackerInfoFacets,
+    groupers: trackerInfoGroupers,
+    grouping: savedRecordGrouping(ref, pageId),
+    onGroupingChanged: (grouping) => saveRecordGrouping(ref, pageId, grouping),
+  );
+}
+
 class TrackerInfoList extends StatelessWidget {
   final List<TrackerInfo> trackerInfos;
   final String detailTitle;
@@ -52,7 +63,7 @@ class TrackerInfoList extends StatelessWidget {
   final bool shrinkWrap;
   final ScrollPhysics? physics;
   final EdgeInsetsGeometry? padding;
-  final Widget? Function(TrackerInfo trackerInfo)? actionBuilder;
+  final ValueChanged<TrackerInfo>? onClose;
 
   const TrackerInfoList({
     super.key,
@@ -64,31 +75,39 @@ class TrackerInfoList extends StatelessWidget {
     this.shrinkWrap = false,
     this.physics,
     this.padding,
-    this.actionBuilder,
+    this.onClose,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SuperListView.separated(
+    return PrismListView(
       reverse: reverse,
       shrinkWrap: shrinkWrap,
       physics: physics,
       controller: controller,
       padding: padding,
       itemCount: trackerInfos.length,
-      extentEstimation: table?.estimateExtent ?? recordListExtentEstimation,
-      separatorBuilder: (_, _) => table == null
-          ? const SizedBox(height: recordListGap)
-          : const SizedBox.shrink(),
-      itemBuilder: (_, index) => _buildTrackerInfoItem(
-        context,
-        trackerInfos[index],
-        isLive: false,
-        detailTitle: detailTitle,
-        table: table,
-        striped: index.isOdd,
-        actionBuilder: actionBuilder,
-      ),
+      gap: table == null ? recordListGap : 0,
+      estimatedItemExtent: table?.rowHeight ?? recordListEstimatedExtent,
+      itemBuilder: (_, index) {
+        final trackerInfo = trackerInfos[index];
+        final striped = index.isOdd;
+        return MemoBuilder(
+          key: Key(trackerInfo.id),
+          inputs: [
+            trackerInfo,
+            ...table == null ? [detailTitle] : [table, striped],
+          ],
+          builder: (_) => _buildTrackerInfoItem(
+            trackerInfo,
+            isLive: false,
+            detailTitle: detailTitle,
+            table: table,
+            striped: striped,
+            onClose: onClose,
+          ),
+        );
+      },
     );
   }
 }
@@ -101,7 +120,7 @@ class TrackerInfoAnimatedList extends StatelessWidget {
   final RecordTable<TrackerInfo>? table;
   final ScrollController? controller;
   final EdgeInsetsGeometry? padding;
-  final Widget? Function(TrackerInfo trackerInfo)? actionBuilder;
+  final ValueChanged<TrackerInfo>? onClose;
 
   const TrackerInfoAnimatedList({
     super.key,
@@ -110,7 +129,7 @@ class TrackerInfoAnimatedList extends StatelessWidget {
     this.table,
     this.controller,
     this.padding,
-    this.actionBuilder,
+    this.onClose,
   });
 
   @override
@@ -127,28 +146,134 @@ class TrackerInfoAnimatedList extends StatelessWidget {
       padding: padding,
       items: trackerInfos,
       keyOf: (trackerInfo) => trackerInfo.id,
+      estimatedItemExtent: table?.rowHeight ?? recordListEstimatedExtent,
       separator: table == null ? const SizedBox(height: recordListGap) : null,
-      itemBuilder: (context, trackerInfo) => _buildTrackerInfoItem(
-        context,
-        trackerInfo,
-        isLive: true,
-        detailTitle: detailTitle,
-        table: table,
-        striped: positions[trackerInfo.id]?.isOdd ?? false,
-        actionBuilder: actionBuilder,
+      itemBuilder: (itemContext, trackerInfo) {
+        final striped = positions[trackerInfo.id]?.isOdd ?? false;
+        return MemoBuilder(
+          key: Key(trackerInfo.id),
+          // A live row reads its age off the clock, which moves on its own.
+          inputs: [
+            trackerInfo,
+            ...table == null
+                ? [
+                    detailTitle,
+                    trackerInfo.start.getLastUpdateTimeDesc(
+                      itemContext,
+                      compact: true,
+                    ),
+                  ]
+                : [table, striped],
+          ],
+          builder: (_) => _buildTrackerInfoItem(
+            trackerInfo,
+            isLive: true,
+            detailTitle: detailTitle,
+            table: table,
+            striped: striped,
+            onClose: onClose,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class TrackerInfoGroupedList extends ConsumerWidget {
+  final List<RecordGroup<TrackerInfo>> groups;
+  final RecordGrouping grouping;
+  final bool isLive;
+  final String detailTitle;
+  final RecordTable<TrackerInfo>? table;
+  final ScrollController? controller;
+  final EdgeInsetsGeometry? padding;
+  final ValueChanged<TrackerInfo>? onClose;
+
+  const TrackerInfoGroupedList({
+    super.key,
+    required this.groups,
+    required this.grouping,
+    required this.isLive,
+    required this.detailTitle,
+    this.table,
+    this.controller,
+    this.padding,
+    this.onClose,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final showIcon =
+        grouping == RecordGrouping.app &&
+        ref.watch(
+          patchClashConfigProvider.select(
+            (state) =>
+                state.findProcessMode == FindProcessMode.always &&
+                system.isAndroid,
+          ),
+        );
+    final table = this.table;
+    return RecordGroupedList<TrackerInfo>(
+      groups: groups,
+      grouping: grouping,
+      controller: controller,
+      padding: padding,
+      estimatedItemExtent: table?.rowHeight ?? recordListEstimatedExtent,
+      leadingOf: (group) => showIcon && group.key.isNotEmpty
+          ? PackageIcon(packageName: group.key, size: 24)
+          : null,
+      trailingOf: isLive ? (group) => _buildSpeed(context, group.items) : null,
+      itemBuilder: (_, trackerInfo, index) {
+        final row = _buildTrackerInfoItem(
+          trackerInfo,
+          isLive: isLive,
+          detailTitle: detailTitle,
+          table: table,
+          striped: index.isOdd,
+          onClose: onClose,
+        );
+        return table == null
+            ? Padding(
+                padding: const EdgeInsets.only(top: recordListGap),
+                child: row,
+              )
+            : row;
+      },
+    );
+  }
+
+  Widget _buildSpeed(BuildContext context, List<TrackerInfo> trackerInfos) {
+    var upload = 0;
+    var download = 0;
+    for (final trackerInfo in trackerInfos) {
+      upload += trackerInfo.uploadSpeed ?? 0;
+      download += trackerInfo.downloadSpeed ?? 0;
+    }
+    final color = context.colorScheme.onSurfaceVariant;
+    WidgetSpan arrow(Glyph glyph) => WidgetSpan(
+      alignment: PlaceholderAlignment.middle,
+      child: GlyphIcon(glyph, size: 12, color: color),
+    );
+    return Text.rich(
+      TextSpan(
+        children: [
+          arrow(AppGlyphs.arrowUp),
+          TextSpan(text: ' ${upload.traffic.show}/s   '),
+          arrow(AppGlyphs.arrowDown),
+          TextSpan(text: ' ${download.traffic.show}/s'),
+        ],
       ),
     );
   }
 }
 
 Widget _buildTrackerInfoItem(
-  BuildContext context,
   TrackerInfo trackerInfo, {
   required bool isLive,
   required String detailTitle,
   required RecordTable<TrackerInfo>? table,
   required bool striped,
-  required Widget? Function(TrackerInfo trackerInfo)? actionBuilder,
+  ValueChanged<TrackerInfo>? onClose,
 }) {
   if (table != null) {
     return TrackerInfoTableRow(
@@ -157,16 +282,14 @@ Widget _buildTrackerInfoItem(
       table: table,
       striped: striped,
       detailTitle: detailTitle,
+      onClose: onClose,
     );
   }
   return TrackerInfoItem(
     key: Key(trackerInfo.id),
     trackerInfo: trackerInfo,
     isLive: isLive,
-    onClickKeyword: (value) {
-      context.commonScaffoldState?.addKeyword(value);
-    },
-    action: actionBuilder?.call(trackerInfo),
+    onClose: onClose,
     detailTitle: detailTitle,
   );
 }
