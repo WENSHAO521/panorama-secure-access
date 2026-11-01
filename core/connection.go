@@ -42,6 +42,7 @@ func handleCloseConnections() {
 
 func handleResetConnections() {
 	resolver.ResetConnection()
+	resetQuicSessions()
 }
 
 // A network change clears rather than waits out the TTLs: mihomo serves an
@@ -56,6 +57,7 @@ func handleClearDnsCache() {
 // Android's NetworkObserver reports through handleResetNetwork.
 func handleNetworkChanged() {
 	handleClearDnsCache()
+	resetQuicSessions()
 }
 
 // A connection that went out over a network the device has left hangs until

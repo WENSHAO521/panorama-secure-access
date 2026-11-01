@@ -22,6 +22,7 @@ import (
 var (
 	isInit     atomic.Bool
 	isRunning  atomic.Bool
+	tunEnabled atomic.Bool
 	sdkVersion atomic.Int32
 )
 
@@ -50,6 +51,7 @@ func handleStartListener() {
 	setRunning(true)
 	updateListeners(currentConfig)
 	resolver.ResetConnection()
+	resetQuicSessions()
 	// A probe already out left before the TUN routes and over the DNS
 	// connections just dropped, so its answer must not stand for this route.
 	bumpRouteEpoch()
@@ -60,6 +62,7 @@ func handleStopListener() {
 	defer configMu.Unlock()
 	setRunning(false)
 	listener.StopListener()
+	tunEnabled.Store(false)
 	resolver.ResetConnection()
 }
 
@@ -86,6 +89,9 @@ func updateListeners(cfg *config.Config) {
 	listener.ReCreateTuic(general.TuicServer, tunnel.Tunnel)
 	if !features.Android {
 		listener.ReCreateTun(general.Tun, tunnel.Tunnel)
+		if tunEnabled.Swap(general.Tun.Enable) != general.Tun.Enable {
+			resetQuicSessions()
+		}
 	}
 }
 
@@ -96,6 +102,7 @@ func handleShutdown() {
 	configMu.Lock()
 	setRunning(false)
 	listener.StopListener()
+	tunEnabled.Store(false)
 	updater.StopGeoUpdater()
 	executor.Shutdown()
 	currentConfig = nil
