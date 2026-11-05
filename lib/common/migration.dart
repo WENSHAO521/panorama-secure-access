@@ -91,13 +91,14 @@ class Migration {
 
   /// One-off setting changes for upgrades, apart from [currentVersion], which
   /// backups carry and an older app refuses when it is newer than its own.
-  static const upgradeVersion = 4;
+  static const upgradeVersion = 5;
 
   static const Map<int, Config Function(Config config)> _upgrades = {
     1: _resetThemeColors,
     2: _keepGlassLook,
     3: _followSystemColors,
     4: _turnOffSidebarBlur,
+    5: _dropFormerTunMtu,
   };
 
   Future<Config> run() async {
@@ -237,6 +238,22 @@ Config _followSystemColors(Config config) {
 // Releases stored sidebar blur on while its switch stayed hidden.
 Config _turnOffSidebarBlur(Config config) =>
     config.copyWith(themeProps: config.themeProps.copyWith(sidebarBlur: false));
+
+// An MTU left at the former default follows the new one; a picked one stays.
+Config _dropFormerTunMtu(Config config) {
+  final clash = config.patchClashConfig;
+  final overridden = clash.tunOverrideKeys.contains(TunOverrideKey.mtu);
+  return config.copyWith(
+    patchClashConfig: clash.copyWith(
+      tun: clash.tun.mtu == formerDefaultTunMtu
+          ? clash.tun.copyWith(mtu: defaultTunMtu)
+          : clash.tun,
+      tunOverride: !overridden && clash.tunOverride.mtu == formerDefaultTunMtu
+          ? clash.tunOverride.copyWith(mtu: defaultTunMtu)
+          : clash.tunOverride,
+    ),
+  );
+}
 
 bool _isV0(Map<String, Object?>? configMap) =>
     configMap?['proxiesStyle'] != null;

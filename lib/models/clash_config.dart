@@ -43,7 +43,10 @@ const defaultGeoXUrl = {
 
 const defaultMixedPort = 7890;
 const defaultKeepAliveInterval = 30;
-const defaultTunMtu = 9000;
+const defaultTunMtu = 1500;
+
+// Large MTUs stall big transfers on some Android ROMs and QUIC nodes.
+const formerDefaultTunMtu = 9000;
 const minTunMtu = 1280;
 const maxTunMtu = 65535;
 const defaultCongestionController = 'cubic';
@@ -1632,7 +1635,7 @@ Map<String, Object?> _withLegacyTunOverride(Map<String, Object?> json) {
     ...json,
     'tun-override': override.toJson(),
     _tunOverrideKeysJsonKey: [
-      if (tun.mtu != defaultTunMtu) TunOverrideKey.mtu.path,
+      if (tun.mtu != formerDefaultTunMtu) TunOverrideKey.mtu.path,
       if (tun.congestionController != defaultCongestionController)
         TunOverrideKey.congestionController.path,
       if (override.strictRoute) TunOverrideKey.strictRoute.path,

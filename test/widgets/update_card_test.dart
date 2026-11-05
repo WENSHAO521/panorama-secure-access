@@ -5,7 +5,6 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:prism_ui/prism_ui.dart';
 
 import '../helpers/glyph_finders.dart';
 import '../helpers/host_scaffold.dart';
