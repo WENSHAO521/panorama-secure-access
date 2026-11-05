@@ -8,7 +8,6 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:prism_ui/prism_ui.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
