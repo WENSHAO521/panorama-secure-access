@@ -306,6 +306,36 @@ void main() {
         expect(await upgrade(4), isTrue);
       });
 
+      test('moves an MTU left at the former default to the new one, '
+          'once', () async {
+        Future<PatchClashConfig> upgrade(
+          int mtu,
+          int from, {
+          List<String> keys = const [],
+        }) async {
+          final configMap = _createConfigMap();
+          (configMap['patchClashConfig']! as Map<String, Object?>)
+            ..['tun'] = {'mtu': mtu}
+            ..['tun-override'] = {'mtu': mtu}
+            ..['tun-override-keys'] = keys;
+          final store = _FakeMigrationStore(
+            configMap: configMap,
+            version: Migration.currentVersion,
+            upgradeVersion: from,
+          );
+          return (await Migration(store: store).run()).patchClashConfig;
+        }
+
+        final moved = await upgrade(9000, 4);
+        expect(moved.tun.mtu, defaultTunMtu);
+        expect(moved.tunOverride.mtu, defaultTunMtu);
+        final picked = await upgrade(9000, 4, keys: ['mtu']);
+        expect(picked.tun.mtu, defaultTunMtu);
+        expect(picked.tunOverride.mtu, 9000);
+        expect((await upgrade(1400, 4)).tun.mtu, 1400);
+        expect((await upgrade(9000, 5)).tun.mtu, 9000);
+      });
+
       test('a new install only records it', () async {
         final store = _FakeMigrationStore(
           configMap: null,
