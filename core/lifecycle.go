@@ -22,10 +22,11 @@ import (
 var (
 	isInit     atomic.Bool
 	isRunning  atomic.Bool
+	tunEnabled atomic.Bool
 	sdkVersion atomic.Int32
 )
 
-func handleInitClash(params *InitParams) bool {
+func handleInit(params *InitParams) error {
 	configMu.Lock()
 	defer configMu.Unlock()
 	sdkVersion.Store(int32(params.Version))
@@ -33,32 +34,36 @@ func handleInitClash(params *InitParams) bool {
 	initOwnership(params.HomeDir)
 	clearSpilledResponses()
 	isInit.Store(true)
-	return true
+	return nil
 }
 
-func handleGetIsInit() bool {
+func handleInitialized() bool {
 	return isInit.Load()
 }
 
-func handleStartListener() bool {
+func setRunning(running bool) {
+	isRunning.Store(running)
+}
+
+func handleStartListener() {
 	configMu.Lock()
 	defer configMu.Unlock()
-	isRunning.Store(true)
+	setRunning(true)
 	updateListeners(currentConfig)
 	resolver.ResetConnection()
+	resetQuicSessions()
 	// A probe already out left before the TUN routes and over the DNS
 	// connections just dropped, so its answer must not stand for this route.
 	bumpRouteEpoch()
-	return true
 }
 
-func handleStopListener() bool {
+func handleStopListener() {
 	configMu.Lock()
 	defer configMu.Unlock()
-	isRunning.Store(false)
+	setRunning(false)
 	listener.StopListener()
+	tunEnabled.Store(false)
 	resolver.ResetConnection()
-	return true
 }
 
 func updateListeners(cfg *config.Config) {
@@ -84,16 +89,20 @@ func updateListeners(cfg *config.Config) {
 	listener.ReCreateTuic(general.TuicServer, tunnel.Tunnel)
 	if !features.Android {
 		listener.ReCreateTun(general.Tun, tunnel.Tunnel)
+		if tunEnabled.Swap(general.Tun.Enable) != general.Tun.Enable {
+			resetQuicSessions()
+		}
 	}
 }
 
-func handleShutdown() bool {
+func handleShutdown() {
 	handleStopLog()
 	stopRouteWatch()
 
 	configMu.Lock()
-	isRunning.Store(false)
+	setRunning(false)
 	listener.StopListener()
+	tunEnabled.Store(false)
 	updater.StopGeoUpdater()
 	executor.Shutdown()
 	currentConfig = nil
@@ -101,7 +110,6 @@ func handleShutdown() bool {
 	configMu.Unlock()
 
 	handleForceGC()
-	return true
 }
 
 func handleForceGC() {

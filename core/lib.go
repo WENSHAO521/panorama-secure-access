@@ -48,12 +48,15 @@ func (th *TunHandler) start(fd int, stack, address, dns, options string) bool {
 	th.mu.Lock()
 	th.initHook()
 	th.mu.Unlock()
+	// Sockets opened before the VPN (pooled QUIC sessions, DNS clients) would
+	// otherwise loop back into the new tunnel until they time out.
+	platform.ProtectExistingSockets(th.callbacks.Protect)
 
 	// t.Start runs outside th.mu on purpose. The hook is live from initHook
 	// onwards, and a socket opened anywhere inside Start reaches handleProtect
 	// on this very goroutine — an RLock taken while this one holds the write
-	// lock deadlocks the start outright. Nothing is lost by dropping it: both
-	// hooks return early until th.listener is set, which is below.
+	// lock deadlocks the start outright. Protection is live already; process
+	// lookup waits until th.listener is set below.
 	tunListener := t.Start(fd, stack, address, dns, options)
 
 	th.mu.Lock()
@@ -89,7 +92,7 @@ func (th *TunHandler) handleProtect(fd int) {
 	th.mu.RLock()
 	defer th.mu.RUnlock()
 
-	if th.listener == nil || th.callbacks == nil {
+	if th.callbacks == nil {
 		return
 	}
 	th.callbacks.Protect(fd)
@@ -237,13 +240,6 @@ func handleUpdateDns(value string) {
 	})
 }
 
-func init() {
-	registerMethod(updateDnsMethod, withArguments(func(value string) bool {
-		handleUpdateDns(value)
-		return true
-	}))
-}
-
 // gobind runs an export on the caller's thread and turns no panic into a Java
 // exception, so a panic that leaves one ends the whole application.
 func recoverExport(name string) {
@@ -293,13 +289,13 @@ func QuickSetup(initParamsString, setupParamsString string, answer func(string))
 			answer("init failed")
 			return
 		}
-		handleInitClash(&initParams)
+		_ = handleInit(&initParams)
 		setupParams := &SetupParams{}
 		if err := json.Unmarshal([]byte(setupParamsString), setupParams); err != nil {
 			answer(err.Error())
 			return
 		}
-		isRunning.Store(true)
+		setRunning(true)
 		if err := handleSetupConfig(setupParams); err != nil {
 			answer(err.Error())
 			return
@@ -327,12 +323,12 @@ func hasEventListener() bool {
 
 func GetTotalTraffic(onlyStatisticsProxy bool) string {
 	defer recoverExport("getTotalTraffic")
-	return marshalResult(handleGetTotalTraffic(onlyStatisticsProxy))
+	return marshalResult(handleGetTotalTraffic(TrafficParams{OnlyProxy: onlyStatisticsProxy}))
 }
 
 func GetTraffic(onlyStatisticsProxy bool) string {
 	defer recoverExport("getTraffic")
-	return marshalResult(handleGetTraffic(onlyStatisticsProxy))
+	return marshalResult(handleGetTraffic(TrafficParams{OnlyProxy: onlyStatisticsProxy}))
 }
 
 func marshalResult(value any) string {
@@ -389,6 +385,10 @@ func ForceGC() {
 		handleForceGC()
 	})
 }
+
+// SetMitmPressure stays for the Android service, which reports memory pressure
+// whatever the core; this core keeps nothing to release.
+func SetMitmPressure(level int32) {}
 
 func UpdateDns(value string) {
 	defer recoverExport("updateDns")

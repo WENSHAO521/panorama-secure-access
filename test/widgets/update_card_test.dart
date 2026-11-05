@@ -3,10 +3,11 @@ import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/widgets/widgets.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 import '../helpers/glyph_finders.dart';
+import '../helpers/host_scaffold.dart';
 import '../helpers/test_app.dart';
 
 const _asset = UpdateAsset(
@@ -36,7 +37,7 @@ Future<void> _pump(WidgetTester tester, UpdateState? state) async {
       overrides: [
         updateControllerProvider.overrideWithBuild((ref, _) => state),
       ],
-      homeBuilder: (child) => Scaffold(body: Center(child: child)),
+      homeBuilder: (child) => HostScaffold(body: Center(child: child)),
       child: const SizedBox(width: 380, child: UpdateCardHost()),
     ),
   );
@@ -64,7 +65,7 @@ void main() {
     expect(find.text('Downloading update'), findsOneWidget);
     expect(find.text('3.4.1 · 50%'), findsOneWidget);
     expect(find.text('Cancel'), findsOneWidget);
-    expect(find.byType(CommonCircleLoading), findsOneWidget);
+    expect(find.byType(ActivityIndicator), findsOneWidget);
   });
 
   testWidgets('offers install once the download is ready', (tester) async {
@@ -85,6 +86,6 @@ void main() {
   ) async {
     await _pump(tester, _state(UpdateStage.available));
     expect(find.text('Update now'), findsOneWidget);
-    expect(find.byType(CommonCircleLoading), findsNothing);
+    expect(find.byType(ActivityIndicator), findsNothing);
   });
 }

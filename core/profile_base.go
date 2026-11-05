@@ -21,9 +21,9 @@ import (
 // back replaces every other section.
 var profileBaseSections = []string{"proxies", "proxy-groups", "sub-rules"}
 
-func handleGetProfileBase(path string) (*ProfileBase, error) {
+func handleGetProfileBase(params PathParams) (*ProfileBase, error) {
 	defer scheduleLoadMemoryRelease()
-	buf, err := os.ReadFile(path)
+	buf, err := os.ReadFile(params.Path)
 	if err != nil {
 		return nil, err
 	}
@@ -49,9 +49,9 @@ func handleGetProfileBase(path string) (*ProfileBase, error) {
 	return base, nil
 }
 
-func handleGetProfileOutbounds(path string) (*ProfileOutbounds, error) {
+func handleGetProfileOutbounds(params PathParams) (*ProfileOutbounds, error) {
 	defer scheduleLoadMemoryRelease()
-	buf, err := os.ReadFile(path)
+	buf, err := os.ReadFile(params.Path)
 	if err != nil {
 		return nil, err
 	}
@@ -110,6 +110,7 @@ func loadConfigWithBase(base *SetupBase, configPath string) (*config.Config, err
 	if err := writeConfigDocument(configPath, document); err != nil {
 		return nil, err
 	}
+	withQuicDefaults(raw)
 	cfg, err := config.ParseRawConfig(raw)
 	if err != nil {
 		return nil, err
