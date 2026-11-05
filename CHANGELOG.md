@@ -1,5 +1,20 @@
 # Changelog
 
+## v3.5.3 (2026-11-05)
+
+**Features**
+
+- **app** Requests and live connections on one page, a smoother traffic card and new log lists, from upstream FlClash v0.9.3 (e61d9f9)
+- **app** Auto-select groups leave an unusable first node at once, from upstream FlClash v0.9.3-pre.2 (053d84c)
+- **update** Windows updates install silently and reopen the app (2b03025)
+- **app** A rebuilt interface and reworked Core protocol, from upstream FlClash v0.9.3-pre.1 (875cab6)
+
+**Bug Fixes**
+
+- **android** Hysteria2 and other QUIC nodes connect right after the VPN starts (6b6404e)
+- **core** Hysteria2 nodes no longer fail right after the app starts or the network changes (132648d)
+- **tun** The TUN MTU defaults to 1500 so large downloads no longer stall; an MTU left at the old 9000 moves to it (2ebcf42)
+
 ## v3.5.2 (2026-10-24)
 
 **Features**
