@@ -64,6 +64,7 @@ func handleStopListener() {
 	defer configMu.Unlock()
 	setRunning(false)
 	endTunStart()
+	releaseEgress()
 	listener.StopListener()
 	tunEnabled.Store(false)
 	resolver.ResetConnection()
@@ -92,17 +93,23 @@ func updateListeners(cfg *config.Config) {
 	listener.ReCreateTuic(general.TuicServer, tunnel.Tunnel)
 	if !features.Android {
 		defer beginTunSettle(cfg)()
+		pinEgressNow(cfg)
 		listener.ReCreateTun(general.Tun, tunnel.Tunnel)
+		pinned := egressPinned()
+		releaseEgress()
 		// Sockets opened before the TUN came up bound no interface, so they loop into it.
 		if tunEnabled.Swap(general.Tun.Enable) != general.Tun.Enable {
 			rememberDefaultInterface()
 			handleResetConnections()
 			bumpRouteEpoch()
-			scheduleTunAftershock(func() {
-				resolver.ResetConnection()
-				closeQuicSessions()
-				bumpRouteEpoch()
-			})
+			// A pinned window made no such sockets; without one, Windows may still route a fresh one into the TUN.
+			if !pinned {
+				scheduleTunAftershock(func() {
+					resolver.ResetConnection()
+					closeQuicSessions()
+					bumpRouteEpoch()
+				})
+			}
 		}
 	}
 }
