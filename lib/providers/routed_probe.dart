@@ -544,9 +544,13 @@ mixin RoutedProbe<K, V>
 
   void _reprobe(K target, Map<K, ProbeEntry<V>> entries) {
     if (_watchers.containsKey(target)) {
-      entries[target] = ProbeEntry(phase: ProbePhase.probing);
+      final previous = entries[target];
+      entries[target] = ProbeEntry(
+        phase: ProbePhase.probing,
+        value: previous?.phase == ProbePhase.fresh ? previous?.value : null,
+      );
       _due[target] = (
-        keepValue: false,
+        keepValue: previous?.phase == ProbePhase.fresh,
         forced: false,
         supersede: false,
         settle: false,

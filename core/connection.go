@@ -54,8 +54,18 @@ func handleClearDnsCache() {
 }
 
 // handleNetworkChanged is how the desktop host reports a new network, which
-// Android's NetworkObserver reports through handleResetNetwork.
+// Android's NetworkObserver reports through handleResetNetwork. The host also
+// reports the TUN adapter coming up, which must not restart every probe and
+// hysteria2 handshake that just started over it.
 func handleNetworkChanged() {
+	if tunEnabled.Load() && !defaultInterfaceMoved() {
+		return
+	}
+	resetNetworkState()
+	bumpRouteEpoch()
+}
+
+func resetNetworkState() {
 	handleClearDnsCache()
 	resetQuicSessions()
 }
@@ -64,7 +74,7 @@ func handleNetworkChanged() {
 // TCP gives up on it, and so do the DNS clients' pooled connections.
 func handleResetNetwork() {
 	handleCloseConnections()
-	handleNetworkChanged()
+	resetNetworkState()
 }
 
 // A connection that is already gone is closed as far as the host is concerned.

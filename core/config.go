@@ -164,6 +164,7 @@ func applyConfig(params *SetupParams) error {
 		cfg = fallback
 	}
 
+	defer beginTunSettle(cfg)()
 	currentConfig = cfg
 	hub.ApplyConfig(cfg)
 	patchSelectGroup(params.SelectedMap)

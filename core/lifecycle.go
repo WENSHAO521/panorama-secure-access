@@ -49,6 +49,7 @@ func handleStartListener() {
 	configMu.Lock()
 	defer configMu.Unlock()
 	setRunning(true)
+	defer beginTunSettle(currentConfig)()
 	updateListeners(currentConfig)
 	resolver.ResetConnection()
 	resetQuicSessions()
@@ -88,9 +89,13 @@ func updateListeners(cfg *config.Config) {
 	listener.ReCreateVmess(general.VmessConfig, tunnel.Tunnel)
 	listener.ReCreateTuic(general.TuicServer, tunnel.Tunnel)
 	if !features.Android {
+		defer beginTunSettle(cfg)()
 		listener.ReCreateTun(general.Tun, tunnel.Tunnel)
+		// Sockets opened before the TUN came up bound no interface, so they loop into it.
 		if tunEnabled.Swap(general.Tun.Enable) != general.Tun.Enable {
-			resetQuicSessions()
+			rememberDefaultInterface()
+			handleResetConnections()
+			bumpRouteEpoch()
 		}
 	}
 }

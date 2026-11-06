@@ -465,6 +465,24 @@ void main() {
     expect(probe.calls, hasLength(3));
   });
 
+  test('an answer whose exit moved stays on show while asked again', () async {
+    final container = build();
+    final probe = container.read(_probeProvider.notifier);
+    probe.watch('a');
+    await pumpEventQueue();
+    probe.answer({'a': _ok('a.example:443')});
+    await pumpEventQueue();
+
+    probe.moved.add('a.example:443');
+    moveRoute(container, 2);
+    await pumpEventQueue();
+
+    final entry = container.read(_probeProvider).entryOf('a');
+    expect(probe.calls, ['a', 'a']);
+    expect(entry.isLoading, isTrue);
+    expect(entry.value, 'ok');
+  });
+
   test('coming back to a failed target asks again', () async {
     final container = build();
     final probe = container.read(_probeProvider.notifier);
