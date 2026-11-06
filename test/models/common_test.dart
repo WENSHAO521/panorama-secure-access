@@ -166,6 +166,34 @@ void main() {
     });
   });
 
+  group('GroupExt.isEmptyFiltered', () {
+    Group group(List<String> members, {String? emptyFallback}) => Group(
+      type: GroupType.Selector,
+      name: 'G',
+      emptyFallback: emptyFallback,
+      all: [for (final name in members) Proxy(name: name, type: 'Direct')],
+    );
+
+    test('holds when the empty fallback is the only member', () {
+      expect(
+        group(['COMPATIBLE'], emptyFallback: 'COMPATIBLE').isEmptyFiltered,
+        isTrue,
+      );
+    });
+
+    test('fails for a group with its own members', () {
+      expect(
+        group(['DIRECT'], emptyFallback: 'COMPATIBLE').isEmptyFiltered,
+        isFalse,
+      );
+      expect(
+        group(['A', 'COMPATIBLE'], emptyFallback: 'COMPATIBLE').isEmptyFiltered,
+        isFalse,
+      );
+      expect(group(['COMPATIBLE']).isEmptyFiltered, isFalse);
+    });
+  });
+
   group('ScriptsExt naming', () {
     Script script(int id, String label) =>
         Script(id: id, label: label, lastUpdateTime: DateTime(2026));

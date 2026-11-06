@@ -204,6 +204,7 @@ _Group _$GroupFromJson(Map<String, dynamic> json) => _Group(
   hidden: json['hidden'] as bool?,
   testUrl: json['testUrl'] as String?,
   icon: json['icon'] as String? ?? '',
+  emptyFallback: json['emptyFallback'] as String?,
   name: json['name'] as String,
 );
 
@@ -214,6 +215,7 @@ Map<String, dynamic> _$GroupToJson(_Group instance) => <String, dynamic>{
   'hidden': instance.hidden,
   'testUrl': instance.testUrl,
   'icon': instance.icon,
+  'emptyFallback': instance.emptyFallback,
   'name': instance.name,
 };
 

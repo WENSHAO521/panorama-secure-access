@@ -74,6 +74,11 @@ hooks:
       expect(setup.createPackageTargets('macos', null), 'dmg');
     });
 
+    test('names the architecture as appimagetool reads ARCH', () {
+      expect(setup.appImageArchName('arm64'), 'arm_aarch64');
+      expect(setup.appImageArchName('amd64'), 'x86_64');
+    });
+
     test('downloads the appimagetool build matching the host', () {
       expect(setup.appImageToolArch('arm64'), 'aarch64');
       expect(setup.appImageToolArch('amd64'), 'x86_64');

@@ -9222,6 +9222,26 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `No node is left after filtering, so traffic goes to {name}`
+  String groupEmptyFallbackTip(Object name) {
+    return Intl.message(
+      'No node is left after filtering, so traffic goes to $name',
+      name: 'groupEmptyFallbackTip',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `GLOBAL is set to DIRECT, so global mode sends traffic direct`
+  String get globalDirectTip {
+    return Intl.message(
+      'GLOBAL is set to DIRECT, so global mode sends traffic direct',
+      name: 'globalDirectTip',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'card.dart';
 import 'common.dart';
+import 'notice.dart';
 
 const _headerInset = 10.0;
 const _headerButtonInset = 4.0;
@@ -786,6 +787,10 @@ class _SelectedProxyName extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final notice = groupNoticeOf(context, ref, groupName);
+    if (notice != null) {
+      return GroupNoticeText(notice);
+    }
     final proxyName = ref
         .watch(selectedProxyNameProvider(groupName))
         .takeFirstValid([]);

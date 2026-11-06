@@ -231,7 +231,61 @@ Future<int> _package(
     stderr.write(utf8.decode(data));
   });
   final exitCode = await process.exitCode;
-  return exitCode;
+  if (exitCode != 0 || platform != 'linux' || !targets.contains('appimage')) {
+    return exitCode;
+  }
+  return _dropBundledRuntimeLibraries(p.join(rootDir, 'dist'), arch);
+}
+
+/// The packager bundles every library the plugins link, the C++ runtime
+/// included. Run before the system's, an older runtime than the host's Mesa
+/// needs leaves EGL without a driver and the window black (FlClash#2946).
+const appImageExcludedLibraries = {'libstdc++.so.6', 'libgcc_s.so.1'};
+
+Future<int> _dropBundledRuntimeLibraries(String distDir, String arch) async {
+  final dist = Directory(distDir);
+  if (!dist.existsSync()) return 0;
+  final images = dist
+      .listSync(recursive: true)
+      .whereType<File>()
+      .where((file) => file.path.endsWith('.AppImage'));
+  for (final image in images) {
+    final work = await Directory.systemTemp.createTemp('appimage');
+    try {
+      final extract = await Process.run(image.absolute.path, [
+        '--appimage-extract',
+      ], workingDirectory: work.path);
+      if (extract.exitCode != 0) {
+        stderr.write(extract.stderr);
+        return extract.exitCode;
+      }
+      final appDir = p.join(work.path, 'squashfs-root');
+      final bundled = appImageExcludedLibraries
+          .map((name) => File(p.join(appDir, 'usr', 'lib', name)))
+          .where((file) => file.existsSync())
+          .toList();
+      if (bundled.isEmpty) continue;
+      for (final file in bundled) {
+        file.deleteSync();
+      }
+      stdout.writeln(
+        'Dropped ${bundled.map((file) => p.basename(file.path)).join(', ')} '
+        'from ${p.basename(image.path)}',
+      );
+      final pack = await Process.run(
+        'appimagetool',
+        ['--no-appstream', appDir, image.absolute.path],
+        environment: {'ARCH': appImageArchName(arch)},
+      );
+      if (pack.exitCode != 0) {
+        stderr.write(pack.stderr);
+        return pack.exitCode;
+      }
+    } finally {
+      work.deleteSync(recursive: true);
+    }
+  }
+  return 0;
 }
 
 String _detectArch() {
@@ -344,6 +398,11 @@ Future<int> _ensureLinuxDependencies() async {
   }
   await Process.run('chmod', ['+x', appimagetool]);
   return 0;
+}
+
+/// appimagetool reads aarch64 only by its ELF name in `ARCH`.
+String appImageArchName(String arch) {
+  return arch == 'arm64' ? 'arm_aarch64' : 'x86_64';
 }
 
 String appImageToolArch(String arch) {

@@ -150,6 +150,12 @@ class ScaffoldState extends State<Scaffold>
   void initState() {
     super.initState();
     _appBarState = ValueNotifier(widget.searchState);
+    final restoredQuery = widget.searchState?.query;
+    if (restoredQuery != null && restoredQuery.isNotEmpty) {
+      _textController.text = restoredQuery;
+      _searchMotion.jumpTo(open: true);
+      _searchCovered.value = true;
+    }
     _loadingNotifier.value = widget.isLoading;
     _searchFocusNode.addListener(_handleSearchFocusChange);
     _searchMotion.addStatusListener((status) {
