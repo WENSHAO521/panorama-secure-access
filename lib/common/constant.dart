@@ -84,11 +84,17 @@ const downloadTimeoutDuration = Duration(seconds: 20);
 /// A healthy source answers within a second; past this the outbound is down.
 const outboundIpTimeoutDuration = Duration(seconds: 6);
 
+/// Kept in step with tunSettleLimit in core/tun_settle.go: a check first waits
+/// for a desktop TUN that is still coming up.
+const coreTunSettleAllowance = Duration(seconds: 20);
+
 /// The Core may spend a method's own timeout twice, once queueing for a probe
 /// slot and once on the request, before the transport is considered
 /// unresponsive. [budgetFactor] covers methods that spend it more than once.
 Duration coreGuardFor(int timeout, {int budgetFactor = 2}) =>
-    Duration(milliseconds: timeout * budgetFactor) + const Duration(seconds: 5);
+    Duration(milliseconds: timeout * budgetFactor) +
+    coreTunSettleAllowance +
+    const Duration(seconds: 5);
 
 /// Kept in step with serviceSweepBudgetFactor in core/service_check.go.
 const serviceSweepBudgetFactor = 6;
