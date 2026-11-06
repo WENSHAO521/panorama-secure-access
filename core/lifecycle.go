@@ -91,6 +91,7 @@ func updateListeners(cfg *config.Config) {
 		listener.ReCreateTun(general.Tun, tunnel.Tunnel)
 		// Sockets opened before the TUN came up bound no interface, so they loop into it.
 		if tunEnabled.Swap(general.Tun.Enable) != general.Tun.Enable {
+			rememberDefaultInterface()
 			handleResetConnections()
 			bumpRouteEpoch()
 		}
