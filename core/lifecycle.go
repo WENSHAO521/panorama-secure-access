@@ -48,6 +48,7 @@ func setRunning(running bool) {
 func handleStartListener() {
 	configMu.Lock()
 	defer configMu.Unlock()
+	defer endTunStart()
 	setRunning(true)
 	defer beginTunSettle(currentConfig)()
 	updateListeners(currentConfig)
@@ -62,6 +63,8 @@ func handleStopListener() {
 	configMu.Lock()
 	defer configMu.Unlock()
 	setRunning(false)
+	endTunStart()
+	releaseEgress()
 	listener.StopListener()
 	tunEnabled.Store(false)
 	resolver.ResetConnection()
@@ -90,12 +93,23 @@ func updateListeners(cfg *config.Config) {
 	listener.ReCreateTuic(general.TuicServer, tunnel.Tunnel)
 	if !features.Android {
 		defer beginTunSettle(cfg)()
+		pinEgressNow(cfg)
 		listener.ReCreateTun(general.Tun, tunnel.Tunnel)
+		pinned := egressPinned()
+		releaseEgress()
 		// Sockets opened before the TUN came up bound no interface, so they loop into it.
 		if tunEnabled.Swap(general.Tun.Enable) != general.Tun.Enable {
 			rememberDefaultInterface()
 			handleResetConnections()
 			bumpRouteEpoch()
+			// A pinned window made no such sockets; without one, Windows may still route a fresh one into the TUN.
+			if !pinned {
+				scheduleTunAftershock(func() {
+					resolver.ResetConnection()
+					closeQuicSessions()
+					bumpRouteEpoch()
+				})
+			}
 		}
 	}
 }
@@ -106,6 +120,7 @@ func handleShutdown() {
 
 	configMu.Lock()
 	setRunning(false)
+	endTunStart()
 	listener.StopListener()
 	tunEnabled.Store(false)
 	updater.StopGeoUpdater()

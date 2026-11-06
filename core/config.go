@@ -164,9 +164,12 @@ func applyConfig(params *SetupParams) error {
 		cfg = fallback
 	}
 
+	holdForTunStart(cfg)
 	defer beginTunSettle(cfg)()
 	currentConfig = cfg
+	restoreEgress := pinEgress(cfg)
 	hub.ApplyConfig(cfg)
+	restoreEgress()
 	patchSelectGroup(params.SelectedMap)
 	bumpRouteEpoch()
 	updateListeners(cfg)

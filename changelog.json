@@ -2,6 +2,49 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.5.5",
+      "tag": "v3.5.5",
+      "date": "2026-11-06",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "4ef0199",
+              "scope": "core",
+              "text": "Hysteria2 and other nodes connect at once after turning on TUN on Windows, macOS and Linux"
+            },
+            {
+              "id": "10be40c",
+              "scope": "core",
+              "text": "Status checks on Windows and macOS finish in one pass when turning on TUN"
+            },
+            {
+              "id": "56bdf3d",
+              "scope": "dashboard",
+              "text": "The dashboard keeps a passed status check on show while it re-checks"
+            },
+            {
+              "id": "b173da6",
+              "scope": "network",
+              "text": "Status checks on desktop finish in one pass after turning on TUN"
+            },
+            {
+              "id": "8614458",
+              "scope": "tun",
+              "text": "Desktop TUN uses an MTU of 1500 unless the profile or settings pick one"
+            },
+            {
+              "id": "10bab66",
+              "scope": "core",
+              "text": "Hysteria2 and other nodes no longer fail right after turning on TUN on desktop"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.5.4",
       "tag": "v3.5.4",
       "date": "2026-11-06",
