@@ -570,6 +570,7 @@ abstract class Group with _$Group {
     bool? hidden,
     String? testUrl,
     @Default('') String icon,
+    String? emptyFallback,
     required String name,
   }) = _Group;
 
@@ -587,6 +588,11 @@ extension GroupsExt on List<Group> {
 
 extension GroupExt on Group {
   String get realNow => now ?? '';
+
+  /// mihomo fills a group whose filters leave nothing with this one built-in,
+  /// COMPATIBLE, a direct connection, unless the profile names another.
+  bool get isEmptyFiltered =>
+      all.length == 1 && all.first.name == emptyFallback;
 
   String getCurrentSelectedName(String proxyName) {
     if (type.isComputedSelected) {

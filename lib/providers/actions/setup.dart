@@ -40,6 +40,7 @@ class SetupAction extends _$SetupAction {
   final _setupScheduler = SerialTaskScheduler();
   final _listenerScheduler = SerialTaskScheduler();
   _RunRequest? _latestRunRequest;
+  Mode? _sentMode;
   DateTime? _startTime;
   _SetupInputs? _appliedInputs;
   var _lastPushDuration = Duration.zero;
@@ -344,7 +345,29 @@ class SetupAction extends _$SetupAction {
           options: ref.read(coreOptionsProvider),
         ),
       );
+      final previousMode = _sentMode;
+      _sentMode = patchConfig.mode;
+      if (previousMode != null && previousMode != patchConfig.mode) {
+        await _releaseConnectionsAfterModeChange();
+      }
     });
+  }
+
+  /// The Core routes only new connections by the new mode, so ones it already
+  /// holds would keep their old exit, as after a proxy change.
+  Future<void> _releaseConnectionsAfterModeChange() async {
+    try {
+      if (ref.read(appSettingProvider).closeConnections) {
+        await _core.closeConnections();
+      } else {
+        await _core.resetConnections();
+      }
+    } catch (error) {
+      commonPrint.log(
+        'mode change connection reset failed: $error',
+        logLevel: coreFailureLogLevel(error),
+      );
+    }
   }
 
   @protected

@@ -889,6 +889,56 @@ void main() {
       expect(params.secret, 'abc');
     });
 
+    group('after a mode change', () {
+      Future<_MockCoreHandlerInterface> changeMode({
+        required bool closeConnections,
+      }) async {
+        final core = _MockCoreHandlerInterface();
+        when(() => core.updateConfig(any())).thenAnswer((_) async {});
+        when(() => core.closeConnections()).thenAnswer((_) async {});
+        when(() => core.resetConnections()).thenAnswer((_) async {});
+        final scopedAction = TestSetupAction();
+        final scoped = ProviderContainer(
+          overrides: [
+            profilesProvider.overrideWith(TestProfiles.new),
+            setupActionProvider.overrideWith(() => scopedAction),
+            coreHandlerProvider.overrideWithValue(CoreController.scoped(core)),
+          ],
+        );
+        addTearDown(scoped.dispose);
+        scoped.read(setupActionProvider.notifier);
+        scoped
+            .read(appSettingProvider.notifier)
+            .update(
+              (state) => state.copyWith(closeConnections: closeConnections),
+            );
+        await scopedAction.updateConfig();
+        await scopedAction.updateConfig();
+        verifyNever(() => core.closeConnections());
+        verifyNever(() => core.resetConnections());
+
+        scoped
+            .read(patchClashConfigProvider.notifier)
+            .update((state) => state.copyWith(mode: Mode.global));
+        await scopedAction.updateConfig();
+        return core;
+      }
+
+      test('closes the connections the old mode routed', () async {
+        final core = await changeMode(closeConnections: true);
+
+        verify(() => core.closeConnections()).called(1);
+        verifyNever(() => core.resetConnections());
+      });
+
+      test('only resets them when closing is off', () async {
+        final core = await changeMode(closeConnections: false);
+
+        verify(() => core.resetConnections()).called(1);
+        verifyNever(() => core.closeConnections());
+      });
+    });
+
     test('never opens the controller without a secret', () async {
       final params = await updateWith(
         const PatchClashConfig(
