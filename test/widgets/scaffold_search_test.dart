@@ -192,6 +192,26 @@ void main() {
     expect(find.text('Page'), findsOneWidget);
   });
 
+  testWidgets('a page opened with a query comes back searching it', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      TestApp(
+        wrapInProviderScope: true,
+        child: Scaffold(
+          title: 'Page',
+          searchState: AppBarSearchState(onSearch: (_) {}, query: 'needle'),
+          body: const SizedBox.expand(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final field = tester.widget<TextField>(find.byType(TextField));
+    expect(field.controller!.text, 'needle');
+    expect(find.text('Page'), findsNothing);
+  });
+
   testWidgets('a fresh search callback each build keeps search open', (
     tester,
   ) async {

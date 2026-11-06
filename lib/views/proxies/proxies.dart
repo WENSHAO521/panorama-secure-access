@@ -128,6 +128,11 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
     );
   }
 
+  String? get _restoredQuery {
+    final query = ref.read(queryProvider(QueryTag.proxies));
+    return query.isEmpty ? null : query;
+  }
+
   void _onSearch(String value) {
     ref.read(queryProvider(QueryTag.proxies).notifier).value = value;
   }
@@ -173,7 +178,10 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
       ],
       menuItems: picker ? const [] : _buildMenuItems(context, style),
       title: context.appLocalizations.proxies,
-      searchState: AppBarSearchState(onSearch: _onSearch),
+      searchState: AppBarSearchState(
+        onSearch: _onSearch,
+        query: _restoredQuery,
+      ),
       body: switch (style.type) {
         ProxiesType.tab => _tabView,
         ProxiesType.list => const ProxiesListView(),

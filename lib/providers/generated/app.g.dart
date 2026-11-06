@@ -1852,17 +1852,21 @@ abstract class _$CoreStatus extends $Notifier<CoreStatus> {
   }
 }
 
+/// Kept alive so a search survives leaving its page and coming back.
+
 @ProviderFor(Query)
 final queryProvider = QueryFamily._();
 
+/// Kept alive so a search survives leaving its page and coming back.
 final class QueryProvider extends $NotifierProvider<Query, String> {
+  /// Kept alive so a search survives leaving its page and coming back.
   QueryProvider._({
     required QueryFamily super.from,
     required QueryTag super.argument,
   }) : super(
          retry: null,
          name: r'queryProvider',
-         isAutoDispose: true,
+         isAutoDispose: false,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
@@ -1900,7 +1904,9 @@ final class QueryProvider extends $NotifierProvider<Query, String> {
   }
 }
 
-String _$queryHash() => r'b6be53823f3351ee2bf1c0d147c0ccf5f31bb8b5';
+String _$queryHash() => r'e039d4aa381dd730f2d1552da47d64887e4a3227';
+
+/// Kept alive so a search survives leaving its page and coming back.
 
 final class QueryFamily extends $Family
     with $ClassFamilyOverride<Query, String, String, String, QueryTag> {
@@ -1910,8 +1916,10 @@ final class QueryFamily extends $Family
         name: r'queryProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
-        isAutoDispose: true,
+        isAutoDispose: false,
       );
+
+  /// Kept alive so a search survives leaving its page and coming back.
 
   QueryProvider call(QueryTag tag) =>
       QueryProvider._(argument: tag, from: this);
@@ -1919,6 +1927,8 @@ final class QueryFamily extends $Family
   @override
   String toString() => r'queryProvider';
 }
+
+/// Kept alive so a search survives leaving its page and coming back.
 
 abstract class _$Query extends $Notifier<String> {
   late final _$args = ref.$arg as QueryTag;

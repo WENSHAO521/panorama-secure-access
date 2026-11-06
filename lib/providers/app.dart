@@ -520,7 +520,8 @@ class _CoreStatus extends _$CoreStatus with AutoDisposeNotifierMixin {
   }
 }
 
-@riverpod
+/// Kept alive so a search survives leaving its page and coming back.
+@Riverpod(keepAlive: true)
 class Query extends _$Query with AutoDisposeNotifierMixin {
   @override
   String build(QueryTag tag) {
