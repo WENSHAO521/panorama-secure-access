@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'card.dart';
 import 'common.dart';
 import 'group_tabs.dart';
+import 'notice.dart';
 
 class ProxiesTabView extends ConsumerStatefulWidget {
   const ProxiesTabView({super.key});
@@ -253,7 +254,8 @@ class ProxyGroupView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final proxies = group.all;
-    return Scrollbar(
+    final notice = groupNoticeOf(context, ref, group.name);
+    final grid = Scrollbar(
       controller: controller,
       thumbVisibility: true,
       child: GridView.builder(
@@ -283,6 +285,19 @@ class ProxyGroupView extends ConsumerWidget {
           );
         },
       ),
+    );
+    if (notice == null) {
+      return grid;
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+          child: GroupNoticeText(notice, maxLines: 2),
+        ),
+        Expanded(child: grid),
+      ],
     );
   }
 }
