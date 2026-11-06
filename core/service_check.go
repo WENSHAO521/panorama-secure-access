@@ -148,6 +148,7 @@ func handleServiceCheck(params *ServiceCheckParams) []ServiceCheckItem {
 
 // A misbehaving rule must not take the sweep down with it.
 func runServiceCheck(ctx context.Context, checker serviceChecker, proxyName string, timeout time.Duration) (item ServiceCheckItem) {
+	awaitTunSettled()
 	epoch, version := routeStamp()
 	hits := &hitRecorder{}
 	item = ServiceCheckItem{Status: serviceFailed}
