@@ -25,6 +25,11 @@ case "$ref" in
       exit 1
     fi
     if git ls-remote --exit-code --tags origin "refs/tags/v$version" >/dev/null; then
+      # Bringing a stable release back into beta adds nothing to try out.
+      git fetch --quiet --no-tags --depth=1 origin "refs/tags/v$version:refs/tags/v$version"
+      if [[ "$(git rev-parse 'HEAD^{tree}')" == "$(git rev-parse "v$version^{tree}")" ]]; then
+        exit 0
+      fi
       IFS='.' read -r major minor patch <<<"$version"
       version="$major.$minor.$((patch + 1))"
     fi
