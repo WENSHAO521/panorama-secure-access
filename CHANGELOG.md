@@ -1,5 +1,16 @@
 # Changelog
 
+## v3.5.5 (2026-11-06)
+
+**Bug Fixes**
+
+- **core** Hysteria2 and other nodes connect at once after turning on TUN on Windows, macOS and Linux (4ef0199)
+- **core** Status checks on Windows and macOS finish in one pass when turning on TUN (10be40c)
+- **dashboard** The dashboard keeps a passed status check on show while it re-checks (56bdf3d)
+- **network** Status checks on desktop finish in one pass after turning on TUN (b173da6)
+- **tun** Desktop TUN uses an MTU of 1500 unless the profile or settings pick one (8614458)
+- **core** Hysteria2 and other nodes no longer fail right after turning on TUN on desktop (10bab66)
+
 ## v3.5.4 (2026-11-06)
 
 **Features**
