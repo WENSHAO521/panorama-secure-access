@@ -275,7 +275,7 @@ Future<int> _dropBundledRuntimeLibraries(String distDir, String arch) async {
       final pack = await Process.run(
         'appimagetool',
         ['--no-appstream', appDir, image.absolute.path],
-        environment: {'ARCH': appImageToolArch(arch)},
+        environment: {'ARCH': appImageArchName(arch)},
       );
       if (pack.exitCode != 0) {
         stderr.write(pack.stderr);
@@ -398,6 +398,11 @@ Future<int> _ensureLinuxDependencies() async {
   }
   await Process.run('chmod', ['+x', appimagetool]);
   return 0;
+}
+
+/// appimagetool reads aarch64 only by its ELF name in `ARCH`.
+String appImageArchName(String arch) {
+  return arch == 'arm64' ? 'arm_aarch64' : 'x86_64';
 }
 
 String appImageToolArch(String arch) {
