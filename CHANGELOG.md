@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.5.4 (2026-11-06)
+
+**Features**
+
+- **proxies** The proxies page keeps its search when you come back to it (2ecbf55)
+- **proxies** The proxies page warns when a group's filter leaves no node, or GLOBAL is set to DIRECT in global mode (a907d7d)
+
+**Bug Fixes**
+
+- **core** Switching mode closes the connections the old mode routed, like switching proxies (3a11b43)
+- **linux** Fix the Linux AppImage opening to a black window on newer distributions (e47f312)
+
 ## v3.5.3 (2026-11-05)
 
 **Features**
@@ -14,6 +26,7 @@
 - **android** Hysteria2 and other QUIC nodes connect right after the VPN starts (6b6404e)
 - **core** Hysteria2 nodes no longer fail right after the app starts or the network changes (132648d)
 - **tun** The TUN MTU defaults to 1500 so large downloads no longer stall; an MTU left at the old 9000 moves to it (2ebcf42)
+- **android** Fix a build error in the Android plugin (cd01992)
 
 ## v3.5.2 (2026-10-24)
 

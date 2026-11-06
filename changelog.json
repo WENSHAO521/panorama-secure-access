@@ -2,6 +2,44 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.5.4",
+      "tag": "v3.5.4",
+      "date": "2026-11-06",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "2ecbf55",
+              "scope": "proxies",
+              "text": "The proxies page keeps its search when you come back to it"
+            },
+            {
+              "id": "a907d7d",
+              "scope": "proxies",
+              "text": "The proxies page warns when a group's filter leaves no node, or GLOBAL is set to DIRECT in global mode"
+            }
+          ]
+        },
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "3a11b43",
+              "scope": "core",
+              "text": "Switching mode closes the connections the old mode routed, like switching proxies"
+            },
+            {
+              "id": "e47f312",
+              "scope": "linux",
+              "text": "Fix the Linux AppImage opening to a black window on newer distributions"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.5.3",
       "tag": "v3.5.3",
       "date": "2026-11-05",
@@ -49,6 +87,11 @@
               "id": "2ebcf42",
               "scope": "tun",
               "text": "The TUN MTU defaults to 1500 so large downloads no longer stall; an MTU left at the old 9000 moves to it"
+            },
+            {
+              "id": "cd01992",
+              "scope": "android",
+              "text": "Fix a build error in the Android plugin"
             }
           ]
         }
