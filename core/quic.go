@@ -55,11 +55,13 @@ func hasAnyKey(mapping map[string]any, keys ...string) bool {
 
 // Close drops only the session, which otherwise outlives its route until the QUIC idle timeout.
 func resetQuicSessions() {
-	safeGo("resetQuicSessions", func() {
-		for _, proxy := range tunnel.AllProxies() {
-			if hy2, ok := adapterAs[*outbound.Hysteria2](proxy); ok {
-				_ = hy2.Close()
-			}
+	safeGo("resetQuicSessions", closeQuicSessions)
+}
+
+func closeQuicSessions() {
+	for _, proxy := range tunnel.AllProxies() {
+		if hy2, ok := adapterAs[*outbound.Hysteria2](proxy); ok {
+			_ = hy2.Close()
 		}
-	})
+	}
 }

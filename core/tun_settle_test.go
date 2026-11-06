@@ -127,3 +127,27 @@ func TestNoStartHoldWithoutTheTun(t *testing.T) {
 		t.Fatal("a check waited for a start with the TUN off")
 	}
 }
+
+func TestChecksWaitForTheResetAfterTheTunCameUp(t *testing.T) {
+	was := tunAftershockDelay
+	tunAftershockDelay = 50 * time.Millisecond
+	t.Cleanup(func() { tunAftershockDelay = was })
+
+	reset := make(chan struct{})
+	scheduleTunAftershock(func() { close(reset) })
+	checked := make(chan struct{})
+	go func() {
+		awaitTunSettled("")
+		close(checked)
+	}()
+	select {
+	case <-checked:
+		t.Fatal("a check went out before the reset after the TUN came up")
+	case <-reset:
+	}
+	select {
+	case <-checked:
+	case <-time.After(time.Second):
+		t.Fatal("the check kept waiting after the reset")
+	}
+}

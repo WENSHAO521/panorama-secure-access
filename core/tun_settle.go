@@ -38,6 +38,28 @@ func beginTunSettle(cfg *config.Config) func() {
 	if !tunWillToggle(cfg) {
 		return func() {}
 	}
+	return holdTunSettle()
+}
+
+// Windows keeps routing a socket made right after the TUN came up into it
+// for a few seconds, so a toggle resets once more after this and only then
+// lets the held checks go. Upload with no download was the symptom.
+var tunAftershockDelay = 3 * time.Second
+
+func scheduleTunAftershock(reset func()) {
+	release := holdTunSettle()
+	time.AfterFunc(tunAftershockDelay, func() {
+		defer release()
+		defer func() {
+			if r := recover(); r != nil {
+				logError("panic in tun aftershock: %v\n%s", r, stackTrace())
+			}
+		}()
+		reset()
+	})
+}
+
+func holdTunSettle() func() {
 	tunSettle.mu.Lock()
 	if tunSettle.holders == 0 {
 		tunSettle.done = make(chan struct{})

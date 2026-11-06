@@ -98,6 +98,11 @@ func updateListeners(cfg *config.Config) {
 			rememberDefaultInterface()
 			handleResetConnections()
 			bumpRouteEpoch()
+			scheduleTunAftershock(func() {
+				resolver.ResetConnection()
+				closeQuicSessions()
+				bumpRouteEpoch()
+			})
 		}
 	}
 }
