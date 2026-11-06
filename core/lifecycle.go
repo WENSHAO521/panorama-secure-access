@@ -89,8 +89,10 @@ func updateListeners(cfg *config.Config) {
 	listener.ReCreateTuic(general.TuicServer, tunnel.Tunnel)
 	if !features.Android {
 		listener.ReCreateTun(general.Tun, tunnel.Tunnel)
+		// Sockets opened before the TUN came up bound no interface, so they loop into it.
 		if tunEnabled.Swap(general.Tun.Enable) != general.Tun.Enable {
-			resetQuicSessions()
+			handleResetConnections()
+			bumpRouteEpoch()
 		}
 	}
 }
