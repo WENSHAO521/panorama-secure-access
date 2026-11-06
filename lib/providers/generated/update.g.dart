@@ -41,7 +41,7 @@ final class UpdateControllerProvider
   }
 }
 
-String _$updateControllerHash() => r'7582e426419ddb92295a3eb01215e521db7aef8b';
+String _$updateControllerHash() => r'f27d76ac7c4c8a92c80d52ebb1f3522e0ed4305f';
 
 abstract class _$UpdateController extends $Notifier<UpdateState?> {
   UpdateState? build();
