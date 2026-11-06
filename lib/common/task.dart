@@ -218,6 +218,10 @@ Future<RealProfile> _makeRealProfileTask(MakeRealProfileState data) async {
     ...realPatchConfig.tun.coreJson,
     'auto-detect-interface': true,
   };
+  // Unset, mihomo's TUN falls back to 9000, which stalls hysteria2 transfers.
+  if (tun['mtu'] == null || tun['mtu'] == 0) {
+    tun['mtu'] = defaultTunMtu;
+  }
   if (data.bypassPrivateRoute) {
     tun['route-exclude-address'] = [
       if (tun['route-exclude-address'] case final List routes) ...routes,

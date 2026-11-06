@@ -751,6 +751,15 @@ void main() {
       expect(tun['udp-timeout'], 60);
     });
 
+    test('a tun without an MTU takes the app default', () async {
+      final config = await runWith(const PatchClashConfig(), {
+        'tun': {'stack': 'system'},
+      });
+      final tun = config['tun'] as YamlMap;
+
+      expect(tun['mtu'], defaultTunMtu);
+    });
+
     test('tun detects the outbound interface over the profile', () async {
       final config = await runWith(const PatchClashConfig(), {
         'tun': {'auto-detect-interface': false},
