@@ -164,6 +164,7 @@ func applyConfig(params *SetupParams) error {
 		cfg = fallback
 	}
 
+	holdForTunStart(cfg)
 	defer beginTunSettle(cfg)()
 	currentConfig = cfg
 	hub.ApplyConfig(cfg)

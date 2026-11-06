@@ -8,14 +8,25 @@ import (
 	"github.com/metacubex/mihomo/constant/features"
 )
 
-// Windows takes seconds to bring up the TUN; a check sent meanwhile is reset
-// and outdated by the toggle, so the host asks again and the check spins.
-const tunSettleLimit = 10 * time.Second
+// Windows takes seconds to bring up the TUN (eleven in a user's log); a check
+// sent meanwhile is reset and outdated by the toggle, so the host asks again
+// and the check spins. coreTunSettleAllowance on the host covers this wait.
+const tunSettleLimit = 20 * time.Second
+
+const directProxyName = "DIRECT"
 
 var tunSettle struct {
 	mu      sync.Mutex
 	holders int
 	done    chan struct{}
+}
+
+// A start applies the config and starts the listener side by side, and the
+// host already sends its routed checks: hold them until the TUN is up, too.
+var tunStart struct {
+	mu    sync.Mutex
+	done  chan struct{}
+	timer *time.Timer
 }
 
 func tunWillToggle(cfg *config.Config) bool {
@@ -27,6 +38,28 @@ func beginTunSettle(cfg *config.Config) func() {
 	if !tunWillToggle(cfg) {
 		return func() {}
 	}
+	return holdTunSettle()
+}
+
+// Windows keeps routing a socket made right after the TUN came up into it
+// for a few seconds, so a toggle resets once more after this and only then
+// lets the held checks go. Upload with no download was the symptom.
+var tunAftershockDelay = 3 * time.Second
+
+func scheduleTunAftershock(reset func()) {
+	release := holdTunSettle()
+	time.AfterFunc(tunAftershockDelay, func() {
+		defer release()
+		defer func() {
+			if r := recover(); r != nil {
+				logError("panic in tun aftershock: %v\n%s", r, stackTrace())
+			}
+		}()
+		reset()
+	})
+}
+
+func holdTunSettle() func() {
 	tunSettle.mu.Lock()
 	if tunSettle.holders == 0 {
 		tunSettle.done = make(chan struct{})
@@ -47,15 +80,68 @@ func beginTunSettle(cfg *config.Config) func() {
 	}
 }
 
-func awaitTunSettled() {
-	tunSettle.mu.Lock()
-	done := tunSettle.done
-	tunSettle.mu.Unlock()
-	if done == nil {
+// holdForTunStart runs when a config with the TUN on lands before the listener
+// starts; endTunStart lets the held checks go once the listener has started,
+// stopped, or the limit passed without a start.
+func holdForTunStart(cfg *config.Config) {
+	if features.Android || cfg == nil || !cfg.General.Tun.Enable || isRunning.Load() {
 		return
 	}
-	select {
-	case <-done:
-	case <-time.After(tunSettleLimit):
+	tunStart.mu.Lock()
+	defer tunStart.mu.Unlock()
+	if tunStart.done == nil {
+		tunStart.done = make(chan struct{})
+	}
+	if tunStart.timer != nil {
+		tunStart.timer.Stop()
+	}
+	tunStart.timer = time.AfterFunc(tunSettleLimit, endTunStart)
+}
+
+func endTunStart() {
+	tunStart.mu.Lock()
+	defer tunStart.mu.Unlock()
+	if tunStart.timer != nil {
+		tunStart.timer.Stop()
+		tunStart.timer = nil
+	}
+	if tunStart.done != nil {
+		close(tunStart.done)
+		tunStart.done = nil
+	}
+}
+
+// A direct check does not ride the TUN's routes, and runs while stopped too.
+func awaitTunSettled(proxyName string) {
+	tunSettle.mu.Lock()
+	toggle := tunSettle.done
+	tunSettle.mu.Unlock()
+	var start chan struct{}
+	if proxyName != directProxyName {
+		tunStart.mu.Lock()
+		start = tunStart.done
+		tunStart.mu.Unlock()
+	}
+	if toggle == nil && start == nil {
+		return
+	}
+	limit := time.NewTimer(tunSettleLimit)
+	defer limit.Stop()
+	if start != nil {
+		select {
+		case <-start:
+		case <-limit.C:
+			return
+		}
+		// The start's own toggle may have begun after this check looked.
+		tunSettle.mu.Lock()
+		toggle = tunSettle.done
+		tunSettle.mu.Unlock()
+	}
+	if toggle != nil {
+		select {
+		case <-toggle:
+		case <-limit.C:
+		}
 	}
 }

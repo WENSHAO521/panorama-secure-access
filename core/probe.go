@@ -264,7 +264,7 @@ type ProbeResult struct {
 
 // runProbe returns nil when the request never got a slot before its deadline.
 func runProbe(parent context.Context, req probeRequest) *ProbeResult {
-	awaitTunSettled()
+	awaitTunSettled(req.proxyName)
 	result := &ProbeResult{Url: req.url, Chains: []string{}}
 	result.CoreEpoch, result.RouteVersion = routeStamp()
 	fail := func(err error) *ProbeResult {

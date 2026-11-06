@@ -43,7 +43,7 @@ type OutboundIpResult struct {
 // stop occupying probe slots. Url is the source that was asked, not where it
 // redirected, and Body is raw: Dart owns the sources and their parsers.
 func handleOutboundIp(params *OutboundIpParams) *OutboundIpResult {
-	awaitTunSettled()
+	awaitTunSettled(params.ProxyName)
 	epoch, version := routeStamp()
 	hits := &hitRecorder{}
 	failure := func(kind string) *OutboundIpResult {

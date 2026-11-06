@@ -48,6 +48,7 @@ func setRunning(running bool) {
 func handleStartListener() {
 	configMu.Lock()
 	defer configMu.Unlock()
+	defer endTunStart()
 	setRunning(true)
 	defer beginTunSettle(currentConfig)()
 	updateListeners(currentConfig)
@@ -62,6 +63,7 @@ func handleStopListener() {
 	configMu.Lock()
 	defer configMu.Unlock()
 	setRunning(false)
+	endTunStart()
 	listener.StopListener()
 	tunEnabled.Store(false)
 	resolver.ResetConnection()
@@ -96,6 +98,11 @@ func updateListeners(cfg *config.Config) {
 			rememberDefaultInterface()
 			handleResetConnections()
 			bumpRouteEpoch()
+			scheduleTunAftershock(func() {
+				resolver.ResetConnection()
+				closeQuicSessions()
+				bumpRouteEpoch()
+			})
 		}
 	}
 }
@@ -106,6 +113,7 @@ func handleShutdown() {
 
 	configMu.Lock()
 	setRunning(false)
+	endTunStart()
 	listener.StopListener()
 	tunEnabled.Store(false)
 	updater.StopGeoUpdater()
