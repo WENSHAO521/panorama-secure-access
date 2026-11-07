@@ -2,6 +2,49 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.5.6",
+      "tag": "v3.5.6",
+      "date": "2026-11-07",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "d6f50c7",
+              "scope": "android",
+              "text": "The quick settings tile toggles without closing the panel and shows the current profile"
+            }
+          ]
+        },
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "daa7146",
+              "scope": "macos",
+              "text": "Show one decimal for macOS menu bar speeds in MB and above"
+            },
+            {
+              "id": "742d3ae",
+              "scope": "android",
+              "text": "Improve compatibility with Android devices using 16 KB memory pages."
+            },
+            {
+              "id": "7b2c57e",
+              "scope": "macos",
+              "text": "Clear the system proxy a crashed run left on macOS"
+            },
+            {
+              "id": "19af3ac",
+              "scope": "network",
+              "text": "Turning on IPv6 now enables it for the core resolver and DNS, so IPv6 proxy servers connect instead of failing with \"ip version error\"."
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.5.5",
       "tag": "v3.5.5",
       "date": "2026-11-06",

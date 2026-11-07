@@ -1,5 +1,18 @@
 # Changelog
 
+## v3.5.6 (2026-11-07)
+
+**Features**
+
+- **android** The quick settings tile toggles without closing the panel and shows the current profile (d6f50c7)
+
+**Bug Fixes**
+
+- **macos** Show one decimal for macOS menu bar speeds in MB and above (daa7146)
+- **android** Improve compatibility with Android devices using 16 KB memory pages. (742d3ae)
+- **macos** Clear the system proxy a crashed run left on macOS (7b2c57e)
+- **network** Turning on IPv6 now enables it for the core resolver and DNS, so IPv6 proxy servers connect instead of failing with "ip version error". (19af3ac)
+
 ## v3.5.5 (2026-11-06)
 
 **Bug Fixes**

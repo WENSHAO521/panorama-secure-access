@@ -28,13 +28,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           submodules: true
 
       - name: Test git hooks
         run: bash tool/hooks/test.sh
+
+      - name: Test Android page size checks
+        run: python3 -m unittest discover -s test/tool -p '*_test.py'
 
       - name: Setup Rust cache
         uses: Swatinem/rust-cache@v2
@@ -79,7 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: true
 
@@ -116,12 +119,12 @@ jobs:
             os: macos-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VERSION }}
           cache-dependency-path: |
@@ -174,12 +177,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VERSION }}
           cache: ${{ env.BRANCH_CACHE }}
@@ -212,17 +215,17 @@ jobs:
           GOOS=android GOARCH=arm64 go vet "-tags=$tags" . ./mobile ./tun ./platform
 
   android:
-    name: Android unit tests
+    name: Android
     if: *checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VERSION }}
           cache: ${{ env.BRANCH_CACHE }}
@@ -240,6 +243,13 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Setup Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: plugins/rust_api/rust
+          cache-directories: .dart_tool/hooks_runner
+          save-if: ${{ env.BRANCH_CACHE }}
+
       - name: Setup NDK
         uses: nttld/setup-ndk@v1
         id: ndk
@@ -248,7 +258,7 @@ jobs:
           link-to-sdk: true
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -277,13 +287,21 @@ jobs:
             -Ptarget-platform=android-arm64 \
             -x :app:compileFlutterBuildDebug -x :app:copyFlutterAssetsDebug
 
+      - name: Build Android APK for page size verification
+        env:
+          ANDROID_NDK_HOME: ${{ steps.ndk.outputs.ndk-path }}
+        run: flutter build apk --release --target-platform android-arm64 --split-per-abi
+
+      - name: Verify Android 16 KB page sizes
+        run: python3 tool/check_android_page_sizes.py build/app/outputs/flutter-apk
+
   rust:
     name: Rust
     if: *checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Rust cache
         uses: Swatinem/rust-cache@v2
@@ -309,7 +327,7 @@ jobs:
     runs-on: windows-2022
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Rust cache
         uses: Swatinem/rust-cache@v2
@@ -332,7 +350,7 @@ jobs:
       tag: ${{ steps.tag.outputs.tag }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Release tag
         id: tag
@@ -381,7 +399,7 @@ jobs:
           Add-Content $env:GITHUB_PATH $cargoPath
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -404,7 +422,7 @@ jobs:
           fi
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VERSION }}
           cache: ${{ env.BRANCH_CACHE }}
@@ -469,8 +487,12 @@ jobs:
           ANDROID_NDK_HOME: ${{ steps.build-ndk.outputs.ndk-path }}
         run: dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} --release-tag ${{ needs.release-tag.outputs.tag }} -v
 
+      - name: Verify Android 16 KB page sizes
+        if: matrix.platform == 'android'
+        run: python3 tool/check_android_page_sizes.py dist
+
       - name: Upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: artifact-${{ matrix.platform }}${{ matrix.arch && format('-{0}', matrix.arch) }}
           path: ./dist
@@ -485,13 +507,13 @@ jobs:
       IS_STABLE: ${{ !contains(needs.release-tag.outputs.tag, '-') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           submodules: true
 
       - name: Download
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: ./dist/
           pattern: artifact-*
@@ -551,7 +573,7 @@ jobs:
           sha256sum ./* > SHA256SUMS
 
       - name: Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ needs.release-tag.outputs.tag }}
           target_commitish: ${{ github.sha }}

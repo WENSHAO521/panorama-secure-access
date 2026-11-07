@@ -157,6 +157,25 @@ Co-authored-by: Someone <someone@example.com>
       expect(items.single.entry.text, 'A long entry');
     });
 
+    test('ignores the line cherry-pick -x appends after a trailer', () {
+      final parser = ChangelogParser();
+      final kept = parser.parse(
+        commit('fix: picked', '''
+Changelog: Picked entry
+(cherry picked from commit 0123456789abcdef0123456789abcdef01234567)
+'''),
+      );
+      final skipped = parser.parse(
+        commit('feat: picked test', '''
+Changelog: skip
+(cherry picked from commit 0123456789abcdef0123456789abcdef01234567)
+'''),
+      );
+
+      expect(kept.single.entry.text, 'Picked entry');
+      expect(skipped, isEmpty);
+    });
+
     test('stops a trailer at a git trailer with no space after the colon', () {
       final items = ChangelogParser().parse(
         commit('feat: multi line', '''

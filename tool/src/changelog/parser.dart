@@ -33,6 +33,9 @@ final _genericTrailerPattern = RegExp(
   caseSensitive: false,
 );
 
+/// The line `git cherry-pick -x` appends after the original message's trailers.
+final _cherryPickPattern = RegExp(r'^\(cherry picked from commit [0-9a-f]+\)$');
+
 /// The only suffixed trailer. The changelog ships English, and anything else
 /// belongs in a post-processing step, not in the commit message.
 const _knownSuffixedTrailer = 'Changelog-Type';
@@ -146,7 +149,8 @@ class ChangelogParser {
       if (currentKey == null) {
         continue;
       }
-      if (_genericTrailerPattern.hasMatch(line)) {
+      if (_genericTrailerPattern.hasMatch(line) ||
+          _cherryPickPattern.hasMatch(line.trim())) {
         currentKey = null;
         continue;
       }
