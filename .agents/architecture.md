@@ -1757,7 +1757,22 @@ NDK version stands in for the hook's cache.
   needs no change.
 - The AAR's own `proguard.txt` goes with the rest of it. `android/core/consumer-rules.pro` keeps `go.**` and
   `com.follow.clash.core.mobile.**`, the classes gobind's C glue looks up by name.
-- The CI `android` job compiles `:core` without Flutter, so it passes `-Ptarget-platform=android-arm64` to build one ABI.
+- The CI `android` unit tests compile `:core` with `-Ptarget-platform=android-arm64`. The job then builds an arm64
+  release APK and checks its native libraries with `tool/check_android_page_sizes.py`; release packaging checks every
+  APK under `dist/` before uploading.
+
+Android's Go binding and `rust_api` cdylib explicitly link with both `max-page-size=16384` and
+`common-page-size=16384`, so LOAD alignment and the GNU_RELRO end stay compatible with 16 KB devices. Rust's flags
+live in its Android-only `build.rs` branch; Go's flags belong to `GomobileBind`, not the desktop build hook.
+[Upstream PR #2058](https://github.com/chen08209/FlClash/pull/2058) proposed the Go linker flag for the previous build
+path but closed without merging; its CMake and `flutter_js` changes no longer match this architecture.
+
+The APK check reads every arm64-v8a and x86_64 shared library, including third-party libraries, checks ELF LOAD
+alignment, and checks the ZIP data offset of uncompressed libraries. Compressed libraries still need the ELF
+checks. The 32-bit ABIs are reported as skipped because Android's 16 KB requirement applies to 64-bit devices.
+RELRO end alignment alone is not a compatibility test: the linker rounds protection to pages, and padding may
+keep writable data outside those pages. This artifact check does not replace a launch and VPN test on a device
+where `adb shell getconf PAGE_SIZE` is 16384.
 
 ## Local Plugins
 
@@ -1767,7 +1782,10 @@ NDK version stands in for the hook's cache.
   before any engine starts, and it turns off only a proxy still set to FlClash's `127.0.0.1:<port>` with nothing
   listening on that port. In the app `SystemProxyQueue` sets the system proxy when the Core starts with it on, and
   stops it on a stop or exit only when this run set it, since a stop also clears a proxy, PAC or auto-detect setting
-  someone else made. Nothing is stored, so a launch leaves alone the proxy a crashed run left.
+  someone else made. Nothing is stored, so a launch leaves alone the proxy a crashed run left, macOS excepted:
+  `SystemProxyQueue.recoverStale` runs once in `bootstrap.dart` before anything starts the Core, asks the plugin for
+  the loopback port `scutil --proxy` reports, and clears it only once a bind on that port succeeds: the host keeps
+  `networksetup`'s setting across a crash, and a port that refuses the bind belongs to a live proxy.
 - `rust_api`: runtime Flutter Rust Bridge FFI package built through Native Assets. See below.
 - `tray`: system tray for Linux, macOS and Windows. Written for FlClash; replaced the `tray_manager` fork.
 - `window`: desktop window control for Linux, macOS and Windows. Written for FlClash; replaced the
