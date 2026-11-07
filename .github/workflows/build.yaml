@@ -288,6 +288,8 @@ jobs:
             -x :app:compileFlutterBuildDebug -x :app:copyFlutterAssetsDebug
 
       - name: Build Android APK for page size verification
+        env:
+          ANDROID_NDK_HOME: ${{ steps.ndk.outputs.ndk-path }}
         run: flutter build apk --release --target-platform android-arm64 --split-per-abi
 
       - name: Verify Android 16 KB page sizes
