@@ -5,14 +5,8 @@
 
     <application>
         <service
-            android:name=".CoreService"
-            android:exported="false"
-            android:process=":core" />
-
-        <service
             android:name=".VpnService"
             android:exported="false"
-            android:process=":core"
             android:foregroundServiceType="specialUse"
             android:permission="android.permission.BIND_VPN_SERVICE">
             <intent-filter>
@@ -26,7 +20,6 @@
         <service
             android:name=".ProxyService"
             android:exported="false"
-            android:process=":core"
             android:foregroundServiceType="specialUse">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
