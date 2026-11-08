@@ -14,6 +14,7 @@ typedef BuiltProfile = ({
   String md5,
   ConfigCounts counts,
   SetupBase? base,
+  Map<String, String> pinnedGeoXUrl,
 });
 
 class _RunRequest {
@@ -45,6 +46,7 @@ class SetupAction extends _$SetupAction {
   _SetupInputs? _appliedInputs;
   var _lastPushDuration = Duration.zero;
   var _pendingForceApply = false;
+  Map<String, String> _pinnedGeoXUrl = const {};
 
   bool get _isRunning => _startTime != null && _startTime!.isBeforeNow;
 
@@ -339,11 +341,12 @@ class SetupAction extends _$SetupAction {
         return;
       }
       final networkSetting = ref.read(networkSettingProvider);
+      final params = _effectivePatchConfig(patchConfig).toUpdateParams(
+        authentication: networkSetting.authentication.credentials,
+        options: ref.read(coreOptionsProvider),
+      );
       await _core.updateConfig(
-        _effectivePatchConfig(patchConfig).toUpdateParams(
-          authentication: networkSetting.authentication.credentials,
-          options: ref.read(coreOptionsProvider),
-        ),
+        params.copyWith(geoXUrl: {...params.geoXUrl, ..._pinnedGeoXUrl}),
       );
       final previousMode = _sentMode;
       _sentMode = patchConfig.mode;
@@ -508,7 +511,13 @@ class SetupAction extends _$SetupAction {
   }) async {
     final profileId = setupState.profileId;
     if (profileId == null) {
-      return (yaml: '', md5: '', counts: configCountsOf(const {}), base: null);
+      return (
+        yaml: '',
+        md5: '',
+        counts: configCountsOf(const {}),
+        base: null,
+        pinnedGeoXUrl: const <String, String>{},
+      );
     }
     final defaultUA = globalState.packageInfo.ua;
     final networkSetting = ref.read(
@@ -576,8 +585,15 @@ class SetupAction extends _$SetupAction {
         mitmModules: setupState.mitmModules,
       ),
     );
+    final pinnedGeoXUrl = profileGeoXUrl(rawConfig['geox-url']);
     if (profileBase == null) {
-      return (yaml: res.yaml, md5: res.md5, counts: res.counts, base: null);
+      return (
+        yaml: res.yaml,
+        md5: res.md5,
+        counts: res.counts,
+        base: null,
+        pinnedGeoXUrl: pinnedGeoXUrl,
+      );
     }
     final (:base, :path) = profileBase;
     return (
@@ -589,6 +605,7 @@ class SetupAction extends _$SetupAction {
         rules: res.counts.rules + base.rules,
       ),
       base: SetupBase(path: path, overlay: res.yaml),
+      pinnedGeoXUrl: pinnedGeoXUrl,
     );
   }
 
@@ -772,6 +789,9 @@ class SetupAction extends _$SetupAction {
       return getProfile(setupState: state, patchConfig: realPatchConfig);
     }, title: 'build profile');
     final profileFailed = realProfile == null;
+    if (realProfile != null) {
+      _pinnedGeoXUrl = realProfile.pinnedGeoXUrl;
+    }
     final setupParams = _setupParams.copyWith(base: realProfile?.base);
     final inputs = switch (setupState) {
       final state? when !profileFailed => (

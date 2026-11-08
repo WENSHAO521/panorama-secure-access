@@ -64,6 +64,8 @@ const delayTestGuardDuration = Duration(seconds: 30);
 
 const delayTimedOutValue = -1;
 
+const delayDnsFailedValue = -3;
+
 const probeTimeoutDuration = Duration(seconds: 10);
 
 /// Outlasts the Core's one-second pick poll (`routePollInterval` in

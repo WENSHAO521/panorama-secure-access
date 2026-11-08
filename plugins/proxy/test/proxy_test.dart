@@ -503,6 +503,72 @@ USB 10/100/1000 LAN
     });
   });
 
+  group('Linux loopback proxy detection', () {
+    LinuxProxy proxyAnswering(Map<String, String> answers) {
+      return LinuxProxy(
+        commandRunner: ProxyCommandRunner((
+          executable,
+          arguments, {
+          runInShell = false,
+        }) async {
+          final answer = answers['$executable ${arguments.join(' ')}'];
+          return ProcessResult(0, answer == null ? 1 : 0, answer ?? '', '');
+        }),
+        executableChecker: (executable) async =>
+            executable == 'gsettings' || executable == 'kwriteconfig6',
+      );
+    }
+
+    test('reads the port GNOME still points at', () async {
+      final proxy = proxyAnswering({
+        'gsettings get org.gnome.system.proxy mode': "'manual'\n",
+        'gsettings get org.gnome.system.proxy.http host': "'127.0.0.1'\n",
+        'gsettings get org.gnome.system.proxy.http port': '7890\n',
+      });
+
+      expect(
+        await proxy.readLoopbackProxyPort(desktop: 'GNOME', homeDir: '/home/u'),
+        7890,
+      );
+    });
+
+    test('ignores GNOME when the proxy is off or remote', () async {
+      final off = proxyAnswering({
+        'gsettings get org.gnome.system.proxy mode': "'none'\n",
+      });
+      final remote = proxyAnswering({
+        'gsettings get org.gnome.system.proxy mode': "'manual'\n",
+        'gsettings get org.gnome.system.proxy.http host': "'10.0.0.2'\n",
+        'gsettings get org.gnome.system.proxy.http port': '3128\n',
+      });
+
+      expect(
+        await off.readLoopbackProxyPort(desktop: 'GNOME', homeDir: '/home/u'),
+        isNull,
+      );
+      expect(
+        await remote.readLoopbackProxyPort(
+          desktop: 'GNOME',
+          homeDir: '/home/u',
+        ),
+        isNull,
+      );
+    });
+
+    test('reads the port KDE still points at', () async {
+      const file = '--file /home/u/.config/kioslaverc --group Proxy Settings';
+      final proxy = proxyAnswering({
+        'kreadconfig6 $file --key ProxyType': '1\n',
+        'kreadconfig6 $file --key httpProxy': 'http://127.0.0.1:7890\n',
+      });
+
+      expect(
+        await proxy.readLoopbackProxyPort(desktop: 'KDE', homeDir: '/home/u'),
+        7890,
+      );
+    });
+  });
+
   group('windowsBypassList', () {
     test('adds the intranet token once', () {
       expect(windowsBypassList(['localhost', '127.*', '<local>']), [

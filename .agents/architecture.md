@@ -1787,7 +1787,8 @@ where `adb shell getconf PAGE_SIZE` is 16384.
   port `scutil --proxy` reports and clears it only once a bind on that port succeeds: the host keeps
   `networksetup`'s setting across a crash, and a port that refuses the bind belongs to a live proxy. On Windows it
   runs `FlClash.exe --clear-stale-proxy` as a child process, the same native pass the installer uses, because its
-  port-release wait can take two seconds. Linux is not covered.
+  port-release wait can take two seconds. Linux takes the macOS path, reading the port from `gsettings`
+  (GNOME, MATE) or `kreadconfig` (KDE), which also keep the setting across a crash.
 - `rust_api`: runtime Flutter Rust Bridge FFI package built through Native Assets. See below.
 - `tray`: system tray for Linux, macOS and Windows. Written for FlClash; replaced the `tray_manager` fork.
 - `window`: desktop window control for Linux, macOS and Windows. Written for FlClash; replaced the

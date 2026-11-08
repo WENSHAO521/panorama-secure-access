@@ -3611,6 +3611,16 @@ class AppLocalizations {
     );
   }
 
+  /// `{label} contains characters that are not allowed`
+  String invalidCharactersTip(Object label) {
+    return Intl.message(
+      '$label contains characters that are not allowed',
+      name: 'invalidCharactersTip',
+      desc: '',
+      args: [label],
+    );
+  }
+
   /// `Single import`
   String get singleImport {
     return Intl.message(
@@ -5304,6 +5314,16 @@ class AppLocalizations {
   /// `Failed`
   String get delayFailed {
     return Intl.message('Failed', name: 'delayFailed', desc: '', args: []);
+  }
+
+  /// `DNS failed`
+  String get delayDnsFailed {
+    return Intl.message(
+      'DNS failed',
+      name: 'delayDnsFailed',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `{subRule} is an invalid SUB_RULE`
