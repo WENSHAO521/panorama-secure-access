@@ -45,6 +45,22 @@ Hotfix releases (3.47.x) carry only cherry-picks listed in the SDK's `CHANGELOG.
 - **Remove when:** a stable `FLUTTER_VERSION` fixes #193504. Before dropping the call, build with Impeller on that SDK
   and drag every window edge for a minute on a machine that reproduced the freeze; the window has to keep redrawing.
 
+## Impeller on OpenGL ES on Android
+
+- **Bugs:** upstream FlClash [#2961](https://github.com/chen08209/FlClash/issues/2961) and
+  [#2971](https://github.com/chen08209/FlClash/issues/2971). On Impeller's Vulkan backend, an Adreno phone crashed
+  in `vulkan.adreno.so` after 17 minutes to 27 hours of uptime, and a PowerVR phone that reopened the app while the
+  VPN ran hung in `nativeSurfaceCreated` while another thread sat in `IMG_vkDestroyDevice`. The VPN service shares
+  the UI process, so a native crash in the renderer also drops the tunnel.
+- **Workaround:** the application-level `io.flutter.embedding.android.ImpellerBackend` meta-data in
+  `android/app/src/main/AndroidManifest.xml` is `opengles`. `FlutterEngineFlags` in 3.47.6 maps it to
+  `--impeller-backend=` and allows it in release builds. Impeller stays on, so Liquid Glass keeps its Impeller path,
+  unlike turning `EnableImpeller` off.
+- **Side effect:** Impeller's GLES backend may draw blur and shaders slightly differently from Vulkan; judge Android
+  visual reports against GLES.
+- **Remove when:** a stable `FLUTTER_VERSION` fixes the Vulkan driver crashes, checked by running a Vulkan build for
+  a day on an Adreno phone and swiping the app away and back with the VPN on, on a PowerVR one.
+
 ## Wrong-size back buffer on macOS
 
 - **Bug:** [flutter/flutter#185394](https://github.com/flutter/flutter/issues/185394). `removeSurfaceForSize:` in
