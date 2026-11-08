@@ -645,6 +645,7 @@
   "splitStrategyNotEmpty": "분할 전략을 입력하세요",
   "timeout": "시간 초과",
   "delayFailed": "실패",
+  "delayDnsFailed": "DNS 실패",
   "invalidSubRule": "올바르지 않은 SUB_RULE: {subRule}",
   "invalidPolicy": "올바르지 않은 정책: {target}",
   "invalidProxyProvider": "올바르지 않은 프록시 공급자: {providerName}",

@@ -531,6 +531,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "구성은 이름과 유형이 있는 YAML 매핑이어야 합니다",
     ),
     "delay": MessageLookupByLibrary.simpleMessage("지연"),
+    "delayDnsFailed": MessageLookupByLibrary.simpleMessage("DNS 실패"),
     "delayFailed": MessageLookupByLibrary.simpleMessage("실패"),
     "delayTest": MessageLookupByLibrary.simpleMessage("지연 테스트"),
     "delayTestTimeout": MessageLookupByLibrary.simpleMessage("지연 테스트 시간 제한"),

@@ -667,6 +667,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Конфигурация должна быть YAML-словарём с полями name и type",
     ),
     "delay": MessageLookupByLibrary.simpleMessage("Задержка"),
+    "delayDnsFailed": MessageLookupByLibrary.simpleMessage("Сбой DNS"),
     "delayFailed": MessageLookupByLibrary.simpleMessage("Сбой"),
     "delayTest": MessageLookupByLibrary.simpleMessage("Тест задержки"),
     "delayTestTimeout": MessageLookupByLibrary.simpleMessage(

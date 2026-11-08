@@ -686,6 +686,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "La configuration doit être un mappage YAML avec un nom et un type",
     ),
     "delay": MessageLookupByLibrary.simpleMessage("Délai"),
+    "delayDnsFailed": MessageLookupByLibrary.simpleMessage("Échec DNS"),
     "delayFailed": MessageLookupByLibrary.simpleMessage("Échec"),
     "delayTest": MessageLookupByLibrary.simpleMessage("Test de délai"),
     "delayTestTimeout": MessageLookupByLibrary.simpleMessage(

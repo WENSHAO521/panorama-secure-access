@@ -645,6 +645,7 @@
   "splitStrategyNotEmpty": "La estrategia de división no puede estar vacía",
   "timeout": "Tiempo agotado",
   "delayFailed": "Fallido",
+  "delayDnsFailed": "Fallo de DNS",
   "invalidSubRule": "{subRule} no es una SUB_RULE válida",
   "invalidPolicy": "{target} no es una política válida",
   "invalidProxyProvider": "{providerName} no es un proveedor de proxies válido",

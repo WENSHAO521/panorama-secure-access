@@ -507,6 +507,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "配置必须是包含 name 和 type 的 YAML 映射",
     ),
     "delay": MessageLookupByLibrary.simpleMessage("延迟"),
+    "delayDnsFailed": MessageLookupByLibrary.simpleMessage("DNS 失败"),
     "delayFailed": MessageLookupByLibrary.simpleMessage("失败"),
     "delayTest": MessageLookupByLibrary.simpleMessage("延迟测试"),
     "delayTestTimeout": MessageLookupByLibrary.simpleMessage("延迟测试超时"),

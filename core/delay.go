@@ -3,6 +3,7 @@ package core
 import (
 	"context"
 	"slices"
+	"strings"
 	"sync/atomic"
 	"time"
 
@@ -41,9 +42,17 @@ func currentTestURL() string {
 }
 
 const (
-	delayTimedOut int32 = -1
-	delayFailed   int32 = -2
+	delayTimedOut  int32 = -1
+	delayFailed    int32 = -2
+	delayDNSFailed int32 = -3
 )
+
+// mihomo's dialer wraps a failed lookup of the node's server as "dns resolve
+// failed: ..." and exports no sentinel for it. A profile whose DNS cannot
+// resolve any server fails every node this way, which reads as dead nodes.
+func isDNSResolveFailure(err error) bool {
+	return err != nil && strings.Contains(err.Error(), "dns resolve failed")
+}
 
 func delayValue(delay uint16, timedOut bool) int32 {
 	switch {
@@ -97,6 +106,10 @@ func handleTestDelay(params *TestDelayParams) *Delay {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	delay, err := proxy.URLTest(ctx, url, anyDelayTestStatus)
+	if isDNSResolveFailure(err) {
+		result.Value = delayDNSFailed
+		return result
+	}
 	if err != nil {
 		delay = 0
 	}

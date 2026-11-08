@@ -545,6 +545,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "設定は name と type を含む YAML マッピングである必要があります",
     ),
     "delay": MessageLookupByLibrary.simpleMessage("遅延"),
+    "delayDnsFailed": MessageLookupByLibrary.simpleMessage("DNS 失敗"),
     "delayFailed": MessageLookupByLibrary.simpleMessage("失敗"),
     "delayTest": MessageLookupByLibrary.simpleMessage("遅延テスト"),
     "delayTestTimeout": MessageLookupByLibrary.simpleMessage("遅延テストのタイムアウト"),

@@ -637,6 +637,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "The configuration must be a YAML mapping with a name and a type",
     ),
     "delay": MessageLookupByLibrary.simpleMessage("Delay"),
+    "delayDnsFailed": MessageLookupByLibrary.simpleMessage("DNS failed"),
     "delayFailed": MessageLookupByLibrary.simpleMessage("Failed"),
     "delayTest": MessageLookupByLibrary.simpleMessage("Delay test"),
     "delayTestTimeout": MessageLookupByLibrary.simpleMessage(
