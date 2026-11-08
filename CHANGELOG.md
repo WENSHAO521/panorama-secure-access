@@ -1,5 +1,25 @@
 # Changelog
 
+## v3.5.7 (2026-11-08)
+
+**Breaking Changes**
+
+- **macos** macOS 12 is no longer supported; macOS 13 or later is required. (3d161f0)
+
+**Features**
+
+- **profiles** Send custom request headers with a subscription download (84a81d8)
+- **proxies** Copy a proxy node as Clash YAML from its context menu (553ced6)
+- **delay** Show "DNS failed" when a delay test fails to resolve the node (41798b0)
+- **update** Stop offering macOS updates the system is too old to run (31dd5bd)
+
+**Bug Fixes**
+
+- **core** Keep the geodata URLs a profile sets instead of the app's (6c81f30)
+- **linux** Clear the system proxy a crashed run left on Linux (3e09929)
+- **windows** Clear the system proxy a crashed run left on Windows (74a63c3)
+- **android** Fix Android crashes and a stuck launch screen caused by the Vulkan renderer (fb0712a)
+
 ## v3.5.6 (2026-11-07)
 
 **Features**
