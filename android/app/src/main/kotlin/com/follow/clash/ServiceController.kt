@@ -2,250 +2,283 @@ package com.follow.clash
 
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.content.ServiceConnection
-import android.os.Handler
 import android.os.IBinder
-import android.os.Looper
 import com.follow.clash.common.GlobalState
 import com.follow.clash.common.intent
-import com.follow.clash.core.Core
-import com.follow.clash.service.ManagedService
-import com.follow.clash.service.NetworkObserver
-import com.follow.clash.service.ProxyService
-import com.follow.clash.service.ServiceConfig
-import com.follow.clash.service.VpnService
+import com.follow.clash.service.CoreService
+import com.follow.clash.service.ipc.ICoreCallback
+import com.follow.clash.service.ipc.ICoreService
+import com.follow.clash.service.ipc.IServiceListener
+import com.follow.clash.service.ipc.Payload
+import com.follow.clash.service.models.NotificationParams
 import com.follow.clash.service.models.VpnOptions
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import java.util.Collections
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.resume
 
+/**
+ * The app's side of the Core process. The Core, the VPN and the proxy service run in `:core`,
+ * so a crash of the UI process leaves the tunnel up; this binds that process and forwards to it.
+ */
 object ServiceController {
+    private val gson = Gson()
     private val lock = Mutex()
-    private var binding: ManagedServiceBinding? = null
+    private val notificationLock = Mutex()
 
     @Volatile
     internal var runtime: ServiceRuntime? = null
         private set
 
-    private fun clearBinding() {
-        binding?.unbind()
-        binding = null
-    }
+    @Volatile
+    private var eventListener: ((ByteArray) -> Unit)? = null
 
-    // The Core listens exactly while a run exists, so every path that ends one closes it.
-    private fun release() {
-        clearBinding()
-        runtime = null
-        Core.stopListener()
-    }
+    @Volatile
+    private var notificationParams: NotificationParams? = null
 
-    fun invokeMethod(data: String, callback: (ByteArray) -> Unit): Result<Unit> = runCatching {
-        Core.invokeMethod(data) { result ->
-            callback(result ?: ByteArray(0))
-        }
+    fun invokeMethod(
+        data: String,
+        onError: (String) -> Unit,
+        callback: (ByteArray) -> Unit,
+    ): Result<Unit> = runCatching {
+        val service = runBlocking { CoreConnection.service() }
+        val call = CoreCall(callback, onError)
+        runCatching { service.invokeMethod(Payload(data), call) }
+            .onFailure { error -> call.fail(error.message.orEmpty()) }
     }
 
     suspend fun quickSetup(
         initParams: String,
         setupParams: String,
     ): Result<String> = runCatching {
-        NetworkObserver.start()
-        suspendCancellableCoroutine { continuation ->
-            Core.quickSetup(initParams, setupParams) { result ->
-                continuation.resume(result.orEmpty())
-            }
-        }
+        val service = CoreConnection.service()
+        suspendCancellableCoroutine<Result<String>> { continuation ->
+            val call = CoreCall(
+                onResult = { result -> continuation.resume(Result.success(String(result))) },
+                onError = { message ->
+                    continuation.resume(Result.failure(IllegalStateException(message)))
+                },
+            )
+            runCatching { service.quickSetup(initParams, Payload(setupParams), call) }
+                .onFailure { error -> call.fail(error.message.orEmpty()) }
+        }.getOrThrow()
     }
 
     fun setEventListener(callback: ((ByteArray) -> Unit)?): Result<Unit> = runCatching {
-        Core.updateEventListener(callback)
+        eventListener = callback
+        GlobalState.launch {
+            runCatching { applyEventListener(CoreConnection.service()) }
+                .onFailure { error -> GlobalState.log("Unable to set the event listener: $error") }
+        }
+    }
+
+    fun updateNotificationParams(params: NotificationParams) {
+        notificationParams = params
+        GlobalState.launch {
+            runCatching { applyNotificationParams(CoreConnection.service()) }
+                .onFailure { error ->
+                    GlobalState.log("Unable to update notification params: $error")
+                }
+        }
     }
 
     suspend fun start(options: VpnOptions): Boolean = lock.withLock {
-        ServiceConfig.updateVpnOptions(options)
-        val nextIntent = if (options.enable) {
-            VpnService::class.intent
-        } else {
-            ProxyService::class.intent
+        val startedAt = runCatching {
+            val service = CoreConnection.service()
+            withContext(Dispatchers.IO) { service.start(gson.toJson(options)) }
+        }.getOrElse { error ->
+            GlobalState.log("Unable to start background service: $error")
+            0L
         }
-
-        if (binding?.component != nextIntent.component) {
-            if (binding != null) {
-                tearDownServices()
-            }
-            lateinit var nextBinding: ManagedServiceBinding
-            nextBinding = ManagedServiceBinding(nextIntent) { message ->
-                handleServiceDisconnected(nextBinding, message)
-            }
-            binding = nextBinding
-            nextBinding.bind().onFailure { error ->
-                GlobalState.log("Unable to bind background service: $error")
-                release()
-                return@withLock false
-            }
-        }
-
-        val currentBinding = binding ?: return@withLock false
-        val result = currentBinding.useService { service -> service.start() }
-        if (result.isFailure) {
-            GlobalState.log("Unable to start background service: ${result.exceptionOrNull()}")
-            currentBinding.stopIfConnected()
-                .onFailure { error ->
-                    GlobalState.log("Unable to clean up failed background service start: $error")
-                }
-            release()
+        if (startedAt <= 0L) {
+            runtime = null
             return@withLock false
         }
-
-        Core.startListener()
-        runtime = ServiceRuntime(
-            vpn = options.enable,
-            startedAtMillis = runtime?.startedAtMillis ?: System.currentTimeMillis(),
-        )
+        runtime = ServiceRuntime(vpn = options.enable, startedAtMillis = startedAt)
         true
     }
 
     suspend fun stop() = lock.withLock {
-        tearDownServices()
-        release()
+        runCatching {
+            val service = CoreConnection.service()
+            withContext(Dispatchers.IO) { service.stop() }
+        }.onFailure { error -> GlobalState.log("Unable to stop background service: $error") }
+        runtime = null
     }
 
-    private suspend fun tearDownServices() {
-        binding?.useService { service -> service.stop() }
-            ?.onFailure { error ->
-                GlobalState.log("Unable to stop background service: $error")
-            }
-        clearBinding()
-        stopServices()
-    }
+    /** Waits for the Core process so a run it kept while the UI was gone is known here. */
+    suspend fun awaitConnected(): Boolean = runCatching { CoreConnection.service() }.isSuccess
 
-    // A service the system started itself — always-on VPN, or the sticky restart
-    // after the process was killed — outlives every binding this process holds, so
-    // unbinding alone leaves the tunnel up while the app reports it stopped.
-    private fun stopServices() {
-        listOf(VpnService::class.intent, ProxyService::class.intent).forEach { intent ->
-            runCatching { GlobalState.application.stopService(intent) }
-                .onFailure { error ->
-                    GlobalState.log("Unable to stop ${intent.component?.className}: $error")
+    private fun applyEventListener(service: ICoreService) {
+        val listener = eventListener
+        service.setEventListener(
+            listener?.let {
+                object : ICoreCallback.Stub() {
+                    override fun onResult(result: Payload) = it(result.read())
                 }
+            },
+        )
+    }
+
+    private suspend fun applyNotificationParams(service: ICoreService) {
+        notificationLock.withLock {
+            val params = notificationParams ?: return
+            withContext(Dispatchers.IO) {
+                service.updateNotificationParams(gson.toJson(params))
+            }
         }
     }
 
-    private fun handleServiceDisconnected(
-        disconnectedBinding: ManagedServiceBinding,
-        message: String,
-    ) {
+    internal suspend fun onConnected(service: ICoreService) {
+        withContext(Dispatchers.IO) {
+            service.setServiceListener(serviceListener)
+            applyEventListener(service)
+            applyNotificationParams(service)
+        }
+        val startedAt = withContext(Dispatchers.IO) { service.runtimeStartedAt() }
+        if (startedAt > 0L) {
+            val vpn = withContext(Dispatchers.IO) { service.runtimeVpn() }
+            runtime = ServiceRuntime(vpn = vpn, startedAtMillis = startedAt)
+        } else if (runtime != null) {
+            handleServiceLost("The Core process restarted")
+        }
+    }
+
+    internal fun onDisconnected() {
+        CoreCall.failAll("The Core process died")
+        if (runtime != null) {
+            handleServiceLost("The Core process died")
+        }
+    }
+
+    private val serviceListener = object : IServiceListener.Stub() {
+        override fun onServiceLost(message: String) = handleServiceLost(message)
+    }
+
+    private fun handleServiceLost(message: String) {
         val token = ServiceState.captureRequestToken()
         GlobalState.launch {
-            val wasCurrent = lock.withLock {
-                if (binding !== disconnectedBinding) {
+            val wasRunning = lock.withLock {
+                if (runtime == null) {
                     return@withLock false
                 }
                 GlobalState.log("Background service disconnected: $message")
-                release()
+                runtime = null
                 true
             }
-            if (wasCurrent) {
+            if (wasRunning) {
                 ServiceState.handleServiceLost(token)
             }
         }
     }
 }
 
-private class ManagedServiceBinding(
-    private val intent: Intent,
-    private val onDisconnected: (String) -> Unit,
-) : ServiceConnection {
-    val component: ComponentName?
-        get() = intent.component
+/** One answer from the Core; settled with an error instead if the Core process dies first. */
+private class CoreCall(
+    private val onResult: (ByteArray) -> Unit,
+    private val onError: (String) -> Unit,
+) : ICoreCallback.Stub() {
+    private val settled = AtomicBoolean(false)
 
-    private val serviceState = MutableStateFlow<Result<ManagedService>?>(null)
+    init {
+        pending += this
+    }
+
+    override fun onResult(result: Payload) {
+        val bytes = runCatching { result.read() }
+        if (!settled.compareAndSet(false, true)) return
+        pending -= this
+        bytes.fold(onResult) { error -> onError(error.message.orEmpty()) }
+    }
+
+    fun fail(message: String) {
+        if (!settled.compareAndSet(false, true)) return
+        pending -= this
+        onError(message)
+    }
+
+    companion object {
+        private val pending: MutableSet<CoreCall> = Collections.synchronizedSet(mutableSetOf())
+
+        fun failAll(message: String) {
+            val calls = synchronized(pending) { pending.toList() }
+            calls.forEach { it.fail(message) }
+        }
+    }
+}
+
+private object CoreConnection : ServiceConnection, IBinder.DeathRecipient {
+    private val service = MutableStateFlow<ICoreService?>(null)
+    private val bindLock = Any()
+    private var bound = false
 
     @Volatile
-    private var isBound = false
+    private var linked: IBinder? = null
 
-    suspend fun bind(): Result<Unit> = runCatching {
-        withContext(Dispatchers.Main.immediate) {
-            serviceState.value = null
-            isBound = GlobalState.application.bindService(
-                intent,
-                this@ManagedServiceBinding,
-                Context.BIND_AUTO_CREATE,
+    private fun ensureBound() {
+        synchronized(bindLock) {
+            if (bound) return
+            bound = GlobalState.application.bindService(
+                CoreService::class.intent,
+                this,
+                Context.BIND_AUTO_CREATE or Context.BIND_IMPORTANT,
             )
-            check(isBound) { "bindService() failed" }
+            check(bound) { "bindService() failed for the Core process" }
         }
     }
 
-    suspend fun <R> useService(
-        connectionTimeoutMillis: Long = 5_000,
-        block: suspend (ManagedService) -> R,
-    ): Result<R> = runCatching {
-        val service = withTimeout(connectionTimeoutMillis) {
-            serviceState.filterNotNull().first().getOrThrow()
-        }
-        withContext(Dispatchers.Default) {
-            block(service)
-        }
-    }
-
-    suspend fun stopIfConnected(): Result<Unit> = runCatching {
-        val service = serviceState.value?.getOrNull() ?: return@runCatching
-        withContext(Dispatchers.Default) {
-            service.stop()
-        }
-    }
-
-    fun unbind() {
-        serviceState.value = null
-        if (!isBound) return
-        isBound = false
-        Handler(Looper.getMainLooper()).post {
-            runCatching {
-                GlobalState.application.unbindService(this)
-            }.onFailure { error ->
-                GlobalState.log("Unable to unbind background service: $error")
-            }
-        }
+    // Never called on the main thread, where the connection itself is delivered.
+    suspend fun service(timeoutMillis: Long = 10_000): ICoreService {
+        ensureBound()
+        return withTimeout(timeoutMillis) { service.filterNotNull().first() }
     }
 
     override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
-        runCatching {
-            when (binder) {
-                is VpnService.LocalBinder -> binder.service
-                is ProxyService.LocalBinder -> binder.service
-                null -> error("Binder is empty")
-                else -> error("Unsupported service binder: ${binder.javaClass.name}")
+        if (binder == null) return
+        val next = ICoreService.Stub.asInterface(binder)
+        linked = binder
+        runCatching { binder.linkToDeath(this, 0) }
+            .onFailure {
+                onDisconnected()
+                return
             }
-        }.onSuccess { service ->
-            serviceState.value = Result.success(service)
-        }.onFailure { error ->
-            disconnect(error.message.orEmpty())
+        GlobalState.launch {
+            runCatching { ServiceController.onConnected(next) }
+                .onFailure { error -> GlobalState.log("Unable to sync the Core process: $error") }
+            if (linked === binder) {
+                service.value = next
+            }
         }
     }
 
-    override fun onServiceDisconnected(name: ComponentName?) {
-        disconnect("Service disconnected")
-    }
+    override fun onServiceDisconnected(name: ComponentName?) = onDisconnected()
+
+    override fun binderDied() = onDisconnected()
 
     override fun onBindingDied(name: ComponentName?) {
-        disconnect("Service binding died")
+        synchronized(bindLock) {
+            runCatching { GlobalState.application.unbindService(this) }
+            bound = false
+        }
+        onDisconnected()
     }
 
-    override fun onNullBinding(name: ComponentName?) {
-        disconnect("Service returned an empty binder")
-    }
-
-    private fun disconnect(message: String) {
-        serviceState.value = Result.failure(IllegalStateException(message))
-        onDisconnected(message)
+    private fun onDisconnected() {
+        val binder = synchronized(bindLock) { linked.also { linked = null } } ?: return
+        runCatching { binder.unlinkToDeath(this, 0) }
+        service.value = null
+        ServiceController.onDisconnected()
     }
 }

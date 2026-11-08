@@ -216,6 +216,32 @@ class ServiceStateMachineTest {
     }
 
     @Test
+    fun `a run the Core process kept is adopted as STARTED`() = runTest {
+        val host = FakeHost(backgroundScope)
+        val machine = ServiceStateMachine(host)
+        machine.syncSharedState(configuredState())
+        host.runtime = ServiceRuntime(vpn = true, startedAtMillis = STARTED_AT)
+
+        machine.adoptRuntime()
+
+        assertEquals(RunState.STARTED, machine.runState.value)
+        assertEquals(STARTED_AT, machine.awaitRunTime())
+        assertTrue(machine.requestStart().await())
+        assertEquals(0, host.startCalls)
+    }
+
+    @Test
+    fun `nothing is adopted while the Core process runs nothing`() = runTest {
+        val host = FakeHost(backgroundScope)
+        val machine = ServiceStateMachine(host)
+
+        machine.adoptRuntime()
+
+        assertEquals(RunState.STOPPED, machine.runState.value)
+        assertFalse(machine.isRunRequested)
+    }
+
+    @Test
     fun `a stop request reads as STOPPING until the service is down`() = runTest {
         val host = FakeHost(backgroundScope)
         val machine = ServiceStateMachine(host)

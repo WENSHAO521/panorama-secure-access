@@ -300,14 +300,25 @@ Android deliberately keeps Flutter requests optimistic and the native layer auth
   flight, the latest intent, and `ServiceController.runtime`. A service that is up under a stop intent reads `STOPPING`, a
   start still waiting on a permission reads `STOPPED`, and `STARTED` needs both a running intent and a runtime. The tile
   and `getRunTime` both read this one value, so they cannot disagree with the service.
-- `ServiceController` owns exactly one `ManagedServiceBinding`, selects `VpnService` or `ProxyService` from `VpnOptions`,
-  binds with a five-second connection timeout, and invokes `ManagedService.start()`/`stop()` off the main thread. The
-  binding and `runtime` (which service runs, and since when) are set and cleared together, by a stop, a failed start, or
-  a lost connection and by nothing else. Flutter's `shutdown` only clears the Core event listener: Android keeps an
-  established `VpnService` alive through its own connection, so a binding dropped on exit left a tunnel that was
-  reported as running but that neither a stop nor a revoke could reach.
-- The Core listens exactly while `runtime` is set: a successful start ends in `Core.startListener()` and every path
-  that clears `runtime` calls `Core.stopListener()`. Both return at once when the Core is already there, which is the
+- The Core, `VpnService` and `ProxyService` run in the `:core` process, hosted by the bound `CoreService`, so a native
+  crash of the Flutter UI (Impeller, a plugin) no longer takes the tunnel down. The app process talks to it over AIDL
+  (`ICoreService`, `ICoreCallback`, `IServiceListener`). `Payload` carries the bytes and streams anything over 128 KB
+  through a pipe, since every binder call in flight shares one 1 MB buffer. `CoreService` also starts
+  `NetworkObserver` and takes the memory callbacks, because the Core lives there.
+- In `:core`, `CoreRuntime` owns exactly one `ManagedServiceBinding`, selects `VpnService` or `ProxyService` from
+  `VpnOptions`, binds with a five-second connection timeout, and invokes `ManagedService.start()`/`stop()` off the main
+  thread. The binding and `runInfo` (which service runs, and since when) are set and cleared together, by a stop, a
+  failed start, or a lost connection and by nothing else. A lost service is reported to the app through
+  `IServiceListener`.
+- In the app, `ServiceController` binds `CoreService` for the life of the process and mirrors `runInfo` as `runtime`.
+  It refreshes the mirror on every connection, and `ServiceState` waits for that connection before any action or
+  `getRunTime`, so a fresh UI process adopts a run the Core kept (`ServiceStateMachine.adoptRuntime`) and Flutter takes
+  the resume path below. When the Core process dies, every pending call answers with an error, a run in progress is
+  reported lost, and the binding brings the process back. Flutter's `shutdown` only clears the Core event listener:
+  Android keeps an established `VpnService` alive through its own connection, so a binding dropped on exit left a
+  tunnel that was reported as running but that neither a stop nor a revoke could reach.
+- The Core listens exactly while `runInfo` is set: a successful start ends in `Core.startListener()` and every path
+  that clears `runInfo` calls `Core.stopListener()`. Both return at once when the Core is already there, which is the
   usual case, since `startTun`/`stopTun` and Flutter's own `startListener`/`stopListener` got there first. They matter
   when nothing else does: a proxy-only run stopped from the tile used to keep the mixed port open with nothing
   reported as running. A start closes after itself the same way: Flutter's `startListener` and the native `quickSetup`
