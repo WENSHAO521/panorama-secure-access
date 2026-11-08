@@ -55,6 +55,10 @@ class Proxy {
   Future<int?> readLoopbackProxyPort() async {
     return switch (Platform.operatingSystem) {
       'macos' => await _macosProxy.readLoopbackProxyPort(),
+      'linux' => await _linuxProxy.readLoopbackProxyPort(
+        desktop: Platform.environment['XDG_CURRENT_DESKTOP'],
+        homeDir: Platform.environment['HOME'],
+      ),
       String() => null,
     };
   }
