@@ -127,6 +127,28 @@ void main() {
     expect(versions.first.isEmpty, isTrue);
   });
 
+  test('drops what a revert of a merge took back out', () {
+    git(['checkout', '--quiet', '-b', 'topic']);
+    File('${repo.path}/feature.txt').writeAsStringSync('feature');
+    git(['add', 'feature.txt']);
+    commit('feat(d): reverted feature');
+    git(['checkout', '--quiet', 'main']);
+    git(['merge', '--no-ff', '--quiet', '--message', 'Merge topic', 'topic']);
+    git(['revert', '--no-edit', '-m', '1', 'HEAD']);
+    commit('chore: keep going');
+    commit('fix(e): kept fix');
+
+    final versions = build(
+      pending: const PendingVersion(version: '1.2.0', date: '2026-02-03'),
+    ).changelog.versions;
+
+    final texts = [
+      for (final group in versions.first.groups)
+        for (final entry in group.entries) entry.text,
+    ];
+    expect(texts, ['Kept fix']);
+  });
+
   test('a pending version is skipped once its tag exists', () {
     final versions = build(
       pending: const PendingVersion(version: '1.1.0', date: '2026-02-03'),
