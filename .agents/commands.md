@@ -370,8 +370,13 @@ evict everything `dev` had saved. Release builds therefore start cold; branch ru
 - setup-go keys its entry on the `cache-dependency-path` files alone and saves only on a miss, so jobs listing the
   same files share one entry holding the build cache of whichever finished first. `desktop` and `android` each add
   the file that drives their Core build to get an entry of their own.
-- setup-gradle writes only on the default branch unless told otherwise, so `android` lets `dev` write as well. Its
-  entries are keyed by job, which is one more reason the release build gains nothing from caching.
+- setup-gradle writes only on the default branch unless told otherwise, so `android` lets `dev` and `beta` write as
+  well: `beta` moves dependency versions ahead of `main`, and on a miss Gradle fetches some of them from GitHub
+  release downloads. Its entries are keyed by job, which is one more reason the release build gains nothing from
+  caching.
+- The `sqlite3` build hook downloads its prebuilt library from GitHub releases on every cold run and fails the
+  job when that download fails. `dart`, `desktop` and `build` cache `.dart_tool/hooks_runner/shared/sqlite3` per
+  runner OS and architecture; the hook checks the cached file's hash and downloads again on a mismatch.
 
 ## Worktree Tooling
 
