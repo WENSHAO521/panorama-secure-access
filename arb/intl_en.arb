@@ -454,6 +454,7 @@
   "interval": "Interval",
   "existsTip": "{label} already exists",
   "maxLengthTip": "{label} must be at most {max} characters",
+  "invalidCharactersTip": "{label} contains characters that are not allowed",
   "singleImport": "Single import",
   "batchImport": "Batch import",
   "batchUrlInputTip": "One URL per line",

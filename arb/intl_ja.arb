@@ -454,6 +454,7 @@
   "interval": "間隔",
   "existsTip": "{label}はすでに存在します",
   "maxLengthTip": "{label}は最大{max}文字です",
+  "invalidCharactersTip": "{label}に使用できない文字が含まれています",
   "singleImport": "個別インポート",
   "batchImport": "一括インポート",
   "batchUrlInputTip": "1行に1つのURLを入力してください",

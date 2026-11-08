@@ -454,6 +454,7 @@
   "interval": "간격",
   "existsTip": "{label}이(가) 이미 있습니다",
   "maxLengthTip": "{label}은(는) 최대 {max}자까지 입력할 수 있습니다",
+  "invalidCharactersTip": "{label}에 허용되지 않는 문자가 포함되어 있습니다",
   "singleImport": "개별 가져오기",
   "batchImport": "일괄 가져오기",
   "batchUrlInputTip": "한 줄에 URL 하나씩",

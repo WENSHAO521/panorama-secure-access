@@ -454,6 +454,7 @@
   "interval": "间隔",
   "existsTip": "{label}当前已存在",
   "maxLengthTip": "{label}最多{max}个字符",
+  "invalidCharactersTip": "{label}包含不允许的字符",
   "singleImport": "单条导入",
   "batchImport": "批量导入",
   "batchUrlInputTip": "每行一个URL",

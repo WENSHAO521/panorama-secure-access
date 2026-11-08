@@ -3611,6 +3611,16 @@ class AppLocalizations {
     );
   }
 
+  /// `{label} contains characters that are not allowed`
+  String invalidCharactersTip(Object label) {
+    return Intl.message(
+      '$label contains characters that are not allowed',
+      name: 'invalidCharactersTip',
+      desc: '',
+      args: [label],
+    );
+  }
+
   /// `Single import`
   String get singleImport {
     return Intl.message(

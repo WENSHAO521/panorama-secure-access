@@ -454,6 +454,7 @@
   "interval": "Интервал",
   "existsTip": "«{label}» уже существует",
   "maxLengthTip": "«{label}» — не более {max} символов",
+  "invalidCharactersTip": "«{label}» содержит недопустимые символы",
   "singleImport": "По одному",
   "batchImport": "Массовый импорт",
   "batchUrlInputTip": "По одному URL на строку",
