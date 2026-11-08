@@ -12,6 +12,7 @@ class Proxy {
   static const int _minPort = 1;
   static const int _maxPort = 65535;
 
+  late final ProxyCommandRunner _commandRunner;
   late final LinuxProxy _linuxProxy;
   late final MacosProxy _macosProxy;
 
@@ -20,6 +21,7 @@ class Proxy {
     ProxyExecutableChecker? executableChecker,
   }) {
     final commandRunner = ProxyCommandRunner(processRunner ?? Process.run);
+    _commandRunner = commandRunner;
     _linuxProxy = LinuxProxy(
       commandRunner: commandRunner,
       executableChecker: executableChecker,
@@ -50,13 +52,26 @@ class Proxy {
     };
   }
 
-  /// The loopback port a system proxy still points at, or null when none is
-  /// on. Only macOS keeps that setting across a killed run.
   Future<int?> readLoopbackProxyPort() async {
     return switch (Platform.operatingSystem) {
       'macos' => await _macosProxy.readLoopbackProxyPort(),
       String() => null,
     };
+  }
+
+  Future<bool?> clearStaleProxy() async {
+    if (!Platform.isWindows) {
+      return null;
+    }
+    try {
+      final result = await _commandRunner.process(
+        Platform.resolvedExecutable,
+        const ['--clear-stale-proxy'],
+      );
+      return result.exitCode == 0;
+    } on ProcessException {
+      return false;
+    }
   }
 
   Future<bool> stopProxy() async {
