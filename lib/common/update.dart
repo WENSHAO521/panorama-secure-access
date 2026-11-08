@@ -79,6 +79,23 @@ UpdateAsset? selectUpdateAsset(
   }
 }
 
+final _minimumMacosMarker = RegExp(r'<!--\s*minimum-macos:\s*([\d.]+)\s*-->');
+final _versionNumber = RegExp(r'\d+(\.\d+)*');
+
+/// The `minimum-macos` marker is written by `.github/release_template.md`.
+bool meetsMinimumMacos(String? releaseBody, String osVersion) {
+  final minimum = _minimumMacosMarker.firstMatch(releaseBody ?? '')?.group(1);
+  final current = _versionNumber.firstMatch(osVersion)?.group(0);
+  if (minimum == null || current == null) return true;
+  final required = minimum.split('.').map(int.parse).toList();
+  final actual = current.split('.').map(int.parse).toList();
+  for (var i = 0; i < required.length; i++) {
+    final part = i < actual.length ? actual[i] : 0;
+    if (part != required[i]) return part > required[i];
+  }
+  return true;
+}
+
 // inno_setup.iss waits for `updatefrom` to exit, then relaunches the app.
 String windowsUpdateArguments(int pid) {
   return '/SILENT /SUPPRESSMSGBOXES /NORESTART /SP- /updatefrom=$pid';
@@ -121,9 +138,16 @@ class Updater {
     return const ['arm64-v8a', 'armeabi-v7a', 'x86_64'];
   }
 
-  static Future<UpdateAsset?> pickAsset(List<UpdateAsset> assets) async {
+  static Future<UpdateAsset?> pickAsset(
+    List<UpdateAsset> assets, {
+    String? releaseBody,
+  }) async {
     final platform = _platform;
     if (platform == null) return null;
+    if (platform == UpdatePlatform.macos &&
+        !meetsMinimumMacos(releaseBody, Platform.operatingSystemVersion)) {
+      return null;
+    }
     return selectUpdateAsset(
       assets,
       platform: platform,

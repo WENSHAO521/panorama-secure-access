@@ -59,6 +59,24 @@ void main() {
     });
   });
 
+  group('meetsMinimumMacos', () {
+    const body = '<!-- minimum-macos: 13.0 -->\nnotes';
+
+    test('holds back a release that needs a newer macOS', () {
+      expect(meetsMinimumMacos(body, 'Version 12.7.4 (Build 21H1123)'), false);
+    });
+
+    test('offers it on the minimum and later', () {
+      expect(meetsMinimumMacos(body, 'Version 13.0 (Build 22A380)'), true);
+      expect(meetsMinimumMacos(body, 'Version 15.1 (Build 24B83)'), true);
+    });
+
+    test('offers a release without the marker', () {
+      expect(meetsMinimumMacos('notes', 'Version 12.7.4'), true);
+      expect(meetsMinimumMacos(null, 'Version 12.7.4'), true);
+    });
+  });
+
   group('parseUpdateAssets', () {
     test('skips entries without a name or download url', () {
       final assets = parseUpdateAssets([
