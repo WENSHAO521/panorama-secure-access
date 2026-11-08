@@ -18,15 +18,37 @@ object ServiceState {
     fun detachFlutterEngine(engine: FlutterEngine) =
         AndroidServiceStateHost.detachFlutterEngine(engine)
 
-    suspend fun handleToggleAction() = machine.handleToggleAction()
+    // The Core process outlives this one, so a fresh process first learns whether a run is up.
+    suspend fun syncWithCore() {
+        if (ServiceController.awaitConnected()) {
+            machine.adoptRuntime()
+        }
+    }
 
-    suspend fun handleStartAction() = machine.handleStartAction()
+    suspend fun handleToggleAction() {
+        syncWithCore()
+        machine.handleToggleAction()
+    }
 
-    suspend fun handleStopAction() = machine.handleStopAction()
+    suspend fun handleStartAction() {
+        syncWithCore()
+        machine.handleStartAction()
+    }
 
-    suspend fun handleVpnRevokeAction() = machine.handleVpnRevokeAction()
+    suspend fun handleStopAction() {
+        syncWithCore()
+        machine.handleStopAction()
+    }
 
-    suspend fun awaitRunTime(): Long = machine.awaitRunTime()
+    suspend fun handleVpnRevokeAction() {
+        syncWithCore()
+        machine.handleVpnRevokeAction()
+    }
+
+    suspend fun awaitRunTime(): Long {
+        syncWithCore()
+        return machine.awaitRunTime()
+    }
 
     fun requestStart(): Deferred<Boolean> = machine.requestStart()
 

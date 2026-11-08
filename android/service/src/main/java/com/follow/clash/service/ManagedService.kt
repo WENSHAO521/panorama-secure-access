@@ -23,8 +23,7 @@ internal fun Service.notifyVpnRevoked() {
     BroadcastAction.VPN_REVOKED.sendBroadcast()
 }
 
-// UI_HIDDEN reaches the services too, since they share the activity's process,
-// and Android 14 stopped delivering the running levels this answers to.
+// Android 14 stopped delivering the running levels this answers to.
 @Suppress("DEPRECATION")
 internal fun trimCoreMemory(level: Int) {
     MitmPressure.onTrimMemory(level)

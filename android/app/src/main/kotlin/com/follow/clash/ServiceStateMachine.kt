@@ -76,6 +76,14 @@ internal class ServiceStateMachine(private val host: ServiceStateHost) {
 
     fun captureRequestToken(): RunRequest = arbiter.current()
 
+    /** Takes over a run the Core process kept while this process was gone. */
+    suspend fun adoptRuntime() = transitionLock.withLock {
+        if (host.runtime != null && !isRunRequested && transition == null) {
+            arbiter.request(running = true)
+            publish()
+        }
+    }
+
     /**
      * Settles the state after the bound service was lost. [token] is the request that was current
      * when the loss was observed, so a start that raced ahead of this callback keeps its intent.

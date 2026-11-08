@@ -3,10 +3,7 @@ package com.follow.clash.plugins
 import com.follow.clash.ServiceController
 import com.follow.clash.ServiceState
 import com.follow.clash.common.Components
-import com.follow.clash.common.GlobalState
-import com.follow.clash.core.Core
 import com.follow.clash.models.SharedState
-import com.follow.clash.service.NetworkObserver
 import com.google.gson.Gson
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.BinaryMessenger
@@ -29,11 +26,6 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-        // The main thread is also Flutter's UI thread, where "init" would load it.
-        scope.launch {
-            runCatching { Core.load() }
-                .onFailure { error -> GlobalState.log("Unable to load the Core: $error") }
-        }
         messenger = binding.binaryMessenger
         channel = MethodChannel(messenger, SERVICE_CHANNEL)
         channel.setMethodCallHandler(this)
@@ -74,7 +66,6 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     }
 
     private fun initialize(result: MethodChannel.Result) {
-        NetworkObserver.start()
         ServiceController.setEventListener(::sendEvent)
             .onSuccess { result.success("") }
             .onFailure { error -> result.success(error.message.orEmpty()) }
@@ -91,7 +82,10 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             result.error("INVALID_ARGUMENT", "Method call payload must be a string", null)
             return
         }
-        ServiceController.invokeMethod(data) { response ->
+        ServiceController.invokeMethod(
+            data,
+            onError = { message -> result.error("CORE_ERROR", message, null) },
+        ) { response ->
             result.success(response)
         }.onFailure { error ->
             result.error("CORE_ERROR", error.message, null)
