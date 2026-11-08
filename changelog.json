@@ -2,6 +2,74 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.5.7",
+      "tag": "v3.5.7",
+      "date": "2026-11-08",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "breaking",
+          "entries": [
+            {
+              "id": "3d161f0",
+              "scope": "macos",
+              "text": "macOS 12 is no longer supported; macOS 13 or later is required."
+            }
+          ]
+        },
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "84a81d8",
+              "scope": "profiles",
+              "text": "Send custom request headers with a subscription download"
+            },
+            {
+              "id": "553ced6",
+              "scope": "proxies",
+              "text": "Copy a proxy node as Clash YAML from its context menu"
+            },
+            {
+              "id": "41798b0",
+              "scope": "delay",
+              "text": "Show \"DNS failed\" when a delay test fails to resolve the node"
+            },
+            {
+              "id": "31dd5bd",
+              "scope": "update",
+              "text": "Stop offering macOS updates the system is too old to run"
+            }
+          ]
+        },
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "6c81f30",
+              "scope": "core",
+              "text": "Keep the geodata URLs a profile sets instead of the app's"
+            },
+            {
+              "id": "3e09929",
+              "scope": "linux",
+              "text": "Clear the system proxy a crashed run left on Linux"
+            },
+            {
+              "id": "74a63c3",
+              "scope": "windows",
+              "text": "Clear the system proxy a crashed run left on Windows"
+            },
+            {
+              "id": "fb0712a",
+              "scope": "android",
+              "text": "Fix Android crashes and a stuck launch screen caused by the Vulkan renderer"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.5.6",
       "tag": "v3.5.6",
       "date": "2026-11-07",

@@ -45,7 +45,7 @@ Get the latest build from [GitHub Releases](https://github.com/WENSHAO521/panora
 | --- | --- | --- |
 | Android | APK for `arm64-v8a`, `armeabi-v7a` and `x86_64` | Most phones use `arm64-v8a`. |
 | Windows 10 and later | Installer (`.exe`) or portable `.zip`, for x64 and ARM64 | Pick ARM64 on Snapdragon and other ARM laptops. |
-| macOS 12 and later | DMG for Apple Silicon and Intel | |
+| macOS 13 and later | DMG for Apple Silicon and Intel | |
 | Linux | `.deb`, `.rpm` and AppImage, for x64 and ARM64 | See the tray note below. |
 
 <p>

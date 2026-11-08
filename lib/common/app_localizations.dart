@@ -126,9 +126,11 @@ String userFacingErrorMessage(Object error, AppLocalizations appLocalizations) {
 }
 
 String delayFailureText(int delay, AppLocalizations appLocalizations) {
-  return delay == delayTimedOutValue
-      ? appLocalizations.timeout
-      : appLocalizations.delayFailed;
+  return switch (delay) {
+    delayTimedOutValue => appLocalizations.timeout,
+    delayDnsFailedValue => appLocalizations.delayDnsFailed,
+    _ => appLocalizations.delayFailed,
+  };
 }
 
 Locale? getLocaleForString(String? localString) {

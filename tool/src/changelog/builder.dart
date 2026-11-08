@@ -72,7 +72,7 @@ class ChangelogBuilder {
           tag: pending.tag,
           date: pending.date,
           prerelease: pending.prerelease,
-          groups: groupItems(parser.parseAll(commits)),
+          groups: groupItems(parser.parseAll(_withoutReverted(commits))),
         ),
       );
     }
@@ -89,7 +89,7 @@ class ChangelogBuilder {
           version: tag.version,
           tag: tag.name,
           date: git.tagDate(tag.name),
-          groups: groupItems(parser.parseAll(commits)),
+          groups: groupItems(parser.parseAll(_withoutReverted(commits))),
         ),
       );
     }
@@ -103,7 +103,34 @@ class ChangelogBuilder {
 
   Set<String> _idsOf(List<RawCommit> commits) =>
       commits.map((commit) => commit.shortHash).toSet();
+
+  // A revert of a merge names the merge, so everything it brought in goes.
+  List<RawCommit> _withoutReverted(List<RawCommit> commits) {
+    final reverted = <String>{};
+    for (final commit in commits) {
+      for (final match in _revertedCommit.allMatches(commit.body)) {
+        final target = match[1]!;
+        try {
+          reverted.addAll(
+            git.commits(from: '$target^1', to: target).map((c) => c.hash),
+          );
+        } on GitException {
+          continue;
+        }
+      }
+    }
+    if (reverted.isEmpty) {
+      return commits;
+    }
+    return [
+      for (final commit in commits)
+        if (!reverted.contains(commit.hash)) commit,
+    ];
+  }
 }
+
+// git's "This reverts commit X" and a reworded "Reverts PR #N (merge X)".
+final _revertedCommit = RegExp(r'\b[Rr]everts\b[^\n]*?\b([0-9a-f]{7,40})\b');
 
 final _frozenComment = RegExp(r'\s*<!--.*?-->', dotAll: true);
 

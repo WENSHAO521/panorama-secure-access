@@ -33,6 +33,13 @@ class SystemProxyQueue {
       if (_closed) {
         return;
       }
+      final cleared = await _proxy.clearStaleProxy();
+      if (cleared != null) {
+        if (!cleared) {
+          _logFailure();
+        }
+        return;
+      }
       final port = await _proxy.readLoopbackProxyPort();
       if (port == null || !await _loopbackFree(port)) {
         return;

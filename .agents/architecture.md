@@ -1782,10 +1782,13 @@ where `adb shell getconf PAGE_SIZE` is 16384.
   before any engine starts, and it turns off only a proxy still set to FlClash's `127.0.0.1:<port>` with nothing
   listening on that port. In the app `SystemProxyQueue` sets the system proxy when the Core starts with it on, and
   stops it on a stop or exit only when this run set it, since a stop also clears a proxy, PAC or auto-detect setting
-  someone else made. Nothing is stored, so a launch leaves alone the proxy a crashed run left, macOS excepted:
-  `SystemProxyQueue.recoverStale` runs once in `bootstrap.dart` before anything starts the Core, asks the plugin for
-  the loopback port `scutil --proxy` reports, and clears it only once a bind on that port succeeds: the host keeps
-  `networksetup`'s setting across a crash, and a port that refuses the bind belongs to a live proxy.
+  someone else made. Nothing is stored; instead `SystemProxyQueue.recoverStale`, queued once from `bootstrap.dart`
+  ahead of any apply and not awaited, clears what a crashed run left. On macOS it asks the plugin for the loopback
+  port `scutil --proxy` reports and clears it only once a bind on that port succeeds: the host keeps
+  `networksetup`'s setting across a crash, and a port that refuses the bind belongs to a live proxy. On Windows it
+  runs `FlClash.exe --clear-stale-proxy` as a child process, the same native pass the installer uses, because its
+  port-release wait can take two seconds. Linux takes the macOS path, reading the port from `gsettings`
+  (GNOME, MATE) or `kreadconfig` (KDE), which also keep the setting across a crash.
 - `rust_api`: runtime Flutter Rust Bridge FFI package built through Native Assets. See below.
 - `tray`: system tray for Linux, macOS and Windows. Written for FlClash; replaced the `tray_manager` fork.
 - `window`: desktop window control for Linux, macOS and Windows. Written for FlClash; replaced the
