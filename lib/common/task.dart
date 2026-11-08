@@ -109,6 +109,26 @@ String? lastMatchTarget(List<String> rules) {
   return null;
 }
 
+/// Profile-pinned geo URLs by config key; they win over the app's.
+Map<String, String> profileGeoXUrl(Object? raw) {
+  if (raw is! Map) {
+    return const {};
+  }
+  final pinned = <String, String>{};
+  for (final MapEntry(:key, :value) in raw.entries) {
+    final url = value?.toString().trim() ?? '';
+    if (url.isEmpty) {
+      continue;
+    }
+    try {
+      pinned[GeoResource.fromJson(key.toString()).configKey] = url;
+    } on ArgumentError {
+      continue;
+    }
+  }
+  return pinned;
+}
+
 Future<RealProfile> makeRealProfileTask(MakeRealProfileState data) async {
   return compute<MakeRealProfileState, RealProfile>(_makeRealProfileTask, data);
 }
@@ -281,7 +301,10 @@ Future<RealProfile> _makeRealProfileTask(MakeRealProfileState data) async {
   injectUnconfinedProviders('proxy-providers', data.injectedProxyProviders);
   injectUnconfinedProviders('rule-providers', data.injectedRuleProviders);
   rawConfig['profile']['store-selected'] = false;
-  rawConfig['geox-url'] = realPatchConfig.geoXUrl.raw;
+  rawConfig['geox-url'] = {
+    ...realPatchConfig.geoXUrl.raw,
+    ...profileGeoXUrl(rawConfig['geox-url']),
+  };
   rawConfig['global-ua'] = realPatchConfig.globalUa ?? defaultUA;
   if (rawConfig['hosts'] == null) {
     rawConfig['hosts'] = {};

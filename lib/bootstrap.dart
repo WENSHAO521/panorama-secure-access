@@ -89,7 +89,9 @@ class Bootstrap {
     await _claimDataDirectory();
     globalState.packageInfo = await PackageInfo.fromPlatform();
     var config = await migration.run();
-    await systemProxyQueue?.recoverStale();
+    if (systemProxyQueue case final queue?) {
+      unawaited(queue.recoverStale());
+    }
     _bootDecision = await bootGuard.evaluate(
       profileId: config.currentProfileId,
     );

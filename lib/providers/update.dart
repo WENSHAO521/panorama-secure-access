@@ -40,7 +40,10 @@ class UpdateController extends _$UpdateController {
       return true;
     }
     _assets = parseUpdateAssets(release['assets'] as List<dynamic>? ?? []);
-    final asset = await Updater.pickAsset(_assets);
+    final asset = await Updater.pickAsset(
+      _assets,
+      releaseBody: release['body'] as String?,
+    );
     if (asset == null) return false;
     state = UpdateState(
       tag: tag,

@@ -132,5 +132,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- See "Impeller on OpenGL ES on Android" in .agents/flutter-upgrade.md. -->
+        <meta-data
+            android:name="io.flutter.embedding.android.ImpellerBackend"
+            android:value="opengles" />
     </application>
 </manifest>

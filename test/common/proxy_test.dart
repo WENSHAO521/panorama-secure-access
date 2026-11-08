@@ -10,6 +10,7 @@ class _FakeProxy implements Proxy {
   Future<bool>? held;
   Error? failure;
   int? loopbackPort;
+  bool? nativeClear;
 
   Future<bool> _call(String name) async {
     calls.add(name);
@@ -33,6 +34,14 @@ class _FakeProxy implements Proxy {
 
   @override
   Future<int?> readLoopbackProxyPort() async => loopbackPort;
+
+  @override
+  Future<bool?> clearStaleProxy() async {
+    if (nativeClear != null) {
+      calls.add('clear stale');
+    }
+    return nativeClear;
+  }
 }
 
 ProxyState _state({required bool isStart}) {
@@ -138,6 +147,30 @@ void main() {
       await queue.recoverStale();
 
       expect(proxy.calls, isEmpty);
+    });
+
+    test('takes the native pass where the platform has one', () async {
+      final proxy = _FakeProxy()
+        ..nativeClear = true
+        ..loopbackPort = 7890;
+      final queue = SystemProxyQueue(
+        proxy,
+        loopbackFree: (_) async => fail('the native pass checks the port'),
+      );
+
+      await queue.recoverStale();
+
+      expect(proxy.calls, ['clear stale']);
+    });
+
+    test('a start queued during recovery runs after it', () async {
+      final proxy = _FakeProxy()..nativeClear = false;
+      final queue = SystemProxyQueue(proxy);
+
+      unawaited(queue.recoverStale());
+      await queue.apply(_state(isStart: true));
+
+      expect(proxy.calls, ['clear stale', 'start 7890']);
     });
 
     test('a failed clear does not stall the queue', () async {

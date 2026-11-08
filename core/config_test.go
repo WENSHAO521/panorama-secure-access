@@ -1064,3 +1064,18 @@ func TestTestDelayStopsQueueingOnceTheTimeoutIsSpent(t *testing.T) {
 		t.Fatal("handleTestDelay outlived the timeout it was given, waiting for a slot")
 	}
 }
+
+func TestTestDelayReportsAFailedLookupApart(t *testing.T) {
+	tunnel.UpdateProxies(map[string]constant.Proxy{"unresolved": namedProxy("unresolved")}, nil)
+	t.Cleanup(func() { tunnel.UpdateProxies(nil, nil) })
+
+	delay := handleTestDelay(&TestDelayParams{
+		ProxyName: "unresolved",
+		TestUrl:   "http://unresolved.invalid:1",
+		Timeout:   3000,
+	})
+
+	if delay == nil || delay.Value != delayDNSFailed {
+		t.Fatalf("delay = %+v, want value %d for a host no resolver knows", delay, delayDNSFailed)
+	}
+}

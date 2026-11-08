@@ -150,6 +150,8 @@ Future<void> showMapQuickEdit(
   int? valueMaxLength,
   bool ignoreKeyCase = false,
   Set<String> reservedKeys = const {},
+  String? Function(String key)? keyValidator,
+  String? Function(String value)? valueValidator,
   required ValueChanged<List<MapEntry<String, String>>> onChanged,
 }) {
   return showQuickEdit(
@@ -164,6 +166,12 @@ Future<void> showMapQuickEdit(
         keyMaxLength: keyMaxLength,
         valueMaxLength: valueMaxLength,
         ignoreKeyCase: ignoreKeyCase,
+        isValidKey: keyValidator == null
+            ? null
+            : (key) => keyValidator(key) == null,
+        isValidValue: valueValidator == null
+            ? null
+            : (value) => valueValidator(value) == null,
       );
       _throwIssues(
         parsed,
@@ -176,6 +184,10 @@ Future<void> showMapQuickEdit(
             appLocalizations.value,
             valueMaxLength!,
           ),
+          InputIssueKind.invalidKey => keyValidator!(issue.raw)!,
+          InputIssueKind.invalidValue when valueValidator != null =>
+            valueValidator(issue.raw) ??
+                appLocalizations.emptyTip(appLocalizations.value),
           InputIssueKind.missingValue ||
           InputIssueKind.invalidUrl ||
           InputIssueKind.invalidValue => appLocalizations.emptyTip(
