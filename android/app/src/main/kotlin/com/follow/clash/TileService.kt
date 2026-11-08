@@ -30,7 +30,6 @@ class TileService : android.service.quicksettings.TileService() {
                 ServiceState.runState.collect(::updateTile)
             }
         }
-        GlobalState.launch { ServiceState.syncWithCore() }
     }
 
     override fun onClick() {

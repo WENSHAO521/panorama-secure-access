@@ -99,7 +99,7 @@ database once instead of watching them. Content is applied explicitly by whateve
 ## Restart
 
 `VpnService.handleStart` builds the tunnel once from `VpnOptions` and never reads them again.
-`CoreRuntime.start` (in the `:core` process) uses `enable` to choose between `VpnService` and `ProxyService`.
+`ServiceController.start` uses `enable` to choose between `VpnService` and `ProxyService`.
 
 `vpnOptionsProvider` derives the options the service would start with now. `runningVpnOptionsProvider` records what
 the last listener start handed it. The route list is subtracted in an isolate by `vpnRouteAddressProvider`, which
@@ -133,7 +133,7 @@ To add a VPN option:
 
 1. Add it to Dart and Kotlin `VpnOptions` and to `vpnOptionsProvider`.
 2. If the service reads it only under a condition, put that condition in `VpnOptions.effective`, which mirrors
-   `CoreRuntime.start` and `VpnService.handleStart`.
+   `ServiceController.start` and `VpnService.handleStart`.
 
 The notifier stays off while nothing runs, during on-demand suspension, in safe mode, and on desktop, where
 `VpnManager` is not mounted. When Flutter reattaches to a service that is already running, it records the current

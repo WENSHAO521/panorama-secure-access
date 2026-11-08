@@ -28,8 +28,7 @@ Every behavior here has one authoritative owner, and a change lands there:
 
 - Shared facade/protocol: `lib/core/controller.dart`, `lib/core/interface.dart`, and `lib/core/method.dart`.
 - Android Core connection: `lib/core/lib.dart`, `lib/plugins/service.dart`, and Android `ServicePlugin`.
-- Android start/stop intent: `ServiceState`; app side of the `:core` process: `ServiceController`; service
-  binding/run-time bookkeeping inside `:core`: `CoreRuntime` (hosted by `CoreService`).
+- Android start/stop intent: `ServiceState`; binding/process-time bookkeeping: `ServiceController`.
 - Desktop composition: `lib/core/service.dart`; lifecycle/process ownership: `lib/core/desktop/lifecycle.dart`.
 - Desktop IPC/RPC: `lib/core/desktop/transport.dart` and `lib/core/desktop/rpc_client.dart`.
 - Desktop launch ownership: `lib/core/desktop/launcher.dart`; Windows and Linux Helper HTTP contract:

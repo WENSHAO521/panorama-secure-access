@@ -308,12 +308,10 @@ leaving a repo-wide policy as a comment reaches only the reader of that one file
   the revision-stamped `stopped` report, which Flutter mirrors with `setRunning(false)` and never answers with a
   decision of its own.
 - Android `RunState` is derived in `ServiceStateMachine.publish`; do not assign it from a transition step, and do not
-  add a second "is it running" field beside `ServiceController.runtime`, which mirrors `CoreRuntime.runInfo` in the
-  `:core` process and is refreshed only from it. Every divergence between the tile and the service so far came from a
-  copy that one path forgot to update.
+  add a second "is it running" field beside `ServiceController.runtime`. Every divergence between the tile and the
+  service so far came from a copy that one path forgot to update.
 - Android service callbacks are not automatically user intent. Route explicit Quick Settings, Always-on VPN, and revoke
-  actions through `ServiceState` and keep `CoreRuntime` (in `:core`) as the sole service binding/run-time owner, reached
-  only through `ServiceController`.
+  actions through `ServiceState` and keep `ServiceController` as the sole binding/run-time owner.
 - Every `BroadcastReceiver.goAsync()` path must finish its `PendingResult` exactly once. A watchdog may release the
   broadcast lease, but must not cancel, reverse, or otherwise redefine the service operation.
 - Anything that probes through the outbound route is a `RoutedProbe` judged against `routeTrackerProvider` (Route
