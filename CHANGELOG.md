@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.5.8 (2026-11-09)
+
+**Bug Fixes**
+
+- **tun** Hysteria2 connects over TUN again: every install moves to the mips TUN stack, the only one it works on macOS (f3d333d)
+
 ## v3.5.7 (2026-11-08)
 
 **Breaking Changes**
