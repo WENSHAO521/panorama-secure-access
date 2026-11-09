@@ -336,6 +336,27 @@ void main() {
         expect((await upgrade(9000, 5)).tun.mtu, 9000);
       });
 
+      test('moves a TUN stack left at mixed to mipstack, once', () async {
+        Future<TunStack> upgrade(String stack, int from) async {
+          final configMap = _createConfigMap();
+          (configMap['patchClashConfig']! as Map<String, Object?>)['tun'] = {
+            'stack': stack,
+          };
+          final store = _FakeMigrationStore(
+            configMap: configMap,
+            version: Migration.currentVersion,
+            upgradeVersion: from,
+          );
+          return (await Migration(
+            store: store,
+          ).run()).patchClashConfig.tun.stack;
+        }
+
+        expect(await upgrade('mixed', 5), TunStack.mips);
+        expect(await upgrade('gvisor', 5), TunStack.gvisor);
+        expect(await upgrade('mixed', 6), TunStack.mixed);
+      });
+
       test('a new install only records it', () async {
         final store = _FakeMigrationStore(
           configMap: null,

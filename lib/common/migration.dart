@@ -91,7 +91,7 @@ class Migration {
 
   /// One-off setting changes for upgrades, apart from [currentVersion], which
   /// backups carry and an older app refuses when it is newer than its own.
-  static const upgradeVersion = 5;
+  static const upgradeVersion = 6;
 
   static const Map<int, Config Function(Config config)> _upgrades = {
     1: _resetThemeColors,
@@ -99,6 +99,7 @@ class Migration {
     3: _followSystemColors,
     4: _turnOffSidebarBlur,
     5: _dropFormerTunMtu,
+    6: _dropFormerTunStack,
   };
 
   Future<Config> run() async {
@@ -251,6 +252,20 @@ Config _dropFormerTunMtu(Config config) {
       tunOverride: !overridden && clash.tunOverride.mtu == formerDefaultTunMtu
           ? clash.tunOverride.copyWith(mtu: defaultTunMtu)
           : clash.tunOverride,
+    ),
+  );
+}
+
+// hysteria2 stays dead over the TUN on every stack but mipstack, the default
+// since 0.8.99; installs from before then still carry the former mixed.
+Config _dropFormerTunStack(Config config) {
+  final clash = config.patchClashConfig;
+  if (clash.tun.stack != TunStack.mixed) {
+    return config;
+  }
+  return config.copyWith(
+    patchClashConfig: clash.copyWith(
+      tun: clash.tun.copyWith(stack: TunStack.mips),
     ),
   );
 }
