@@ -306,11 +306,24 @@ bool TrayPlugin::OpenMenu() {
   POINT cursor;
   ::GetCursorPos(&cursor);
 
+  // The menu only dismisses on an outside click while its owner is in the
+  // foreground, so the main window takes it even when hidden. Left there, a
+  // hidden window keeps the foreground and knocks exclusive full-screen games
+  // back to windowed mode (upstream #2973), so it is handed back afterwards.
+  const HWND previous = ::GetForegroundWindow();
   ::SetForegroundWindow(window);
   const int command = ::TrackPopupMenu(
       menu_, TPM_BOTTOMALIGN | TPM_LEFTALIGN | TPM_RETURNCMD | TPM_RIGHTBUTTON,
       cursor.x, cursor.y, 0, window, nullptr);
   ::PostMessageW(window, WM_NULL, 0, 0);
+  if (!::IsWindowVisible(window) && ::GetForegroundWindow() == window) {
+    if (previous != nullptr && previous != window && ::IsWindow(previous) &&
+        ::IsWindowVisible(previous)) {
+      ::SetForegroundWindow(previous);
+    } else {
+      ::SetForegroundWindow(::GetShellWindow());
+    }
+  }
 
   if (command != 0) {
     flutter::EncodableMap arguments;
