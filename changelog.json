@@ -2,6 +2,24 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.5.8",
+      "tag": "v3.5.8",
+      "date": "2026-11-09",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "f3d333d",
+              "scope": "tun",
+              "text": "Hysteria2 connects over TUN again: every install moves to the mips TUN stack, the only one it works on macOS"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.5.7",
       "tag": "v3.5.7",
       "date": "2026-11-08",
