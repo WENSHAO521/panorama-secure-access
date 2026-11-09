@@ -336,7 +336,7 @@ void main() {
         expect((await upgrade(9000, 5)).tun.mtu, 9000);
       });
 
-      test('moves a TUN stack left at mixed to mipstack, once', () async {
+      test('moves every TUN stack to mipstack, once', () async {
         Future<TunStack> upgrade(String stack, int from) async {
           final configMap = _createConfigMap();
           (configMap['patchClashConfig']! as Map<String, Object?>)['tun'] = {
@@ -353,7 +353,8 @@ void main() {
         }
 
         expect(await upgrade('mixed', 5), TunStack.mips);
-        expect(await upgrade('gvisor', 5), TunStack.gvisor);
+        expect(await upgrade('gvisor', 5), TunStack.mips);
+        expect(await upgrade('system', 5), TunStack.mips);
         expect(await upgrade('mixed', 6), TunStack.mixed);
       });
 

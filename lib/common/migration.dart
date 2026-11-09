@@ -99,7 +99,7 @@ class Migration {
     3: _followSystemColors,
     4: _turnOffSidebarBlur,
     5: _dropFormerTunMtu,
-    6: _dropFormerTunStack,
+    6: _moveToMipstack,
   };
 
   Future<Config> run() async {
@@ -256,13 +256,10 @@ Config _dropFormerTunMtu(Config config) {
   );
 }
 
-// hysteria2 stays dead over the TUN on every stack but mipstack, the default
-// since 0.8.99; installs from before then still carry the former mixed.
-Config _dropFormerTunStack(Config config) {
+// hysteria2 stays dead over the TUN on every stack but mipstack, so an
+// upgrade moves every install onto it; the setting stays open to change back.
+Config _moveToMipstack(Config config) {
   final clash = config.patchClashConfig;
-  if (clash.tun.stack != TunStack.mixed) {
-    return config;
-  }
   return config.copyWith(
     patchClashConfig: clash.copyWith(
       tun: clash.tun.copyWith(stack: TunStack.mips),
