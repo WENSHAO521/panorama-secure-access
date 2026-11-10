@@ -91,3 +91,21 @@ func TestATunTurnedOnByAPatchIsPinnedToo(t *testing.T) {
 		t.Fatal("the runtime pin outlived the TUN start")
 	}
 }
+
+func TestAStartReplacesAPinLeftByAnApplyWhileStopped(t *testing.T) {
+	stubEgress(t, "Wi-Fi")
+	cfg := egressTestConfig()
+	restore := pinEgress(cfg)
+	dialer.DefaultInterface.Store(cfg.General.Interface)
+	restore()
+
+	findEgress = func(*config.Config) string { return "Ethernet" }
+	pinEgressNow(cfg)
+	if got := dialer.DefaultInterface.Load(); got != "Ethernet" {
+		t.Fatalf("the start kept the stale pin %q", got)
+	}
+	releaseEgress()
+	if got := dialer.DefaultInterface.Load(); got != "" {
+		t.Fatalf("interface %q left bound after the TUN came up", got)
+	}
+}
