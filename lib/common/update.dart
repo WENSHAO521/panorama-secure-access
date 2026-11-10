@@ -105,7 +105,7 @@ String? findChecksum(String sums, String name) {
   for (final line in sums.split('\n')) {
     final parts = line.trim().split(RegExp(r'\s+'));
     if (parts.length < 2) continue;
-    if (parts.last.replaceFirst('*', '') == name) {
+    if (parts.last.replaceFirst(RegExp(r'^\*?(\./)?'), '') == name) {
       return parts.first.toLowerCase();
     }
   }

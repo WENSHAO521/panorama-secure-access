@@ -112,6 +112,20 @@ void main() {
     test('returns null for an unknown file', () {
       expect(findChecksum(sums, 'missing.apk'), isNull);
     });
+
+    test('reads the ./ entries the release workflow writes', () {
+      const released =
+          'abcdef01  ./PanoramaSecureAccess-3.5.8-linux-amd64.deb\n'
+          '1234abcd *./PanoramaSecureAccess-3.5.8-macos-arm64.dmg\n';
+      expect(
+        findChecksum(released, 'PanoramaSecureAccess-3.5.8-linux-amd64.deb'),
+        'abcdef01',
+      );
+      expect(
+        findChecksum(released, 'PanoramaSecureAccess-3.5.8-macos-arm64.dmg'),
+        '1234abcd',
+      );
+    });
   });
 
   group('UpdateState.progress', () {
