@@ -33,9 +33,11 @@ class UpdateController extends _$UpdateController {
   }) async {
     final tag = release['tag_name'] as String;
     final current = state;
+    // A download under way finishes into whatever state is current, so a
+    // newer release waits for the next check instead of replacing it.
     if (current != null &&
-        current.tag == tag &&
-        current.stage != UpdateStage.failed) {
+        (current.isBusy ||
+            current.tag == tag && current.stage != UpdateStage.failed)) {
       show();
       return true;
     }

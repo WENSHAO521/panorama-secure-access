@@ -53,6 +53,25 @@ void main() {
       expect(_pick(UpdatePlatform.linux), endsWith('linux-amd64.AppImage'));
     });
 
+    test('keeps to the package kind this install can take', () {
+      final asset = selectUpdateAsset(
+        _assets,
+        platform: UpdatePlatform.linux,
+        arch: 'amd64',
+        linuxPackages: const ['.deb'],
+      );
+      expect(asset?.name, endsWith('linux-amd64.deb'));
+      expect(
+        selectUpdateAsset(
+          _assets,
+          platform: UpdatePlatform.linux,
+          arch: 'amd64',
+          linuxPackages: const ['.rpm'],
+        ),
+        isNull,
+      );
+    });
+
     test('matches the macOS architecture', () {
       expect(_pick(UpdatePlatform.macos, arch: 'arm64'), endsWith('.dmg'));
       expect(_pick(UpdatePlatform.macos), isNull);

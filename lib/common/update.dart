@@ -25,7 +25,7 @@ class UpdateChecksumException implements Exception {
   final String name;
 
   @override
-  String toString() => 'Checksum mismatch for $name';
+  String toString() => 'Checksum not verified for $name';
 }
 
 const _checksumAssetName = 'SHA256SUMS';
@@ -49,6 +49,7 @@ UpdateAsset? selectUpdateAsset(
   required UpdatePlatform platform,
   required String arch,
   List<String> androidAbis = const [],
+  List<String> linuxPackages = const ['.AppImage', '.deb', '.rpm'],
 }) {
   UpdateAsset? firstWhere(bool Function(String name) test) {
     for (final asset in assets) {
@@ -69,7 +70,7 @@ UpdateAsset? selectUpdateAsset(
     case UpdatePlatform.macos:
       return firstWhere((name) => name.endsWith('-macos-$arch.dmg'));
     case UpdatePlatform.linux:
-      for (final extension in const ['.AppImage', '.deb', '.rpm']) {
+      for (final extension in linuxPackages) {
         final match = firstWhere(
           (name) => name.contains('-linux-$arch') && name.endsWith(extension),
         );
@@ -138,6 +139,16 @@ class Updater {
     return const ['arm64-v8a', 'armeabi-v7a', 'x86_64'];
   }
 
+  // A package manager cannot be handed an AppImage, nor an AppImage a package.
+  static List<String> _linuxPackages() {
+    if (Platform.environment['APPIMAGE']?.isNotEmpty == true) {
+      return const ['.AppImage'];
+    }
+    if (File('/usr/bin/dpkg').existsSync()) return const ['.deb'];
+    if (File('/usr/bin/rpm').existsSync()) return const ['.rpm'];
+    return const ['.AppImage'];
+  }
+
   static Future<UpdateAsset?> pickAsset(
     List<UpdateAsset> assets, {
     String? releaseBody,
@@ -155,23 +166,25 @@ class Updater {
       androidAbis: platform == UpdatePlatform.android
           ? await _androidAbis()
           : const [],
+      linuxPackages: platform == UpdatePlatform.linux
+          ? _linuxPackages()
+          : const [],
     );
   }
 
-  static Future<String?> expectedChecksum(
+  /// Throws when the release publishes no checksum for [asset]: an installer
+  /// that cannot be checked is not run.
+  static Future<String> expectedChecksum(
     List<UpdateAsset> assets,
     UpdateAsset asset,
   ) async {
     for (final candidate in assets) {
       if (candidate.name != _checksumAssetName) continue;
-      try {
-        final response = await request.getTextResponseForUrl(candidate.url);
-        return findChecksum(response.data ?? '', asset.name);
-      } catch (_) {
-        return null;
-      }
+      final sums = await request.getReleaseText(candidate.url);
+      final checksum = findChecksum(sums, asset.name);
+      if (checksum != null) return checksum;
     }
-    return null;
+    throw UpdateChecksumException(asset.name);
   }
 
   static Future<String> _sha256(File file) async {
@@ -204,7 +217,7 @@ class Updater {
       if (sha256 != null && await _sha256(target) == sha256) return target;
       await target.delete();
     }
-    await request.download(
+    await request.downloadRelease(
       asset.url,
       partial.path,
       cancelToken: cancelToken,
@@ -228,10 +241,13 @@ class Updater {
       return (await Process.run('open', [file.path])).exitCode == 0;
     }
     if (system.isLinux) {
-      if (file.path.endsWith('.AppImage')) {
+      // xdg-open has no handler that runs an AppImage, so its folder opens.
+      final isAppImage = file.path.endsWith('.AppImage');
+      if (isAppImage) {
         await Process.run('chmod', ['+x', file.path]);
       }
-      return (await Process.run('xdg-open', [file.path])).exitCode == 0;
+      final target = isAppImage ? file.parent.path : file.path;
+      return (await Process.run('xdg-open', [target])).exitCode == 0;
     }
     if (system.isAndroid) {
       return await app?.openFile(file.path) ?? false;
