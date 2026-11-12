@@ -4,10 +4,9 @@ import 'dart:io';
 import 'package:fl_clash/common/boot_guard.dart';
 import 'package:fl_clash/common/boot_record.dart';
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/common/conflicts.dart';
 import 'package:fl_clash/common/launch.dart';
 import 'package:fl_clash/common/legacy_data.dart';
-import 'package:fl_clash/common/legacy_install.dart';
+import 'package:fl_clash/common/startup_checks.dart';
 import 'package:fl_clash/common/migration.dart';
 import 'package:fl_clash/common/tray.dart';
 import 'package:fl_clash/common/window.dart';
@@ -193,46 +192,28 @@ class Bootstrap {
   /// Before the first Core start, so a release still installed under
   /// FlClash's identifiers does not hold the TUN or ports this one needs.
   Future<void> _handleLegacyInstalls() async {
-    final imported = lastLegacyDataImport;
-    if (imported != null) {
-      dialogs.showBanner(
-        currentAppLocalizations.legacyDataImported(imported.source),
+    if (safeModeBuild) {
+      return;
+    }
+    final silent = _container.read(appSettingProvider).silentLaunch;
+    if (!system.isAndroid) {
+      await startupChecks.handleLegacyDesktop(
+        imported: lastLegacyDataImport,
+        silent: silent,
       );
-    }
-    if (safeModeBuild ||
-        _container.read(appSettingProvider).silentLaunch ||
-        await preferences.getLegacyInstallOffered()) {
       return;
     }
-    if (system.isAndroid) {
-      await _guideAndroidImport();
-      return;
-    }
-    final installs = await findLegacyDesktopInstalls();
-    if (installs.isEmpty) {
-      return;
-    }
-    await preferences.setLegacyInstallOffered();
-    final confirmed = await dialogs.showMessage(
-      title: currentAppLocalizations.legacyInstallTitle,
-      message: TextSpan(
-        text: currentAppLocalizations.legacyInstallTip(
-          installs.map((item) => item.id).join(', '),
-        ),
-      ),
-      confirmText: currentAppLocalizations.legacyInstallRemove,
-      cancelText: currentAppLocalizations.updateLater,
+    final restore = await startupChecks.guideAndroidImport(
+      silent: silent,
+      hasProfiles: _container.read(profilesProvider).isNotEmpty,
+      installedPackages: () async => [
+        for (final item in await app?.getPackages() ?? const <Package>[])
+          item.packageName,
+      ],
     );
-    if (confirmed != true) {
-      return;
-    }
-    for (final install in installs) {
-      if (!await legacyInstalls.remove(install)) {
-        dialogs.showBanner(
-          currentAppLocalizations.legacyInstallRemoveFailed,
-          level: BannerLevel.error,
-        );
-      }
+    final context = rootNavigatorKey.currentContext;
+    if (restore && context != null && context.mounted) {
+      unawaited(BaseNavigator.push(context, const BackupAndRestore()));
     }
   }
 
@@ -242,67 +223,14 @@ class Bootstrap {
     if (!system.isDesktop || safeModeBuild) {
       return;
     }
-    final others = await findConflictingProcesses();
-    final port = _container.read(patchClashConfigProvider).mixedPort;
-    if (port > 0 && !await isLoopbackPortFree(port)) {
-      final free = await nextFreePort(port);
-      if (free == null || _container.read(appSettingProvider).silentLaunch) {
-        dialogs.showBanner(
-          currentAppLocalizations.portInUseBanner(port),
-          level: BannerLevel.error,
-        );
-        return;
-      }
-      final confirmed = await dialogs.showMessage(
-        title: currentAppLocalizations.portInUseTitle(port),
-        message: TextSpan(
-          text: currentAppLocalizations.portInUseTip(port, free),
-        ),
-        confirmText: currentAppLocalizations.portInUseSwitch,
-        cancelText: currentAppLocalizations.updateLater,
-      );
-      if (confirmed == true) {
-        _container
-            .read(patchClashConfigProvider.notifier)
-            .update((state) => state.copyWith(mixedPort: free));
-      }
-      return;
-    }
-    if (others.isNotEmpty) {
-      dialogs.showBanner(
-        currentAppLocalizations.conflictingClientsTip(others.join(', ')),
-        level: BannerLevel.warning,
-      );
-    }
-  }
-
-  /// A new application id cannot replace the old app, and Android keeps each
-  /// app's data private, so the user moves it through a backup file.
-  Future<void> _guideAndroidImport() async {
-    if (_container.read(profilesProvider).isNotEmpty) {
-      await preferences.setLegacyInstallOffered();
-      return;
-    }
-    final packages = await app?.getPackages() ?? const <Package>[];
-    final legacy = packages
-        .map((item) => item.packageName)
-        .where(legacyAndroidPackages.contains)
-        .toList();
-    await preferences.setLegacyInstallOffered();
-    if (legacy.isEmpty) {
-      return;
-    }
-    final confirmed = await dialogs.showMessage(
-      title: currentAppLocalizations.legacyAndroidImportTitle,
-      message: TextSpan(
-        text: currentAppLocalizations.legacyAndroidImportTip(legacy.join(', ')),
-      ),
-      confirmText: currentAppLocalizations.legacyAndroidImportAction,
-      cancelText: currentAppLocalizations.updateLater,
+    final free = await startupChecks.checkConflicts(
+      mixedPort: _container.read(patchClashConfigProvider).mixedPort,
+      silent: _container.read(appSettingProvider).silentLaunch,
     );
-    final context = rootNavigatorKey.currentContext;
-    if (confirmed == true && context != null && context.mounted) {
-      unawaited(BaseNavigator.push(context, const BackupAndRestore()));
+    if (free != null) {
+      _container
+          .read(patchClashConfigProvider.notifier)
+          .update((state) => state.copyWith(mixedPort: free));
     }
   }
 
