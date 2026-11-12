@@ -1103,5 +1103,10 @@
   "trafficPeriod": "Période du trafic",
   "trafficMonthly": "Réinitialisé chaque mois",
   "trafficPermanent": "Permanent",
-  "customTrafficInvalidDesc": "Saisissez un trafic supérieur à 0"
+  "customTrafficInvalidDesc": "Saisissez un trafic supérieur à 0",
+  "linuxHelperSetupTitle": "Configurer le service TUN",
+  "linuxHelperSetupTip": "Le mode TUN passe par un service système. Autorisez-le une seule fois en tant qu’administrateur : ensuite, lancer Panorama Secure Access, activer TUN ou redémarrer l’ordinateur ne demande plus de mot de passe. L’application elle-même continue de s’exécuter sous votre compte.",
+  "linuxHelperSetupFailed": "Le service TUN n’a pas été installé. L’activation de TUN le redemandera.",
+  "ostreeUpdateTitle": "Terminer la mise à jour dans un terminal",
+  "ostreeUpdateTip": "Ce système est géré par rpm-ostree (comme Fedora Silverblue), qui installe les paquets dans une nouvelle image système. Exécutez la commande ci-dessous, puis redémarrez l’ordinateur : la nouvelle version et son service TUN ne démarrent qu’après le redémarrage."
 }

@@ -1164,9 +1164,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Certificado instalado",
     ),
     "installNow": MessageLookupByLibrary.simpleMessage("Instalar ahora"),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Se denegó el permiso de lista de apps, por lo que no se pueden mostrar las apps instaladas. Concédelo manualmente en los ajustes del sistema.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Se denegó el permiso de lista de apps, por lo que no se pueden mostrar las apps instaladas. Concédelo manualmente en los ajustes del sistema.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Este sistema oculta la lista de apps instaladas hasta que se concede el permiso. Autorízalo para configurar el proxy por app.",
     ),
@@ -1300,6 +1301,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "lineIssueTip": m49,
     "lineWrap": MessageLookupByLibrary.simpleMessage("Ajuste de línea"),
     "link": MessageLookupByLibrary.simpleMessage("Enlace"),
+    "linuxHelperSetupFailed": MessageLookupByLibrary.simpleMessage(
+      "El servicio TUN no se instaló. Al activar TUN se volverá a pedir.",
+    ),
+    "linuxHelperSetupTip": MessageLookupByLibrary.simpleMessage(
+      "El modo TUN funciona mediante un servicio del sistema. Autorízalo una sola vez como administrador: después, abrir Panorama Secure Access, activar TUN o reiniciar el equipo ya no pedirá contraseña. La aplicación sigue ejecutándose con tu cuenta.",
+    ),
+    "linuxHelperSetupTitle": MessageLookupByLibrary.simpleMessage(
+      "Configurar el servicio TUN",
+    ),
     "liquidGlass": MessageLookupByLibrary.simpleMessage("Liquid Glass"),
     "list": MessageLookupByLibrary.simpleMessage("Lista"),
     "listen": MessageLookupByLibrary.simpleMessage("Escucha"),
@@ -1639,6 +1649,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "optional": MessageLookupByLibrary.simpleMessage("Opcional"),
     "options": MessageLookupByLibrary.simpleMessage("Opciones"),
     "originalUrl": MessageLookupByLibrary.simpleMessage("URL original"),
+    "ostreeUpdateTip": MessageLookupByLibrary.simpleMessage(
+      "Este sistema lo gestiona rpm-ostree (como Fedora Silverblue), que instala los paquetes en una nueva imagen del sistema. Ejecuta el comando siguiente y reinicia el equipo: la nueva versión y su servicio TUN solo se activan tras reiniciar.",
+    ),
+    "ostreeUpdateTitle": MessageLookupByLibrary.simpleMessage(
+      "Termina la actualización en una terminal",
+    ),
     "other": MessageLookupByLibrary.simpleMessage("Otros"),
     "otherContributors": MessageLookupByLibrary.simpleMessage(
       "Otros colaboradores",

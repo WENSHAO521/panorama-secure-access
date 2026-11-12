@@ -21,6 +21,7 @@ import 'package:flutter/services.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:prism_ui/banner.dart';
 
 class Bootstrap {
   static Bootstrap? _instance;
@@ -169,6 +170,7 @@ class Bootstrap {
       return;
     }
     await _showCrashRecoveryTip();
+    await _offerLinuxHelper();
     await _container.read(coreActionProvider.notifier).startCore();
     if (!_bootDecision.isDegraded) {
       await _container.read(setupActionProvider.notifier).initStatus();
@@ -178,6 +180,36 @@ class Bootstrap {
     unawaited(_container.read(mitmModulesActionProvider.notifier).autoUpdate());
     await bootGuard.markRunning();
     unawaited(_container.read(locationPermissionsProvider.notifier).refresh());
+  }
+
+  /// Asked once, before the first Core start, never during a silent autostart.
+  Future<void> _offerLinuxHelper() async {
+    final linuxHelper = linux;
+    if (linuxHelper == null ||
+        safeModeBuild ||
+        _container.read(appSettingProvider).silentLaunch ||
+        await preferences.getLinuxHelperOffered()) {
+      return;
+    }
+    await preferences.setLinuxHelperOffered();
+    if (linuxHelper.isServiceInstalled) {
+      return;
+    }
+    final confirmed = await dialogs.showMessage(
+      title: currentAppLocalizations.linuxHelperSetupTitle,
+      message: TextSpan(text: currentAppLocalizations.linuxHelperSetupTip),
+      confirmText: currentAppLocalizations.authorize,
+      cancelText: currentAppLocalizations.updateLater,
+    );
+    if (confirmed != true) {
+      return;
+    }
+    if (await linuxHelper.registerService() == AuthorizeCode.error) {
+      dialogs.showBanner(
+        currentAppLocalizations.linuxHelperSetupFailed,
+        level: BannerLevel.error,
+      );
+    }
   }
 
   Future<void> _showCrashRecoveryTip() async {

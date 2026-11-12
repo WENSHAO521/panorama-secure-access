@@ -1135,9 +1135,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Сертификат установлен",
     ),
     "installNow": MessageLookupByLibrary.simpleMessage("Установить"),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -1263,6 +1264,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "lineIssueTip": m49,
     "lineWrap": MessageLookupByLibrary.simpleMessage("Перенос строк"),
     "link": MessageLookupByLibrary.simpleMessage("Ссылка"),
+    "linuxHelperSetupFailed": MessageLookupByLibrary.simpleMessage(
+      "Служба TUN не установлена. При включении TUN запрос появится снова.",
+    ),
+    "linuxHelperSetupTip": MessageLookupByLibrary.simpleMessage(
+      "Режим TUN работает через системную службу. Разрешите это один раз как администратор: после этого запуск Panorama Secure Access, включение TUN и перезагрузка компьютера больше не потребуют пароля. Само приложение по-прежнему работает от вашей учётной записи.",
+    ),
+    "linuxHelperSetupTitle": MessageLookupByLibrary.simpleMessage(
+      "Настройка службы TUN",
+    ),
     "liquidGlass": MessageLookupByLibrary.simpleMessage("Жидкое стекло"),
     "list": MessageLookupByLibrary.simpleMessage("Список"),
     "listen": MessageLookupByLibrary.simpleMessage("Прослушивание"),
@@ -1598,6 +1608,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "optional": MessageLookupByLibrary.simpleMessage("Необязательно"),
     "options": MessageLookupByLibrary.simpleMessage("Опции"),
     "originalUrl": MessageLookupByLibrary.simpleMessage("Исходный URL"),
+    "ostreeUpdateTip": MessageLookupByLibrary.simpleMessage(
+      "Эта система управляется rpm-ostree (например, Fedora Silverblue), и пакеты устанавливаются в новый образ системы. Выполните команду ниже и перезагрузите компьютер: новая версия и её служба TUN заработают только после перезагрузки.",
+    ),
+    "ostreeUpdateTitle": MessageLookupByLibrary.simpleMessage(
+      "Завершите обновление в терминале",
+    ),
     "other": MessageLookupByLibrary.simpleMessage("Другое"),
     "otherContributors": MessageLookupByLibrary.simpleMessage(
       "Другие участники",

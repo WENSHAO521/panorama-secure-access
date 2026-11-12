@@ -7708,8 +7708,7 @@ class AppLocalizations {
   String customImportDroppedSubRules(num count, Object label) {
     return Intl.plural(
       count,
-      one:
-          '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
+      one: '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
       other:
           '$label SUB-RULE rules were dropped, since custom profiles do not support sub-rules',
       name: 'customImportDroppedSubRules',
@@ -9318,6 +9317,56 @@ class AppLocalizations {
     return Intl.message(
       'Enter a traffic amount above 0',
       name: 'customTrafficInvalidDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set up the TUN service`
+  String get linuxHelperSetupTitle {
+    return Intl.message(
+      'Set up the TUN service',
+      name: 'linuxHelperSetupTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TUN mode runs through a system service. Authorize it once as an administrator: after that, starting Panorama Secure Access, turning on TUN and restarting the computer no longer ask for a password. The app itself keeps running under your account.`
+  String get linuxHelperSetupTip {
+    return Intl.message(
+      'TUN mode runs through a system service. Authorize it once as an administrator: after that, starting Panorama Secure Access, turning on TUN and restarting the computer no longer ask for a password. The app itself keeps running under your account.',
+      name: 'linuxHelperSetupTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The TUN service was not installed. Turning on TUN will ask again.`
+  String get linuxHelperSetupFailed {
+    return Intl.message(
+      'The TUN service was not installed. Turning on TUN will ask again.',
+      name: 'linuxHelperSetupFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Finish the update in a terminal`
+  String get ostreeUpdateTitle {
+    return Intl.message(
+      'Finish the update in a terminal',
+      name: 'ostreeUpdateTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This system is managed by rpm-ostree (such as Fedora Silverblue), which installs packages into a new system image. Run the command below, then restart the computer: the new version and its TUN service start only after the restart.`
+  String get ostreeUpdateTip {
+    return Intl.message(
+      'This system is managed by rpm-ostree (such as Fedora Silverblue), which installs packages into a new system image. Run the command below, then restart the computer: the new version and its TUN service start only after the restart.',
+      name: 'ostreeUpdateTip',
       desc: '',
       args: [],
     );

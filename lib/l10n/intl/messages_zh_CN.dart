@@ -946,6 +946,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "lineIssueTip": m49,
     "lineWrap": MessageLookupByLibrary.simpleMessage("自动换行"),
     "link": MessageLookupByLibrary.simpleMessage("链接"),
+    "linuxHelperSetupFailed": MessageLookupByLibrary.simpleMessage(
+      "TUN 服务未安装，开启 TUN 时会再次询问。",
+    ),
+    "linuxHelperSetupTip": MessageLookupByLibrary.simpleMessage(
+      "TUN 模式通过系统服务运行，需要一次管理员授权。授权后，启动 Panorama Secure Access、开启 TUN 和重启电脑都不会再要求输入密码；应用本身仍以你的账户运行。",
+    ),
+    "linuxHelperSetupTitle": MessageLookupByLibrary.simpleMessage("设置 TUN 服务"),
     "liquidGlass": MessageLookupByLibrary.simpleMessage("液态玻璃"),
     "list": MessageLookupByLibrary.simpleMessage("列表"),
     "listen": MessageLookupByLibrary.simpleMessage("监听"),
@@ -1185,6 +1192,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "optional": MessageLookupByLibrary.simpleMessage("可选"),
     "options": MessageLookupByLibrary.simpleMessage("选项"),
     "originalUrl": MessageLookupByLibrary.simpleMessage("原 URL"),
+    "ostreeUpdateTip": MessageLookupByLibrary.simpleMessage(
+      "此系统由 rpm-ostree 管理（如 Fedora Silverblue），软件包会安装到新的系统映像中。请运行以下命令，然后重启电脑：新版本及其 TUN 服务在重启后才会生效。",
+    ),
+    "ostreeUpdateTitle": MessageLookupByLibrary.simpleMessage("在终端中完成更新"),
     "other": MessageLookupByLibrary.simpleMessage("其他"),
     "otherContributors": MessageLookupByLibrary.simpleMessage("其他贡献者"),
     "outbound": MessageLookupByLibrary.simpleMessage("出站"),

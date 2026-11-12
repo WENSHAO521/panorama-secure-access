@@ -1103,5 +1103,10 @@
   "trafficPeriod": "트래픽 주기",
   "trafficMonthly": "매월 초기화",
   "trafficPermanent": "영구",
-  "customTrafficInvalidDesc": "0보다 큰 트래픽을 입력하세요"
+  "customTrafficInvalidDesc": "0보다 큰 트래픽을 입력하세요",
+  "linuxHelperSetupTitle": "TUN 서비스 설정",
+  "linuxHelperSetupTip": "TUN 모드는 시스템 서비스로 실행됩니다. 관리자로 한 번만 승인하면 이후 Panorama Secure Access 실행, TUN 켜기, 컴퓨터 재시작 시 더 이상 비밀번호를 묻지 않습니다. 앱 자체는 계속 사용자 계정으로 실행됩니다.",
+  "linuxHelperSetupFailed": "TUN 서비스가 설치되지 않았습니다. TUN을 켜면 다시 묻습니다.",
+  "ostreeUpdateTitle": "터미널에서 업데이트 완료",
+  "ostreeUpdateTip": "이 시스템은 rpm-ostree(예: Fedora Silverblue)로 관리되며 패키지는 새 시스템 이미지에 설치됩니다. 아래 명령을 실행한 뒤 컴퓨터를 재시작하세요. 새 버전과 TUN 서비스는 재시작 후에 적용됩니다."
 }

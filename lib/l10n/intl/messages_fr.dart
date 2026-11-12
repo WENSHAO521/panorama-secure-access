@@ -1168,9 +1168,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Certificat installé",
     ),
     "installNow": MessageLookupByLibrary.simpleMessage("Installer"),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "L’autorisation de la liste des apps a été refusée ; les apps installées ne peuvent donc pas être listées. Veuillez l’accorder manuellement dans les réglages du système.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "L’autorisation de la liste des apps a été refusée ; les apps installées ne peuvent donc pas être listées. Veuillez l’accorder manuellement dans les réglages du système.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Ce système masque la liste des apps installées tant que l’autorisation n’est pas accordée. Accordez-la pour configurer le proxy par app.",
     ),
@@ -1304,6 +1305,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "lineIssueTip": m49,
     "lineWrap": MessageLookupByLibrary.simpleMessage("Retour à la ligne"),
     "link": MessageLookupByLibrary.simpleMessage("Lien"),
+    "linuxHelperSetupFailed": MessageLookupByLibrary.simpleMessage(
+      "Le service TUN n’a pas été installé. L’activation de TUN le redemandera.",
+    ),
+    "linuxHelperSetupTip": MessageLookupByLibrary.simpleMessage(
+      "Le mode TUN passe par un service système. Autorisez-le une seule fois en tant qu’administrateur : ensuite, lancer Panorama Secure Access, activer TUN ou redémarrer l’ordinateur ne demande plus de mot de passe. L’application elle-même continue de s’exécuter sous votre compte.",
+    ),
+    "linuxHelperSetupTitle": MessageLookupByLibrary.simpleMessage(
+      "Configurer le service TUN",
+    ),
     "liquidGlass": MessageLookupByLibrary.simpleMessage("Liquid Glass"),
     "list": MessageLookupByLibrary.simpleMessage("Liste"),
     "listen": MessageLookupByLibrary.simpleMessage("Écoute"),
@@ -1641,6 +1651,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "optional": MessageLookupByLibrary.simpleMessage("Facultatif"),
     "options": MessageLookupByLibrary.simpleMessage("Options"),
     "originalUrl": MessageLookupByLibrary.simpleMessage("URL d\'origine"),
+    "ostreeUpdateTip": MessageLookupByLibrary.simpleMessage(
+      "Ce système est géré par rpm-ostree (comme Fedora Silverblue), qui installe les paquets dans une nouvelle image système. Exécutez la commande ci-dessous, puis redémarrez l’ordinateur : la nouvelle version et son service TUN ne démarrent qu’après le redémarrage.",
+    ),
+    "ostreeUpdateTitle": MessageLookupByLibrary.simpleMessage(
+      "Terminer la mise à jour dans un terminal",
+    ),
     "other": MessageLookupByLibrary.simpleMessage("Autre"),
     "otherContributors": MessageLookupByLibrary.simpleMessage(
       "Autres contributeurs",

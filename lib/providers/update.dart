@@ -7,6 +7,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/action.dart';
+import 'package:flutter/painting.dart' show TextSpan;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'generated/update.g.dart';
@@ -153,9 +154,25 @@ class UpdateController extends _$UpdateController {
       if (system.isWindows) {
         await ref.read(systemActionProvider.notifier).handleExit();
       }
+      if (system.isOstree) {
+        await _showOstreeUpdateCommand(path);
+      }
     } catch (error) {
       _fail(error);
     }
+  }
+
+  Future<void> _showOstreeUpdateCommand(String path) async {
+    final command = Linux.ostreeUpdateCommand(
+      path,
+      await linux?.installedPackageName(),
+    );
+    await dialogs.showAlert(
+      title: currentAppLocalizations.ostreeUpdateTitle,
+      message: TextSpan(
+        text: '${currentAppLocalizations.ostreeUpdateTip}\n\n$command',
+      ),
+    );
   }
 
   void show() => _patch((value) => value.copyWith(cardVisible: true));
