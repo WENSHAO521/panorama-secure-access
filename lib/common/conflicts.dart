@@ -5,9 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'constant.dart';
 import 'print.dart';
 
-/// Proxy clients and cores whose TUN or system proxy overrides this app's
-/// when both run, matched case-insensitively on the executable's name
-/// without its extension.
+/// Clients whose TUN or system proxy overrides this app's when both run.
 const conflictingProcessNames = {
   'clash',
   'clash-meta',
@@ -36,8 +34,6 @@ const conflictingProcessNames = {
   'sslocal',
 };
 
-/// Basenames of running processes from `ps -A -o comm=` or `tasklist /FO CSV
-/// /NH`, lower-cased and without `.exe`.
 @visibleForTesting
 Set<String> parseProcessNames(String stdout, {required bool windows}) {
   final names = <String>{};
@@ -63,8 +59,6 @@ Set<String> parseProcessNames(String stdout, {required bool windows}) {
   return names;
 }
 
-/// The running proxy clients from [conflictingProcessNames], this app's own
-/// processes excluded.
 @visibleForTesting
 List<String> conflictingProcesses(Set<String> running) {
   return running
@@ -91,8 +85,6 @@ Future<List<String>> findConflictingProcesses() async {
   }
 }
 
-/// Whether nothing listens on [port] on the loopback address the Core's
-/// mixed port binds when LAN access is off.
 Future<bool> isLoopbackPortFree(int port) async {
   try {
     final socket = await ServerSocket.bind(InternetAddress.loopbackIPv4, port);
@@ -103,7 +95,6 @@ Future<bool> isLoopbackPortFree(int port) async {
   }
 }
 
-/// The first free port after [port], or null when none of the next [span] is.
 Future<int?> nextFreePort(
   int port, {
   int span = 100,
