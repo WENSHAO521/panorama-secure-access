@@ -521,8 +521,8 @@ class _CountryBadgeState extends State<_CountryBadge>
     } else if (widget.checking) {
       _turns.repeat();
     } else {
-      // A clover looks the same every quarter turn, so it stops on the next.
-      final rest = (_turns.value * 4).ceil() / 4;
+      // The petals settle every half turn, so it stops on the next.
+      final rest = (_turns.value * 2).ceil() / 2;
       _turns.animateTo(rest, duration: _spinPeriod * (rest - _turns.value));
     }
   }
