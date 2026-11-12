@@ -465,8 +465,8 @@ class _IpChips extends StatelessWidget {
 
 const _spinPeriod = Duration(milliseconds: 1500);
 
-/// The exit's flag among cherry petals that checks the exit again when tapped and
-/// turns while it is being checked.
+/// The exit's flag in a cherry-pink halo that checks the exit again when
+/// tapped and turns while it is being checked.
 class _CountryBadge extends StatefulWidget {
   const _CountryBadge({
     required this.countryCode,
@@ -521,8 +521,9 @@ class _CountryBadgeState extends State<_CountryBadge>
     } else if (widget.checking) {
       _turns.repeat();
     } else {
-      // The petals settle every half turn, so it stops on the next.
-      final rest = (_turns.value * 2).ceil() / 2;
+      // The halo and the blossom settle every whole turn, so it stops on the
+      // next.
+      final rest = _turns.value.ceilToDouble();
       _turns.animateTo(rest, duration: _spinPeriod * (rest - _turns.value));
     }
   }
@@ -536,6 +537,8 @@ class _CountryBadgeState extends State<_CountryBadge>
     final enabled = !widget.checking;
     final size = widget.size;
     final code = widget.countryCode;
+    final hasFlag = code != null && code.isNotEmpty;
+    final flagSize = size * sakuraFlagExtent * 1.22;
     final tooltip = context.appLocalizations.retry;
     return Tooltip(
       message: tooltip,
@@ -554,6 +557,7 @@ class _CountryBadgeState extends State<_CountryBadge>
               builder: (_, child) => SakuraBadge(
                 size: size,
                 dark: colorScheme.brightness == Brightness.dark,
+                flag: hasFlag,
                 overlay: enabled && _hovered
                     ? foreground.withValues(alpha: 0.08)
                     : null,
@@ -561,7 +565,7 @@ class _CountryBadgeState extends State<_CountryBadge>
                 ring: _focused ? focusRingSide(colorScheme) : null,
                 child: child,
               ),
-              child: code == null || code.isEmpty
+              child: !hasFlag
                   ? GlyphIcon(
                       AppGlyphs.proxies,
                       size: size * 0.42,
@@ -570,16 +574,21 @@ class _CountryBadgeState extends State<_CountryBadge>
                   : Semantics(
                       label: code.toUpperCase(),
                       excludeSemantics: true,
-                      child: Text(
-                        code.countryFlagEmoji,
-                        maxLines: 1,
-                        textScaler: TextScaler.noScaling,
-                        style: AppTextStyle.title3
-                            .of(context)
-                            .copyWith(
-                              fontFamily: FontFamily.twEmoji.value,
-                              height: 1,
-                            ),
+                      // Twemoji draws its flags a little above the middle
+                      // of the line; the nudge centers it on the disc.
+                      child: Transform.translate(
+                        offset: Offset(0, flagSize * 0.05),
+                        child: Text(
+                          code.countryFlagEmoji,
+                          maxLines: 1,
+                          textScaler: TextScaler.noScaling,
+                          // Tall enough that the flag covers its disc.
+                          style: TextStyle(
+                            fontFamily: FontFamily.twEmoji.value,
+                            fontSize: flagSize,
+                            height: 1,
+                          ),
+                        ),
                       ),
                     ),
             ),

@@ -6,15 +6,29 @@ import 'package:prism_ui/shapes/shapes.dart';
 
 import 'card.dart';
 
-/// The turn after which the petals are back where they rest.
-const sakuraSymmetry = math.pi;
+/// The turn after which the halo and the blossom are back where they rest.
+const sakuraSymmetry = 2 * math.pi;
 
-const _petalBase = Color(0xFFFFF4F7);
-const _fallenBase = Color(0xFFFCD6E2);
-const _shadow = Color(0x59000000);
-const _petalTipLight = Color(0xFFF7A8C0);
-const _petalTipDark = Color(0xFFF59AB8);
-const _vein = Color(0x55FFFFFF);
+/// The share of the badge the flag's disc spans.
+const sakuraFlagExtent = 0.7;
+
+const _haloLight = Color(0xFFFFD1E0);
+const _haloMid = Color(0xFFF48FB1);
+const _haloDeep = Color(0xFFEC6F9B);
+const _blossomHeart = Color(0xFFF48FB1);
+const _blossomMid = Color(0xFFFBC8D9);
+const _blossomEdge = Color(0xFFFFF3F7);
+const _blossomLine = Color(0x59F06F9A);
+const _stamen = Color(0xFFE0507F);
+const _anther = Color(0xFFF7C948);
+const _fallen = Color(0xFFFBC8D9);
+const _disc = Color(0xFFFFFFFF);
+const _discEdgeLight = Color(0x14000000);
+const _discEdgeDark = Color(0x33FFFFFF);
+
+/// Where the halo runs, as a radius of the badge's unit square, and how wide.
+const _haloRadius = 0.44;
+const _haloWidth = 0.05;
 
 /// One notched cherry petal growing up from the origin, one unit long.
 final Path _petal = Path()
@@ -25,30 +39,30 @@ final Path _petal = Path()
   ..cubicTo(0.44, -0.72, 0.36, -0.16, 0, 0)
   ..close();
 
-/// Where each petal rests in the badge's unit square, with its tilt, its
-/// length, how far it is turned away (a narrower width), and whether it lies
-/// on top of [SakuraBadge.child].
-const _scattered = [
-  (x: 0.06, y: 0.22, tilt: -0.7, length: 0.2, width: 0.85, over: false),
-  (x: 0.9, y: 0.12, tilt: 1.0, length: 0.16, width: 0.6, over: false),
-  (x: 0.98, y: 0.72, tilt: 2.2, length: 0.18, width: 0.9, over: false),
-  (x: 0.1, y: 0.86, tilt: -2.5, length: 0.15, width: 0.7, over: false),
-  (x: 0.56, y: 1.0, tilt: 2.9, length: 0.12, width: 0.65, over: false),
-  (x: 0.42, y: 0.02, tilt: 0.4, length: 0.11, width: 0.8, over: false),
-  (x: 0.24, y: 0.36, tilt: 2.2, length: 0.2, width: 0.8, over: true),
-  (x: 0.78, y: 0.7, tilt: -0.9, length: 0.18, width: 0.7, over: true),
-  (x: 0.62, y: 0.36, tilt: 2.7, length: 0.11, width: 0.6, over: true),
-];
+/// Five petals around the origin, one unit across from heart to tip.
+final Path _blossom = () {
+  final blossom = Path();
+  for (var index = 0; index < 5; index++) {
+    final turn = Matrix4.rotationZ(index * 2 * math.pi / 5)
+      ..scaleByDouble(1.05, 1, 1, 1);
+    blossom.addPath(_petal.transform(turn.storage), Offset.zero);
+  }
+  return blossom;
+}();
 
-/// Cherry petals scattered around [child], a few fallen on it.
+/// [child] on a white disc inside a cherry-pink halo, with a blossom on the
+/// halo's shoulder and a petal fallen at its foot.
 ///
-/// [rotation] stands for how far a check has gone; the petals drift and
-/// tumble with it. Hover and focus show on a clover behind [child].
+/// When [flag] is set, [child] is a flag glyph filling the disc and clipped
+/// to it; otherwise [child] sits bare in the halo. [rotation] stands for how
+/// far a check has gone; the halo's shading and the blossom turn with it.
+/// Hover and focus show on a circle behind the halo.
 class SakuraBadge extends StatelessWidget {
   const SakuraBadge({
     super.key,
     required this.size,
     required this.dark,
+    this.flag = false,
     this.overlay,
     this.rotation = 0,
     this.ring,
@@ -57,8 +71,9 @@ class SakuraBadge extends StatelessWidget {
 
   final double size;
   final bool dark;
+  final bool flag;
 
-  /// Fills the clover, as hover feedback.
+  /// Fills the circle behind the halo, as hover feedback.
   final Color? overlay;
   final double rotation;
   final BorderSide? ring;
@@ -66,82 +81,155 @@ class SakuraBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tip = dark ? _petalTipDark : _petalTipLight;
-    final drift = rotation / sakuraSymmetry;
+    final extent = size * sakuraFlagExtent;
+    final child = this.child;
     return CustomPaint(
       painter: ShapePainter(
-        path: shapePathOf(MaterialShapes.clover4Leaf),
+        path: shapePathOf(MaterialShapes.circle),
         color: overlay ?? const Color(0x00000000),
         ring: ring,
       ),
       child: CustomPaint(
-        painter: _FallingPetalsPainter(tip: tip, drift: drift, over: false),
-        foregroundPainter: _FallingPetalsPainter(
-          tip: tip,
-          drift: drift,
-          over: true,
+        painter: _HaloPainter(rotation: rotation, flag: flag),
+        foregroundPainter: _BlossomPainter(
+          rotation: rotation,
+          discEdge: flag ? (dark ? _discEdgeDark : _discEdgeLight) : null,
         ),
         child: SizedBox.square(
           dimension: size,
-          child: child == null ? null : Center(child: child),
+          child: child == null
+              ? null
+              : Center(
+                  child: flag
+                      ? ClipOval(
+                          child: SizedBox.square(
+                            dimension: extent,
+                            child: OverflowBox(
+                              maxWidth: double.infinity,
+                              maxHeight: double.infinity,
+                              child: child,
+                            ),
+                          ),
+                        )
+                      : child,
+                ),
         ),
       ),
     );
   }
 }
 
-class _FallingPetalsPainter extends CustomPainter {
-  _FallingPetalsPainter({
-    required this.tip,
-    required this.drift,
-    required this.over,
-  }) : _fill = Paint()
-         ..shader = ui.Gradient.linear(Offset.zero, const Offset(0, -1), [
-           over ? _fallenBase : _petalBase,
-           tip,
-         ]);
+/// The halo, with the flag's disc inside it.
+class _HaloPainter extends CustomPainter {
+  _HaloPainter({required this.rotation, required this.flag});
 
-  final Color tip;
-  final double drift;
-  final bool over;
-  final Paint _fill;
-
-  static final _veinPaint = Paint()
-    ..color = _vein
-    ..strokeWidth = 0.025;
+  final double rotation;
+  final bool flag;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final phase = drift - drift.floorToDouble();
-    for (final (index, petal) in _scattered.indexed) {
-      if (petal.over != over) {
-        continue;
-      }
-      final flight = math.sin(phase * math.pi);
-      final sway = math.sin((phase + index / _scattered.length) * math.pi * 2);
-      final length = size.width * petal.length;
-      final turn = math.cos(phase * math.pi * 2 + index).abs();
-      canvas
-        ..save()
-        ..translate(
-          (petal.x + sway * flight * 0.04) * size.width,
-          (petal.y + flight * 0.08) * size.height,
-        )
-        ..rotate(petal.tilt + sway * flight * 0.4)
-        ..scale(length * petal.width * (1 - (1 - turn) * flight), length);
-      if (over) {
-        canvas.drawShadow(_petal, _shadow, 0.06, true);
-      }
-      canvas
-        ..drawPath(_petal, _fill)
-        ..drawLine(const Offset(0, -0.08), const Offset(0, -0.62), _veinPaint)
-        ..restore();
+    final center = size.center(Offset.zero);
+    final unit = size.width;
+    // Light from the top left to deep at the bottom right, turned on a check.
+    final turned = Offset.fromDirection(math.pi / 4 + rotation, unit * 0.5);
+    canvas.drawCircle(
+      center,
+      unit * _haloRadius,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = unit * _haloWidth
+        ..shader = ui.Gradient.linear(
+          center - turned,
+          center + turned,
+          const [_haloLight, _haloMid, _haloDeep],
+          const [0, 0.5, 1],
+        ),
+    );
+    if (flag) {
+      canvas.drawCircle(
+        center,
+        unit * sakuraFlagExtent / 2,
+        Paint()..color = _disc,
+      );
     }
   }
 
   @override
-  bool shouldRepaint(_FallingPetalsPainter oldDelegate) =>
-      oldDelegate.drift != drift ||
-      oldDelegate.tip != tip ||
-      oldDelegate.over != over;
+  bool shouldRepaint(_HaloPainter oldDelegate) =>
+      oldDelegate.rotation != rotation || oldDelegate.flag != flag;
+}
+
+/// The disc's edge, the blossom on the halo and the petal at its foot, all
+/// over the flag.
+class _BlossomPainter extends CustomPainter {
+  _BlossomPainter({required this.rotation, required this.discEdge});
+
+  final double rotation;
+  final Color? discEdge;
+
+  static final _line = Paint()
+    ..style = PaintingStyle.stroke
+    ..color = _blossomLine
+    ..strokeWidth = 0.035
+    ..strokeJoin = StrokeJoin.round;
+  static final _stamenPaint = Paint()
+    ..color = _stamen
+    ..strokeWidth = 0.04
+    ..strokeCap = StrokeCap.round;
+  static final _antherPaint = Paint()..color = _anther;
+  static final _heartPaint = Paint()..color = _stamen;
+  static final _blossomFill = Paint()
+    ..shader = ui.Gradient.radial(
+      Offset.zero,
+      1,
+      const [_blossomHeart, _blossomMid, _blossomEdge],
+      const [0, 0.45, 1],
+    );
+  static final _fallenFill = Paint()..color = _fallen;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final unit = size.width;
+    if (discEdge case final edge?) {
+      canvas.drawCircle(
+        size.center(Offset.zero),
+        unit * (sakuraFlagExtent / 2 - 0.01),
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = unit * 0.02
+          ..color = edge,
+      );
+    }
+
+    canvas
+      ..save()
+      ..translate(unit * 0.15, unit * 0.86)
+      ..rotate(-130 * math.pi / 180)
+      ..scale(unit * 0.09, unit * 0.12)
+      ..drawPath(_petal, _fallenFill)
+      ..drawPath(_petal, _line)
+      ..restore();
+
+    canvas
+      ..save()
+      ..translate(unit * 0.82, unit * 0.2)
+      ..rotate(-10 * math.pi / 180 - rotation)
+      ..scale(unit * 0.15)
+      ..drawPath(_blossom, _blossomFill)
+      ..drawPath(_blossom, _line);
+    for (var index = 0; index < 5; index++) {
+      final angle = (index + 0.5) * 2 * math.pi / 5;
+      final towards = Offset(math.sin(angle), -math.cos(angle));
+      canvas
+        ..drawLine(Offset.zero, towards * 0.32, _stamenPaint)
+        ..drawCircle(towards * 0.34, 0.06, _antherPaint);
+    }
+    canvas
+      ..drawCircle(Offset.zero, 0.1, _heartPaint)
+      ..restore();
+  }
+
+  @override
+  bool shouldRepaint(_BlossomPainter oldDelegate) =>
+      oldDelegate.rotation != rotation || oldDelegate.discEdge != discEdge;
 }
