@@ -10,25 +10,29 @@ import 'package:fl_clash/models/models.dart';
 import 'package:flutter/widgets.dart';
 
 const appName = 'Panorama Secure Access';
-const appHelperService = 'FlClashHelperService';
+const appExecutableName = 'panorama-secure-access';
+const appCoreName = '$appExecutableName-core';
+const appHelperService = '$appExecutableName-helper';
 const coreManifestName = 'manifest.json';
 const browserUa =
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 const packageName = 'com.panoramasg.secureaccess';
-final unixSocketPath = '/tmp/FlClashSocket_${Random().nextInt(10000)}.sock';
-final windowsPipeName = '\\\\.\\pipe\\FlClashCore_${_randomPipeId()}';
+final unixSocketPath =
+    '/tmp/PanoramaSecureAccessSocket_${Random().nextInt(10000)}.sock';
+final windowsPipeName =
+    '\\\\.\\pipe\\PanoramaSecureAccessCore_${_randomPipeId()}';
 const helperPort = 47890;
 const helperPortKey =
     'SYSTEM\\CurrentControlSet\\Services\\$appHelperService\\Runtime';
 const helperPortValue = 'Port';
-const helperSocketPath = '/run/flclash/helper.sock';
-const helperUnitName = 'flclash-helper.service';
+const helperSocketPath = '/run/$appExecutableName/helper.sock';
+const helperUnitName = '$appHelperService.service';
 const helperUnitPath = '/etc/systemd/system/$helperUnitName';
-const helperUnitVersionPrefix = '# flclash-helper-unit-version=';
+const helperUnitVersionPrefix = '# $appHelperService-unit-version=';
 
 /// Kept in step with `UNIT_VERSION` in `services/helper/src/service/linux.rs`.
 const helperUnitVersion = 2;
-const helperProtocolVersionHeader = 'x-flclash-helper-protocol';
+const helperProtocolVersionHeader = 'x-panorama-helper-protocol';
 final helperProtocolVersion = Platform.isWindows ? '8' : '6';
 const maxTextScale = 1.4;
 const minTextScale = 0.8;

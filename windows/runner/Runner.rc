@@ -92,9 +92,9 @@ BEGIN
             VALUE "CompanyName", "Panorama Scholarly Group" "\0"
             VALUE "FileDescription", "Panorama Secure Access" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "clash" "\0"
+            VALUE "InternalName", "panorama-secure-access" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 Panorama Scholarly Group. All rights reserved." "\0"
-            VALUE "OriginalFilename", "FlClash.exe" "\0"
+            VALUE "OriginalFilename", "panorama-secure-access.exe" "\0"
             VALUE "ProductName", "Panorama Secure Access" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END

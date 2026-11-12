@@ -20,18 +20,18 @@ use tokio::signal::unix::{signal, SignalKind};
 use tokio::time::Sleep;
 use tokio_stream::Stream;
 
-const SERVICE_NAME: &str = "flclash-helper";
-const UNIT_NAME: &str = "flclash-helper.service";
-const UNIT_PATH: &str = "/etc/systemd/system/flclash-helper.service";
+const SERVICE_NAME: &str = "panorama-secure-access-helper";
+const UNIT_NAME: &str = "panorama-secure-access-helper.service";
+const UNIT_PATH: &str = "/etc/systemd/system/panorama-secure-access-helper.service";
 /// Read by the app (`helperUnitVersion`) to spot a unit without the sandbox.
 const UNIT_VERSION: u32 = 2;
-const UNIT_VERSION_PREFIX: &str = "# flclash-helper-unit-version=";
-const POLKIT_RULES_PATH: &str = "/etc/polkit-1/rules.d/49-flclash-helper.rules";
+const UNIT_VERSION_PREFIX: &str = "# panorama-secure-access-helper-unit-version=";
+const POLKIT_RULES_PATH: &str = "/etc/polkit-1/rules.d/49-panorama-secure-access-helper.rules";
 const SYSTEMD_RUNNING_PATH: &str = "/run/systemd/system";
-const RUNTIME_DIR_NAME: &str = "flclash";
-const SOCKET_PATH: &str = "/run/flclash/helper.sock";
-const OWNER_UID_ENV: &str = "FLCLASH_HELPER_OWNER_UID";
-const OWNER_GID_ENV: &str = "FLCLASH_HELPER_OWNER_GID";
+const RUNTIME_DIR_NAME: &str = "panorama-secure-access";
+const SOCKET_PATH: &str = "/run/panorama-secure-access/helper.sock";
+const OWNER_UID_ENV: &str = "PSA_HELPER_OWNER_UID";
+const OWNER_GID_ENV: &str = "PSA_HELPER_OWNER_GID";
 const SOCKET_MODE: u32 = 0o660;
 const ACCEPT_RETRY_DELAY: Duration = Duration::from_secs(1);
 
@@ -207,7 +207,7 @@ fn unit_contents(executable: &Path, owner: Owner, account: &OwnerAccount) -> Str
     format!(
         "{UNIT_VERSION_PREFIX}{UNIT_VERSION}\n\
          [Unit]\n\
-         Description=FlClash Helper starts the FlClash Core with the privileges TUN mode needs.\n\
+         Description=Panorama Secure Access Helper starts the Core with the privileges TUN mode needs.\n\
          After=nftables.service iptables.service\n\
          StartLimitIntervalSec=60\n\
          StartLimitBurst=5\n\
@@ -260,7 +260,7 @@ fn polkit_rules(account: &OwnerAccount) -> Option<String> {
         return None;
     }
     Some(format!(
-        "// Written by FlClashHelperService install, removed by its uninstall.\n\
+        "// Written by panorama-secure-access-helper install, removed by its uninstall.\n\
          polkit.addRule(function (action, subject) {{\n\
          \x20   if (action.id === \"org.freedesktop.systemd1.manage-units\" &&\n\
          \x20       action.lookup(\"unit\") === \"{UNIT_NAME}\" &&\n\
@@ -325,7 +325,7 @@ fn ensure_unit_is_free_for(owner: Owner) -> Result<()> {
     match installed_owner_uid(&existing) {
         Some(uid) if uid != owner.uid => bail!(
             "the Helper is already installed for UID {uid}; \
-             run `FlClashHelperService uninstall` as that user first"
+             run `panorama-secure-access-helper uninstall` as that user first"
         ),
         _ => Ok(()),
     }
@@ -369,7 +369,7 @@ fn write_installed_files(executable: &Path, owner: Owner) -> Result<bool> {
 fn write_root_file(path: &Path, contents: &str) -> Result<()> {
     let directory = path.parent().context("file has no parent directory")?;
     fs::create_dir_all(directory).with_context(|| format!("create {}", directory.display()))?;
-    let temporary = path.with_extension("flclash-new");
+    let temporary = path.with_extension("psa-new");
     fs::write(&temporary, contents).with_context(|| format!("write {}", temporary.display()))?;
     fs::set_permissions(&temporary, fs::Permissions::from_mode(0o644))
         .with_context(|| format!("secure {}", temporary.display()))?;
@@ -576,7 +576,7 @@ mod tests {
 
     fn installed_unit() -> String {
         unit_contents(
-            Path::new("/usr/share/FlClash/FlClashHelperService"),
+            Path::new("/usr/share/panorama-secure-access/panorama-secure-access-helper"),
             OWNER,
             &account(),
         )
@@ -616,14 +616,14 @@ mod tests {
     fn unit_names_the_owner_and_the_helper_it_starts() {
         let unit = installed_unit();
 
-        assert!(unit.contains("ExecStart=\"/usr/share/FlClash/FlClashHelperService\"\n"));
+        assert!(unit.contains("ExecStart=\"/usr/share/panorama-secure-access/panorama-secure-access-helper\"\n"));
         assert!(
-            unit.contains("ExecStartPre=-+\"/usr/share/FlClash/FlClashHelperService\" refresh\n")
+            unit.contains("ExecStartPre=-+\"/usr/share/panorama-secure-access/panorama-secure-access-helper\" refresh\n")
         );
         assert!(unit.contains("Group=1001\n"));
-        assert!(unit.contains("Environment=FLCLASH_HELPER_OWNER_UID=1000\n"));
-        assert!(unit.contains("Environment=FLCLASH_HELPER_OWNER_GID=1001\n"));
-        assert!(unit.contains("RuntimeDirectory=flclash\n"));
+        assert!(unit.contains("Environment=PSA_HELPER_OWNER_UID=1000\n"));
+        assert!(unit.contains("Environment=PSA_HELPER_OWNER_GID=1001\n"));
+        assert!(unit.contains("RuntimeDirectory=panorama-secure-access\n"));
         assert!(!unit.contains("network-online.target"));
     }
 
@@ -696,10 +696,10 @@ mod tests {
 
         assert_eq!(installed_owner_uid(&unit), Some(1000));
         assert_eq!(installed_owner(&unit), Some(OWNER));
-        assert!(unit.starts_with("# flclash-helper-unit-version=2\n"));
+        assert!(unit.starts_with("# panorama-secure-access-helper-unit-version=2\n"));
         assert_eq!(installed_owner_uid("[Unit]\n"), None);
         assert_eq!(
-            installed_owner("Environment=FLCLASH_HELPER_OWNER_UID=0\n"),
+            installed_owner("Environment=PSA_HELPER_OWNER_UID=0\n"),
             None
         );
     }
@@ -709,7 +709,7 @@ mod tests {
         let rules = polkit_rules(&account()).unwrap();
 
         assert!(rules.contains("action.id === \"org.freedesktop.systemd1.manage-units\""));
-        assert!(rules.contains("action.lookup(\"unit\") === \"flclash-helper.service\""));
+        assert!(rules.contains("action.lookup(\"unit\") === \"panorama-secure-access-helper.service\""));
         assert!(rules.contains("[\"start\", \"restart\", \"reset-failed\"]"));
         assert!(rules.contains("subject.user === \"huayang\""));
         assert!(rules.contains("subject.local && subject.active"));

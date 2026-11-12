@@ -2,7 +2,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 /// The Flutter executable the package installs beside the Helper.
-pub(super) const APP_EXECUTABLE_NAME: &str = "FlClash";
+pub(super) const APP_EXECUTABLE_NAME: &str = "panorama-secure-access";
 
 /// Variables that make the dynamic loader run code of the caller's choosing
 /// inside the real app before `main`.
@@ -94,7 +94,7 @@ mod tests {
     impl FakeProc {
         fn new(name: &str) -> Self {
             let root =
-                std::env::temp_dir().join(format!("flclash-peer-{name}-{}", std::process::id()));
+                std::env::temp_dir().join(format!("psa-peer-{name}-{}", std::process::id()));
             let _ = fs::remove_dir_all(&root);
             fs::create_dir_all(&root).unwrap();
             Self { root }
@@ -106,7 +106,7 @@ mod tests {
             symlink(executable, directory.join("exe")).unwrap();
             fs::write(
                 directory.join("status"),
-                format!("Name:\tFlClash\nTracerPid:\t{tracer}\nUid:\t1000\n"),
+                format!("Name:\tpanorama-secure\nTracerPid:\t{tracer}\nUid:\t1000\n"),
             )
             .unwrap();
             let mut environ = environment.join("\0");
@@ -121,7 +121,7 @@ mod tests {
         }
     }
 
-    const APP: &str = "/usr/share/FlClash/FlClash";
+    const APP: &str = "/usr/share/panorama-secure-access/panorama-secure-access";
 
     #[test]
     fn accepts_the_packaged_app() {
