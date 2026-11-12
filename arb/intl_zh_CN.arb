@@ -1116,5 +1116,10 @@
   "legacyInstallRemoveFailed": "未能卸载旧版。请用包管理器卸载，或将其移到废纸篓。",
   "legacyAndroidImportTitle": "从旧版导入",
   "legacyAndroidImportTip": "旧版（{name}）仍已安装。由于应用 ID 已变更，Android 无法直接覆盖升级，也不能读取其他应用的数据。请在旧版中打开「工具 → 备份与恢复」备份到本地文件，然后在这里恢复该文件，完成后再卸载旧版。",
-  "legacyAndroidImportAction": "立即恢复"
+  "legacyAndroidImportAction": "立即恢复",
+  "portInUseTitle": "端口 {port} 已被占用",
+  "portInUseTip": "其他程序正在监听端口 {port}，代理端口无法在此启动，系统代理也会把流量交给那个程序。是否把混合端口切换到空闲的 {free}？",
+  "portInUseSwitch": "切换端口",
+  "portInUseBanner": "端口 {port} 被其他程序占用，代理端口未能启动。请在「端口」中修改混合端口。",
+  "conflictingClientsTip": "检测到其他代理客户端正在运行：{names}。两个 TUN 或系统代理会互相覆盖，开启 TUN 或系统代理前请先退出它们。"
 }

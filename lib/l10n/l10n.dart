@@ -9452,6 +9452,56 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Port {port} is already in use`
+  String portInUseTitle(Object port) {
+    return Intl.message(
+      'Port $port is already in use',
+      name: 'portInUseTitle',
+      desc: '',
+      args: [port],
+    );
+  }
+
+  /// `Another program is listening on port {port}, so the proxy port cannot start there, and the system proxy would send your traffic to that program instead. Switch the mixed port to the free port {free}?`
+  String portInUseTip(Object port, Object free) {
+    return Intl.message(
+      'Another program is listening on port $port, so the proxy port cannot start there, and the system proxy would send your traffic to that program instead. Switch the mixed port to the free port $free?',
+      name: 'portInUseTip',
+      desc: '',
+      args: [port, free],
+    );
+  }
+
+  /// `Switch port`
+  String get portInUseSwitch {
+    return Intl.message(
+      'Switch port',
+      name: 'portInUseSwitch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Port {port} is used by another program, so the proxy port could not start. Change the mixed port under Ports.`
+  String portInUseBanner(Object port) {
+    return Intl.message(
+      'Port $port is used by another program, so the proxy port could not start. Change the mixed port under Ports.',
+      name: 'portInUseBanner',
+      desc: '',
+      args: [port],
+    );
+  }
+
+  /// `Other proxy clients are running: {names}. Two TUN modes or system proxies override each other; quit the others before turning on TUN or the system proxy.`
+  String conflictingClientsTip(Object names) {
+    return Intl.message(
+      'Other proxy clients are running: $names. Two TUN modes or system proxies override each other; quit the others before turning on TUN or the system proxy.',
+      name: 'conflictingClientsTip',
+      desc: '',
+      args: [names],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

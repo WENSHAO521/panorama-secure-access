@@ -1116,5 +1116,10 @@
   "legacyInstallRemoveFailed": "No se pudo quitar la versión anterior. Desinstálala con tu gestor de paquetes o muévela a la Papelera.",
   "legacyAndroidImportTitle": "Importar desde la versión anterior",
   "legacyAndroidImportTip": "La versión anterior ({name}) sigue instalada. Como cambió el ID de la aplicación, Android no puede actualizarla en el sitio ni leer sus datos. En la versión anterior abre Herramientas → Copia de seguridad y restauración, guarda una copia en un archivo local y restaura ese archivo aquí. Después desinstala la versión anterior.",
-  "legacyAndroidImportAction": "Restaurar ahora"
+  "legacyAndroidImportAction": "Restaurar ahora",
+  "portInUseTitle": "El puerto {port} ya está en uso",
+  "portInUseTip": "Otro programa escucha en el puerto {port}, así que el puerto del proxy no puede iniciarse ahí y el proxy del sistema enviaría tu tráfico a ese programa. ¿Cambiar el puerto mixto al puerto libre {free}?",
+  "portInUseSwitch": "Cambiar puerto",
+  "portInUseBanner": "Otro programa usa el puerto {port}, así que el puerto del proxy no pudo iniciarse. Cambia el puerto mixto en Puertos.",
+  "conflictingClientsTip": "Hay otros clientes proxy en ejecución: {names}. Dos modos TUN o proxies del sistema se sobrescriben entre sí; ciérralos antes de activar TUN o el proxy del sistema."
 }

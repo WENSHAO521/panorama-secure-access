@@ -1116,5 +1116,10 @@
   "legacyInstallRemoveFailed": "The previous version could not be removed. Uninstall it with your package manager or move it to the Trash.",
   "legacyAndroidImportTitle": "Import from the previous version",
   "legacyAndroidImportTip": "The previous version ({name}) is still installed. Android cannot upgrade it in place because the app ID changed, and it cannot read another app's data. In the previous version open Tools → Backup and restore and back up to a local file, then restore that file here. Uninstall the previous version afterwards.",
-  "legacyAndroidImportAction": "Restore now"
+  "legacyAndroidImportAction": "Restore now",
+  "portInUseTitle": "Port {port} is already in use",
+  "portInUseTip": "Another program is listening on port {port}, so the proxy port cannot start there, and the system proxy would send your traffic to that program instead. Switch the mixed port to the free port {free}?",
+  "portInUseSwitch": "Switch port",
+  "portInUseBanner": "Port {port} is used by another program, so the proxy port could not start. Change the mixed port under Ports.",
+  "conflictingClientsTip": "Other proxy clients are running: {names}. Two TUN modes or system proxies override each other; quit the others before turning on TUN or the system proxy."
 }

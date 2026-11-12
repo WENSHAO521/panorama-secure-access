@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:fl_clash/common/boot_guard.dart';
 import 'package:fl_clash/common/boot_record.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/common/conflicts.dart';
 import 'package:fl_clash/common/launch.dart';
 import 'package:fl_clash/common/legacy_data.dart';
 import 'package:fl_clash/common/legacy_install.dart';
@@ -177,6 +178,7 @@ class Bootstrap {
     await _showCrashRecoveryTip();
     await _offerLinuxHelper();
     await _handleLegacyInstalls();
+    await _checkConflicts();
     await _container.read(coreActionProvider.notifier).startCore();
     if (!_bootDecision.isDegraded) {
       await _container.read(setupActionProvider.notifier).initStatus();
@@ -231,6 +233,46 @@ class Bootstrap {
           level: BannerLevel.error,
         );
       }
+    }
+  }
+
+  /// Another client on the mixed port would receive the traffic the system
+  /// proxy sends there while this app reports itself connected.
+  Future<void> _checkConflicts() async {
+    if (!system.isDesktop || safeModeBuild) {
+      return;
+    }
+    final others = await findConflictingProcesses();
+    final port = _container.read(patchClashConfigProvider).mixedPort;
+    if (port > 0 && !await isLoopbackPortFree(port)) {
+      final free = await nextFreePort(port);
+      if (free == null || _container.read(appSettingProvider).silentLaunch) {
+        dialogs.showBanner(
+          currentAppLocalizations.portInUseBanner(port),
+          level: BannerLevel.error,
+        );
+        return;
+      }
+      final confirmed = await dialogs.showMessage(
+        title: currentAppLocalizations.portInUseTitle(port),
+        message: TextSpan(
+          text: currentAppLocalizations.portInUseTip(port, free),
+        ),
+        confirmText: currentAppLocalizations.portInUseSwitch,
+        cancelText: currentAppLocalizations.updateLater,
+      );
+      if (confirmed == true) {
+        _container
+            .read(patchClashConfigProvider.notifier)
+            .update((state) => state.copyWith(mixedPort: free));
+      }
+      return;
+    }
+    if (others.isNotEmpty) {
+      dialogs.showBanner(
+        currentAppLocalizations.conflictingClientsTip(others.join(', ')),
+        level: BannerLevel.warning,
+      );
     }
   }
 
