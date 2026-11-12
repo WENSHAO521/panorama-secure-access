@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 import 'proxy_command.dart';
 
 class MacosProxy {
@@ -8,8 +10,14 @@ class MacosProxy {
   MacosProxy({required ProxyCommandRunner commandRunner})
     : _commandRunner = commandRunner;
 
+  /// What each network service had before the first start of this run, so a
+  /// stop puts back a proxy or bypass list the user set rather than clearing
+  /// it. A later start keeps the first snapshot: by then the settings are ours.
+  Map<String, MacosServiceProxy>? _snapshot;
+
   Future<bool> start(int port, List<String> bypassDomain) async {
     final services = await _networkServices();
+    _snapshot ??= await _readServices(services, ownPort: port);
     return _commandRunner.run(
       services.expand(
         (service) => MacosProxyCommands.buildStart(service, port, bypassDomain),
@@ -19,7 +27,59 @@ class MacosProxy {
 
   Future<bool> stop() async {
     final services = await _networkServices();
-    return _commandRunner.run(services.expand(MacosProxyCommands.buildStop));
+    final snapshot = _snapshot;
+    final restored = await _commandRunner.run(
+      services.expand(
+        (service) => snapshot == null
+            ? MacosProxyCommands.buildStop(service)
+            : MacosProxyCommands.buildRestore(
+                service,
+                snapshot[service] ?? MacosServiceProxy.none,
+              ),
+      ),
+    );
+    if (restored) {
+      _snapshot = null;
+    }
+    return restored;
+  }
+
+  /// A loopback entry on [ownPort] is a run that never reached its stop.
+  Future<Map<String, MacosServiceProxy>> _readServices(
+    List<String> services, {
+    required int ownPort,
+  }) async {
+    Future<String> read(List<String> arguments) async {
+      try {
+        final result = await _commandRunner.process(
+          '/usr/sbin/networksetup',
+          arguments,
+        );
+        return result.exitCode == 0 ? result.stdout.toString() : '';
+      } on ProcessException {
+        return '';
+      }
+    }
+
+    Future<MacosProxyEntry> entry(String getter, String service) async {
+      final value = MacosProxyEntry.parse(await read([getter, service]));
+      return value.port == ownPort &&
+              MacosProxyCommands.isLoopbackHost(value.server)
+          ? MacosProxyEntry.off
+          : value;
+    }
+
+    return {
+      for (final service in services)
+        service: MacosServiceProxy(
+          web: await entry('-getwebproxy', service),
+          secureWeb: await entry('-getsecurewebproxy', service),
+          socks: await entry('-getsocksfirewallproxy', service),
+          bypass: MacosProxyCommands.parseBypassDomains(
+            await read(['-getproxybypassdomains', service]),
+          ),
+        ),
+    };
   }
 
   /// The loopback port the system proxy is enabled for, or null when none is.
@@ -51,7 +111,111 @@ class MacosProxy {
   }
 }
 
+/// One proxy of a network service as `networksetup -get…proxy` reports it.
+@immutable
+class MacosProxyEntry {
+  final bool enabled;
+  final String server;
+  final int port;
+
+  const MacosProxyEntry({
+    required this.enabled,
+    required this.server,
+    required this.port,
+  });
+
+  static const off = MacosProxyEntry(enabled: false, server: '', port: 0);
+
+  static MacosProxyEntry parse(String stdout) {
+    final values = <String, String>{};
+    for (final line in stdout.split('\n')) {
+      final separator = line.indexOf(':');
+      if (separator == -1) {
+        continue;
+      }
+      values[line.substring(0, separator).trim()] = line
+          .substring(separator + 1)
+          .trim();
+    }
+    return MacosProxyEntry(
+      enabled: values['Enabled'] == 'Yes',
+      server: values['Server'] ?? '',
+      port: int.tryParse(values['Port'] ?? '') ?? 0,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is MacosProxyEntry &&
+      other.enabled == enabled &&
+      other.server == server &&
+      other.port == port;
+
+  @override
+  int get hashCode => Object.hash(enabled, server, port);
+}
+
+@immutable
+class MacosServiceProxy {
+  final MacosProxyEntry web;
+  final MacosProxyEntry secureWeb;
+  final MacosProxyEntry socks;
+  final List<String> bypass;
+
+  const MacosServiceProxy({
+    required this.web,
+    required this.secureWeb,
+    required this.socks,
+    required this.bypass,
+  });
+
+  static const none = MacosServiceProxy(
+    web: MacosProxyEntry.off,
+    secureWeb: MacosProxyEntry.off,
+    socks: MacosProxyEntry.off,
+    bypass: [],
+  );
+}
+
 class MacosProxyCommands {
+  /// Leaves the automatic proxy (PAC) alone: start never turns it on.
+  static List<ProxyCommand> buildRestore(
+    String service,
+    MacosServiceProxy previous,
+  ) {
+    List<ProxyCommand> entry(String kind, MacosProxyEntry value) => [
+      if (value.server.isNotEmpty && value.port > 0)
+        ProxyCommand('/usr/sbin/networksetup', [
+          '-set$kind',
+          service,
+          value.server,
+          '${value.port}',
+        ]),
+      ProxyCommand('/usr/sbin/networksetup', [
+        '-set${kind}state',
+        service,
+        value.enabled ? 'on' : 'off',
+      ]),
+    ];
+
+    return [
+      ...entry('webproxy', previous.web),
+      ...entry('securewebproxy', previous.secureWeb),
+      ...entry('socksfirewallproxy', previous.socks),
+      buildProxyBypass(service, previous.bypass),
+    ];
+  }
+
+  /// `networksetup -getproxybypassdomains` prints one domain per line, or a
+  /// sentence when there are none.
+  static List<String> parseBypassDomains(String stdout) {
+    return stdout
+        .split('\n')
+        .map((line) => line.trim())
+        .where((line) => line.isNotEmpty && !line.contains(' '))
+        .toList();
+  }
+
   static List<ProxyCommand> buildStart(
     String service,
     int port,
@@ -153,7 +317,7 @@ class MacosProxyCommands {
           port == null ||
           port < 1 ||
           port > 65535 ||
-          !_isLoopbackHost(host)) {
+          !isLoopbackHost(host)) {
         continue;
       }
       return port;
@@ -163,7 +327,7 @@ class MacosProxyCommands {
 
   static const _loopbackHosts = {'localhost', '::1', '0:0:0:0:0:0:0:1'};
 
-  static bool _isLoopbackHost(String host) {
+  static bool isLoopbackHost(String host) {
     return _loopbackHosts.contains(host) || host.startsWith('127.');
   }
 

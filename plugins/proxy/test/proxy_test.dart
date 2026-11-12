@@ -430,6 +430,87 @@ USB 10/100/1000 LAN
     });
   });
 
+  group('macOS restores what start replaced', () {
+    late List<List<String>> sets;
+
+    MacosProxy proxyWith(Map<String, String> answers) {
+      sets = [];
+      return MacosProxy(
+        commandRunner: ProxyCommandRunner((
+          executable,
+          arguments, {
+          runInShell = false,
+        }) async {
+          final key = arguments.join(' ');
+          if (arguments.first.startsWith('-set')) {
+            sets.add(arguments);
+          }
+          return ProcessResult(0, 0, answers[key] ?? '', '');
+        }),
+      );
+    }
+
+    test(
+      'a user proxy, bypass list and PAC survive a start and stop',
+      () async {
+        final proxy = proxyWith({
+          '-listallnetworkservices':
+              'An asterisk (*) denotes that a network service is disabled.\n'
+              'Wi-Fi\n',
+          '-getwebproxy Wi-Fi':
+              'Enabled: Yes\nServer: proxy.corp\nPort: 3128\n'
+              'Authenticated Proxy Enabled: 0\n',
+          '-getsecurewebproxy Wi-Fi': 'Enabled: No\nServer: \nPort: 0\n',
+          '-getsocksfirewallproxy Wi-Fi': 'Enabled: No\nServer: \nPort: 0\n',
+          '-getproxybypassdomains Wi-Fi': '*.local\n169.254/16\n',
+        });
+
+        expect(await proxy.start(7890, const ['localhost']), isTrue);
+        sets.clear();
+        expect(await proxy.stop(), isTrue);
+
+        expect(sets, [
+          ['-setwebproxy', 'Wi-Fi', 'proxy.corp', '3128'],
+          ['-setwebproxystate', 'Wi-Fi', 'on'],
+          ['-setsecurewebproxystate', 'Wi-Fi', 'off'],
+          ['-setsocksfirewallproxystate', 'Wi-Fi', 'off'],
+          ['-setproxybypassdomains', 'Wi-Fi', '*.local', '169.254/16'],
+        ]);
+        expect(sets.any((args) => args.first == '-setautoproxystate'), isFalse);
+      },
+    );
+
+    test('a proxy left on our port by a killed run is not restored', () async {
+      final proxy = proxyWith({
+        '-listallnetworkservices': 'Wi-Fi\n',
+        '-getwebproxy Wi-Fi': 'Enabled: Yes\nServer: 127.0.0.1\nPort: 7890\n',
+      });
+
+      await proxy.start(7890, const []);
+      sets.clear();
+      await proxy.stop();
+
+      expect(sets, contains(equals(['-setwebproxystate', 'Wi-Fi', 'off'])));
+      expect(sets.any((args) => args.first == '-setwebproxy'), isFalse);
+    });
+
+    test('a stop without a start of this run still turns ours off', () async {
+      final proxy = proxyWith({'-listallnetworkservices': 'Wi-Fi\n'});
+
+      expect(await proxy.stop(), isTrue);
+      expect(sets.map((args) => args.first), contains('-setwebproxystate'));
+    });
+
+    test('reads "no bypass domains" as an empty list', () {
+      expect(
+        MacosProxyCommands.parseBypassDomains(
+          "There aren't any bypass domains set on Wi-Fi.\n",
+        ),
+        isEmpty,
+      );
+    });
+  });
+
   group('macOS loopback proxy detection', () {
     MacosProxy proxyReturning(String stdout) {
       return MacosProxy(
