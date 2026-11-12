@@ -32,6 +32,9 @@ class Profiles extends Table {
   TextColumn get subscriptionInfo =>
       text().map(const SubscriptionInfoConverter()).nullable()();
 
+  TextColumn get trafficQuota =>
+      text().map(const TrafficQuotaConverter()).nullable()();
+
   BoolColumn get autoUpdate => boolean()();
 
   TextColumn get selectedMap => text().map(const StringMapConverter())();
@@ -84,6 +87,26 @@ class SubscriptionInfoConverter
 
   @override
   String? toSql(SubscriptionInfo? value) {
+    if (value == null) return null;
+    return json.encode(value.toJson());
+  }
+}
+
+class TrafficQuotaConverter extends TypeConverter<TrafficQuota?, String?> {
+  const TrafficQuotaConverter();
+
+  @override
+  TrafficQuota? fromSql(String? fromDb) {
+    if (fromDb == null) return null;
+    return decodeOrRestoreDefault(
+      'traffic quota',
+      () => TrafficQuota.fromJson(json.decode(fromDb)),
+      () => null,
+    );
+  }
+
+  @override
+  String? toSql(TrafficQuota? value) {
     if (value == null) return null;
     return json.encode(value.toJson());
   }
@@ -175,6 +198,7 @@ extension RawProfilExt on RawProfile {
       lastUpdateDate: lastUpdateDate,
       autoUpdateDuration: Duration(milliseconds: autoUpdateDurationMillis),
       subscriptionInfo: subscriptionInfo,
+      trafficQuota: trafficQuota,
       autoUpdate: autoUpdate,
       selectedMap: selectedMap,
       unfoldSet: unfoldSet,
@@ -200,6 +224,7 @@ extension ProfilesCompanionExt on Profile {
       lastUpdateDate: Value(lastUpdateDate),
       autoUpdateDurationMillis: autoUpdateDuration.inMilliseconds,
       subscriptionInfo: Value(subscriptionInfo),
+      trafficQuota: Value(trafficQuota),
       autoUpdate: autoUpdate,
       selectedMap: selectedMap,
       unfoldSet: unfoldSet,

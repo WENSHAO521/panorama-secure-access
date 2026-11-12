@@ -9262,6 +9262,66 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Custom traffic`
+  String get customTraffic {
+    return Intl.message(
+      'Custom traffic',
+      name: 'customTraffic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Replaces the total the subscription reports. Leave empty to use it.`
+  String get customTrafficDesc {
+    return Intl.message(
+      'Replaces the total the subscription reports. Leave empty to use it.',
+      name: 'customTrafficDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Traffic period`
+  String get trafficPeriod {
+    return Intl.message(
+      'Traffic period',
+      name: 'trafficPeriod',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resets monthly`
+  String get trafficMonthly {
+    return Intl.message(
+      'Resets monthly',
+      name: 'trafficMonthly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permanent`
+  String get trafficPermanent {
+    return Intl.message(
+      'Permanent',
+      name: 'trafficPermanent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a traffic amount above 0`
+  String get customTrafficInvalidDesc {
+    return Intl.message(
+      'Enter a traffic amount above 0',
+      name: 'customTrafficInvalidDesc',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

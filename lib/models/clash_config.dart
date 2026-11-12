@@ -2124,7 +2124,9 @@ Map<String, Object?> _withLegacyGeneralOverrideKeys(Map<String, Object?> json) {
     ...json,
     _generalOverrideKeysJsonKey: [
       for (final key in _legacyForcedGeneralKeys) key.path,
-      if (testUrl != null && testUrl != defaultTestUrl)
+      if (testUrl != null &&
+          testUrl != defaultTestUrl &&
+          testUrl != formerDefaultTestUrl)
         GeneralOverrideKey.testUrl.path,
     ],
   };

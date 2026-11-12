@@ -164,7 +164,7 @@ class _ProfileDetailSheetState extends ConsumerState<ProfileDetailSheet>
     final providers = ref.watch(providersProvider);
     final isUpdating = ref.watch(isUpdatingProvider(profile.updatingKey));
     final appLocalizations = context.appLocalizations;
-    final subscriptionInfo = profile.subscriptionInfo;
+    final subscriptionInfo = profile.trafficInfo;
     return Scaffold(
       title: profile.realLabel,
       iconActions: [
@@ -206,6 +206,7 @@ class _ProfileDetailSheetState extends ConsumerState<ProfileDetailSheet>
                           ListItem(
                             title: SubscriptionInfoView(
                               subscriptionInfo: subscriptionInfo,
+                              period: profile.trafficQuota?.period,
                             ),
                           ),
                         ],

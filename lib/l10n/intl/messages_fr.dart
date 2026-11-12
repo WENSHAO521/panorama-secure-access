@@ -663,6 +663,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "customIssuesSummary": m19,
     "customProfile": MessageLookupByLibrary.simpleMessage("Personnalisé"),
     "customResources": MessageLookupByLibrary.simpleMessage("Personnalisé"),
+    "customTraffic": MessageLookupByLibrary.simpleMessage(
+      "Trafic personnalisé",
+    ),
+    "customTrafficDesc": MessageLookupByLibrary.simpleMessage(
+      "Remplace le total indiqué par l\'abonnement. Laissez vide pour utiliser celui de l\'abonnement.",
+    ),
+    "customTrafficInvalidDesc": MessageLookupByLibrary.simpleMessage(
+      "Saisissez un trafic supérieur à 0",
+    ),
     "cut": MessageLookupByLibrary.simpleMessage("Couper"),
     "dark": MessageLookupByLibrary.simpleMessage("Sombre"),
     "dashboard": MessageLookupByLibrary.simpleMessage("Tableau de bord"),
@@ -2265,7 +2274,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "totalUpload": MessageLookupByLibrary.simpleMessage("Envoyé"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Port TProxy"),
     "traffic": MessageLookupByLibrary.simpleMessage("Trafic"),
+    "trafficMonthly": MessageLookupByLibrary.simpleMessage(
+      "Réinitialisé chaque mois",
+    ),
     "trafficPeak": m97,
+    "trafficPeriod": MessageLookupByLibrary.simpleMessage("Période du trafic"),
+    "trafficPermanent": MessageLookupByLibrary.simpleMessage("Permanent"),
     "trafficTotal": m98,
     "trafficUsage": MessageLookupByLibrary.simpleMessage("Trafic utilisé"),
     "transport": MessageLookupByLibrary.simpleMessage("Transport"),

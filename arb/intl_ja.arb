@@ -1097,5 +1097,11 @@
   "fallbackFilterIpcidrDesc": "Nameserver がこれらの範囲の IP を返したときは、Fallback の結果を使います。",
   "fallbackFilterDomainDesc": "これらのドメインは、直接 Fallback で解決します。",
   "groupEmptyFallbackTip": "フィルター後にノードがないため、通信は {name} に送られます",
-  "globalDirectTip": "GLOBAL が DIRECT のため、グローバルモードでは直接接続になります"
+  "globalDirectTip": "GLOBAL が DIRECT のため、グローバルモードでは直接接続になります",
+  "customTraffic": "カスタム通信量",
+  "customTrafficDesc": "サブスクリプションが返す総通信量の代わりに使います。空欄ならサブスクリプションの値を使います。",
+  "trafficPeriod": "通信量の周期",
+  "trafficMonthly": "毎月リセット",
+  "trafficPermanent": "無期限",
+  "customTrafficInvalidDesc": "0 より大きい通信量を入力してください"
 }

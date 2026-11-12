@@ -111,6 +111,7 @@ func loadConfigWithBase(base *SetupBase, configPath string) (*config.Config, err
 		return nil, err
 	}
 	withQuicDefaults(raw)
+	withTestInterval(raw)
 	cfg, err := config.ParseRawConfig(raw)
 	if err != nil {
 		return nil, err

@@ -17,7 +17,27 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum _ProfileField { label, url, autoUpdateInterval }
+enum _ProfileField { label, url, autoUpdateInterval, customTraffic }
+
+enum _TrafficUnit {
+  mb('MB', 1 << 20),
+  gb('GB', 1 << 30),
+  tb('TB', 1 << 40);
+
+  const _TrafficUnit(this.label, this.bytes);
+
+  final String label;
+  final int bytes;
+
+  /// The largest unit [bytes] fills at least once.
+  static _TrafficUnit of(int bytes) =>
+      values.lastWhere((unit) => bytes >= unit.bytes, orElse: () => mb);
+
+  /// [bytes] as typed in this unit, trailing zeros dropped.
+  String format(int bytes) => (bytes / this.bytes)
+      .toStringAsFixed(2)
+      .replaceFirst(RegExp(r'\.?0+$'), '');
+}
 
 class EditProfileView extends ConsumerStatefulWidget {
   final Profile profile;
@@ -35,6 +55,9 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   late final TextEditingController _autoUpdateDurationController;
   late bool _autoUpdate;
   late Map<String, String> _headers;
+  late final TextEditingController _trafficController;
+  late TrafficQuotaPeriod _trafficPeriod;
+  late _TrafficUnit _trafficUnit;
   Uint8List? _editedData;
   bool _attempted = false;
   final _fileInfoNotifier = ValueNotifier<FileInfo?>(null);
@@ -51,6 +74,14 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     );
     _autoUpdate = widget.profile.autoUpdate;
     _headers = widget.profile.headers;
+    final quota = widget.profile.trafficQuota;
+    _trafficUnit = quota == null
+        ? _TrafficUnit.gb
+        : _TrafficUnit.of(quota.total);
+    _trafficController = TextEditingController(
+      text: quota == null ? '' : _trafficUnit.format(quota.total),
+    );
+    _trafficPeriod = quota?.period ?? TrafficQuotaPeriod.monthly;
     _autoUpdateDurationController = TextEditingController(
       text: widget.profile.autoUpdateDuration.inMinutes.toString(),
     );
@@ -76,6 +107,13 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     );
     if (labelError != null) {
       return (field: _ProfileField.label, message: labelError);
+    }
+    final traffic = _trafficController.text.trim();
+    if (traffic.isNotEmpty && (double.tryParse(traffic) ?? 0) <= 0) {
+      return (
+        field: _ProfileField.customTraffic,
+        message: appLocalizations.customTrafficInvalidDesc,
+      );
     }
     if (widget.profile.type != ProfileType.url) {
       return null;
@@ -113,6 +151,17 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     return null;
   }
 
+  TrafficQuota? get _trafficQuota {
+    final amount = double.tryParse(_trafficController.text.trim());
+    if (amount == null || amount <= 0) {
+      return null;
+    }
+    return TrafficQuota(
+      total: (amount * _trafficUnit.bytes).round(),
+      period: _trafficPeriod,
+    );
+  }
+
   void _handleChanged(String _) {
     if (_attempted) {
       setState(() {});
@@ -134,6 +183,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
       url: _urlController.text,
       ageSecretKey: _ageSecretKeyController.text.trim(),
       headers: _headers,
+      trafficQuota: _trafficQuota,
       label: _labelController.text,
       autoUpdate: _autoUpdate,
       autoUpdateDuration: interval != null && interval > 0
@@ -325,6 +375,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     _ageSecretKeyController.dispose();
     _fileInfoNotifier.dispose();
     _autoUpdateDurationController.dispose();
+    _trafficController.dispose();
     super.dispose();
     _setupAction.autoApplyProfile();
   }
@@ -372,6 +423,33 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
               ),
           ],
         ),
+      generateSection(
+        footer: appLocalizations.customTrafficDesc,
+        items: [
+          _CustomTrafficField(
+            controller: _trafficController,
+            unit: _trafficUnit,
+            onUnitChanged: (unit) => setState(() => _trafficUnit = unit),
+            invalid: issue?.field == _ProfileField.customTraffic,
+            onChanged: (value) {
+              setState(() {});
+              _handleChanged(value);
+            },
+          ),
+          if (_trafficController.text.trim().isNotEmpty)
+            FormRow(
+              title: appLocalizations.trafficPeriod,
+              trailing: SegmentedControl<TrafficQuotaPeriod>(
+                segments: [
+                  for (final period in TrafficQuotaPeriod.values)
+                    (period, period.label(appLocalizations)),
+                ],
+                value: _trafficPeriod,
+                onChanged: (value) => setState(() => _trafficPeriod = value),
+              ),
+            ),
+        ],
+      ),
       generateSection(
         items: [
           _ProfileFileItem(
@@ -578,7 +656,7 @@ class _AutoUpdateIntervalField extends StatelessWidget {
       invalid: invalid,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
-        spacing: 4,
+        spacing: 8,
         children: [
           Flexible(
             child: FormRowTextField(
@@ -595,6 +673,61 @@ class _AutoUpdateIntervalField extends StatelessWidget {
           Text(
             appLocalizations.minutes,
             style: AppTextStyle.subheadline.of(context),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CustomTrafficField extends StatelessWidget {
+  const _CustomTrafficField({
+    required this.controller,
+    required this.unit,
+    required this.onUnitChanged,
+    required this.invalid,
+    required this.onChanged,
+  });
+
+  final TextEditingController controller;
+  final _TrafficUnit unit;
+  final ValueChanged<_TrafficUnit> onUnitChanged;
+  final bool invalid;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
+    return FormRow(
+      title: appLocalizations.customTraffic,
+      invalid: invalid,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 8,
+        children: [
+          Flexible(
+            child: FormRowTextField(
+              controller: controller,
+              hintText: appLocalizations.none,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              textInputAction: TextInputAction.next,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+                LengthLimitingTextInputFormatter(TextInputLimits.number),
+              ],
+              onChanged: onChanged,
+            ),
+          ),
+          Flexible(
+            child: SegmentedControl<_TrafficUnit>(
+              segments: [
+                for (final unit in _TrafficUnit.values) (unit, unit.label),
+              ],
+              value: unit,
+              onChanged: onUnitChanged,
+            ),
           ),
         ],
       ),

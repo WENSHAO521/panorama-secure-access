@@ -358,6 +358,27 @@ void main() {
         expect(await upgrade('mixed', 6), TunStack.mixed);
       });
 
+      test('moves a test URL left at the former default, once', () async {
+        Future<String> upgrade(String url, int from) async {
+          final configMap = _createConfigMap();
+          (configMap['patchClashConfig']! as Map<String, Object?>)['test-url'] =
+              url;
+          final store = _FakeMigrationStore(
+            configMap: configMap,
+            version: Migration.currentVersion,
+            upgradeVersion: from,
+          );
+          return (await Migration(store: store).run()).patchClashConfig.testUrl;
+        }
+
+        expect(await upgrade(formerDefaultTestUrl, 6), defaultTestUrl);
+        expect(
+          await upgrade('https://probe.test/204', 6),
+          'https://probe.test/204',
+        );
+        expect(await upgrade(formerDefaultTestUrl, 7), formerDefaultTestUrl);
+      });
+
       test('a new install only records it', () async {
         final store = _FakeMigrationStore(
           configMap: null,

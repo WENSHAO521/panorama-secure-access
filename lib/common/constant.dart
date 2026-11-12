@@ -140,7 +140,8 @@ const defaultSystemDnsFallback = '223.5.5.5';
 const repository = 'WENSHAO521/panorama-secure-access';
 const maxMobileWidth = 600;
 const maxLaptopWidth = 840;
-const defaultTestUrl = 'https://www.gstatic.com/generate_204';
+const defaultTestUrl = 'http://cp.cloudflare.com/generate_204';
+const formerDefaultTestUrl = 'https://www.gstatic.com/generate_204';
 
 const shareLinkSchemes = {
   'hysteria',

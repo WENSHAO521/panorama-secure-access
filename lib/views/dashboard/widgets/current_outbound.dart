@@ -20,7 +20,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prism_ui/shapes/shapes.dart';
 
 import 'card.dart';
-import 'package:prism_ui/prism_ui.dart';
+import 'sakura_badge.dart';
 
 const _builtinOutbounds = {'DIRECT', 'REJECT', 'REJECT-DROP', 'PASS'};
 
@@ -465,7 +465,7 @@ class _IpChips extends StatelessWidget {
 
 const _spinPeriod = Duration(milliseconds: 1500);
 
-/// The exit's country on a clover that checks the exit again when tapped and
+/// The exit's flag among cherry petals that checks the exit again when tapped and
 /// turns while it is being checked.
 class _CountryBadge extends StatefulWidget {
   const _CountryBadge({
@@ -521,8 +521,8 @@ class _CountryBadgeState extends State<_CountryBadge>
     } else if (widget.checking) {
       _turns.repeat();
     } else {
-      // A clover looks the same every quarter turn, so it stops on the next.
-      final rest = (_turns.value * 4).ceil() / 4;
+      // The petals settle every half turn, so it stops on the next.
+      final rest = (_turns.value * 2).ceil() / 2;
       _turns.animateTo(rest, duration: _spinPeriod * (rest - _turns.value));
     }
   }
@@ -537,10 +537,6 @@ class _CountryBadgeState extends State<_CountryBadge>
     final size = widget.size;
     final code = widget.countryCode;
     final tooltip = context.appLocalizations.retry;
-    final color = Color.alphaBlend(
-      foreground.withValues(alpha: enabled && _hovered ? 0.08 : 0),
-      DashboardColors.of(context).tone2,
-    );
     return Tooltip(
       message: tooltip,
       child: Semantics(
@@ -555,10 +551,12 @@ class _CountryBadgeState extends State<_CountryBadge>
             enabled: enabled,
             child: AnimatedBuilder(
               animation: _turns,
-              builder: (_, child) => ShapeBadge(
-                shape: MaterialShapes.clover4Leaf,
-                color: color,
+              builder: (_, child) => SakuraBadge(
                 size: size,
+                dark: colorScheme.brightness == Brightness.dark,
+                overlay: enabled && _hovered
+                    ? foreground.withValues(alpha: 0.08)
+                    : null,
                 rotation: _turns.value * 2 * math.pi,
                 ring: _focused ? focusRingSide(colorScheme) : null,
                 child: child,
@@ -569,15 +567,20 @@ class _CountryBadgeState extends State<_CountryBadge>
                       size: size * 0.42,
                       color: foreground,
                     )
-                  : Text(
-                      code.toUpperCase(),
-                      maxLines: 1,
-                      style: AppTextStyle.footnote
-                          .of(context, emphasized: true)
-                          .copyWith(
-                            color: foreground,
-                            letterSpacing: 0.04 * AppTextStyle.footnote.size,
-                          ),
+                  : Semantics(
+                      label: code.toUpperCase(),
+                      excludeSemantics: true,
+                      child: Text(
+                        code.countryFlagEmoji,
+                        maxLines: 1,
+                        textScaler: TextScaler.noScaling,
+                        style: AppTextStyle.title3
+                            .of(context)
+                            .copyWith(
+                              fontFamily: FontFamily.twEmoji.value,
+                              height: 1,
+                            ),
+                      ),
                     ),
             ),
           ),

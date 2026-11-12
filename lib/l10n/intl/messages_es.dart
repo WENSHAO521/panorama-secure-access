@@ -661,6 +661,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "customIssuesSummary": m19,
     "customProfile": MessageLookupByLibrary.simpleMessage("Personalizado"),
     "customResources": MessageLookupByLibrary.simpleMessage("Personalizado"),
+    "customTraffic": MessageLookupByLibrary.simpleMessage(
+      "Tráfico personalizado",
+    ),
+    "customTrafficDesc": MessageLookupByLibrary.simpleMessage(
+      "Sustituye el total que informa la suscripción. Déjalo vacío para usar el de la suscripción.",
+    ),
+    "customTrafficInvalidDesc": MessageLookupByLibrary.simpleMessage(
+      "Introduce un tráfico mayor que 0",
+    ),
     "cut": MessageLookupByLibrary.simpleMessage("Cortar"),
     "dark": MessageLookupByLibrary.simpleMessage("Oscuro"),
     "dashboard": MessageLookupByLibrary.simpleMessage("Panel"),
@@ -2261,7 +2270,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "totalUpload": MessageLookupByLibrary.simpleMessage("Subido"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Puerto TProxy"),
     "traffic": MessageLookupByLibrary.simpleMessage("Tráfico"),
+    "trafficMonthly": MessageLookupByLibrary.simpleMessage(
+      "Se reinicia cada mes",
+    ),
     "trafficPeak": m97,
+    "trafficPeriod": MessageLookupByLibrary.simpleMessage(
+      "Periodo del tráfico",
+    ),
+    "trafficPermanent": MessageLookupByLibrary.simpleMessage("Permanente"),
     "trafficTotal": m98,
     "trafficUsage": MessageLookupByLibrary.simpleMessage("Uso de tráfico"),
     "transport": MessageLookupByLibrary.simpleMessage("Transporte"),

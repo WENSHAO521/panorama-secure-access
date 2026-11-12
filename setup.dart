@@ -120,6 +120,7 @@ ArgParser createSetupArgParser() {
 List<String> createFlutterBuildArgs({
   required String platform,
   required bool verbose,
+  String? releaseTag,
 }) {
   final flutterBuildArgs = <String>[
     if (verbose) 'verbose',
@@ -127,6 +128,9 @@ List<String> createFlutterBuildArgs({
   ];
   if (platform == 'android') {
     flutterBuildArgs.add('split-per-abi');
+    if (releaseTag != null && releaseTag.contains('-')) {
+      flutterBuildArgs.add('build-name=${releaseTag.replaceFirst('v', '')}');
+    }
   }
   return flutterBuildArgs;
 }
@@ -179,6 +183,7 @@ Future<int> _package(
   final flutterBuildArgs = createFlutterBuildArgs(
     platform: platform,
     verbose: verbose,
+    releaseTag: releaseTag,
   );
   final descriptionArgs = <String>[];
   if (platform != 'android') {
