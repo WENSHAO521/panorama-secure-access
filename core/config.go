@@ -264,7 +264,7 @@ func patchTun(target *LC.Tun, params *tunSchema) {
 		target.AutoRoute = *params.AutoRoute
 	}
 	if params.Device != nil {
-		target.Device = *params.Device
+		target.Device = sanitizeTunDevice(*params.Device)
 	}
 	if params.Stack != nil {
 		target.Stack = *params.Stack
