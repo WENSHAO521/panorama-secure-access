@@ -41,6 +41,25 @@ void main() {
       expect(args, ['dart-define-from-file=env.json', 'split-per-abi']);
     });
 
+    test('names an Android beta after its tag', () {
+      expect(
+        setup.createFlutterBuildArgs(
+          platform: 'android',
+          verbose: false,
+          releaseTag: 'v3.5.9-beta.300',
+        ),
+        contains('build-name=3.5.9-beta.300'),
+      );
+      expect(
+        setup.createFlutterBuildArgs(
+          platform: 'android',
+          verbose: false,
+          releaseTag: 'v3.5.9',
+        ),
+        isNot(contains(startsWith('build-name='))),
+      );
+    });
+
     test('adds verbose to flutter build args with -v', () {
       final args = setup.createFlutterBuildArgs(
         platform: 'android',
