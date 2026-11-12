@@ -7,7 +7,6 @@ import 'package:path/path.dart' as p;
 import 'constant.dart';
 import 'print.dart';
 
-/// What [LegacyDataMigration.run] copied, kept for the notice after start.
 class LegacyDataImport {
   final String source;
   final bool preferences;
@@ -15,13 +14,10 @@ class LegacyDataImport {
   const LegacyDataImport({required this.source, required this.preferences});
 }
 
-/// Copies the data of an install that used FlClash's identifiers into this
-/// app's own directory. The source is only read, so FlClash, or an older
-/// release still installed beside this one, keeps working.
+/// The source is only read, so FlClash or an older release keeps working.
 class LegacyDataMigration {
   static const markerName = '.imported-from.json';
 
-  /// Names that belong to a running instance rather than to the user's data.
   static const _transient = {
     'FlClash.lock',
     '$appExecutableName.lock',
@@ -31,8 +27,7 @@ class LegacyDataMigration {
   final Directory target;
   final List<Directory> candidates;
 
-  /// Copies the macOS user defaults of the legacy bundle id, which hold the
-  /// settings there instead of shared_preferences.json.
+  /// macOS keeps the settings in the bundle id's user defaults.
   final Future<bool> Function()? importPreferences;
   final Future<void> Function()? discardPreferences;
 
@@ -49,8 +44,6 @@ class LegacyDataMigration {
         Directory(p.join(directory.path, profilesDirectoryName)).existsSync();
   }
 
-  /// Returns null when nothing was copied: the target already holds data, no
-  /// candidate has any, or the copy failed and was rolled back.
   Future<LegacyDataImport?> run() async {
     if (hasUserData(target) || !_isEmptyOrMissing(target)) {
       return null;
@@ -115,8 +108,7 @@ class LegacyDataMigration {
     }
   }
 
-  /// Links and sockets are skipped: a link could point the copy outside the
-  /// legacy directory, and a socket belongs to a running Core.
+  /// A link could lead the copy out of the legacy directory.
   static Future<void> _copyDirectory(Directory from, Directory to) async {
     await to.create(recursive: true);
     await for (final entity in from.list(followLinks: false)) {
@@ -137,9 +129,8 @@ class LegacyDataMigration {
   }
 }
 
-/// Where FlClash and releases up to 3.5.x kept their data, in the order they
-/// are tried. Windows releases already used their own folder; only FlClash's
-/// is a candidate there.
+/// Windows releases already used their own folder; only FlClash's is a
+/// candidate there.
 @visibleForTesting
 List<String> legacyDataDirectories({
   required String operatingSystem,
@@ -165,10 +156,8 @@ List<String> legacyDataDirectories({
   return const [];
 }
 
-/// The bundle id, GTK application id and Android package FlClash ships under.
 const legacyBundleId = 'com.follow.clash';
 
-/// The Android package of the 3.5.9 betas, between FlClash's and this one.
 const legacyBetaPackage = 'com.panorama.secureaccess';
 
 Future<bool> _importMacOSDefaults() async {
@@ -200,10 +189,9 @@ Future<void> _discardMacOSDefaults() async {
 
 LegacyDataImport? _lastImport;
 
-/// The import the current launch made, if any.
 LegacyDataImport? get lastLegacyDataImport => _lastImport;
 
-/// Runs once per launch before anything opens the data directory.
+/// Must run before anything opens the data directory.
 Future<void> importLegacyData(String targetPath) async {
   if (safeModeBuild ||
       !(Platform.isLinux || Platform.isMacOS || Platform.isWindows)) {

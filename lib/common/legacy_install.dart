@@ -9,13 +9,11 @@ import 'system.dart';
 
 enum LegacyInstallKind { deb, rpm, ostree, macApp, androidPackage }
 
-/// A release of this app installed under FlClash's identifiers, or an Android
-/// beta under the interim package. FlClash itself never counts: it is told
-/// apart by the display name or packager our releases carried.
+/// FlClash itself never counts: it is told apart by the display name or
+/// packager our releases carried.
 class LegacyInstall {
   final LegacyInstallKind kind;
 
-  /// Package name, app bundle path or Android package.
   final String id;
 
   const LegacyInstall(this.kind, this.id);
@@ -116,8 +114,7 @@ class LegacyInstalls {
         : const [];
   }
 
-  /// The shell command that removes [install] as root on Linux. The legacy
-  /// Helper unit goes first so a running one stops holding the TUN.
+  /// The legacy Helper goes first so a running one stops holding the TUN.
   @visibleForTesting
   static String linuxRemovalScript(LegacyInstall install) {
     final package = install.id;
@@ -157,8 +154,6 @@ class LegacyInstalls {
   }
 }
 
-/// Android packages an earlier release of this app was installed under,
-/// FlClash's included because releases up to 3.5.8 shipped as it.
 const legacyAndroidPackages = [legacyBundleId, legacyBetaPackage];
 
 final legacyInstalls = LegacyInstalls();
