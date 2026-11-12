@@ -6,7 +6,7 @@ import 'constant.dart';
 import 'print.dart';
 
 /// Clients whose TUN or system proxy overrides this app's when both run.
-const conflictingProcessNames = {
+const _conflictingProcessNames = {
   'clash',
   'clash-meta',
   'clash-verge',
@@ -62,7 +62,7 @@ Set<String> parseProcessNames(String stdout, {required bool windows}) {
 @visibleForTesting
 List<String> conflictingProcesses(Set<String> running) {
   return running
-      .where(conflictingProcessNames.contains)
+      .where(_conflictingProcessNames.contains)
       .where((name) => !name.startsWith(appExecutableName))
       .toList()
     ..sort();
