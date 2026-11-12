@@ -113,6 +113,7 @@ func loadConfig(path string) (*config.Config, error) {
 		return nil, err
 	}
 	withQuicDefaults(raw)
+	withTestInterval(raw)
 	cfg, err := config.ParseRawConfig(raw)
 	if err != nil {
 		return nil, err
