@@ -18,13 +18,39 @@ void main() {
             .cast<String>();
 
         expect(scripts.first, contains('exit 0'));
+        final removal = scripts.firstWhere(
+          (script) => script.startsWith('rm -f '),
+        );
+        expect(removal, contains('/etc/systemd/system/flclash-helper.service'));
         expect(
-          scripts,
-          contains('rm -f /etc/systemd/system/flclash-helper.service'),
+          removal,
+          contains('/etc/polkit-1/rules.d/49-flclash-helper.rules'),
         );
         expect(
           scripts.any((script) => script.contains('systemctl daemon-reload')),
           isTrue,
+        );
+      });
+
+      test('$format upgrades an installed Helper only on an upgrade', () {
+        final config =
+            loadYaml(
+                  File(
+                    'linux/packaging/$format/make_config.yaml',
+                  ).readAsStringSync(),
+                )
+                as YamlMap;
+        final upgrade = (config['postinstall_scripts'] as YamlList)
+            .cast<String>()
+            .singleWhere((script) => script.contains('FlClashHelperService'));
+
+        expect(upgrade, contains('FlClashHelperService upgrade'));
+        expect(upgrade, endsWith(format == 'deb' ? '|| true' : '|| :'));
+        expect(
+          upgrade,
+          format == 'deb'
+              ? startsWith('[ "\${1:-}" = configure ] && [ -n "\${2:-}" ]')
+              : startsWith('[ "\$1" -gt 1 ]'),
         );
       });
     }
