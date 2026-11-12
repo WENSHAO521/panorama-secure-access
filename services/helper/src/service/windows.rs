@@ -23,7 +23,7 @@ use windows_service::{
     service_manager::{ServiceManager, ServiceManagerAccess},
 };
 
-const SERVICE_NAME: &str = "FlClashHelperService";
+const SERVICE_NAME: &str = "panorama-secure-access-helper";
 const SERVICE_TYPE: ServiceType = ServiceType::OWN_PROCESS;
 const SERVICE_OPERATION_TIMEOUT: Duration = Duration::from_secs(10);
 const SERVICE_POLL_INTERVAL: Duration = Duration::from_millis(100);
@@ -157,7 +157,7 @@ fn install_service(owner_pid: u32) -> Result<()> {
     let executable_path = std::env::current_exe().context("resolve helper executable path")?;
     let service_info = ServiceInfo {
         name: OsString::from(SERVICE_NAME),
-        display_name: OsString::from(SERVICE_NAME),
+        display_name: OsString::from("Panorama Secure Access Helper"),
         service_type: SERVICE_TYPE,
         start_type: ServiceStartType::AutoStart,
         error_control: ServiceErrorControl::Normal,

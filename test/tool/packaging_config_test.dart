@@ -21,10 +21,15 @@ void main() {
         final removal = scripts.firstWhere(
           (script) => script.startsWith('rm -f '),
         );
-        expect(removal, contains('/etc/systemd/system/flclash-helper.service'));
         expect(
           removal,
-          contains('/etc/polkit-1/rules.d/49-flclash-helper.rules'),
+          contains('/etc/systemd/system/panorama-secure-access-helper.service'),
+        );
+        expect(
+          removal,
+          contains(
+            '/etc/polkit-1/rules.d/49-panorama-secure-access-helper.rules',
+          ),
         );
         expect(
           scripts.any((script) => script.contains('systemctl daemon-reload')),
@@ -42,9 +47,11 @@ void main() {
                 as YamlMap;
         final upgrade = (config['postinstall_scripts'] as YamlList)
             .cast<String>()
-            .singleWhere((script) => script.contains('FlClashHelperService'));
+            .singleWhere(
+              (script) => script.contains('panorama-secure-access-helper'),
+            );
 
-        expect(upgrade, contains('FlClashHelperService upgrade'));
+        expect(upgrade, contains('panorama-secure-access-helper upgrade'));
         expect(upgrade, endsWith(format == 'deb' ? '|| true' : '|| :'));
         expect(
           upgrade,
@@ -84,5 +91,61 @@ void main() {
 
     expect(macros, contains('%global debug_package %{nil}'));
     expect(macros, contains('%global __os_install_post %{nil}'));
+  });
+
+  group('app identity', () {
+    const appId = 'com.panoramasg.secureaccess';
+
+    String read(String path) => File(path).readAsStringSync();
+
+    test('every platform ships under the same application id', () {
+      expect(
+        read('android/app/build.gradle.kts'),
+        contains('applicationId = "$appId"'),
+      );
+      expect(
+        read('macos/Runner/Configs/AppInfo.xcconfig'),
+        contains('PRODUCT_BUNDLE_IDENTIFIER = $appId'),
+      );
+      expect(
+        read('linux/CMakeLists.txt'),
+        contains('set(APPLICATION_ID "$appId")'),
+      );
+    });
+
+    test('binaries, packages and services carry no FlClash name', () {
+      final buildConfig = loadYaml(read('build_config.yaml')) as YamlMap;
+      expect(buildConfig['core_name'], 'panorama-secure-access-core');
+      expect(buildConfig['helper_name'], 'panorama-secure-access-helper');
+      expect(
+        read('linux/CMakeLists.txt'),
+        contains('set(BINARY_NAME "panorama-secure-access")'),
+      );
+      expect(
+        read('windows/CMakeLists.txt'),
+        contains('set(BINARY_NAME "panorama-secure-access")'),
+      );
+      final deb =
+          loadYaml(read('linux/packaging/deb/make_config.yaml')) as YamlMap;
+      expect(deb['package_name'], 'panorama-secure-access');
+      for (final format in ['deb', 'rpm', 'appimage']) {
+        expect(
+          read('linux/packaging/$format/make_config.yaml'),
+          isNot(contains('x-scheme-handler/flclash')),
+          reason: format,
+        );
+      }
+    });
+
+    test('the Windows installer has its own AppId and spares FlClash', () {
+      final exe =
+          loadYaml(read('windows/packaging/exe/make_config.yaml')) as YamlMap;
+      expect(exe['app_id'], isNot('728B3532-C74B-4870-9068-BE70FE12A3E6'));
+      expect(exe['publisher_name'], 'Panorama Scholarly Group');
+      final script = read('windows/packaging/exe/inno_setup.iss');
+      expect(script, isNot(contains(r'{userappdata}\com.follow')));
+      expect(script, isNot(contains("'FlClash.exe'")));
+      expect(script, contains("LegacyDisplayName = 'Panorama Secure Access'"));
+    });
   });
 }

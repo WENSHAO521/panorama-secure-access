@@ -32,10 +32,10 @@ class BuildConfig {
     goLdflags: '-w -s',
     coreVersion: '',
     coreDir: 'core',
-    coreName: 'FlClashCore',
+    coreName: 'panorama-secure-access-core',
     outputDir: 'libclash',
     helperDir: 'services/helper',
-    helperName: 'FlClashHelperService',
+    helperName: 'panorama-secure-access-helper',
   );
 
   static BuildConfig load({required String rootDir}) {

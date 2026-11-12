@@ -12,6 +12,7 @@ import 'application.dart';
 import 'bootstrap.dart';
 import 'common/app_data.dart';
 import 'common/common.dart';
+import 'common/legacy_data.dart';
 import 'common/preferences_store.dart';
 import 'common/window.dart';
 
@@ -19,6 +20,7 @@ void main(List<String> args) {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+      await importLegacyData(await appPath.homeDirPath);
       if (Platform.isWindows || Platform.isLinux) {
         SharedPreferencesStorePlatform.instance = AtomicFilePreferencesStore(
           appPath.sharedPreferencesPath,

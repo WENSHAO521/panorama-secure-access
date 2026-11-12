@@ -1,6 +1,6 @@
-id=flclash_mitm_ca
-name=FlClash MITM CA
+id=panorama_mitm_ca
+name=Panorama Secure Access MITM CA
 version=1
 versionCode=1
-author=FlClash
-description=Adds FlClash's MITM certificate to the system's trusted CAs.
+author=Panorama Scholarly Group
+description=Adds Panorama Secure Access's MITM certificate to the system's trusted CAs.

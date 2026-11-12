@@ -549,9 +549,9 @@ jobs:
         run: |
           pubspec_version="$(sed -n 's/^version: *\([^+]*\).*/\1/p' pubspec.yaml)"
           cd ./dist
-          for f in FlClash-*; do
+          for f in panorama-secure-access-*; do
             [ -e "$f" ] || continue
-            name="PanoramaSecureAccess-${f#FlClash-}"
+            name="PanoramaSecureAccess-${f#panorama-secure-access-}"
             mv "$f" "${name/-$pubspec_version-/-${TAG#v}-}"
           done
           ls -1

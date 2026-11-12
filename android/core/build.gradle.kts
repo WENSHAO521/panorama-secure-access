@@ -11,7 +11,7 @@ plugins {
 }
 
 android {
-    namespace = "com.follow.clash.core"
+    namespace = "com.panoramasg.secureaccess.core"
     compileSdk = libs.versions.compileSdk.get().toInt()
     ndkVersion = libs.versions.ndkVersion.get()
 
@@ -150,7 +150,7 @@ abstract class GomobileBind : DefaultTask() {
                 "bind",
                 "-target=${targets.get().joinToString(",")}",
                 "-androidapi=${androidApi.get()}",
-                "-javapkg=com.follow.clash.core",
+                "-javapkg=com.panoramasg.secureaccess.core",
                 "-tags=${tags.get()}",
                 "-ldflags=${ldflags.get()} -X=runtime.godebugDefault=${godebug.toString().trim()} " +
                     "-extldflags=-Wl,-z,max-page-size=16384,-z,common-page-size=16384",

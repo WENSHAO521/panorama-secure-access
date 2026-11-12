@@ -404,7 +404,7 @@ void main() {
         expect(await store().remove(_ca), isTrue);
 
         expect(elevated, [
-          ['/bin/sh', '-c', LinuxMitmTrustStore.removeScript, 'flclash'],
+          ['/bin/sh', '-c', LinuxMitmTrustStore.removeScript, 'panorama'],
         ]);
       });
 
@@ -497,7 +497,7 @@ void main() {
           '/bin/sh',
           '-c',
           LinuxMitmTrustStore.installScript,
-          'flclash',
+          'panorama',
           pemPath,
         ],
       ]);

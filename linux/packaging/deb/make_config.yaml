@@ -1,5 +1,5 @@
 display_name: Panorama Secure Access
-package_name: FlClash
+package_name: panorama-secure-access
 maintainer:
   name: Panorama Scholarly Group
   email: psa@panorama-sg.com
@@ -18,19 +18,18 @@ dependencies:
 # install time. An upgrade rewrites an existing unit for its owner and restarts
 # it onto the new binaries, so the new Core's hash needs no new password.
 postinstall_scripts:
-  - '[ "${1:-}" = configure ] && [ -n "${2:-}" ] && /opt/FlClash/FlClashHelperService upgrade >/dev/null 2>&1 || true'
+  - '[ "${1:-}" = configure ] && [ -n "${2:-}" ] && /opt/panorama-secure-access/panorama-secure-access-helper upgrade >/dev/null 2>&1 || true'
 
 # Only teardown belongs here; the binary is already gone when postrm runs.
 postuninstall_scripts:
   - 'case "${1:-}" in remove|purge) ;; *) exit 0 ;; esac'
-  - 'systemctl disable --now flclash-helper.service >/dev/null 2>&1 || true'
-  - 'rm -f /etc/systemd/system/flclash-helper.service /etc/polkit-1/rules.d/49-flclash-helper.rules'
+  - 'systemctl disable --now panorama-secure-access-helper.service >/dev/null 2>&1 || true'
+  - 'rm -f /etc/systemd/system/panorama-secure-access-helper.service /etc/polkit-1/rules.d/49-panorama-secure-access-helper.rules'
   - 'systemctl daemon-reload >/dev/null 2>&1 || true'
 
 supported_mime_type:
   - x-scheme-handler/clash
   - x-scheme-handler/clashmeta
-  - x-scheme-handler/flclash
 
 keywords:
   - Panorama Secure Access
@@ -45,4 +44,4 @@ categories:
 
 startup_notify: true
 
-startup_wm_class: com.follow.clash
+startup_wm_class: com.panoramasg.secureaccess

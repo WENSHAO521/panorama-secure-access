@@ -15,7 +15,7 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-const appExecutableName = "FlClash"
+const appExecutableName = "panorama-secure-access"
 
 var loaderInjectionVariables = []string{"LD_PRELOAD", "LD_AUDIT", "LD_LIBRARY_PATH"}
 

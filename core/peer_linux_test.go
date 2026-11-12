@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-const testAppExecutable = "/usr/share/FlClash/FlClash"
+const testAppExecutable = "/usr/share/panorama-secure-access/panorama-secure-access"
 
 func fakeHostProcess(t *testing.T, pid int, executable string, tracer int, environment ...string) string {
 	t.Helper()
@@ -22,7 +22,7 @@ func fakeHostProcess(t *testing.T, pid int, executable string, tracer int, envir
 	if err := os.Symlink(executable, filepath.Join(process, "exe")); err != nil {
 		t.Fatal(err)
 	}
-	status := "Name:\tFlClash\nTracerPid:\t" + strconv.Itoa(tracer) + "\n"
+	status := "Name:\tpanorama-secure\nTracerPid:\t" + strconv.Itoa(tracer) + "\n"
 	if err := os.WriteFile(filepath.Join(process, "status"), []byte(status), 0o644); err != nil {
 		t.Fatal(err)
 	}

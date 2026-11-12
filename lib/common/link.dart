@@ -17,7 +17,7 @@ String? profileUrlFromQrCodes(Iterable<String?> values) {
       return text;
     }
     final uri = Uri.tryParse(text);
-    if (uri == null || !protocolSchemes.contains(uri.scheme)) {
+    if (uri == null || !importSchemes.contains(uri.scheme)) {
       continue;
     }
     final url = _installConfigUrl(uri);
