@@ -10,9 +10,7 @@ class MacosProxy {
   MacosProxy({required ProxyCommandRunner commandRunner})
     : _commandRunner = commandRunner;
 
-  /// What each network service had before the first start of this run, so a
-  /// stop puts back a proxy or bypass list the user set rather than clearing
-  /// it. A later start keeps the first snapshot: by then the settings are ours.
+  /// Taken at the first start of a run; by a later one the settings are ours.
   Map<String, MacosServiceProxy>? _snapshot;
 
   Future<bool> start(int port, List<String> bypassDomain) async {
@@ -44,7 +42,6 @@ class MacosProxy {
     return restored;
   }
 
-  /// A loopback entry on [ownPort] is a run that never reached its stop.
   Future<Map<String, MacosServiceProxy>> _readServices(
     List<String> services, {
     required int ownPort,
@@ -111,7 +108,6 @@ class MacosProxy {
   }
 }
 
-/// One proxy of a network service as `networksetup -get…proxy` reports it.
 @immutable
 class MacosProxyEntry {
   final bool enabled;
@@ -206,8 +202,7 @@ class MacosProxyCommands {
     ];
   }
 
-  /// `networksetup -getproxybypassdomains` prints one domain per line, or a
-  /// sentence when there are none.
+  /// With no domains, networksetup prints a sentence instead.
   static List<String> parseBypassDomains(String stdout) {
     return stdout
         .split('\n')
