@@ -580,8 +580,8 @@
   "helperCorruptTip": "Service Helper indisponible ; le mode TUN ne peut pas être activé. Réinstallez Panorama Secure Access pour le rétablir.",
   "tunAuthorizationFailed": "TUN n’a pas pu être autorisé et a donc été désactivé.",
   "sudoPasswordTitle": "Saisissez votre mot de passe pour sudo",
-  "coreBlockedByPolicyTip": "Windows a refusé d’exécuter FlClashCore.exe (erreur {code}). Une stratégie de contrôle des applications, telle que Smart App Control ou AppLocker, bloque les programmes non signés ; autorisez Panorama Secure Access dans cette stratégie ou désactivez-la, puis réessayez.",
-  "coreBlockedBySmartAppControlTip": "Windows Smart App Control a bloqué FlClashCore.exe car il n’est pas signé. Ouvrez Sécurité Windows → Contrôle des applications et du navigateur → Paramètres de Smart App Control, choisissez Désactivé, puis relancez Panorama Secure Access. Smart App Control ne peut pas être réactivé sans réinstaller Windows.",
+  "coreBlockedByPolicyTip": "Windows a refusé d’exécuter panorama-secure-access-core.exe (erreur {code}). Une stratégie de contrôle des applications, telle que Smart App Control ou AppLocker, bloque les programmes non signés ; autorisez Panorama Secure Access dans cette stratégie ou désactivez-la, puis réessayez.",
+  "coreBlockedBySmartAppControlTip": "Windows Smart App Control a bloqué panorama-secure-access-core.exe car il n’est pas signé. Ouvrez Sécurité Windows → Contrôle des applications et du navigateur → Paramètres de Smart App Control, choisissez Désactivé, puis relancez Panorama Secure Access. Smart App Control ne peut pas être réactivé sans réinstaller Windows.",
   "hideFromList": "Masquer de la liste",
   "testWhenUsed": "Tester à l’utilisation",
   "disableUDP": "Désactiver UDP",
@@ -1108,5 +1108,13 @@
   "linuxHelperSetupTip": "Le mode TUN passe par un service système. Autorisez-le une seule fois en tant qu’administrateur : ensuite, lancer Panorama Secure Access, activer TUN ou redémarrer l’ordinateur ne demande plus de mot de passe. L’application elle-même continue de s’exécuter sous votre compte.",
   "linuxHelperSetupFailed": "Le service TUN n’a pas été installé. L’activation de TUN le redemandera.",
   "ostreeUpdateTitle": "Terminer la mise à jour dans un terminal",
-  "ostreeUpdateTip": "Ce système est géré par rpm-ostree (comme Fedora Silverblue), qui installe les paquets dans une nouvelle image système. Exécutez la commande ci-dessous, puis redémarrez l’ordinateur : la nouvelle version et son service TUN ne démarrent qu’après le redémarrage."
+  "ostreeUpdateTip": "Ce système est géré par rpm-ostree (comme Fedora Silverblue), qui installe les paquets dans une nouvelle image système. Exécutez la commande ci-dessous, puis redémarrez l’ordinateur : la nouvelle version et son service TUN ne démarrent qu’après le redémarrage.",
+  "legacyDataImported": "Vos profils, règles et réglages ont été copiés depuis l’installation précédente ({path}). Les fichiers d’origine n’ont pas été modifiés.",
+  "legacyInstallTitle": "Version précédente encore installée",
+  "legacyInstallTip": "Une ancienne version de Panorama Secure Access, installée sous les identifiants de FlClash, est encore présente ({name}). Vos données ont déjà été copiées. La supprimer pour éviter que les deux se disputent l’interface TUN, les ports et le proxy système ? FlClash lui-même n’est pas concerné.",
+  "legacyInstallRemove": "Supprimer",
+  "legacyInstallRemoveFailed": "Impossible de supprimer la version précédente. Désinstallez-la avec votre gestionnaire de paquets ou placez-la dans la Corbeille.",
+  "legacyAndroidImportTitle": "Importer depuis la version précédente",
+  "legacyAndroidImportTip": "La version précédente ({name}) est toujours installée. L’identifiant de l’application ayant changé, Android ne peut pas la mettre à jour sur place ni lire ses données. Dans la version précédente, ouvrez Outils → Sauvegarde et restauration et sauvegardez dans un fichier local, puis restaurez ce fichier ici. Désinstallez ensuite la version précédente.",
+  "legacyAndroidImportAction": "Restaurer"
 }

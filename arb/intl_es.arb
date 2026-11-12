@@ -580,8 +580,8 @@
   "helperCorruptTip": "El servicio auxiliar (Helper) no está disponible; no se puede activar el modo TUN. Reinstala Panorama Secure Access para restaurarlo.",
   "tunAuthorizationFailed": "No se pudo autorizar TUN, por lo que se desactivó.",
   "sudoPasswordTitle": "Introduce tu contraseña para sudo",
-  "coreBlockedByPolicyTip": "Windows se negó a ejecutar FlClashCore.exe (error {code}). Una directiva de control de aplicaciones, como Smart App Control o AppLocker, bloquea los programas sin firmar; permite Panorama Secure Access en esa directiva o desactívala e inténtalo de nuevo.",
-  "coreBlockedBySmartAppControlTip": "Smart App Control de Windows bloqueó FlClashCore.exe porque no está firmado. Abre Seguridad de Windows → Control de aplicaciones y navegador → Configuración de Smart App Control, elige Desactivado y vuelve a iniciar Panorama Secure Access. Smart App Control no se puede volver a activar sin reinstalar Windows.",
+  "coreBlockedByPolicyTip": "Windows se negó a ejecutar panorama-secure-access-core.exe (error {code}). Una directiva de control de aplicaciones, como Smart App Control o AppLocker, bloquea los programas sin firmar; permite Panorama Secure Access en esa directiva o desactívala e inténtalo de nuevo.",
+  "coreBlockedBySmartAppControlTip": "Smart App Control de Windows bloqueó panorama-secure-access-core.exe porque no está firmado. Abre Seguridad de Windows → Control de aplicaciones y navegador → Configuración de Smart App Control, elige Desactivado y vuelve a iniciar Panorama Secure Access. Smart App Control no se puede volver a activar sin reinstalar Windows.",
   "hideFromList": "Ocultar de la lista",
   "testWhenUsed": "Probar al usarse",
   "disableUDP": "Desactivar UDP",
@@ -1108,5 +1108,13 @@
   "linuxHelperSetupTip": "El modo TUN funciona mediante un servicio del sistema. Autorízalo una sola vez como administrador: después, abrir Panorama Secure Access, activar TUN o reiniciar el equipo ya no pedirá contraseña. La aplicación sigue ejecutándose con tu cuenta.",
   "linuxHelperSetupFailed": "El servicio TUN no se instaló. Al activar TUN se volverá a pedir.",
   "ostreeUpdateTitle": "Termina la actualización en una terminal",
-  "ostreeUpdateTip": "Este sistema lo gestiona rpm-ostree (como Fedora Silverblue), que instala los paquetes en una nueva imagen del sistema. Ejecuta el comando siguiente y reinicia el equipo: la nueva versión y su servicio TUN solo se activan tras reiniciar."
+  "ostreeUpdateTip": "Este sistema lo gestiona rpm-ostree (como Fedora Silverblue), que instala los paquetes en una nueva imagen del sistema. Ejecuta el comando siguiente y reinicia el equipo: la nueva versión y su servicio TUN solo se activan tras reiniciar.",
+  "legacyDataImported": "Se copiaron tus perfiles, reglas y ajustes desde la instalación anterior ({path}). Los archivos originales no se modificaron.",
+  "legacyInstallTitle": "La versión anterior sigue instalada",
+  "legacyInstallTip": "Una versión anterior de Panorama Secure Access, instalada con los identificadores de FlClash, sigue en este dispositivo ({name}). Tus datos ya se copiaron. ¿Quitarla para que ambas no compitan por el dispositivo TUN, los puertos y el proxy del sistema? FlClash en sí no se ve afectado.",
+  "legacyInstallRemove": "Quitar",
+  "legacyInstallRemoveFailed": "No se pudo quitar la versión anterior. Desinstálala con tu gestor de paquetes o muévela a la Papelera.",
+  "legacyAndroidImportTitle": "Importar desde la versión anterior",
+  "legacyAndroidImportTip": "La versión anterior ({name}) sigue instalada. Como cambió el ID de la aplicación, Android no puede actualizarla en el sitio ni leer sus datos. En la versión anterior abre Herramientas → Copia de seguridad y restauración, guarda una copia en un archivo local y restaura ese archivo aquí. Después desinstala la versión anterior.",
+  "legacyAndroidImportAction": "Restaurar ahora"
 }

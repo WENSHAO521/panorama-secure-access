@@ -68,6 +68,18 @@ class Preferences {
     await preferences?.setBool('linuxHelperOffered', true);
   }
 
+  /// Whether the offer to remove a release installed under FlClash's
+  /// identifiers, or the Android import guide, was shown.
+  Future<bool> getLegacyInstallOffered() async {
+    final preferences = await _store.value;
+    return preferences?.getBool('legacyInstallOffered') ?? false;
+  }
+
+  Future<void> setLegacyInstallOffered() async {
+    final preferences = await _store.value;
+    await preferences?.setBool('legacyInstallOffered', true);
+  }
+
   Future<void> saveShareState(SharedState shareState) async {
     final preferences = await _store.value;
     await preferences?.setString('sharedState', json.encode(shareState));

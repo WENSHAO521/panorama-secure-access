@@ -580,8 +580,8 @@
   "helperCorruptTip": "Helper サービスが利用できないため、TUN モードを有効にできません。Panorama Secure Access を再インストールしてください。",
   "tunAuthorizationFailed": "TUN の権限を取得できなかったため、オフにしました。",
   "sudoPasswordTitle": "sudo のパスワードを入力",
-  "coreBlockedByPolicyTip": "Windows が FlClashCore.exe の実行を拒否しました（エラー {code}）。スマート アプリ コントロールや AppLocker などのアプリ制御ポリシーは未署名のプログラムをブロックします。ポリシーで Panorama Secure Access を許可するか、ポリシーを無効にしてから再試行してください。",
-  "coreBlockedBySmartAppControlTip": "Windows のスマート アプリ コントロールが、署名されていない FlClashCore.exe をブロックしました。Windows セキュリティ → アプリとブラウザーの制御 → スマート アプリ コントロールの設定で「オフ」を選び、Panorama Secure Access を再起動してください。一度オフにすると、Windows を再インストールしない限り再度オンにはできません。",
+  "coreBlockedByPolicyTip": "Windows が panorama-secure-access-core.exe の実行を拒否しました（エラー {code}）。スマート アプリ コントロールや AppLocker などのアプリ制御ポリシーは未署名のプログラムをブロックします。ポリシーで Panorama Secure Access を許可するか、ポリシーを無効にしてから再試行してください。",
+  "coreBlockedBySmartAppControlTip": "Windows のスマート アプリ コントロールが、署名されていない panorama-secure-access-core.exe をブロックしました。Windows セキュリティ → アプリとブラウザーの制御 → スマート アプリ コントロールの設定で「オフ」を選び、Panorama Secure Access を再起動してください。一度オフにすると、Windows を再インストールしない限り再度オンにはできません。",
   "hideFromList": "リストから隠す",
   "testWhenUsed": "使用時にテスト",
   "disableUDP": "UDPを無効化",
@@ -1108,5 +1108,13 @@
   "linuxHelperSetupTip": "TUN モードはシステムサービスで動作します。管理者として一度だけ承認すると、以後 Panorama Secure Access の起動、TUN の有効化、再起動でパスワードを求められることはありません。アプリ自体は引き続きあなたのアカウントで動作します。",
   "linuxHelperSetupFailed": "TUN サービスはインストールされませんでした。TUN を有効にすると再度確認します。",
   "ostreeUpdateTitle": "ターミナルで更新を完了",
-  "ostreeUpdateTip": "このシステムは rpm-ostree（Fedora Silverblue など）で管理されており、パッケージは新しいシステムイメージにインストールされます。以下のコマンドを実行してから再起動してください。新しいバージョンと TUN サービスは再起動後に有効になります。"
+  "ostreeUpdateTip": "このシステムは rpm-ostree（Fedora Silverblue など）で管理されており、パッケージは新しいシステムイメージにインストールされます。以下のコマンドを実行してから再起動してください。新しいバージョンと TUN サービスは再起動後に有効になります。",
+  "legacyDataImported": "以前のインストール（{path}）からプロファイル、ルール、設定をコピーしました。元のファイルは変更されていません。",
+  "legacyInstallTitle": "以前のバージョンが残っています",
+  "legacyInstallTip": "FlClash の識別子でインストールされた以前の Panorama Secure Access（{name}）がまだこのデバイスにあります。データはすでにコピー済みです。TUN デバイス、ポート、システムプロキシの競合を避けるため削除しますか？FlClash 本体には影響しません。",
+  "legacyInstallRemove": "削除",
+  "legacyInstallRemoveFailed": "以前のバージョンを削除できませんでした。パッケージマネージャーでアンインストールするか、ゴミ箱に移動してください。",
+  "legacyAndroidImportTitle": "以前のバージョンからインポート",
+  "legacyAndroidImportTip": "以前のバージョン（{name}）がインストールされたままです。アプリ ID が変わったため Android では上書き更新できず、他のアプリのデータも読み取れません。以前のバージョンで「ツール → バックアップと復元」からローカルファイルにバックアップし、ここでそのファイルを復元してください。その後、以前のバージョンをアンインストールしてください。",
+  "legacyAndroidImportAction": "今すぐ復元"
 }

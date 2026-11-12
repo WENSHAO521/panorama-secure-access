@@ -5,6 +5,8 @@ import 'package:fl_clash/common/boot_guard.dart';
 import 'package:fl_clash/common/boot_record.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/launch.dart';
+import 'package:fl_clash/common/legacy_data.dart';
+import 'package:fl_clash/common/legacy_install.dart';
 import 'package:fl_clash/common/migration.dart';
 import 'package:fl_clash/common/tray.dart';
 import 'package:fl_clash/common/window.dart';
@@ -12,8 +14,10 @@ import 'package:fl_clash/database/database.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/views/backup_and_restore.dart';
 import 'package:fl_clash/views/disclaimer.dart';
 import 'package:fl_clash/views/navigation.dart';
 import 'package:flutter/widgets.dart';
@@ -22,6 +26,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:prism_ui/banner.dart';
+import 'package:prism_ui/navigator.dart';
 
 class Bootstrap {
   static Bootstrap? _instance;
@@ -171,6 +176,7 @@ class Bootstrap {
     }
     await _showCrashRecoveryTip();
     await _offerLinuxHelper();
+    await _handleLegacyInstalls();
     await _container.read(coreActionProvider.notifier).startCore();
     if (!_bootDecision.isDegraded) {
       await _container.read(setupActionProvider.notifier).initStatus();
@@ -180,6 +186,82 @@ class Bootstrap {
     unawaited(_container.read(mitmModulesActionProvider.notifier).autoUpdate());
     await bootGuard.markRunning();
     unawaited(_container.read(locationPermissionsProvider.notifier).refresh());
+  }
+
+  /// Before the first Core start, so a release still installed under
+  /// FlClash's identifiers does not hold the TUN or ports this one needs.
+  Future<void> _handleLegacyInstalls() async {
+    final imported = lastLegacyDataImport;
+    if (imported != null) {
+      dialogs.showBanner(
+        currentAppLocalizations.legacyDataImported(imported.source),
+      );
+    }
+    if (safeModeBuild ||
+        _container.read(appSettingProvider).silentLaunch ||
+        await preferences.getLegacyInstallOffered()) {
+      return;
+    }
+    if (system.isAndroid) {
+      await _guideAndroidImport();
+      return;
+    }
+    final installs = await findLegacyDesktopInstalls();
+    if (installs.isEmpty) {
+      return;
+    }
+    await preferences.setLegacyInstallOffered();
+    final confirmed = await dialogs.showMessage(
+      title: currentAppLocalizations.legacyInstallTitle,
+      message: TextSpan(
+        text: currentAppLocalizations.legacyInstallTip(
+          installs.map((item) => item.id).join(', '),
+        ),
+      ),
+      confirmText: currentAppLocalizations.legacyInstallRemove,
+      cancelText: currentAppLocalizations.updateLater,
+    );
+    if (confirmed != true) {
+      return;
+    }
+    for (final install in installs) {
+      if (!await legacyInstalls.remove(install)) {
+        dialogs.showBanner(
+          currentAppLocalizations.legacyInstallRemoveFailed,
+          level: BannerLevel.error,
+        );
+      }
+    }
+  }
+
+  /// A new application id cannot replace the old app, and Android keeps each
+  /// app's data private, so the user moves it through a backup file.
+  Future<void> _guideAndroidImport() async {
+    if (_container.read(profilesProvider).isNotEmpty) {
+      await preferences.setLegacyInstallOffered();
+      return;
+    }
+    final packages = await app?.getPackages() ?? const <Package>[];
+    final legacy = packages
+        .map((item) => item.packageName)
+        .where(legacyAndroidPackages.contains)
+        .toList();
+    await preferences.setLegacyInstallOffered();
+    if (legacy.isEmpty) {
+      return;
+    }
+    final confirmed = await dialogs.showMessage(
+      title: currentAppLocalizations.legacyAndroidImportTitle,
+      message: TextSpan(
+        text: currentAppLocalizations.legacyAndroidImportTip(legacy.join(', ')),
+      ),
+      confirmText: currentAppLocalizations.legacyAndroidImportAction,
+      cancelText: currentAppLocalizations.updateLater,
+    );
+    final context = rootNavigatorKey.currentContext;
+    if (confirmed == true && context != null && context.mounted) {
+      unawaited(BaseNavigator.push(context, const BackupAndRestore()));
+    }
   }
 
   /// Asked once, before the first Core start, never during a silent autostart.

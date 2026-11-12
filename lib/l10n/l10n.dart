@@ -4711,20 +4711,20 @@ class AppLocalizations {
     );
   }
 
-  /// `Windows refused to run FlClashCore.exe (error {code}). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow Panorama Secure Access in that policy or turn it off, then try again.`
+  /// `Windows refused to run panorama-secure-access-core.exe (error {code}). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow Panorama Secure Access in that policy or turn it off, then try again.`
   String coreBlockedByPolicyTip(Object code) {
     return Intl.message(
-      'Windows refused to run FlClashCore.exe (error $code). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow Panorama Secure Access in that policy or turn it off, then try again.',
+      'Windows refused to run panorama-secure-access-core.exe (error $code). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow Panorama Secure Access in that policy or turn it off, then try again.',
       name: 'coreBlockedByPolicyTip',
       desc: '',
       args: [code],
     );
   }
 
-  /// `Windows Smart App Control blocked FlClashCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start Panorama Secure Access again. Smart App Control cannot be turned back on without reinstalling Windows.`
+  /// `Windows Smart App Control blocked panorama-secure-access-core.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start Panorama Secure Access again. Smart App Control cannot be turned back on without reinstalling Windows.`
   String get coreBlockedBySmartAppControlTip {
     return Intl.message(
-      'Windows Smart App Control blocked FlClashCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start Panorama Secure Access again. Smart App Control cannot be turned back on without reinstalling Windows.',
+      'Windows Smart App Control blocked panorama-secure-access-core.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start Panorama Secure Access again. Smart App Control cannot be turned back on without reinstalling Windows.',
       name: 'coreBlockedBySmartAppControlTip',
       desc: '',
       args: [],
@@ -9368,6 +9368,86 @@ class AppLocalizations {
     return Intl.message(
       'This system is managed by rpm-ostree (such as Fedora Silverblue), which installs packages into a new system image. Run the command below, then restart the computer: the new version and its TUN service start only after the restart.',
       name: 'ostreeUpdateTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your profiles, rules and settings were copied from the previous installation ({path}). The original files were left unchanged.`
+  String legacyDataImported(Object path) {
+    return Intl.message(
+      'Your profiles, rules and settings were copied from the previous installation ($path). The original files were left unchanged.',
+      name: 'legacyDataImported',
+      desc: '',
+      args: [path],
+    );
+  }
+
+  /// `Previous version still installed`
+  String get legacyInstallTitle {
+    return Intl.message(
+      'Previous version still installed',
+      name: 'legacyInstallTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An earlier Panorama Secure Access, installed under FlClash's identifiers, is still on this device ({name}). Your data has already been copied. Remove it so the two do not compete for the TUN device, ports and system proxy? FlClash itself is not affected.`
+  String legacyInstallTip(Object name) {
+    return Intl.message(
+      'An earlier Panorama Secure Access, installed under FlClash\'s identifiers, is still on this device ($name). Your data has already been copied. Remove it so the two do not compete for the TUN device, ports and system proxy? FlClash itself is not affected.',
+      name: 'legacyInstallTip',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Remove`
+  String get legacyInstallRemove {
+    return Intl.message(
+      'Remove',
+      name: 'legacyInstallRemove',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The previous version could not be removed. Uninstall it with your package manager or move it to the Trash.`
+  String get legacyInstallRemoveFailed {
+    return Intl.message(
+      'The previous version could not be removed. Uninstall it with your package manager or move it to the Trash.',
+      name: 'legacyInstallRemoveFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import from the previous version`
+  String get legacyAndroidImportTitle {
+    return Intl.message(
+      'Import from the previous version',
+      name: 'legacyAndroidImportTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The previous version ({name}) is still installed. Android cannot upgrade it in place because the app ID changed, and it cannot read another app's data. In the previous version open Tools → Backup and restore and back up to a local file, then restore that file here. Uninstall the previous version afterwards.`
+  String legacyAndroidImportTip(Object name) {
+    return Intl.message(
+      'The previous version ($name) is still installed. Android cannot upgrade it in place because the app ID changed, and it cannot read another app\'s data. In the previous version open Tools → Backup and restore and back up to a local file, then restore that file here. Uninstall the previous version afterwards.',
+      name: 'legacyAndroidImportTip',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Restore now`
+  String get legacyAndroidImportAction {
+    return Intl.message(
+      'Restore now',
+      name: 'legacyAndroidImportAction',
       desc: '',
       args: [],
     );

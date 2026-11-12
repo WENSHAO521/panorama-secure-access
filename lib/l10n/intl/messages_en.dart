@@ -33,7 +33,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m4(detail) => "Couldn\'t clear the data: ${detail}";
 
   static String m5(code) =>
-      "Windows refused to run FlClashCore.exe (error ${code}). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow Panorama Secure Access in that policy or turn it off, then try again.";
+      "Windows refused to run panorama-secure-access-core.exe (error ${code}). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow Panorama Secure Access in that policy or turn it off, then try again.";
 
   static String m6(name) =>
       "The app failed to finish launching twice in a row. To break the loop, the profile ${name} has been deselected and automatic setup was skipped. You can select it again at any time.";
@@ -143,143 +143,152 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m48(count) =>
       "${Intl.plural(count, one: '1 item', other: '${count} items')}";
 
-  static String m49(line, message) => "Line ${line}: ${message}";
+  static String m49(name) =>
+      "The previous version (${name}) is still installed. Android cannot upgrade it in place because the app ID changed, and it cannot read another app\'s data. In the previous version open Tools → Backup and restore and back up to a local file, then restore that file here. Uninstall the previous version afterwards.";
 
-  static String m50(appName) =>
+  static String m50(path) =>
+      "Your profiles, rules and settings were copied from the previous installation (${path}). The original files were left unchanged.";
+
+  static String m51(name) =>
+      "An earlier Panorama Secure Access, installed under FlClash\'s identifiers, is still on this device (${name}). Your data has already been copied. Remove it so the two do not compete for the TUN device, ports and system proxy? FlClash itself is not affected.";
+
+  static String m52(line, message) => "Line ${line}: ${message}";
+
+  static String m53(appName) =>
       "1. Open System Settings > Privacy & Security\n2. Choose Location Services\n3. Find and check ${appName} in the list\n\nWhen you are done, return to the app to continue. Thank you for your cooperation.";
 
-  static String m51(label, max) => "${label} must be at most ${max} characters";
+  static String m54(label, max) => "${label} must be at most ${max} characters";
 
-  static String m52(size) => "Released ${size}";
+  static String m55(size) => "Released ${size}";
 
-  static String m53(count) =>
+  static String m56(count) =>
       "${Intl.plural(count, one: '1 minute ago', other: '${count} minutes ago')}";
 
-  static String m54(count) => "${Intl.plural(count, other: '${count}m ago')}";
+  static String m57(count) => "${Intl.plural(count, other: '${count}m ago')}";
 
-  static String m55(fileName) =>
+  static String m58(fileName) =>
       "Saved ${fileName} to Downloads. Install it in Settings under Security › Encryption & credentials › Install a certificate › CA certificate.";
 
-  static String m56(command) =>
+  static String m59(command) =>
       "Chrome and Firefox keep their own certificate stores, which need certutil: ${command}";
 
-  static String m57(host) =>
+  static String m60(host) =>
       "Add ${host} to the hostname list? Panorama Secure Access can then read what is sent to it, cookies and passwords included.";
 
-  static String m58(host) =>
+  static String m61(host) =>
       "Add -${host} to the top of the hostname list? The host is then never decrypted.";
 
-  static String m59(size) => "The file is larger than ${size} MB";
+  static String m62(size) => "The file is larger than ${size} MB";
 
-  static String m60(stores) => "Not yet in: ${stores}";
+  static String m63(stores) => "Not yet in: ${stores}";
 
-  static String m61(name) => "${name} changed its scripts and was turned off";
+  static String m64(name) => "${name} changed its scripts and was turned off";
 
-  static String m62(system) =>
+  static String m65(system) =>
       "Written for ${system}; some lines may not match apps on this device.";
 
-  static String m63(name) =>
+  static String m66(name) =>
       "The old certificate, ${name}, could not be removed. Remove it from the trusted roots yourself.";
 
-  static String m64(name) =>
+  static String m67(name) =>
       "The old certificate, ${name}, is still among the system\'s trusted CAs. Allow Panorama Secure Access root access in your root manager and regenerate, or remove the Panorama Secure Access MITM CA module there and restart.";
 
-  static String m65(name) =>
+  static String m68(name) =>
       "Remove the old certificate, ${name}, in Settings under Security › Encryption & credentials › Trusted credentials › User, then install the new one.";
 
-  static String m66(section) => "The [${section}] section is not supported";
+  static String m69(section) => "The [${section}] section is not supported";
 
-  static String m67(count) =>
+  static String m70(count) =>
       "${Intl.plural(count, one: '1 month ago', other: '${count} months ago')}";
 
-  static String m68(count) => "${Intl.plural(count, other: '${count}mo ago')}";
+  static String m71(count) => "${Intl.plural(count, other: '${count}mo ago')}";
 
-  static String m69(code) =>
+  static String m72(code) =>
       "The server denied access (HTTP ${code}). The link may have expired, or the credentials are wrong";
 
-  static String m70(code) => "The server rejected the request (HTTP ${code})";
+  static String m73(code) => "The server rejected the request (HTTP ${code})";
 
-  static String m71(code) =>
+  static String m74(code) =>
       "Nothing was found at this address (HTTP ${code}). Check that the URL is correct";
 
-  static String m72(detail) => "Network request failed: ${detail}";
+  static String m75(detail) => "Network request failed: ${detail}";
 
-  static String m73(code) =>
+  static String m76(code) =>
       "The server ran into a problem (HTTP ${code}). Try again later";
 
-  static String m74(label) => "No ${label} yet";
+  static String m77(label) => "No ${label} yet";
 
-  static String m75(label, min, max) =>
+  static String m78(label, min, max) =>
       "${label} must be between ${min} and ${max}";
 
-  static String m76(label) => "${label} must be a number";
+  static String m79(label) => "${label} must be a number";
 
-  static String m77(label) => "${label} must be between 1024 and 49151";
+  static String m80(label) => "${label} must be between 1024 and 49151";
 
-  static String m78(port) => "Port ${port}";
+  static String m81(port) => "Port ${port}";
 
-  static String m79(days) =>
+  static String m82(days) =>
       "${Intl.plural(days, one: '1 day left', other: '${days} days left')}";
 
-  static String m80(date, days) =>
+  static String m83(date, days) =>
       "Expires ${date}, ${Intl.plural(days, one: '1 day', other: '${days} days')} left";
 
-  static String m81(time) => "Updated ${time}";
+  static String m84(time) => "Updated ${time}";
 
-  static String m82(label, profiles) =>
+  static String m85(label, profiles) =>
       "${label} is still used by ${profiles}, which will not work properly once it is deleted. Are you sure you want to delete it?";
 
-  static String m83(count, label) =>
+  static String m86(count, label) =>
       "${Intl.plural(count, one: '1 proxy', other: '${label} proxies')}";
 
-  static String m84(name, count) => "${name} and others (${count} proxies)";
+  static String m87(name, count) => "${name} and others (${count} proxies)";
 
-  static String m85(removed) =>
+  static String m88(removed) =>
       "These proxies will be deleted: ${removed}. A line whose name changed counts as a new proxy, and custom profiles naming the deleted ones will flag them as missing. Apply anyway?";
 
-  static String m86(removed, added) =>
+  static String m89(removed, added) =>
       "These proxies will be deleted: ${removed}. These will be added: ${added}. A line whose name changed counts as a new proxy, and custom profiles naming the deleted ones will flag them as missing. Apply anyway?";
 
-  static String m87(label) =>
+  static String m90(label) =>
       "${label} is still named by rules, proxy groups, dialer proxies, DNS or NTP in this profile, which stop working once it is deleted. Are you sure you want to delete it?";
 
-  static String m88(count, label) =>
+  static String m91(count, label) =>
       "${Intl.plural(count, one: '1 proxy group', other: '${label} proxy groups')}";
 
-  static String m89(count, label) =>
+  static String m92(count, label) =>
       "${Intl.plural(count, one: '1 rule', other: '${label} rules')}";
 
-  static String m90(appName) => "${appName} (Safe mode)";
-
-  static String m91(count) =>
-      "${Intl.plural(count, one: '1 second', other: '${count} seconds')}";
-
-  static String m92(count) => "${count} in effect";
-
-  static String m93(count) =>
-      "${Intl.plural(count, one: '1 issue', other: '${count} issues')}";
+  static String m93(appName) => "${appName} (Safe mode)";
 
   static String m94(count) =>
+      "${Intl.plural(count, one: '1 second', other: '${count} seconds')}";
+
+  static String m95(count) => "${count} in effect";
+
+  static String m96(count) =>
+      "${Intl.plural(count, one: '1 issue', other: '${count} issues')}";
+
+  static String m97(count) =>
       "${Intl.plural(count, one: '1 setting', other: '${count} settings')}";
 
-  static String m95(link) => "No proxy could be read from ${link}";
+  static String m98(link) => "No proxy could be read from ${link}";
 
-  static String m96(label) => "${label} must be a single item";
+  static String m99(label) => "${label} must be a single item";
 
-  static String m97(value) => "Peak ${value}";
+  static String m100(value) => "Peak ${value}";
 
-  static String m98(value) => "Total ${value}";
+  static String m101(value) => "Total ${value}";
 
-  static String m99(transport) => "${transport} Headers";
+  static String m102(transport) => "${transport} Headers";
 
-  static String m100(label) => "${label} must be a URL";
+  static String m103(label) => "${label} must be a URL";
 
-  static String m101(date) => "Valid until ${date}";
+  static String m104(date) => "Valid until ${date}";
 
-  static String m102(count) =>
+  static String m105(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
-  static String m103(count) => "${Intl.plural(count, other: '${count}y ago')}";
+  static String m106(count) => "${Intl.plural(count, other: '${count}y ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -579,7 +588,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "core": MessageLookupByLibrary.simpleMessage("Core"),
     "coreBlockedByPolicyTip": m5,
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
-      "Windows Smart App Control blocked FlClashCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start Panorama Secure Access again. Smart App Control cannot be turned back on without reinstalling Windows.",
+      "Windows Smart App Control blocked panorama-secure-access-core.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start Panorama Secure Access again. Smart App Control cannot be turned back on without reinstalling Windows.",
     ),
     "coreStatus": MessageLookupByLibrary.simpleMessage("Core status"),
     "country": MessageLookupByLibrary.simpleMessage("Region"),
@@ -1210,8 +1219,24 @@ class MessageLookup extends MessageLookupByLibrary {
       "The app exited unexpectedly while it was starting up last time. Automatic setup was skipped for this launch; you can start it manually to retry.",
     ),
     "layout": MessageLookupByLibrary.simpleMessage("Layout"),
+    "legacyAndroidImportAction": MessageLookupByLibrary.simpleMessage(
+      "Restore now",
+    ),
+    "legacyAndroidImportTip": m49,
+    "legacyAndroidImportTitle": MessageLookupByLibrary.simpleMessage(
+      "Import from the previous version",
+    ),
+    "legacyDataImported": m50,
+    "legacyInstallRemove": MessageLookupByLibrary.simpleMessage("Remove"),
+    "legacyInstallRemoveFailed": MessageLookupByLibrary.simpleMessage(
+      "The previous version could not be removed. Uninstall it with your package manager or move it to the Trash.",
+    ),
+    "legacyInstallTip": m51,
+    "legacyInstallTitle": MessageLookupByLibrary.simpleMessage(
+      "Previous version still installed",
+    ),
     "light": MessageLookupByLibrary.simpleMessage("Light"),
-    "lineIssueTip": m49,
+    "lineIssueTip": m52,
     "lineWrap": MessageLookupByLibrary.simpleMessage("Word wrap"),
     "link": MessageLookupByLibrary.simpleMessage("Link"),
     "linuxHelperSetupFailed": MessageLookupByLibrary.simpleMessage(
@@ -1249,7 +1274,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "locationPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "The system requires location permission to read the Wi-Fi name. On Android choose \"Allow all the time\", otherwise the Wi-Fi name cannot be read while the app is in the background.",
     ),
-    "locationPermissionGuide": m50,
+    "locationPermissionGuide": m53,
     "locationPermissionRequired": MessageLookupByLibrary.simpleMessage(
       "Location permission required",
     ),
@@ -1272,7 +1297,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "matchTarget": MessageLookupByLibrary.simpleMessage("MATCH-TARGET"),
     "matchedRules": MessageLookupByLibrary.simpleMessage("Matched rules"),
     "maxFailedTimes": MessageLookupByLibrary.simpleMessage("Max failures"),
-    "maxLengthTip": m51,
+    "maxLengthTip": m54,
     "maximize": MessageLookupByLibrary.simpleMessage("Maximize"),
     "memoryAppResident": MessageLookupByLibrary.simpleMessage(
       "Resident memory",
@@ -1298,7 +1323,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Memory the app and the core use",
     ),
     "memoryReleased": MessageLookupByLibrary.simpleMessage("Memory released"),
-    "memoryReleasedSize": m52,
+    "memoryReleasedSize": m55,
     "messageTest": MessageLookupByLibrary.simpleMessage("Message test"),
     "messageTestTip": MessageLookupByLibrary.simpleMessage(
       "This is a message.",
@@ -1307,8 +1332,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "minimize": MessageLookupByLibrary.simpleMessage("Minimize"),
     "minimizeOnExit": MessageLookupByLibrary.simpleMessage("Minimize on exit"),
     "minutes": MessageLookupByLibrary.simpleMessage("minutes"),
-    "minutesAgo": m53,
-    "minutesAgoShort": m54,
+    "minutesAgo": m56,
+    "minutesAgoShort": m57,
     "mitm": MessageLookupByLibrary.simpleMessage("MITM"),
     "mitmAddLocalFile": MessageLookupByLibrary.simpleMessage(
       "Add a local file",
@@ -1332,23 +1357,23 @@ class MessageLookup extends MessageLookupByLibrary {
     "mitmCertificateLinuxTip": MessageLookupByLibrary.simpleMessage(
       "Flatpak browsers need the exported certificate imported by hand.",
     ),
-    "mitmCertificateSavedTip": m55,
-    "mitmCertutilMissing": m56,
+    "mitmCertificateSavedTip": m58,
+    "mitmCertutilMissing": m59,
     "mitmClientRefusedCertificate": MessageLookupByLibrary.simpleMessage(
       "The client refused the certificate. Install the CA, or exclude this host if the app pins its certificate.",
     ),
     "mitmDecryptHost": MessageLookupByLibrary.simpleMessage(
       "Decrypt this host",
     ),
-    "mitmDecryptHostTip": m57,
+    "mitmDecryptHostTip": m60,
     "mitmEnableTip": MessageLookupByLibrary.simpleMessage(
       "Panorama Secure Access will be able to read everything sent to the decrypted hosts, cookies and passwords included. Turn this on only for hosts you mean to rewrite.",
     ),
     "mitmExcludeHost": MessageLookupByLibrary.simpleMessage(
       "Exclude from decryption",
     ),
-    "mitmExcludeHostTip": m58,
-    "mitmFileTooLarge": m59,
+    "mitmExcludeHostTip": m61,
+    "mitmFileTooLarge": m62,
     "mitmHostnameDesc": MessageLookupByLibrary.simpleMessage(
       "A leading - excludes a host, and the first match decides.",
     ),
@@ -1359,7 +1384,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "mitmInstallUserCaTip": MessageLookupByLibrary.simpleMessage(
       "No root was found, so the certificate can only be installed as a user certificate. Only apps that trust user certificates, mostly browsers, are decrypted; other apps fail on the hosts you list, so leave those hosts out. On Android 11 and later you finish the install yourself in system settings.",
     ),
-    "mitmMissingStores": m60,
+    "mitmMissingStores": m63,
     "mitmModule": MessageLookupByLibrary.simpleMessage("Module"),
     "mitmModuleInvalid": MessageLookupByLibrary.simpleMessage(
       "This is not a Surge module, a Loon plugin, a Quantumult X snippet or a Stash override",
@@ -1367,13 +1392,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "mitmModuleRulesDesc": MessageLookupByLibrary.simpleMessage(
       "Routing rules go in front of the profile’s own.",
     ),
-    "mitmModuleScriptsChanged": m61,
-    "mitmModuleSystemTip": m62,
+    "mitmModuleScriptsChanged": m64,
+    "mitmModuleSystemTip": m65,
     "mitmModules": MessageLookupByLibrary.simpleMessage("Modules"),
     "mitmNewModule": MessageLookupByLibrary.simpleMessage("New module"),
-    "mitmOldCertificateLeftTip": m63,
-    "mitmOldSystemCertificateLeftTip": m64,
-    "mitmRemoveOldCertificateTip": m65,
+    "mitmOldCertificateLeftTip": m66,
+    "mitmOldSystemCertificateLeftTip": m67,
+    "mitmRemoveOldCertificateTip": m68,
     "mitmRootPendingReboot": MessageLookupByLibrary.simpleMessage(
       "The certificate takes effect after the device restarts.",
     ),
@@ -1427,7 +1452,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "mitmSkipScriptType": MessageLookupByLibrary.simpleMessage(
       "This script type is not supported",
     ),
-    "mitmSkipSection": m66,
+    "mitmSkipSection": m69,
     "mitmSkipSetting": MessageLookupByLibrary.simpleMessage(
       "This setting is not supported",
     ),
@@ -1449,8 +1474,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "mode": MessageLookupByLibrary.simpleMessage("Mode"),
     "monochromeIcon": MessageLookupByLibrary.simpleMessage("Monochrome icon"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("Monochrome"),
-    "monthsAgo": m67,
-    "monthsAgoShort": m68,
+    "monthsAgo": m70,
+    "monthsAgoShort": m71,
     "more": MessageLookupByLibrary.simpleMessage("More"),
     "name": MessageLookupByLibrary.simpleMessage("Name"),
     "nameserverDesc": MessageLookupByLibrary.simpleMessage(
@@ -1461,8 +1486,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "navigationBarStyle": MessageLookupByLibrary.simpleMessage("Bottom bar"),
     "network": MessageLookupByLibrary.simpleMessage("Network"),
-    "networkAccessDeniedError": m69,
-    "networkBadResponseError": m70,
+    "networkAccessDeniedError": m72,
+    "networkBadResponseError": m73,
     "networkCancelledError": MessageLookupByLibrary.simpleMessage(
       "The request was cancelled",
     ),
@@ -1473,13 +1498,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Couldn\'t resolve the server address. Check that the URL is correct and DNS is working",
     ),
     "networkName": MessageLookupByLibrary.simpleMessage("Network name"),
-    "networkNotFoundError": m71,
+    "networkNotFoundError": m74,
     "networkRateLimitedError": MessageLookupByLibrary.simpleMessage(
       "Too many requests (HTTP 429). Wait a moment and try again",
     ),
-    "networkRequestFailed": m72,
+    "networkRequestFailed": m75,
     "networkSecret": MessageLookupByLibrary.simpleMessage("Network secret"),
-    "networkServerError": m73,
+    "networkServerError": m76,
     "networkSpeed": MessageLookupByLibrary.simpleMessage("Network speed"),
     "networkTakeover": MessageLookupByLibrary.simpleMessage("Traffic takeover"),
     "networkTimeoutError": MessageLookupByLibrary.simpleMessage(
@@ -1520,9 +1545,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "Add a profile to get started",
     ),
-    "nullTip": m74,
-    "numberRangeTip": m75,
-    "numberTip": m76,
+    "nullTip": m77,
+    "numberRangeTip": m78,
+    "numberTip": m79,
     "obfs": MessageLookupByLibrary.simpleMessage("Obfuscation"),
     "obfsHost": MessageLookupByLibrary.simpleMessage("Obfuscation host"),
     "obfsMode": MessageLookupByLibrary.simpleMessage("Obfuscation mode"),
@@ -1584,8 +1609,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Please enter a different port",
     ),
     "portHopping": MessageLookupByLibrary.simpleMessage("Port hopping"),
-    "portTip": m77,
-    "portValue": m78,
+    "portTip": m80,
+    "portValue": m81,
     "ports": MessageLookupByLibrary.simpleMessage("Ports"),
     "preSharedKey": MessageLookupByLibrary.simpleMessage("Pre-shared key"),
     "preferred": MessageLookupByLibrary.simpleMessage("Preferred"),
@@ -1607,8 +1632,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Please enter the auto-update interval",
         ),
-    "profileDaysLeft": m79,
-    "profileExpiresIn": m80,
+    "profileDaysLeft": m82,
+    "profileExpiresIn": m83,
     "profileHasUpdate": MessageLookupByLibrary.simpleMessage(
       "The profile has been modified. Turn off auto update?",
     ),
@@ -1621,7 +1646,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileTunSettingsDesc": MessageLookupByLibrary.simpleMessage(
       "Applies to this profile only and takes precedence over the TUN override entries in the network settings.",
     ),
-    "profileUpdatedAt": m81,
+    "profileUpdatedAt": m84,
     "profileUrlInvalidValidationDesc": MessageLookupByLibrary.simpleMessage(
       "Please enter a valid profile URL",
     ),
@@ -1634,26 +1659,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "protocol": MessageLookupByLibrary.simpleMessage("Protocol"),
     "protocolParam": MessageLookupByLibrary.simpleMessage("Protocol parameter"),
     "protocolVersion": MessageLookupByLibrary.simpleMessage("Protocol version"),
-    "providerInUse": m82,
+    "providerInUse": m85,
     "providerUrlTip": MessageLookupByLibrary.simpleMessage(
       "Only remote providers are supported",
     ),
     "providers": MessageLookupByLibrary.simpleMessage("External resources"),
     "proxies": MessageLookupByLibrary.simpleMessage("Proxies"),
-    "proxiesCount": m83,
-    "proxiesProfileLabel": m84,
-    "proxiesRemovedTip": m85,
-    "proxiesReplacedTip": m86,
+    "proxiesCount": m86,
+    "proxiesProfileLabel": m87,
+    "proxiesRemovedTip": m88,
+    "proxiesReplacedTip": m89,
     "proxyChains": MessageLookupByLibrary.simpleMessage("Proxy chain"),
     "proxyGroup": MessageLookupByLibrary.simpleMessage("Proxy group"),
     "proxyGroupEmpty": MessageLookupByLibrary.simpleMessage(
       "Proxy group is empty",
     ),
-    "proxyGroupInUse": m87,
+    "proxyGroupInUse": m90,
     "proxyGroupsAfterStart": MessageLookupByLibrary.simpleMessage(
       "Groups show up here once the core starts",
     ),
-    "proxyGroupsCount": m88,
+    "proxyGroupsCount": m91,
     "proxyProviders": MessageLookupByLibrary.simpleMessage("Proxy providers"),
     "proxyServerNameserverDesc": MessageLookupByLibrary.simpleMessage(
       "Resolves proxy server hostnames only.",
@@ -1903,12 +1928,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "The rule must start with a supported type, such as DOMAIN,example.com,DIRECT",
     ),
     "rules": MessageLookupByLibrary.simpleMessage("Rules"),
-    "rulesCount": m89,
+    "rulesCount": m92,
     "runTime": MessageLookupByLibrary.simpleMessage("Run time"),
     "running": MessageLookupByLibrary.simpleMessage("Running"),
     "runtimeConfig": MessageLookupByLibrary.simpleMessage("Runtime config"),
     "safeMode": MessageLookupByLibrary.simpleMessage("Safe mode"),
-    "safeModeAppTitle": m90,
+    "safeModeAppTitle": m93,
     "saturation": MessageLookupByLibrary.simpleMessage("Saturation"),
     "save": MessageLookupByLibrary.simpleMessage("Save"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Save the changes?"),
@@ -1921,9 +1946,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "search": MessageLookupByLibrary.simpleMessage("Search"),
     "seconds": MessageLookupByLibrary.simpleMessage("seconds"),
-    "secondsCount": m91,
+    "secondsCount": m94,
     "secretKey": MessageLookupByLibrary.simpleMessage("Key"),
-    "sectionsInEffect": m92,
+    "sectionsInEffect": m95,
     "select": MessageLookupByLibrary.simpleMessage("Select"),
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
     "selectRuleSet": MessageLookupByLibrary.simpleMessage(
@@ -1956,7 +1981,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Scan the code with your phone\'s camera and paste the link on the page that opens. Both devices need to be on the same network.",
     ),
     "server": MessageLookupByLibrary.simpleMessage("Server"),
-    "serviceAbnormalCount": m93,
+    "serviceAbnormalCount": m96,
     "serviceAllAvailable": MessageLookupByLibrary.simpleMessage(
       "All available",
     ),
@@ -1986,8 +2011,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "settingEntries": MessageLookupByLibrary.simpleMessage("settings"),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
-    "settingsCount": m94,
-    "shareLinkUnreadable": m95,
+    "settingsCount": m97,
+    "shareLinkUnreadable": m98,
     "shareLinksInvalid": MessageLookupByLibrary.simpleMessage(
       "No proxy could be read from the links",
     ),
@@ -2007,7 +2032,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "singleShareLinkOnly": MessageLookupByLibrary.simpleMessage(
       "Enter one link here; edit several from the quick edit of the list",
     ),
-    "singleValueTip": m96,
+    "singleValueTip": m99,
     "size": MessageLookupByLibrary.simpleMessage("Size"),
     "skipCertVerify": MessageLookupByLibrary.simpleMessage(
       "Skip certificate verification",
@@ -2120,13 +2145,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "tproxyPort": MessageLookupByLibrary.simpleMessage("TProxy port"),
     "traffic": MessageLookupByLibrary.simpleMessage("Traffic"),
     "trafficMonthly": MessageLookupByLibrary.simpleMessage("Resets monthly"),
-    "trafficPeak": m97,
+    "trafficPeak": m100,
     "trafficPeriod": MessageLookupByLibrary.simpleMessage("Traffic period"),
     "trafficPermanent": MessageLookupByLibrary.simpleMessage("Permanent"),
-    "trafficTotal": m98,
+    "trafficTotal": m101,
     "trafficUsage": MessageLookupByLibrary.simpleMessage("Traffic usage"),
     "transport": MessageLookupByLibrary.simpleMessage("Transport"),
-    "transportHeaders": m99,
+    "transportHeaders": m102,
     "trustCertificate": MessageLookupByLibrary.simpleMessage(
       "Trust certificate",
     ),
@@ -2197,14 +2222,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "uploadBandwidth": MessageLookupByLibrary.simpleMessage("Upload bandwidth"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlRewrite": MessageLookupByLibrary.simpleMessage("URL rewrite"),
-    "urlTip": m100,
+    "urlTip": m103,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "usedShort": MessageLookupByLibrary.simpleMessage("used"),
     "usedTraffic": MessageLookupByLibrary.simpleMessage("Used traffic"),
     "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
     "username": MessageLookupByLibrary.simpleMessage("Username"),
-    "validUntil": m101,
+    "validUntil": m104,
     "value": MessageLookupByLibrary.simpleMessage("Value"),
     "view": MessageLookupByLibrary.simpleMessage("View"),
     "viewAll": MessageLookupByLibrary.simpleMessage("View all"),
@@ -2221,8 +2246,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "Write to system also sets the system clock; Android ignores it.",
     ),
-    "yearsAgo": m102,
-    "yearsAgoShort": m103,
+    "yearsAgo": m105,
+    "yearsAgoShort": m106,
     "yes": MessageLookupByLibrary.simpleMessage("Yes"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
   };
