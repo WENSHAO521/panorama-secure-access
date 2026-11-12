@@ -15,9 +15,9 @@ import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/views/dashboard/layout.dart';
 import 'package:fl_clash/views/dashboard/widgets/card.dart';
 import 'package:fl_clash/views/dashboard/widgets/current_outbound.dart';
+import 'package:fl_clash/views/dashboard/widgets/sakura_badge.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -152,13 +152,13 @@ void _useTallView(WidgetTester tester) {
 }
 
 Finder _clover() => find.ancestor(
-  of: find.byType(ShapeBadge),
+  of: find.byType(SakuraBadge),
   matching: find.byWidgetPredicate((widget) => widget is PressRegion),
 );
 
 double _cloverTurn(WidgetTester tester) => tester
-    .widget<ShapeBadge>(
-      find.descendant(of: _clover(), matching: find.byType(ShapeBadge)),
+    .widget<SakuraBadge>(
+      find.descendant(of: _clover(), matching: find.byType(SakuraBadge)),
     )
     .rotation;
 
@@ -213,7 +213,7 @@ void main() {
       await tester.pump();
 
       expect(find.text(_ip), findsOneWidget);
-      expect(find.text('GB'), findsOneWidget);
+      expect(find.text('GB'.countryFlagEmoji), findsOneWidget);
       expect(find.text('Residential'), findsOneWidget);
       expect(_chip(tester, 'Quality Good').tone, DashboardChipTone.ok);
       expect(find.text('Example Broadband'), findsOneWidget);
@@ -251,7 +251,7 @@ void main() {
       );
       await tester.pump();
 
-      expect(find.text('GB'), findsOneWidget);
+      expect(find.text('GB'.countryFlagEmoji), findsOneWidget);
       expect(find.text('Not running'), findsOneWidget);
       expect(_chip(tester, 'Unknown type').tone, DashboardChipTone.idle);
       expect(find.byType(DashboardChip), findsNWidgets(2));
@@ -288,7 +288,7 @@ void main() {
 
       expect(find.byType(SkeletonPill), findsNothing);
       expect(find.text('Residential'), findsOneWidget);
-      expect(_cloverTurn(tester) % (math.pi / 2), closeTo(0, 1e-9));
+      expect(_cloverTurn(tester) % sakuraSymmetry, closeTo(0, 1e-9));
       expect(tester.widget<PressRegion>(_clover()).onTap, isNotNull);
     });
 
