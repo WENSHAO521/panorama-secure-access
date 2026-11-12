@@ -33,7 +33,8 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.follow.clash"
+        // Upstream FlClash ships com.follow.clash under its own key, which blocked installing both.
+        applicationId = "com.panorama.secureaccess"
         minSdk = flutter.minSdkVersion
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = flutter.versionCode
