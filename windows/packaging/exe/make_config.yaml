@@ -1,11 +1,12 @@
 script_template: inno_setup.iss
-app_id: 728B3532-C74B-4870-9068-BE70FE12A3E6
-app_name: FlClash
-publisher: Panorama Scholarly Group
+app_id: 4E89FEB6-C60C-4111-8948-A769FADF5BD9
+app_name: panorama-secure-access
+publisher_name: Panorama Scholarly Group
 publisher_url: https://github.com/WENSHAO521/panorama-secure-access
 display_name: Panorama Secure Access
-executable_name: FlClash.exe
-output_base_file_name: FlClash.exe
+executable_name: panorama-secure-access.exe
+install_dir_name: '{autopf64}\Panorama Secure Access'
+output_base_file_name: panorama-secure-access.exe
 # Resolved against the project root: flutter_distributor turns this into an
 # absolute path via Directory.current.
 setup_icon_file: windows\runner\resources\app_icon.ico
