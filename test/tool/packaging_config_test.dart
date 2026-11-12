@@ -143,7 +143,7 @@ void main() {
       expect(exe['app_id'], isNot('728B3532-C74B-4870-9068-BE70FE12A3E6'));
       expect(exe['publisher_name'], 'Panorama Scholarly Group');
       final script = read('windows/packaging/exe/inno_setup.iss');
-      expect(script, isNot(contains(r"{userappdata}\com.follow")));
+      expect(script, isNot(contains(r'{userappdata}\com.follow')));
       expect(script, isNot(contains("'FlClash.exe'")));
       expect(script, contains("LegacyDisplayName = 'Panorama Secure Access'"));
     });
