@@ -19,12 +19,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum _ProfileField { label, url, autoUpdateInterval, customTraffic }
 
-const _bytesPerGb = 1 << 30;
+enum _TrafficUnit {
+  mb('MB', 1 << 20),
+  gb('GB', 1 << 30),
+  tb('TB', 1 << 40);
 
-/// Gigabytes as typed in the quota field, trailing zeros dropped.
-String _gbText(int bytes) {
-  final text = (bytes / _bytesPerGb).toStringAsFixed(2);
-  return text.replaceFirst(RegExp(r'\.?0+$'), '');
+  const _TrafficUnit(this.label, this.bytes);
+
+  final String label;
+  final int bytes;
+
+  /// The largest unit [bytes] fills at least once.
+  static _TrafficUnit of(int bytes) =>
+      values.lastWhere((unit) => bytes >= unit.bytes, orElse: () => mb);
+
+  /// [bytes] as typed in this unit, trailing zeros dropped.
+  String format(int bytes) => (bytes / this.bytes)
+      .toStringAsFixed(2)
+      .replaceFirst(RegExp(r'\.?0+$'), '');
 }
 
 class EditProfileView extends ConsumerStatefulWidget {
@@ -45,6 +57,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   late Map<String, String> _headers;
   late final TextEditingController _trafficController;
   late TrafficQuotaPeriod _trafficPeriod;
+  late _TrafficUnit _trafficUnit;
   Uint8List? _editedData;
   bool _attempted = false;
   final _fileInfoNotifier = ValueNotifier<FileInfo?>(null);
@@ -62,8 +75,11 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     _autoUpdate = widget.profile.autoUpdate;
     _headers = widget.profile.headers;
     final quota = widget.profile.trafficQuota;
+    _trafficUnit = quota == null
+        ? _TrafficUnit.gb
+        : _TrafficUnit.of(quota.total);
     _trafficController = TextEditingController(
-      text: quota == null ? '' : _gbText(quota.total),
+      text: quota == null ? '' : _trafficUnit.format(quota.total),
     );
     _trafficPeriod = quota?.period ?? TrafficQuotaPeriod.monthly;
     _autoUpdateDurationController = TextEditingController(
@@ -136,12 +152,12 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   }
 
   TrafficQuota? get _trafficQuota {
-    final gb = double.tryParse(_trafficController.text.trim());
-    if (gb == null || gb <= 0) {
+    final amount = double.tryParse(_trafficController.text.trim());
+    if (amount == null || amount <= 0) {
       return null;
     }
     return TrafficQuota(
-      total: (gb * _bytesPerGb).round(),
+      total: (amount * _trafficUnit.bytes).round(),
       period: _trafficPeriod,
     );
   }
@@ -412,6 +428,8 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
         items: [
           _CustomTrafficField(
             controller: _trafficController,
+            unit: _trafficUnit,
+            onUnitChanged: (unit) => setState(() => _trafficUnit = unit),
             invalid: issue?.field == _ProfileField.customTraffic,
             onChanged: (value) {
               setState(() {});
@@ -638,7 +656,7 @@ class _AutoUpdateIntervalField extends StatelessWidget {
       invalid: invalid,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
-        spacing: 4,
+        spacing: 8,
         children: [
           Flexible(
             child: FormRowTextField(
@@ -665,11 +683,15 @@ class _AutoUpdateIntervalField extends StatelessWidget {
 class _CustomTrafficField extends StatelessWidget {
   const _CustomTrafficField({
     required this.controller,
+    required this.unit,
+    required this.onUnitChanged,
     required this.invalid,
     required this.onChanged,
   });
 
   final TextEditingController controller;
+  final _TrafficUnit unit;
+  final ValueChanged<_TrafficUnit> onUnitChanged;
   final bool invalid;
   final ValueChanged<String> onChanged;
 
@@ -681,7 +703,7 @@ class _CustomTrafficField extends StatelessWidget {
       invalid: invalid,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
-        spacing: 4,
+        spacing: 8,
         children: [
           Flexible(
             child: FormRowTextField(
@@ -698,7 +720,15 @@ class _CustomTrafficField extends StatelessWidget {
               onChanged: onChanged,
             ),
           ),
-          Text('GB', style: AppTextStyle.subheadline.of(context)),
+          Flexible(
+            child: SegmentedControl<_TrafficUnit>(
+              segments: [
+                for (final unit in _TrafficUnit.values) (unit, unit.label),
+              ],
+              value: unit,
+              onChanged: onUnitChanged,
+            ),
+          ),
         ],
       ),
     );
