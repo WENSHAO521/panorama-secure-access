@@ -93,8 +93,7 @@ mod tests {
 
     impl FakeProc {
         fn new(name: &str) -> Self {
-            let root =
-                std::env::temp_dir().join(format!("psa-peer-{name}-{}", std::process::id()));
+            let root = std::env::temp_dir().join(format!("psa-peer-{name}-{}", std::process::id()));
             let _ = fs::remove_dir_all(&root);
             fs::create_dir_all(&root).unwrap();
             Self { root }

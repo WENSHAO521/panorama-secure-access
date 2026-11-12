@@ -616,7 +616,9 @@ mod tests {
     fn unit_names_the_owner_and_the_helper_it_starts() {
         let unit = installed_unit();
 
-        assert!(unit.contains("ExecStart=\"/usr/share/panorama-secure-access/panorama-secure-access-helper\"\n"));
+        assert!(unit.contains(
+            "ExecStart=\"/usr/share/panorama-secure-access/panorama-secure-access-helper\"\n"
+        ));
         assert!(
             unit.contains("ExecStartPre=-+\"/usr/share/panorama-secure-access/panorama-secure-access-helper\" refresh\n")
         );
@@ -709,7 +711,9 @@ mod tests {
         let rules = polkit_rules(&account()).unwrap();
 
         assert!(rules.contains("action.id === \"org.freedesktop.systemd1.manage-units\""));
-        assert!(rules.contains("action.lookup(\"unit\") === \"panorama-secure-access-helper.service\""));
+        assert!(
+            rules.contains("action.lookup(\"unit\") === \"panorama-secure-access-helper.service\"")
+        );
         assert!(rules.contains("[\"start\", \"restart\", \"reset-failed\"]"));
         assert!(rules.contains("subject.user === \"huayang\""));
         assert!(rules.contains("subject.local && subject.active"));

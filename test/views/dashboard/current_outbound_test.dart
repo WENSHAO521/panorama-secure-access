@@ -15,13 +15,14 @@ import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/views/dashboard/layout.dart';
 import 'package:fl_clash/views/dashboard/widgets/card.dart';
 import 'package:fl_clash/views/dashboard/widgets/current_outbound.dart';
-import 'package:fl_clash/views/dashboard/widgets/sakura_badge.dart';
+import 'package:fl_clash/views/dashboard/widgets/star_badge.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'dart:async';
 
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -152,15 +153,23 @@ void _useTallView(WidgetTester tester) {
 }
 
 Finder _clover() => find.ancestor(
-  of: find.byType(SakuraBadge),
+  of: find.byType(StarBadge),
   matching: find.byWidgetPredicate((widget) => widget is PressRegion),
 );
 
 double _cloverTurn(WidgetTester tester) => tester
-    .widget<SakuraBadge>(
-      find.descendant(of: _clover(), matching: find.byType(SakuraBadge)),
+    .widget<StarBadge>(
+      find.descendant(of: _clover(), matching: find.byType(StarBadge)),
     )
     .rotation;
+
+Finder _flag(String code) => find.byWidgetPredicate(
+  (widget) => switch (widget) {
+    SvgPicture(bytesLoader: SvgAssetLoader(:final assetName)) =>
+      assetName == 'assets/images/flags/$code.svg',
+    _ => false,
+  },
+);
 
 DashboardChip _chip(WidgetTester tester, String label) =>
     tester.widget<DashboardChip>(
@@ -213,7 +222,7 @@ void main() {
       await tester.pump();
 
       expect(find.text(_ip), findsOneWidget);
-      expect(find.text('GB'.countryFlagEmoji), findsOneWidget);
+      expect(_flag('gb'), findsOneWidget);
       expect(find.text('Residential'), findsOneWidget);
       expect(_chip(tester, 'Quality Good').tone, DashboardChipTone.ok);
       expect(find.text('Example Broadband'), findsOneWidget);
@@ -251,7 +260,7 @@ void main() {
       );
       await tester.pump();
 
-      expect(find.text('GB'.countryFlagEmoji), findsOneWidget);
+      expect(_flag('gb'), findsOneWidget);
       expect(find.text('Not running'), findsOneWidget);
       expect(_chip(tester, 'Unknown type').tone, DashboardChipTone.idle);
       expect(find.byType(DashboardChip), findsNWidgets(2));
@@ -288,7 +297,7 @@ void main() {
 
       expect(find.byType(SkeletonPill), findsNothing);
       expect(find.text('Residential'), findsOneWidget);
-      expect(_cloverTurn(tester) % sakuraSymmetry, closeTo(0, 1e-9));
+      expect(_cloverTurn(tester) % starSymmetry, closeTo(0, 1e-9));
       expect(tester.widget<PressRegion>(_clover()).onTap, isNotNull);
     });
 

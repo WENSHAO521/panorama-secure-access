@@ -17,10 +17,11 @@ import 'package:fl_clash/views/dashboard/style.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:prism_ui/shapes/shapes.dart';
 
 import 'card.dart';
-import 'sakura_badge.dart';
+import 'star_badge.dart';
 
 const _builtinOutbounds = {'DIRECT', 'REJECT', 'REJECT-DROP', 'PASS'};
 
@@ -465,8 +466,8 @@ class _IpChips extends StatelessWidget {
 
 const _spinPeriod = Duration(milliseconds: 1500);
 
-/// The exit's flag in a cherry-pink halo that checks the exit again when
-/// tapped and turns while it is being checked.
+/// The exit's flag in a violet ring under the Northern Dipper that checks the
+/// exit again when tapped; its stars light up in turn while it is checked.
 class _CountryBadge extends StatefulWidget {
   const _CountryBadge({
     required this.countryCode,
@@ -521,7 +522,7 @@ class _CountryBadgeState extends State<_CountryBadge>
     } else if (widget.checking) {
       _turns.repeat();
     } else {
-      // The halo and the blossom settle every whole turn, so it stops on the
+      // The stars are all at rest every whole turn, so it stops on the
       // next.
       final rest = _turns.value.ceilToDouble();
       _turns.animateTo(rest, duration: _spinPeriod * (rest - _turns.value));
@@ -538,7 +539,7 @@ class _CountryBadgeState extends State<_CountryBadge>
     final size = widget.size;
     final code = widget.countryCode;
     final hasFlag = code != null && code.isNotEmpty;
-    final flagSize = size * sakuraFlagExtent * 1.22;
+    final flagSize = size * starFlagExtent;
     final tooltip = context.appLocalizations.retry;
     return Tooltip(
       message: tooltip,
@@ -554,7 +555,7 @@ class _CountryBadgeState extends State<_CountryBadge>
             enabled: enabled,
             child: AnimatedBuilder(
               animation: _turns,
-              builder: (_, child) => SakuraBadge(
+              builder: (_, child) => StarBadge(
                 size: size,
                 dark: colorScheme.brightness == Brightness.dark,
                 flag: hasFlag,
@@ -574,25 +575,61 @@ class _CountryBadgeState extends State<_CountryBadge>
                   : Semantics(
                       label: code.toUpperCase(),
                       excludeSemantics: true,
-                      // Twemoji draws its flags a little above the middle
-                      // of the line; the nudge centers it on the disc.
-                      child: Transform.translate(
-                        offset: Offset(0, flagSize * 0.05),
-                        child: Text(
-                          code.countryFlagEmoji,
-                          maxLines: 1,
-                          textScaler: TextScaler.noScaling,
-                          // Tall enough that the flag covers its disc.
-                          style: AppTextStyle.custom(
-                            context,
-                            size: flagSize,
-                            leading: flagSize,
-                          ).copyWith(fontFamily: FontFamily.twEmoji.value),
-                        ),
-                      ),
+                      child: _RoundFlag(code: code, size: flagSize),
                     ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The flag of [code] laid out for a circle, so that all of it shows on the
+/// badge's disc; codes without one fall back to the Twemoji flag, cropped to
+/// cover the disc.
+class _RoundFlag extends StatelessWidget {
+  const _RoundFlag({required this.code, required this.size});
+
+  final String code;
+  final double size;
+
+  static final _twoLetters = RegExp(r'^[a-z]{2}$');
+
+  @override
+  Widget build(BuildContext context) {
+    final lower = code.toLowerCase();
+    if (!_twoLetters.hasMatch(lower)) {
+      return _emoji(context);
+    }
+    return SvgPicture.asset(
+      'assets/images/flags/$lower.svg',
+      width: size,
+      height: size,
+      excludeFromSemantics: true,
+      errorBuilder: (context, _, _) => _emoji(context),
+    );
+  }
+
+  Widget _emoji(BuildContext context) {
+    // Tall enough that the flag covers the disc.
+    final glyph = size * 1.22;
+    return OverflowBox(
+      maxWidth: double.infinity,
+      maxHeight: double.infinity,
+      // Twemoji draws its flags a little above the middle of the line; the
+      // nudge centers it on the disc.
+      child: Transform.translate(
+        offset: Offset(0, glyph * 0.05),
+        child: Text(
+          code.countryFlagEmoji,
+          maxLines: 1,
+          textScaler: TextScaler.noScaling,
+          style: AppTextStyle.custom(
+            context,
+            size: glyph,
+            leading: glyph,
+          ).copyWith(fontFamily: FontFamily.twEmoji.value),
         ),
       ),
     );

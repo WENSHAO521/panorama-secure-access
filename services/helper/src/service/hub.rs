@@ -873,7 +873,8 @@ mod tests {
     }
 
     #[cfg(not(target_os = "linux"))]
-    const ALLOWED_CORE_ADDRESS: &str = r"\\.\pipe\PanoramaSecureAccessCore_0123456789abcdef0123456789abcdef";
+    const ALLOWED_CORE_ADDRESS: &str =
+        r"\\.\pipe\PanoramaSecureAccessCore_0123456789abcdef0123456789abcdef";
     #[cfg(target_os = "linux")]
     const ALLOWED_CORE_ADDRESS: &str = "/tmp/PanoramaSecureAccessSocket_4821.sock";
 
@@ -1337,8 +1338,10 @@ mod tests {
 
     #[test]
     fn verifies_core_sha256_in_all_build_modes() {
-        let path =
-            std::env::temp_dir().join(format!("panorama-secure-access-helper-core-sha256-{}", std::process::id()));
+        let path = std::env::temp_dir().join(format!(
+            "panorama-secure-access-helper-core-sha256-{}",
+            std::process::id()
+        ));
         let mut file = File::create(&path).unwrap();
         file.write_all(b"test").unwrap();
         drop(file);
@@ -1440,7 +1443,11 @@ mod tests {
                     .is_none());
             }
         }
-        for host in ["127.0.0.1:47890", "localhost:47890", "panorama-secure-access-helper"] {
+        for host in [
+            "127.0.0.1:47890",
+            "localhost:47890",
+            "panorama-secure-access-helper",
+        ] {
             let response = warp::test::request()
                 .path("/logs")
                 .header("host", host)
@@ -1478,7 +1485,9 @@ mod tests {
         assert!(is_allowed_core_address(
             r"\\.\pipe\PanoramaSecureAccessCore_0123456789abcdef0123456789abcdef"
         ));
-        assert!(!is_allowed_core_address(r"\\.\pipe\PanoramaSecureAccessCore"));
+        assert!(!is_allowed_core_address(
+            r"\\.\pipe\PanoramaSecureAccessCore"
+        ));
         assert!(!is_allowed_core_address(
             r"\\.\pipe\Other_0123456789abcdef0123456789abcdef"
         ));
@@ -1496,11 +1505,19 @@ mod tests {
     #[cfg(target_os = "linux")]
     #[test]
     fn only_accepts_random_core_socket_namespace() {
-        assert!(is_allowed_core_address("/tmp/PanoramaSecureAccessSocket_4821.sock"));
-        assert!(!is_allowed_core_address("/tmp/PanoramaSecureAccessSocket_.sock"));
-        assert!(!is_allowed_core_address("/tmp/PanoramaSecureAccessSocket_4821"));
+        assert!(is_allowed_core_address(
+            "/tmp/PanoramaSecureAccessSocket_4821.sock"
+        ));
+        assert!(!is_allowed_core_address(
+            "/tmp/PanoramaSecureAccessSocket_.sock"
+        ));
+        assert!(!is_allowed_core_address(
+            "/tmp/PanoramaSecureAccessSocket_4821"
+        ));
         assert!(!is_allowed_core_address("/tmp/Other_4821.sock"));
-        assert!(!is_allowed_core_address("/tmp/PanoramaSecureAccessSocket_../x.sock"));
+        assert!(!is_allowed_core_address(
+            "/tmp/PanoramaSecureAccessSocket_../x.sock"
+        ));
         assert!(!is_allowed_core_address(
             "/tmp/PanoramaSecureAccessSocket_12345678901.sock"
         ));
