@@ -19,15 +19,19 @@ spec_macros:
   - '%global debug_package %{nil}'
   - '%global __os_install_post %{nil}'
 
+# The Helper unit is written by the app's one-time authorization, not at
+# install time. An upgrade rewrites an existing unit for its owner and restarts
+# it onto the new binaries, so the new Core's hash needs no new password; the
+# command does nothing inside an rpm-ostree scriptlet, where the next boot does.
 postinstall_scripts:
   - 'update-desktop-database %{_datadir}/applications &> /dev/null || :'
+  - '[ "$1" -gt 1 ] && %{_datadir}/%{name}/FlClashHelperService upgrade >/dev/null 2>&1 || :'
 
-# The Helper unit is written on demand by the app, not at install time, so only
-# its teardown belongs here; the binary is already gone when %postun runs.
+# Only teardown belongs here; the binary is already gone when %postun runs.
 postuninstall_scripts:
   - '[ "$1" = 0 ] || exit 0'
   - 'systemctl disable --now flclash-helper.service >/dev/null 2>&1 || true'
-  - 'rm -f /etc/systemd/system/flclash-helper.service'
+  - 'rm -f /etc/systemd/system/flclash-helper.service /etc/polkit-1/rules.d/49-flclash-helper.rules'
   - 'systemctl daemon-reload >/dev/null 2>&1 || true'
 
 supported_mime_type:

@@ -168,7 +168,15 @@ group, so its boundary also includes every member of that group, not just the in
 a controller address, a secret or alternate controllers. Another account outside those permissions, a subscription,
 or a remote party reaching the privileged Core's control or filesystem APIs is a vulnerability.
 
-A process running as the same account is not stopped. It can ask the Helper to start the Core
+On Linux, a process running as the same account is checked as well: the Helper serves a connection only from the
+packaged `FlClash` executable beside it (`/proc/<pid>/exe`, a ` (deleted)` suffix allowed after an upgrade), not traced
+and not started with `LD_PRELOAD`, `LD_AUDIT` or `LD_LIBRARY_PATH` (`service/linux_peer.rs`), and an elevated Core
+applies the same check to the listener of the socket it dialed before serving it (`core/peer_linux.go`), which closes
+the window in which the owner could replace the socket after `/start` validated it. This removes the trivial
+same-account hijack; it does not stop a process that attaches to or injects into the running app, which the default
+`ptrace_scope` of 0 on Fedora allows, so the unit sandbox above bounds what a hijacked Core could still change.
+
+Elsewhere a process running as the same account is not stopped. It can ask the Helper to start the Core
 against a socket or pipe it owns, or run a setuid Core against a port it listens on, and so become the host that drives
 a privileged Core: `core.init` chooses the home directory every path check anchors on, and `config.read`,
 `profile.base`, `profile.outbounds` and a `config.setup` or `profile.build` base read any path.
@@ -2022,7 +2030,27 @@ password the app asks for and hands to `sudo -S` on stdin. A 126 means the user 
 - The rpm spec sets `debug_package` and `__os_install_post` to nil for the same reason: rpmbuild's find-debuginfo and
   brp-strip rewrite `FlClashCore`, and a Core whose SHA256 no longer matches the Helper's embedded value is refused at
   `/start`, which silently degrades every launch to the direct Core.
-- `FlClashHelperService uninstall` disables the unit, removes it and reloads systemd.
+- `FlClashHelperService uninstall` disables the unit, removes it and its polkit rule, and reloads systemd.
+- The first launch of a packaged Linux build (systemd, not an AppImage, not a silent autostart) offers this
+  installation once, before the first Core start; declining leaves it to the first TUN start. After that, starts, TUN
+  toggles and reboots only talk to the enabled unit.
+- Installation also writes `/etc/polkit-1/rules.d/49-flclash-helper.rules`, which lets the owner's active local session
+  `start`, `restart` and `reset-failed` `flclash-helper.service` and nothing else. `Linux.registerService` uses it
+  (`systemctl --no-ask-password`) to recover a unit that exists but does not answer, before it asks for a password.
+  Every one of those verbs runs the same root-owned binary, so the rule grants no new code path.
+- The unit (marker `# flclash-helper-unit-version=2`, `helperUnitVersion` in Dart) sandboxes the Helper and the Core
+  it spawns: `ProtectSystem=full`, `ProtectHome=read-only` with the owner's canonical home as the one writable home
+  (Silverblue's `/var/home` is read-only too), read-only `/opt`, `/var/opt`, `/var/spool` and `/var/lib`,
+  `NoNewPrivileges`, `RestrictSUIDSGID`, `ProtectKernelModules`, and a capability bounding set of network, ownership,
+  DAC, ptrace-read, kill and `CAP_SYS_TIME` (mihomo's NTP `write-to-system`). A unit without the marker is reinstalled
+  once, with one prompt, the next time TUN is authorized.
+- `ExecStartPre=-+... refresh` rewrites the unit and the rule from the current binary at every start, and the deb/rpm
+  post-install runs `FlClashHelperService upgrade` on an upgrade, which does the same, reloads systemd and
+  `try-restart`s the unit, so the new Core hash needs no new password. `upgrade` does nothing without a reachable
+  systemd, which is the case inside an rpm-ostree scriptlet; there the next boot starts the new Helper.
+- On rpm-ostree (`/run/ostree-booted`), a downloaded update is not handed to xdg-open: the app opens its folder and
+  shows the `rpm-ostree uninstall <name> --install <file>` command, and says that the new version and Helper start
+  after a reboot.
 - The unit carries `Group=` (the owner's primary GID), `RuntimeDirectory=flclash`, the owner's UID/GID in
   `FLCLASH_HELPER_OWNER_UID`/`_GID`, a double-quoted `ExecStart=` with `%` escaped, and `Restart=on-failure` under a
   start limit so a broken unit ends up failed instead of restarting forever. The helper serves

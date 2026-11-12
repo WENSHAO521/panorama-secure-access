@@ -241,12 +241,15 @@ class Updater {
       return (await Process.run('open', [file.path])).exitCode == 0;
     }
     if (system.isLinux) {
-      // xdg-open has no handler that runs an AppImage, so its folder opens.
+      // xdg-open has no handler that runs an AppImage, so its folder opens;
+      // an rpm-ostree system layers the package from a terminal command.
       final isAppImage = file.path.endsWith('.AppImage');
       if (isAppImage) {
         await Process.run('chmod', ['+x', file.path]);
       }
-      final target = isAppImage ? file.parent.path : file.path;
+      final target = isAppImage || system.isOstree
+          ? file.parent.path
+          : file.path;
       return (await Process.run('xdg-open', [target])).exitCode == 0;
     }
     if (system.isAndroid) {

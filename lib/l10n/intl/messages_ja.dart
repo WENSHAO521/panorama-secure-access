@@ -1042,6 +1042,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "lineIssueTip": m49,
     "lineWrap": MessageLookupByLibrary.simpleMessage("折り返し"),
     "link": MessageLookupByLibrary.simpleMessage("リンク"),
+    "linuxHelperSetupFailed": MessageLookupByLibrary.simpleMessage(
+      "TUN サービスはインストールされませんでした。TUN を有効にすると再度確認します。",
+    ),
+    "linuxHelperSetupTip": MessageLookupByLibrary.simpleMessage(
+      "TUN モードはシステムサービスで動作します。管理者として一度だけ承認すると、以後 Panorama Secure Access の起動、TUN の有効化、再起動でパスワードを求められることはありません。アプリ自体は引き続きあなたのアカウントで動作します。",
+    ),
+    "linuxHelperSetupTitle": MessageLookupByLibrary.simpleMessage(
+      "TUN サービスの設定",
+    ),
     "liquidGlass": MessageLookupByLibrary.simpleMessage("リキッドグラス"),
     "list": MessageLookupByLibrary.simpleMessage("リスト"),
     "listen": MessageLookupByLibrary.simpleMessage("リッスン"),
@@ -1309,6 +1318,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "optional": MessageLookupByLibrary.simpleMessage("任意"),
     "options": MessageLookupByLibrary.simpleMessage("オプション"),
     "originalUrl": MessageLookupByLibrary.simpleMessage("元の URL"),
+    "ostreeUpdateTip": MessageLookupByLibrary.simpleMessage(
+      "このシステムは rpm-ostree（Fedora Silverblue など）で管理されており、パッケージは新しいシステムイメージにインストールされます。以下のコマンドを実行してから再起動してください。新しいバージョンと TUN サービスは再起動後に有効になります。",
+    ),
+    "ostreeUpdateTitle": MessageLookupByLibrary.simpleMessage("ターミナルで更新を完了"),
     "other": MessageLookupByLibrary.simpleMessage("その他"),
     "otherContributors": MessageLookupByLibrary.simpleMessage("その他の貢献者"),
     "outbound": MessageLookupByLibrary.simpleMessage("アウトバウンド"),

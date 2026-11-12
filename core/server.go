@@ -173,6 +173,10 @@ func StartServer(arg string) {
 	if err != nil {
 		panic(err.Error())
 	}
+	if err := verifyHost(dialed); err != nil {
+		_ = dialed.Close()
+		panic("refusing to serve this host: " + err.Error())
+	}
 	serve(dialed)
 }
 

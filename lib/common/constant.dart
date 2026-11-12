@@ -22,7 +22,12 @@ const helperPortKey =
     'SYSTEM\\CurrentControlSet\\Services\\$appHelperService\\Runtime';
 const helperPortValue = 'Port';
 const helperSocketPath = '/run/flclash/helper.sock';
-const helperUnitPath = '/etc/systemd/system/flclash-helper.service';
+const helperUnitName = 'flclash-helper.service';
+const helperUnitPath = '/etc/systemd/system/$helperUnitName';
+const helperUnitVersionPrefix = '# flclash-helper-unit-version=';
+
+/// Kept in step with `UNIT_VERSION` in `services/helper/src/service/linux.rs`.
+const helperUnitVersion = 2;
 const helperProtocolVersionHeader = 'x-flclash-helper-protocol';
 final helperProtocolVersion = Platform.isWindows ? '8' : '6';
 const maxTextScale = 1.4;

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 
@@ -134,6 +135,8 @@ class System {
       isLinux && Platform.environment.containsKey('APPIMAGE');
 
   late final bool _hasSystemd = Directory('/run/systemd/system').existsSync();
+
+  late final bool isOstree = isLinux && File('/run/ostree-booted').existsSync();
 
   bool get hasHelperService =>
       isWindows || (isLinux && !isAppImage && _hasSystemd);
@@ -354,13 +357,18 @@ class Windows {
 }
 
 typedef ElevatedHelperInstaller = Future<bool> Function();
+typedef HelperReadinessProbe = Future<HelperReadiness> Function();
+typedef HelperReadyWaiter = Future<bool> Function(Duration timeout);
 
 @visibleForTesting
 Future<AuthorizeCode> registerHelperService(
-  ElevatedHelperInstaller install,
-) async {
-  final readiness = await helperClient.readiness();
-  switch (readiness) {
+  ElevatedHelperInstaller install, {
+  HelperReadinessProbe? readiness,
+  HelperReadyWaiter? waitForHelper,
+  Future<bool> Function()? recover,
+}) async {
+  final state = await (readiness ?? helperClient.readiness)();
+  switch (state) {
     case HelperReadiness.ready:
       commonPrint.log('helper service is ready');
       return AuthorizeCode.none;
@@ -379,6 +387,21 @@ Future<AuthorizeCode> registerHelperService(
       break;
   }
 
+  final wait = waitForHelper ?? _waitForHelperTimeout;
+  if (recover != null && await recover()) {
+    if (await wait(const Duration(seconds: 10))) {
+      commonPrint.log('helper service recovered without a new authorization');
+      return AuthorizeCode.success;
+    }
+  }
+  return installHelperService(install, waitForHelper: wait);
+}
+
+@visibleForTesting
+Future<AuthorizeCode> installHelperService(
+  ElevatedHelperInstaller install, {
+  HelperReadyWaiter? waitForHelper,
+}) async {
   commonPrint.log(
     'helper service is unavailable, requesting elevated installation',
     logLevel: LogLevel.warning,
@@ -391,7 +414,9 @@ Future<AuthorizeCode> registerHelperService(
     return AuthorizeCode.error;
   }
 
-  final isRunning = await _waitForHelperService();
+  final isRunning = await (waitForHelper ?? _waitForHelperTimeout)(
+    const Duration(seconds: 6),
+  );
   commonPrint.log(
     isRunning
         ? 'helper service installation completed'
@@ -400,6 +425,9 @@ Future<AuthorizeCode> registerHelperService(
   );
   return isRunning ? AuthorizeCode.success : AuthorizeCode.error;
 }
+
+Future<bool> _waitForHelperTimeout(Duration timeout) =>
+    _waitForHelperService(timeout: timeout);
 
 Future<bool> _waitForHelperService({
   Duration timeout = const Duration(seconds: 6),
@@ -421,8 +449,33 @@ Future<bool> _waitForHelperService({
 
 final windows = system.isWindows ? Windows() : null;
 
+/// Loader variables the Helper and an elevated Core refuse in their host.
+const linuxLoaderInjectionVariables = [
+  'LD_PRELOAD',
+  'LD_AUDIT',
+  'LD_LIBRARY_PATH',
+];
+
 class Linux {
   static Linux? _instance;
+
+  @visibleForTesting
+  ProcessRunner run = Process.run;
+
+  @visibleForTesting
+  HelperReadinessProbe readiness = () => helperClient.readiness();
+
+  @visibleForTesting
+  HelperReadyWaiter waitForHelper = _waitForHelperTimeout;
+
+  @visibleForTesting
+  String? Function() readUnit = _readUnit;
+
+  @visibleForTesting
+  Map<String, String> environment = Platform.environment;
+
+  @visibleForTesting
+  late ElevatedHelperInstaller install = installService;
 
   Linux._internal();
 
@@ -431,28 +484,94 @@ class Linux {
     return _instance!;
   }
 
-  /// An autostarted session can beat systemd to starting the installed Helper.
+  bool get isServiceInstalled => readUnit() != null;
+
+  /// One polkit authorization installs an enabled unit; a unit that stops
+  /// answering is restarted through its polkit rule before any new prompt.
   Future<AuthorizeCode> registerService() async {
+    final injected = loaderInjectionIn(environment);
+    if (injected != null) {
+      commonPrint.log(
+        'TUN cannot be authorized while the app runs with $injected set: '
+        'the Helper and the Core refuse such a host',
+        logLevel: LogLevel.error,
+      );
+      return AuthorizeCode.error;
+    }
+    final unit = readUnit();
+    if (unit == null) {
+      return registerHelperService(
+        install,
+        readiness: readiness,
+        waitForHelper: waitForHelper,
+      );
+    }
+    if (helperUnitVersionOf(unit) < helperUnitVersion) {
+      if (await readiness() == HelperReadiness.manifestMissing) {
+        return registerHelperService(install, readiness: readiness);
+      }
+      commonPrint.log(
+        'the helper unit predates the service sandbox, reinstalling it once',
+        logLevel: LogLevel.warning,
+      );
+      return installHelperService(install, waitForHelper: waitForHelper);
+    }
     if (await _isHelperStillStarting()) {
       commonPrint.log(
         'waiting for the helper service to start with the system',
       );
-      if (await _waitForHelperService(timeout: const Duration(seconds: 30))) {
+      if (await waitForHelper(const Duration(seconds: 30))) {
         commonPrint.log('helper service started with the system');
         return AuthorizeCode.success;
       }
     }
-    return registerHelperService(installService);
+    return registerHelperService(
+      install,
+      readiness: readiness,
+      waitForHelper: waitForHelper,
+      recover: restartWithoutPassword,
+    );
   }
 
+  /// `--no-ask-password` keeps anything the rule does not grant from prompting.
+  @visibleForTesting
+  Future<bool> restartWithoutPassword() async {
+    try {
+      await run('systemctl', [
+        '--no-ask-password',
+        'reset-failed',
+        helperUnitName,
+      ]);
+      final result = await run('systemctl', [
+        '--no-ask-password',
+        'restart',
+        helperUnitName,
+      ]);
+      if (result.exitCode != 0) {
+        commonPrint.log(
+          'helper service could not be restarted without a password: '
+          '${result.stderr.toString().trim()}',
+          logLevel: LogLevel.warning,
+        );
+      }
+      return result.exitCode == 0;
+    } on ProcessException catch (error) {
+      commonPrint.log(
+        'systemctl is unavailable: ${compactError(error)}',
+        logLevel: LogLevel.warning,
+      );
+      return false;
+    }
+  }
+
+  /// An autostarted session can beat systemd to starting the installed Helper.
   Future<bool> _isHelperStillStarting() async {
-    if (!File(helperUnitPath).existsSync() ||
-        FileSystemEntity.typeSync(helperSocketPath) !=
-            FileSystemEntityType.notFound) {
+    if (FileSystemEntity.typeSync(helperSocketPath) !=
+        FileSystemEntityType.notFound) {
       return false;
     }
     try {
-      final result = await Process.run('systemctl', ['is-system-running']);
+      final result = await run('systemctl', ['is-system-running']);
       final state = result.stdout.toString().trim();
       return state == 'starting' || state == 'initializing';
     } catch (_) {
@@ -465,6 +584,61 @@ class Linux {
   @visibleForTesting
   Future<bool> installService() {
     return linuxElevation.elevate([appPath.helperPath, 'install']);
+  }
+
+  @visibleForTesting
+  static String? loaderInjectionIn(Map<String, String> environment) {
+    for (final name in linuxLoaderInjectionVariables) {
+      if (environment[name]?.isNotEmpty == true) {
+        return name;
+      }
+    }
+    return null;
+  }
+
+  /// Units written before the marker existed carry no sandbox: version 1.
+  @visibleForTesting
+  static int helperUnitVersionOf(String unit) {
+    for (final line in const LineSplitter().convert(unit)) {
+      if (line.startsWith(helperUnitVersionPrefix)) {
+        return int.tryParse(line.substring(helperUnitVersionPrefix.length)) ??
+            1;
+      }
+    }
+    return 1;
+  }
+
+  static String? _readUnit() {
+    try {
+      return File(helperUnitPath).readAsStringSync();
+    } on FileSystemException {
+      return null;
+    }
+  }
+
+  /// One transaction replaces the layered package, so the versions never
+  /// conflict; like any rpm-ostree change it starts after a reboot.
+  static String ostreeUpdateCommand(String file, String? packageName) {
+    final path = System._shellEscape(file);
+    if (packageName == null || !RegExp(r'^[\w.+-]+$').hasMatch(packageName)) {
+      return 'rpm-ostree install $path';
+    }
+    return 'rpm-ostree uninstall $packageName --install $path';
+  }
+
+  Future<String?> installedPackageName() async {
+    try {
+      final result = await run('rpm', [
+        '-qf',
+        '--queryformat',
+        '%{NAME}',
+        Platform.resolvedExecutable,
+      ]);
+      final name = result.stdout.toString().trim();
+      return result.exitCode == 0 && name.isNotEmpty ? name : null;
+    } on ProcessException {
+      return null;
+    }
   }
 }
 

@@ -1103,5 +1103,10 @@
   "trafficPeriod": "流量周期",
   "trafficMonthly": "每月重置",
   "trafficPermanent": "永久",
-  "customTrafficInvalidDesc": "请输入大于 0 的流量"
+  "customTrafficInvalidDesc": "请输入大于 0 的流量",
+  "linuxHelperSetupTitle": "设置 TUN 服务",
+  "linuxHelperSetupTip": "TUN 模式通过系统服务运行，需要一次管理员授权。授权后，启动 Panorama Secure Access、开启 TUN 和重启电脑都不会再要求输入密码；应用本身仍以你的账户运行。",
+  "linuxHelperSetupFailed": "TUN 服务未安装，开启 TUN 时会再次询问。",
+  "ostreeUpdateTitle": "在终端中完成更新",
+  "ostreeUpdateTip": "此系统由 rpm-ostree 管理（如 Fedora Silverblue），软件包会安装到新的系统映像中。请运行以下命令，然后重启电脑：新版本及其 TUN 服务在重启后才会生效。"
 }

@@ -14,12 +14,17 @@ dependencies:
   - libayatana-appindicator3-1
   - libsecret-1-0
 
-# The Helper unit is written on demand by the app, not at install time, so only
-# its teardown belongs here; the binary is already gone when postrm runs.
+# The Helper unit is written by the app's one-time authorization, not at
+# install time. An upgrade rewrites an existing unit for its owner and restarts
+# it onto the new binaries, so the new Core's hash needs no new password.
+postinstall_scripts:
+  - '[ "${1:-}" = configure ] && [ -n "${2:-}" ] && /opt/FlClash/FlClashHelperService upgrade >/dev/null 2>&1 || true'
+
+# Only teardown belongs here; the binary is already gone when postrm runs.
 postuninstall_scripts:
   - 'case "${1:-}" in remove|purge) ;; *) exit 0 ;; esac'
   - 'systemctl disable --now flclash-helper.service >/dev/null 2>&1 || true'
-  - 'rm -f /etc/systemd/system/flclash-helper.service'
+  - 'rm -f /etc/systemd/system/flclash-helper.service /etc/polkit-1/rules.d/49-flclash-helper.rules'
   - 'systemctl daemon-reload >/dev/null 2>&1 || true'
 
 supported_mime_type:

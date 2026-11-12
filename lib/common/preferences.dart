@@ -56,6 +56,18 @@ class Preferences {
     await preferences?.setInt('upgradeVersion', version);
   }
 
+  /// Whether the first-launch offer to install the Linux Helper was shown;
+  /// declining it leaves authorization to the first TUN start.
+  Future<bool> getLinuxHelperOffered() async {
+    final preferences = await _store.value;
+    return preferences?.getBool('linuxHelperOffered') ?? false;
+  }
+
+  Future<void> setLinuxHelperOffered() async {
+    final preferences = await _store.value;
+    await preferences?.setBool('linuxHelperOffered', true);
+  }
+
   Future<void> saveShareState(SharedState shareState) async {
     final preferences = await _store.value;
     await preferences?.setString('sharedState', json.encode(shareState));
