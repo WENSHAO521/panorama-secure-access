@@ -583,11 +583,11 @@ class _CountryBadgeState extends State<_CountryBadge>
                           maxLines: 1,
                           textScaler: TextScaler.noScaling,
                           // Tall enough that the flag covers its disc.
-                          style: TextStyle(
-                            fontFamily: FontFamily.twEmoji.value,
-                            fontSize: flagSize,
-                            height: 1,
-                          ),
+                          style: AppTextStyle.custom(
+                            context,
+                            size: flagSize,
+                            leading: flagSize,
+                          ).copyWith(fontFamily: FontFamily.twEmoji.value),
                         ),
                       ),
                     ),
