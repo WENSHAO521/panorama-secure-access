@@ -65,7 +65,7 @@ sudo dnf install libayatana-appindicator-gtk3     # Fedora
 **Linux TUN authorization**
 
 On the first start after installing the `.deb` or `.rpm`, the app asks once for administrator authorization (polkit) to
-install and enable the `flclash-helper` system service. After that, starting the app, turning on TUN and restarting the
+install and enable the `panorama-secure-access-helper` system service. After that, starting the app, turning on TUN and restarting the
 computer no longer ask for a password, and package upgrades update the service themselves; the app window always runs
 as your normal user. Removing the package removes the service. The AppImage cannot use TUN.
 
@@ -91,15 +91,15 @@ clash://install-config?url=<URL-encoded subscription link>
 activity with one of these actions:
 
 ```text
-com.follow.clash.action.START
-com.follow.clash.action.STOP
-com.follow.clash.action.TOGGLE
+com.panoramasg.secureaccess.action.START
+com.panoramasg.secureaccess.action.STOP
+com.panoramasg.secureaccess.action.TOGGLE
 ```
 
 From a computer, the same works over adb:
 
 ```bash
-adb shell am start -a com.follow.clash.action.TOGGLE
+adb shell am start -a com.panoramasg.secureaccess.action.TOGGLE
 ```
 
 ## Build from source

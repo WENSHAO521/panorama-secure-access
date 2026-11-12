@@ -53,7 +53,7 @@ else
     *) context=u:object_r:system_file:s0 ;;
   esac
 
-  staging=/data/local/tmp/flclash-cacerts
+  staging=/data/local/tmp/panorama-cacerts
   rm -rf "$staging"
   mkdir -m 700 "$staging"
   cp "$source"/* "$staging"/
