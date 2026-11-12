@@ -1097,5 +1097,11 @@
   "fallbackFilterIpcidrDesc": "When Nameserver returns an IP in these ranges, the Fallback answer is used.",
   "fallbackFilterDomainDesc": "These domains are resolved by Fallback directly.",
   "groupEmptyFallbackTip": "No node is left after filtering, so traffic goes to {name}",
-  "globalDirectTip": "GLOBAL is set to DIRECT, so global mode sends traffic direct"
+  "globalDirectTip": "GLOBAL is set to DIRECT, so global mode sends traffic direct",
+  "customTraffic": "Custom traffic",
+  "customTrafficDesc": "Replaces the total the subscription reports. Leave empty to use it.",
+  "trafficPeriod": "Traffic period",
+  "trafficMonthly": "Resets monthly",
+  "trafficPermanent": "Permanent",
+  "customTrafficInvalidDesc": "Enter a traffic amount above 0"
 }

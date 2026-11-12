@@ -1097,5 +1097,11 @@
   "fallbackFilterIpcidrDesc": "Nameserver가 이 범위의 IP를 반환하면 Fallback 결과를 사용합니다.",
   "fallbackFilterDomainDesc": "이 도메인은 바로 Fallback으로 확인합니다.",
   "groupEmptyFallbackTip": "필터링 후 남은 노드가 없어 트래픽이 {name}(으)로 갑니다",
-  "globalDirectTip": "GLOBAL이 DIRECT로 설정되어 전역 모드에서 직접 연결됩니다"
+  "globalDirectTip": "GLOBAL이 DIRECT로 설정되어 전역 모드에서 직접 연결됩니다",
+  "customTraffic": "사용자 지정 트래픽",
+  "customTrafficDesc": "구독이 알려 주는 총 트래픽 대신 사용합니다. 비워 두면 구독 값을 사용합니다.",
+  "trafficPeriod": "트래픽 주기",
+  "trafficMonthly": "매월 초기화",
+  "trafficPermanent": "영구",
+  "customTrafficInvalidDesc": "0보다 큰 트래픽을 입력하세요"
 }

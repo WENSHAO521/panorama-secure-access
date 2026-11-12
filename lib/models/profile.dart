@@ -61,6 +61,18 @@ extension SubscriptionInfoExt on SubscriptionInfo {
       expire > 0 ? DateTime.fromMillisecondsSinceEpoch(expire * 1000) : null;
 }
 
+/// A total the user sets in place of the one the subscription reports.
+@freezed
+abstract class TrafficQuota with _$TrafficQuota {
+  const factory TrafficQuota({
+    required int total,
+    @Default(TrafficQuotaPeriod.monthly) TrafficQuotaPeriod period,
+  }) = _TrafficQuota;
+
+  factory TrafficQuota.fromJson(Map<String, Object?> json) =>
+      _$TrafficQuotaFromJson(json);
+}
+
 @freezed
 abstract class Profile with _$Profile {
   const factory Profile({
@@ -74,6 +86,7 @@ abstract class Profile with _$Profile {
     DateTime? lastUpdateDate,
     required Duration autoUpdateDuration,
     SubscriptionInfo? subscriptionInfo,
+    TrafficQuota? trafficQuota,
     @Default(true) bool autoUpdate,
     @Default({}) Map<String, String> selectedMap,
     @Default({}) Set<String> unfoldSet,
@@ -156,6 +169,16 @@ extension ProfileExtension on Profile {
   }
 
   String get updatingKey => 'profile_$id';
+
+  /// The subscription's usage measured against the quota, when one is set.
+  SubscriptionInfo? get trafficInfo {
+    final info = subscriptionInfo;
+    final quota = trafficQuota;
+    if (quota == null || quota.total <= 0) {
+      return info;
+    }
+    return (info ?? const SubscriptionInfo()).copyWith(total: quota.total);
+  }
 
   Future<Profile?> checkAndUpdateAndCopy({
     required ValidateConfig validate,

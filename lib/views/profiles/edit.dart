@@ -17,7 +17,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum _ProfileField { label, url, autoUpdateInterval }
+enum _ProfileField { label, url, autoUpdateInterval, customTraffic }
+
+const _bytesPerGb = 1 << 30;
+
+/// Gigabytes as typed in the quota field, trailing zeros dropped.
+String _gbText(int bytes) {
+  final text = (bytes / _bytesPerGb).toStringAsFixed(2);
+  return text.replaceFirst(RegExp(r'\.?0+$'), '');
+}
 
 class EditProfileView extends ConsumerStatefulWidget {
   final Profile profile;
@@ -35,6 +43,8 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   late final TextEditingController _autoUpdateDurationController;
   late bool _autoUpdate;
   late Map<String, String> _headers;
+  late final TextEditingController _trafficController;
+  late TrafficQuotaPeriod _trafficPeriod;
   Uint8List? _editedData;
   bool _attempted = false;
   final _fileInfoNotifier = ValueNotifier<FileInfo?>(null);
@@ -51,6 +61,11 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     );
     _autoUpdate = widget.profile.autoUpdate;
     _headers = widget.profile.headers;
+    final quota = widget.profile.trafficQuota;
+    _trafficController = TextEditingController(
+      text: quota == null ? '' : _gbText(quota.total),
+    );
+    _trafficPeriod = quota?.period ?? TrafficQuotaPeriod.monthly;
     _autoUpdateDurationController = TextEditingController(
       text: widget.profile.autoUpdateDuration.inMinutes.toString(),
     );
@@ -76,6 +91,13 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     );
     if (labelError != null) {
       return (field: _ProfileField.label, message: labelError);
+    }
+    final traffic = _trafficController.text.trim();
+    if (traffic.isNotEmpty && (double.tryParse(traffic) ?? 0) <= 0) {
+      return (
+        field: _ProfileField.customTraffic,
+        message: appLocalizations.customTrafficInvalidDesc,
+      );
     }
     if (widget.profile.type != ProfileType.url) {
       return null;
@@ -113,6 +135,17 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     return null;
   }
 
+  TrafficQuota? get _trafficQuota {
+    final gb = double.tryParse(_trafficController.text.trim());
+    if (gb == null || gb <= 0) {
+      return null;
+    }
+    return TrafficQuota(
+      total: (gb * _bytesPerGb).round(),
+      period: _trafficPeriod,
+    );
+  }
+
   void _handleChanged(String _) {
     if (_attempted) {
       setState(() {});
@@ -134,6 +167,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
       url: _urlController.text,
       ageSecretKey: _ageSecretKeyController.text.trim(),
       headers: _headers,
+      trafficQuota: _trafficQuota,
       label: _labelController.text,
       autoUpdate: _autoUpdate,
       autoUpdateDuration: interval != null && interval > 0
@@ -325,6 +359,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     _ageSecretKeyController.dispose();
     _fileInfoNotifier.dispose();
     _autoUpdateDurationController.dispose();
+    _trafficController.dispose();
     super.dispose();
     _setupAction.autoApplyProfile();
   }
@@ -372,6 +407,31 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
               ),
           ],
         ),
+      generateSection(
+        footer: appLocalizations.customTrafficDesc,
+        items: [
+          _CustomTrafficField(
+            controller: _trafficController,
+            invalid: issue?.field == _ProfileField.customTraffic,
+            onChanged: (value) {
+              setState(() {});
+              _handleChanged(value);
+            },
+          ),
+          if (_trafficController.text.trim().isNotEmpty)
+            FormRow(
+              title: appLocalizations.trafficPeriod,
+              trailing: SegmentedControl<TrafficQuotaPeriod>(
+                segments: [
+                  for (final period in TrafficQuotaPeriod.values)
+                    (period, period.label(appLocalizations)),
+                ],
+                value: _trafficPeriod,
+                onChanged: (value) => setState(() => _trafficPeriod = value),
+              ),
+            ),
+        ],
+      ),
       generateSection(
         items: [
           _ProfileFileItem(
@@ -596,6 +656,49 @@ class _AutoUpdateIntervalField extends StatelessWidget {
             appLocalizations.minutes,
             style: AppTextStyle.subheadline.of(context),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CustomTrafficField extends StatelessWidget {
+  const _CustomTrafficField({
+    required this.controller,
+    required this.invalid,
+    required this.onChanged,
+  });
+
+  final TextEditingController controller;
+  final bool invalid;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
+    return FormRow(
+      title: appLocalizations.customTraffic,
+      invalid: invalid,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 4,
+        children: [
+          Flexible(
+            child: FormRowTextField(
+              controller: controller,
+              hintText: appLocalizations.none,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              textInputAction: TextInputAction.next,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+                LengthLimitingTextInputFormatter(TextInputLimits.number),
+              ],
+              onChanged: onChanged,
+            ),
+          ),
+          Text('GB', style: AppTextStyle.subheadline.of(context)),
         ],
       ),
     );

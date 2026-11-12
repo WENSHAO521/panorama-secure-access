@@ -615,6 +615,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "customIssuesSummary": m19,
     "customProfile": MessageLookupByLibrary.simpleMessage("Custom"),
     "customResources": MessageLookupByLibrary.simpleMessage("Custom"),
+    "customTraffic": MessageLookupByLibrary.simpleMessage("Custom traffic"),
+    "customTrafficDesc": MessageLookupByLibrary.simpleMessage(
+      "Replaces the total the subscription reports. Leave empty to use it.",
+    ),
+    "customTrafficInvalidDesc": MessageLookupByLibrary.simpleMessage(
+      "Enter a traffic amount above 0",
+    ),
     "cut": MessageLookupByLibrary.simpleMessage("Cut"),
     "dark": MessageLookupByLibrary.simpleMessage("Dark"),
     "dashboard": MessageLookupByLibrary.simpleMessage("Dashboard"),
@@ -1081,9 +1088,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Certificate installed",
     ),
     "installNow": MessageLookupByLibrary.simpleMessage("Install now"),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "This system hides the installed app list until the permission is granted. Authorize it to configure the per-app proxy.",
     ),
@@ -2097,7 +2105,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "totalUpload": MessageLookupByLibrary.simpleMessage("Uploaded"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("TProxy port"),
     "traffic": MessageLookupByLibrary.simpleMessage("Traffic"),
+    "trafficMonthly": MessageLookupByLibrary.simpleMessage("Resets monthly"),
     "trafficPeak": m97,
+    "trafficPeriod": MessageLookupByLibrary.simpleMessage("Traffic period"),
+    "trafficPermanent": MessageLookupByLibrary.simpleMessage("Permanent"),
     "trafficTotal": m98,
     "trafficUsage": MessageLookupByLibrary.simpleMessage("Traffic usage"),
     "transport": MessageLookupByLibrary.simpleMessage("Transport"),

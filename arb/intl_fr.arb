@@ -1097,5 +1097,11 @@
   "fallbackFilterIpcidrDesc": "Si Nameserver renvoie une IP de ces plages, la réponse de Fallback est utilisée.",
   "fallbackFilterDomainDesc": "Ces domaines sont résolus directement par Fallback.",
   "groupEmptyFallbackTip": "Aucun nœud ne reste après le filtre, le trafic passe par {name}",
-  "globalDirectTip": "GLOBAL est sur DIRECT, le mode global se connecte donc directement"
+  "globalDirectTip": "GLOBAL est sur DIRECT, le mode global se connecte donc directement",
+  "customTraffic": "Trafic personnalisé",
+  "customTrafficDesc": "Remplace le total indiqué par l'abonnement. Laissez vide pour utiliser celui de l'abonnement.",
+  "trafficPeriod": "Période du trafic",
+  "trafficMonthly": "Réinitialisé chaque mois",
+  "trafficPermanent": "Permanent",
+  "customTrafficInvalidDesc": "Saisissez un trafic supérieur à 0"
 }

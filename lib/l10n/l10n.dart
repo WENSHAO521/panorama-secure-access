@@ -7708,8 +7708,7 @@ class AppLocalizations {
   String customImportDroppedSubRules(num count, Object label) {
     return Intl.plural(
       count,
-      one:
-          '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
+      one: '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
       other:
           '$label SUB-RULE rules were dropped, since custom profiles do not support sub-rules',
       name: 'customImportDroppedSubRules',
@@ -9258,6 +9257,66 @@ class AppLocalizations {
     return Intl.message(
       'GLOBAL is set to DIRECT, so global mode sends traffic direct',
       name: 'globalDirectTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom traffic`
+  String get customTraffic {
+    return Intl.message(
+      'Custom traffic',
+      name: 'customTraffic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Replaces the total the subscription reports. Leave empty to use it.`
+  String get customTrafficDesc {
+    return Intl.message(
+      'Replaces the total the subscription reports. Leave empty to use it.',
+      name: 'customTrafficDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Traffic period`
+  String get trafficPeriod {
+    return Intl.message(
+      'Traffic period',
+      name: 'trafficPeriod',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resets monthly`
+  String get trafficMonthly {
+    return Intl.message(
+      'Resets monthly',
+      name: 'trafficMonthly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permanent`
+  String get trafficPermanent {
+    return Intl.message(
+      'Permanent',
+      name: 'trafficPermanent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a traffic amount above 0`
+  String get customTrafficInvalidDesc {
+    return Intl.message(
+      'Enter a traffic amount above 0',
+      name: 'customTrafficInvalidDesc',
       desc: '',
       args: [],
     );

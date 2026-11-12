@@ -644,6 +644,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "customIssuesSummary": m19,
     "customProfile": MessageLookupByLibrary.simpleMessage("Пользовательский"),
     "customResources": MessageLookupByLibrary.simpleMessage("Пользовательские"),
+    "customTraffic": MessageLookupByLibrary.simpleMessage("Свой объём трафика"),
+    "customTrafficDesc": MessageLookupByLibrary.simpleMessage(
+      "Заменяет общий объём из подписки. Оставьте пустым, чтобы использовать значение подписки.",
+    ),
+    "customTrafficInvalidDesc": MessageLookupByLibrary.simpleMessage(
+      "Введите объём трафика больше 0",
+    ),
     "cut": MessageLookupByLibrary.simpleMessage("Вырезать"),
     "dark": MessageLookupByLibrary.simpleMessage("Тёмная"),
     "dashboard": MessageLookupByLibrary.simpleMessage("Панель"),
@@ -1128,9 +1135,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Сертификат установлен",
     ),
     "installNow": MessageLookupByLibrary.simpleMessage("Установить"),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -2204,7 +2212,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "totalUpload": MessageLookupByLibrary.simpleMessage("Отдано"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Порт TProxy"),
     "traffic": MessageLookupByLibrary.simpleMessage("Трафик"),
+    "trafficMonthly": MessageLookupByLibrary.simpleMessage(
+      "Сброс каждый месяц",
+    ),
     "trafficPeak": m97,
+    "trafficPeriod": MessageLookupByLibrary.simpleMessage("Период трафика"),
+    "trafficPermanent": MessageLookupByLibrary.simpleMessage("Бессрочно"),
     "trafficTotal": m98,
     "trafficUsage": MessageLookupByLibrary.simpleMessage("Статистика трафика"),
     "transport": MessageLookupByLibrary.simpleMessage("Транспорт"),

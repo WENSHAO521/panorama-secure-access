@@ -1097,5 +1097,11 @@
   "fallbackFilterIpcidrDesc": "Если Nameserver возвращает IP из этих диапазонов, используется ответ Fallback.",
   "fallbackFilterDomainDesc": "Эти домены сразу разрешаются через Fallback.",
   "groupEmptyFallbackTip": "После фильтра не осталось узлов, трафик идёт через {name}",
-  "globalDirectTip": "В GLOBAL выбран DIRECT, поэтому глобальный режим идёт напрямую"
+  "globalDirectTip": "В GLOBAL выбран DIRECT, поэтому глобальный режим идёт напрямую",
+  "customTraffic": "Свой объём трафика",
+  "customTrafficDesc": "Заменяет общий объём из подписки. Оставьте пустым, чтобы использовать значение подписки.",
+  "trafficPeriod": "Период трафика",
+  "trafficMonthly": "Сброс каждый месяц",
+  "trafficPermanent": "Бессрочно",
+  "customTrafficInvalidDesc": "Введите объём трафика больше 0"
 }
