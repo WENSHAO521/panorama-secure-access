@@ -237,7 +237,7 @@ Future<void> _exportHar(WidgetRef ref, MitmExchange exchange) async {
       exchange,
       request,
       response,
-      globalState.packageInfo.version,
+      globalState.appVersion,
     ));
     final host = Uri.tryParse(exchange.url)?.host ?? '';
     final saved = await picker.saveFile(

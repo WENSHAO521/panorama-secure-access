@@ -24,29 +24,66 @@ final class TrayStatusItem {
         ])
     }
 
+    // Resizing the status item while its menu tracks drops the clicks on the
+    // menu's items (#2933), so title and icon changes wait for it to close.
+    private var isMenuOpen = false
+    private var pendingTitle: String?
+    private var pendingImage: (image: NSImage, position: String)?
+
     func setImage(_ image: NSImage, position: String) {
+        if isMenuOpen {
+            pendingImage = (image, position)
+            return
+        }
         if contentView.setImage(image, position: position) {
             statusItem.button?.sizeToFit()
         }
     }
 
     func setTitle(_ title: String) {
+        if isMenuOpen {
+            pendingTitle = title
+            return
+        }
         if contentView.setTitle(title) {
             statusItem.button?.sizeToFit()
         }
     }
 
+    // `statusItem.menu` + `performClick` shows nothing while a full-screen app
+    // owns the Space (#2965); popping the menu up from the button does.
+    // popUp tracks the menu modally and returns once it has closed.
     func openMenu(_ menu: NSMenu) {
-        statusItem.menu = menu
-        statusItem.button?.performClick(nil)
+        guard !isMenuOpen, let button = statusItem.button else {
+            return
+        }
+        isMenuOpen = true
+        button.highlight(true)
+        menu.popUp(
+            positioning: nil,
+            at: NSPoint(x: 0, y: button.bounds.height + 5),
+            in: button
+        )
+        button.highlight(false)
+        closeMenu()
     }
 
     func closeMenu() {
-        statusItem.menu = nil
+        guard isMenuOpen else {
+            return
+        }
+        isMenuOpen = false
+        if let pending = pendingImage {
+            pendingImage = nil
+            setImage(pending.image, position: pending.position)
+        }
+        if let title = pendingTitle {
+            pendingTitle = nil
+            setTitle(title)
+        }
     }
 
     func remove() {
-        statusItem.menu = nil
         NSStatusBar.system.removeStatusItem(statusItem)
     }
 }

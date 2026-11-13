@@ -81,7 +81,12 @@ void main() {
     await tester.testTextInput.receiveAction(TextInputAction.done);
     await tester.pumpAndSettle();
     expect(result, [
-      (label: 'Home', url: 'https://example.com/sub', ageSecretKey: ''),
+      (
+        label: 'Home',
+        url: 'https://example.com/sub',
+        ageSecretKey: '',
+        trafficQuota: null,
+      ),
     ]);
   });
 
@@ -127,8 +132,18 @@ void main() {
     await tester.tap(submit);
     await tester.pumpAndSettle();
     expect(result, [
-      (label: '', url: 'https://example.com/a', ageSecretKey: ''),
-      (label: '', url: 'https://example.com/b', ageSecretKey: ''),
+      (
+        label: '',
+        url: 'https://example.com/a',
+        ageSecretKey: '',
+        trafficQuota: null,
+      ),
+      (
+        label: '',
+        url: 'https://example.com/b',
+        ageSecretKey: '',
+        trafficQuota: null,
+      ),
     ]);
   });
 }

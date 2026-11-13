@@ -14,9 +14,9 @@ import 'package:flutter/services.dart' show PlatformException;
 import 'package:path/path.dart';
 
 /// The name of the leaf the Core signs for a trust store to verify.
-const mitmCheckHost = 'mitm-check.flclash.invalid';
+const mitmCheckHost = 'mitm-check.panorama.invalid';
 
-const mitmCertificateFileName = 'FlClash CA.crt';
+const mitmCertificateFileName = 'Panorama Secure Access CA.crt';
 
 /// Named by the CA, so that a renewed one saved beside it is told apart.
 String mitmSavedFileName(MitmCertificate ca) => '${ca.subject}.crt';
@@ -366,7 +366,7 @@ class LinuxMitmTrustStore implements MitmTrustStore {
   final Future<String?> Function(String path) readFile;
   final Future<List<String>> Function(String path) listDirectory;
 
-  static const nickname = 'FlClash MITM CA';
+  static const nickname = 'Panorama Secure Access MITM CA';
 
   /// Where Go's crypto/x509 looks, which covers what most programs read.
   static const bundles = [
@@ -384,7 +384,7 @@ class LinuxMitmTrustStore implements MitmTrustStore {
   /// Debian layout is tried last.
   static const installScript = r'''
 set -e
-name=flclash-mitm-ca.crt
+name=panorama-mitm-ca.crt
 if [ -d /etc/pki/ca-trust/source/anchors ] && command -v update-ca-trust >/dev/null; then
   install -m 0644 "$1" "/etc/pki/ca-trust/source/anchors/$name"
   update-ca-trust extract
@@ -406,7 +406,7 @@ fi
   /// Undoes [installScript], choosing the trust tool the same way.
   static const removeScript = r'''
 set -e
-name=flclash-mitm-ca.crt
+name=panorama-mitm-ca.crt
 if [ -d /etc/pki/ca-trust/source/anchors ] && command -v update-ca-trust >/dev/null; then
   rm -f "/etc/pki/ca-trust/source/anchors/$name"
   update-ca-trust extract
@@ -573,7 +573,7 @@ fi
   @override
   Future<MitmInstallOutcome> install(MitmCertificate ca) async {
     await _withTempFile(writeTemp, ca.pem, (path) async {
-      if (!await elevate(['/bin/sh', '-c', installScript, 'flclash', path])) {
+      if (!await elevate(['/bin/sh', '-c', installScript, 'panorama', path])) {
         throw MessageException(currentAppLocalizations.mitmSystemStoreFailed);
       }
       final certutil = _findExecutable('certutil');
@@ -610,7 +610,7 @@ fi
   Future<bool> remove(MitmCertificate ca) async {
     var removed = await _removeFromDatabases(ca);
     if (await inSystemBundle(ca) &&
-        !await elevate(['/bin/sh', '-c', removeScript, 'flclash'])) {
+        !await elevate(['/bin/sh', '-c', removeScript, 'panorama'])) {
       removed = false;
     }
     return removed;

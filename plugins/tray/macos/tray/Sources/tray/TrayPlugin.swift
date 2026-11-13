@@ -85,8 +85,15 @@ public class TrayPlugin: NSObject, FlutterPlugin {
     }
 
     private func makeStatusItem() -> TrayStatusItem? {
+        // The menu opens inside the click itself: a round trip through Dart
+        // lands after the click ended, which a full-screen Space ignores.
         guard let item = TrayStatusItem(onMenuRequested: { [weak self] in
-            self?.channel.invokeMethod("onMenuRequested", arguments: nil)
+            guard let self = self else {
+                return
+            }
+            if !self.openMenu() {
+                self.channel.invokeMethod("onMenuRequested", arguments: nil)
+            }
         }) else {
             return nil
         }

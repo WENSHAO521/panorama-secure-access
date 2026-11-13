@@ -59,6 +59,15 @@ sudo apt-get install libayatana-appindicator3-1   # Debian 与 Ubuntu
 sudo dnf install libayatana-appindicator-gtk3     # Fedora
 ```
 
+**Linux TUN 授权**
+
+`.deb` 或 `.rpm` 安装后首次启动时，应用会请求一次管理员授权（polkit），安装并启用 `panorama-secure-access-helper` 系统服务。之后启动应用、
+开启 TUN 和重启电脑都不会再要求密码，升级时安装包会自动更新该服务；应用界面始终以普通用户身份运行。卸载软件包会一并移除服务。
+AppImage 无法使用 TUN。
+
+在 Fedora Silverblue、Kinoite 等 rpm-ostree 系统上，请用 `rpm-ostree install ./<文件>.rpm` 安装，并在重启后使用；
+应用内更新会给出对应的 `rpm-ostree` 命令，新版本同样在重启后生效。
+
 **无人值守的桌面环境**
 
 Panorama Secure Access 要在免责声明被接受后才会启动核心。在容器等无人点击的环境里，可在应用的环境变量中设置
@@ -75,15 +84,15 @@ clash://install-config?url=<经过 URL 编码的订阅链接>
 **Android 自动化。** Tasker、MacroDroid 等应用可以用下面的 Action 启动 Activity，从而启动、停止或切换代理：
 
 ```text
-com.follow.clash.action.START
-com.follow.clash.action.STOP
-com.follow.clash.action.TOGGLE
+com.panoramasg.secureaccess.action.START
+com.panoramasg.secureaccess.action.STOP
+com.panoramasg.secureaccess.action.TOGGLE
 ```
 
 在电脑上也可以通过 adb 触发：
 
 ```bash
-adb shell am start -a com.follow.clash.action.TOGGLE
+adb shell am start -a com.panoramasg.secureaccess.action.TOGGLE
 ```
 
 ## 从源码构建

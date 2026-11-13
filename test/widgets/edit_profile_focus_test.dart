@@ -199,6 +199,36 @@ void main() {
     expect(saved.autoUpdateDuration, profile.autoUpdateDuration);
   });
 
+  testWidgets('a custom traffic total opens in its unit and saves in another', (
+    tester,
+  ) async {
+    final profile = _urlProfile().copyWith(
+      trafficQuota: const TrafficQuota(total: 2 << 40),
+    );
+    await pumpEditProfile(
+      tester,
+      profile: profile,
+      overrides: [
+        profilesProvider.overrideWith(() => TestProfiles([profile])),
+      ],
+    );
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget is TextField && widget.controller?.text == '2',
+      ),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('GB'));
+    await tester.pump();
+    await tester.tap(find.byTooltip('Save'));
+    await tester.pump();
+
+    expect(tester.takeException(), isNull);
+    final saved = globalState.container.read(profilesProvider).single;
+    expect(saved.trafficQuota?.total, 2 << 30);
+  });
+
   testWidgets('only a url profile lists its request headers', (tester) async {
     final l10n = currentAppLocalizations;
     await pumpEditProfile(

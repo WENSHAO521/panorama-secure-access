@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fl_clash/common/constant.dart';
+import 'package:fl_clash/common/netdiag.dart';
 import 'package:fl_clash/common/preferences.dart';
 import 'package:fl_clash/common/print.dart';
 import 'package:fl_clash/common/system.dart';
@@ -157,19 +158,21 @@ final class SystemDnsCoordinator {
       return;
     }
     final applied = _applied;
-    if (applied != null) {
-      if (applied.service == service) {
+    switch (dnsApplyRoute(applied?.service, service)) {
+      case DnsApplyRoute.reapply:
         await _reapply(service);
         return;
-      }
-      await _release();
-      if (_applied != null) {
-        commonPrint.log(
-          'Skipped the system DNS update, ${applied.service} still holds it',
-          logLevel: LogLevel.warning,
-        );
-        return;
-      }
+      case DnsApplyRoute.releaseFirst:
+        await _release();
+        if (_applied != null) {
+          commonPrint.log(
+            'Skipped the system DNS update, ${applied?.service} still holds it',
+            logLevel: LogLevel.warning,
+          );
+          return;
+        }
+      case DnsApplyRoute.fresh:
+        break;
     }
     final current = await port.readDnsServers(service);
     if (current == null) {
@@ -181,8 +184,9 @@ final class SystemDnsCoordinator {
     }
     final record = SystemDnsRecord(service: service, servers: current);
     await store.write(record);
-    if (!current.contains(fallbackDns)) {
-      final ok = await port.writeDnsServers(service, [...current, fallbackDns]);
+    final patched = dnsPatchedServers(current, fallbackDns);
+    if (patched != null) {
+      final ok = await port.writeDnsServers(service, patched);
       if (!ok) {
         await store.clear();
         return;
@@ -200,12 +204,13 @@ final class SystemDnsCoordinator {
       );
       return;
     }
-    if (current.contains(fallbackDns)) {
+    final patched = dnsPatchedServers(current, fallbackDns);
+    if (patched == null) {
       return;
     }
     final record = SystemDnsRecord(service: service, servers: current);
     await store.write(record);
-    if (!await port.writeDnsServers(service, [...current, fallbackDns])) {
+    if (!await port.writeDnsServers(service, patched)) {
       _applied = null;
       await store.clear();
       return;

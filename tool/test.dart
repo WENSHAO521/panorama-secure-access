@@ -26,6 +26,9 @@ const _bundleCount = 32;
 const _bundleDir = '.dart_tool/test_bundles';
 const _reportPath = '$_bundleDir/report.json';
 
+// `flutter test` applies it to files under test/ only, not to the bundles.
+const _testConfig = 'test/flutter_test_config.dart';
+
 final _annotation = RegExp(r'^@(TestOn|Tags|Timeout|Skip|OnPlatform)\b');
 
 // Options of `flutter test` the rerun drops: it only decides pass or fail, and
@@ -207,12 +210,16 @@ String _writeBundle(Directory directory, int index, List<String> files) {
     );
   }
   buffer
+    ..writeln(
+      "import '${_posix(p.relative(_testConfig, from: directory.path))}'"
+      ' as config;',
+    )
     ..writeln()
-    ..writeln('void main() {');
+    ..writeln('Future<void> main() => config.testExecutable(() {');
   for (final (i, file) in files.indexed) {
     buffer.writeln("  group('${_posix(file)}', t$i.main);");
   }
-  buffer.writeln('}');
+  buffer.writeln('});');
 
   final name = 'bundle_${index.toString().padLeft(2, '0')}_test.dart';
   final path = p.join(directory.path, name);

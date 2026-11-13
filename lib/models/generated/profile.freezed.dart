@@ -293,9 +293,282 @@ as int,
 
 
 /// @nodoc
+mixin _$TrafficQuota {
+
+ int get total; TrafficQuotaPeriod get period;
+/// Create a copy of TrafficQuota
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TrafficQuotaCopyWith<TrafficQuota> get copyWith => _$TrafficQuotaCopyWithImpl<TrafficQuota>(this as TrafficQuota, _$identity);
+
+  /// Serializes this TrafficQuota to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as TrafficQuota;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TrafficQuota&&(identical(other.total, _this.total) || other.total == _this.total)&&(identical(other.period, _this.period) || other.period == _this.period));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+  final _this = this as TrafficQuota;
+  return Object.hash(runtimeType,_this.total,_this.period);
+}
+
+@override
+String toString() {
+  final _this = this as TrafficQuota;
+  return 'TrafficQuota(total: ${_this.total}, period: ${_this.period})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $TrafficQuotaCopyWith<$Res>  {
+  factory $TrafficQuotaCopyWith(TrafficQuota value, $Res Function(TrafficQuota) _then) = _$TrafficQuotaCopyWithImpl;
+@useResult
+$Res call({
+ int total, TrafficQuotaPeriod period
+});
+
+
+
+
+}
+/// @nodoc
+class _$TrafficQuotaCopyWithImpl<$Res>
+    implements $TrafficQuotaCopyWith<$Res> {
+  _$TrafficQuotaCopyWithImpl(this._self, this._then);
+
+  final TrafficQuota _self;
+  final $Res Function(TrafficQuota) _then;
+
+/// Create a copy of TrafficQuota
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? total = null,Object? period = null,}) {
+  return _then(TrafficQuota(
+total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
+as int,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as TrafficQuotaPeriod,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [TrafficQuota].
+extension TrafficQuotaPatterns on TrafficQuota {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TrafficQuota value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _TrafficQuota() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TrafficQuota value)  $default,){
+final _that = this;
+switch (_that) {
+case _TrafficQuota():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TrafficQuota value)?  $default,){
+final _that = this;
+switch (_that) {
+case _TrafficQuota() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int total,  TrafficQuotaPeriod period)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _TrafficQuota() when $default != null:
+return $default(_that.total,_that.period);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int total,  TrafficQuotaPeriod period)  $default,) {final _that = this;
+switch (_that) {
+case _TrafficQuota():
+return $default(_that.total,_that.period);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int total,  TrafficQuotaPeriod period)?  $default,) {final _that = this;
+switch (_that) {
+case _TrafficQuota() when $default != null:
+return $default(_that.total,_that.period);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _TrafficQuota implements TrafficQuota {
+  const _TrafficQuota({required this.total, this.period = TrafficQuotaPeriod.monthly});
+  factory _TrafficQuota.fromJson(Map<String, dynamic> json) => _$TrafficQuotaFromJson(json);
+
+@override final  int total;
+@override@JsonKey() final  TrafficQuotaPeriod period;
+
+/// Create a copy of TrafficQuota
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TrafficQuotaCopyWith<_TrafficQuota> get copyWith => __$TrafficQuotaCopyWithImpl<_TrafficQuota>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TrafficQuotaToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TrafficQuota&&(identical(other.total, total) || other.total == total)&&(identical(other.period, period) || other.period == period));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,total,period);
+}
+
+@override
+String toString() {
+    return 'TrafficQuota(total: $total, period: $period)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$TrafficQuotaCopyWith<$Res> implements $TrafficQuotaCopyWith<$Res> {
+  factory _$TrafficQuotaCopyWith(_TrafficQuota value, $Res Function(_TrafficQuota) _then) = __$TrafficQuotaCopyWithImpl;
+@override @useResult
+$Res call({
+ int total, TrafficQuotaPeriod period
+});
+
+
+
+
+}
+/// @nodoc
+class __$TrafficQuotaCopyWithImpl<$Res>
+    implements _$TrafficQuotaCopyWith<$Res> {
+  __$TrafficQuotaCopyWithImpl(this._self, this._then);
+
+  final _TrafficQuota _self;
+  final $Res Function(_TrafficQuota) _then;
+
+/// Create a copy of TrafficQuota
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? total = null,Object? period = null,}) {
+  return _then(_TrafficQuota(
+total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
+as int,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as TrafficQuotaPeriod,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
 mixin _$Profile {
 
- int get id; ProfileType get type; String get label; String? get currentGroupName; String get url; String get ageSecretKey; Map<String, String> get headers; DateTime? get lastUpdateDate; Duration get autoUpdateDuration; SubscriptionInfo? get subscriptionInfo; bool get autoUpdate; Map<String, String> get selectedMap; Set<String> get unfoldSet; ExtendType get extendType; int? get scriptId; String? get matchTarget; int? get order;@JsonKey(fromJson: ProfileOverrides.safeFromJson) ProfileOverrides get overrides;
+ int get id; ProfileType get type; String get label; String? get currentGroupName; String get url; String get ageSecretKey; Map<String, String> get headers; DateTime? get lastUpdateDate; Duration get autoUpdateDuration; SubscriptionInfo? get subscriptionInfo; TrafficQuota? get trafficQuota; bool get autoUpdate; Map<String, String> get selectedMap; Set<String> get unfoldSet; ExtendType get extendType; int? get scriptId; String? get matchTarget; int? get order;@JsonKey(fromJson: ProfileOverrides.safeFromJson) ProfileOverrides get overrides;
 /// Create a copy of Profile
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -309,20 +582,20 @@ $ProfileCopyWith<Profile> get copyWith => _$ProfileCopyWithImpl<Profile>(this as
 @override
 bool operator ==(Object other) {
   final _this = this as Profile;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Profile&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.label, _this.label) || other.label == _this.label)&&(identical(other.currentGroupName, _this.currentGroupName) || other.currentGroupName == _this.currentGroupName)&&(identical(other.url, _this.url) || other.url == _this.url)&&(identical(other.ageSecretKey, _this.ageSecretKey) || other.ageSecretKey == _this.ageSecretKey)&&const DeepCollectionEquality().equals(other.headers, _this.headers)&&(identical(other.lastUpdateDate, _this.lastUpdateDate) || other.lastUpdateDate == _this.lastUpdateDate)&&(identical(other.autoUpdateDuration, _this.autoUpdateDuration) || other.autoUpdateDuration == _this.autoUpdateDuration)&&(identical(other.subscriptionInfo, _this.subscriptionInfo) || other.subscriptionInfo == _this.subscriptionInfo)&&(identical(other.autoUpdate, _this.autoUpdate) || other.autoUpdate == _this.autoUpdate)&&const DeepCollectionEquality().equals(other.selectedMap, _this.selectedMap)&&const DeepCollectionEquality().equals(other.unfoldSet, _this.unfoldSet)&&(identical(other.extendType, _this.extendType) || other.extendType == _this.extendType)&&(identical(other.scriptId, _this.scriptId) || other.scriptId == _this.scriptId)&&(identical(other.matchTarget, _this.matchTarget) || other.matchTarget == _this.matchTarget)&&(identical(other.order, _this.order) || other.order == _this.order)&&(identical(other.overrides, _this.overrides) || other.overrides == _this.overrides));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Profile&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.label, _this.label) || other.label == _this.label)&&(identical(other.currentGroupName, _this.currentGroupName) || other.currentGroupName == _this.currentGroupName)&&(identical(other.url, _this.url) || other.url == _this.url)&&(identical(other.ageSecretKey, _this.ageSecretKey) || other.ageSecretKey == _this.ageSecretKey)&&const DeepCollectionEquality().equals(other.headers, _this.headers)&&(identical(other.lastUpdateDate, _this.lastUpdateDate) || other.lastUpdateDate == _this.lastUpdateDate)&&(identical(other.autoUpdateDuration, _this.autoUpdateDuration) || other.autoUpdateDuration == _this.autoUpdateDuration)&&(identical(other.subscriptionInfo, _this.subscriptionInfo) || other.subscriptionInfo == _this.subscriptionInfo)&&(identical(other.trafficQuota, _this.trafficQuota) || other.trafficQuota == _this.trafficQuota)&&(identical(other.autoUpdate, _this.autoUpdate) || other.autoUpdate == _this.autoUpdate)&&const DeepCollectionEquality().equals(other.selectedMap, _this.selectedMap)&&const DeepCollectionEquality().equals(other.unfoldSet, _this.unfoldSet)&&(identical(other.extendType, _this.extendType) || other.extendType == _this.extendType)&&(identical(other.scriptId, _this.scriptId) || other.scriptId == _this.scriptId)&&(identical(other.matchTarget, _this.matchTarget) || other.matchTarget == _this.matchTarget)&&(identical(other.order, _this.order) || other.order == _this.order)&&(identical(other.overrides, _this.overrides) || other.overrides == _this.overrides));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as Profile;
-  return Object.hash(runtimeType,_this.id,_this.type,_this.label,_this.currentGroupName,_this.url,_this.ageSecretKey,const DeepCollectionEquality().hash(_this.headers),_this.lastUpdateDate,_this.autoUpdateDuration,_this.subscriptionInfo,_this.autoUpdate,const DeepCollectionEquality().hash(_this.selectedMap),const DeepCollectionEquality().hash(_this.unfoldSet),_this.extendType,_this.scriptId,_this.matchTarget,_this.order,_this.overrides);
+  return Object.hashAll([runtimeType,_this.id,_this.type,_this.label,_this.currentGroupName,_this.url,_this.ageSecretKey,const DeepCollectionEquality().hash(_this.headers),_this.lastUpdateDate,_this.autoUpdateDuration,_this.subscriptionInfo,_this.trafficQuota,_this.autoUpdate,const DeepCollectionEquality().hash(_this.selectedMap),const DeepCollectionEquality().hash(_this.unfoldSet),_this.extendType,_this.scriptId,_this.matchTarget,_this.order,_this.overrides]);
 }
 
 @override
 String toString() {
   final _this = this as Profile;
-  return 'Profile(id: ${_this.id}, type: ${_this.type}, label: ${_this.label}, currentGroupName: ${_this.currentGroupName}, url: ${_this.url}, ageSecretKey: ${_this.ageSecretKey}, headers: ${_this.headers}, lastUpdateDate: ${_this.lastUpdateDate}, autoUpdateDuration: ${_this.autoUpdateDuration}, subscriptionInfo: ${_this.subscriptionInfo}, autoUpdate: ${_this.autoUpdate}, selectedMap: ${_this.selectedMap}, unfoldSet: ${_this.unfoldSet}, extendType: ${_this.extendType}, scriptId: ${_this.scriptId}, matchTarget: ${_this.matchTarget}, order: ${_this.order}, overrides: ${_this.overrides})';
+  return 'Profile(id: ${_this.id}, type: ${_this.type}, label: ${_this.label}, currentGroupName: ${_this.currentGroupName}, url: ${_this.url}, ageSecretKey: ${_this.ageSecretKey}, headers: ${_this.headers}, lastUpdateDate: ${_this.lastUpdateDate}, autoUpdateDuration: ${_this.autoUpdateDuration}, subscriptionInfo: ${_this.subscriptionInfo}, trafficQuota: ${_this.trafficQuota}, autoUpdate: ${_this.autoUpdate}, selectedMap: ${_this.selectedMap}, unfoldSet: ${_this.unfoldSet}, extendType: ${_this.extendType}, scriptId: ${_this.scriptId}, matchTarget: ${_this.matchTarget}, order: ${_this.order}, overrides: ${_this.overrides})';
 }
 
 
@@ -333,11 +606,11 @@ abstract mixin class $ProfileCopyWith<$Res>  {
   factory $ProfileCopyWith(Profile value, $Res Function(Profile) _then) = _$ProfileCopyWithImpl;
 @useResult
 $Res call({
- int id, ProfileType type, String label, String? currentGroupName, String url, String ageSecretKey, Map<String, String> headers, DateTime? lastUpdateDate, Duration autoUpdateDuration, SubscriptionInfo? subscriptionInfo, bool autoUpdate, Map<String, String> selectedMap, Set<String> unfoldSet, ExtendType extendType, int? scriptId, String? matchTarget, int? order,@JsonKey(fromJson: ProfileOverrides.safeFromJson) ProfileOverrides overrides
+ int id, ProfileType type, String label, String? currentGroupName, String url, String ageSecretKey, Map<String, String> headers, DateTime? lastUpdateDate, Duration autoUpdateDuration, SubscriptionInfo? subscriptionInfo, TrafficQuota? trafficQuota, bool autoUpdate, Map<String, String> selectedMap, Set<String> unfoldSet, ExtendType extendType, int? scriptId, String? matchTarget, int? order,@JsonKey(fromJson: ProfileOverrides.safeFromJson) ProfileOverrides overrides
 });
 
 
-$SubscriptionInfoCopyWith<$Res>? get subscriptionInfo;$ProfileOverridesCopyWith<$Res> get overrides;
+$SubscriptionInfoCopyWith<$Res>? get subscriptionInfo;$TrafficQuotaCopyWith<$Res>? get trafficQuota;$ProfileOverridesCopyWith<$Res> get overrides;
 
 }
 /// @nodoc
@@ -350,7 +623,7 @@ class _$ProfileCopyWithImpl<$Res>
 
 /// Create a copy of Profile
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,Object? label = null,Object? currentGroupName = freezed,Object? url = null,Object? ageSecretKey = null,Object? headers = null,Object? lastUpdateDate = freezed,Object? autoUpdateDuration = null,Object? subscriptionInfo = freezed,Object? autoUpdate = null,Object? selectedMap = null,Object? unfoldSet = null,Object? extendType = null,Object? scriptId = freezed,Object? matchTarget = freezed,Object? order = freezed,Object? overrides = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,Object? label = null,Object? currentGroupName = freezed,Object? url = null,Object? ageSecretKey = null,Object? headers = null,Object? lastUpdateDate = freezed,Object? autoUpdateDuration = null,Object? subscriptionInfo = freezed,Object? trafficQuota = freezed,Object? autoUpdate = null,Object? selectedMap = null,Object? unfoldSet = null,Object? extendType = null,Object? scriptId = freezed,Object? matchTarget = freezed,Object? order = freezed,Object? overrides = null,}) {
   return _then(Profile(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -362,7 +635,8 @@ as String,headers: null == headers ? _self.headers : headers // ignore: cast_nul
 as Map<String, String>,lastUpdateDate: freezed == lastUpdateDate ? _self.lastUpdateDate : lastUpdateDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,autoUpdateDuration: null == autoUpdateDuration ? _self.autoUpdateDuration : autoUpdateDuration // ignore: cast_nullable_to_non_nullable
 as Duration,subscriptionInfo: freezed == subscriptionInfo ? _self.subscriptionInfo : subscriptionInfo // ignore: cast_nullable_to_non_nullable
-as SubscriptionInfo?,autoUpdate: null == autoUpdate ? _self.autoUpdate : autoUpdate // ignore: cast_nullable_to_non_nullable
+as SubscriptionInfo?,trafficQuota: freezed == trafficQuota ? _self.trafficQuota : trafficQuota // ignore: cast_nullable_to_non_nullable
+as TrafficQuota?,autoUpdate: null == autoUpdate ? _self.autoUpdate : autoUpdate // ignore: cast_nullable_to_non_nullable
 as bool,selectedMap: null == selectedMap ? _self.selectedMap : selectedMap // ignore: cast_nullable_to_non_nullable
 as Map<String, String>,unfoldSet: null == unfoldSet ? _self.unfoldSet : unfoldSet // ignore: cast_nullable_to_non_nullable
 as Set<String>,extendType: null == extendType ? _self.extendType : extendType // ignore: cast_nullable_to_non_nullable
@@ -384,6 +658,18 @@ $SubscriptionInfoCopyWith<$Res>? get subscriptionInfo {
 
   return $SubscriptionInfoCopyWith<$Res>(_self.subscriptionInfo!, (value) {
     return _then(_self.copyWith(subscriptionInfo: value));
+  });
+}/// Create a copy of Profile
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TrafficQuotaCopyWith<$Res>? get trafficQuota {
+    if (_self.trafficQuota == null) {
+    return null;
+  }
+
+  return $TrafficQuotaCopyWith<$Res>(_self.trafficQuota!, (value) {
+    return _then(_self.copyWith(trafficQuota: value));
   });
 }/// Create a copy of Profile
 /// with the given fields replaced by the non-null parameter values.
@@ -476,10 +762,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  ProfileType type,  String label,  String? currentGroupName,  String url,  String ageSecretKey,  Map<String, String> headers,  DateTime? lastUpdateDate,  Duration autoUpdateDuration,  SubscriptionInfo? subscriptionInfo,  bool autoUpdate,  Map<String, String> selectedMap,  Set<String> unfoldSet,  ExtendType extendType,  int? scriptId,  String? matchTarget,  int? order, @JsonKey(fromJson: ProfileOverrides.safeFromJson)  ProfileOverrides overrides)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  ProfileType type,  String label,  String? currentGroupName,  String url,  String ageSecretKey,  Map<String, String> headers,  DateTime? lastUpdateDate,  Duration autoUpdateDuration,  SubscriptionInfo? subscriptionInfo,  TrafficQuota? trafficQuota,  bool autoUpdate,  Map<String, String> selectedMap,  Set<String> unfoldSet,  ExtendType extendType,  int? scriptId,  String? matchTarget,  int? order, @JsonKey(fromJson: ProfileOverrides.safeFromJson)  ProfileOverrides overrides)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Profile() when $default != null:
-return $default(_that.id,_that.type,_that.label,_that.currentGroupName,_that.url,_that.ageSecretKey,_that.headers,_that.lastUpdateDate,_that.autoUpdateDuration,_that.subscriptionInfo,_that.autoUpdate,_that.selectedMap,_that.unfoldSet,_that.extendType,_that.scriptId,_that.matchTarget,_that.order,_that.overrides);case _:
+return $default(_that.id,_that.type,_that.label,_that.currentGroupName,_that.url,_that.ageSecretKey,_that.headers,_that.lastUpdateDate,_that.autoUpdateDuration,_that.subscriptionInfo,_that.trafficQuota,_that.autoUpdate,_that.selectedMap,_that.unfoldSet,_that.extendType,_that.scriptId,_that.matchTarget,_that.order,_that.overrides);case _:
   return orElse();
 
 }
@@ -497,10 +783,10 @@ return $default(_that.id,_that.type,_that.label,_that.currentGroupName,_that.url
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  ProfileType type,  String label,  String? currentGroupName,  String url,  String ageSecretKey,  Map<String, String> headers,  DateTime? lastUpdateDate,  Duration autoUpdateDuration,  SubscriptionInfo? subscriptionInfo,  bool autoUpdate,  Map<String, String> selectedMap,  Set<String> unfoldSet,  ExtendType extendType,  int? scriptId,  String? matchTarget,  int? order, @JsonKey(fromJson: ProfileOverrides.safeFromJson)  ProfileOverrides overrides)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  ProfileType type,  String label,  String? currentGroupName,  String url,  String ageSecretKey,  Map<String, String> headers,  DateTime? lastUpdateDate,  Duration autoUpdateDuration,  SubscriptionInfo? subscriptionInfo,  TrafficQuota? trafficQuota,  bool autoUpdate,  Map<String, String> selectedMap,  Set<String> unfoldSet,  ExtendType extendType,  int? scriptId,  String? matchTarget,  int? order, @JsonKey(fromJson: ProfileOverrides.safeFromJson)  ProfileOverrides overrides)  $default,) {final _that = this;
 switch (_that) {
 case _Profile():
-return $default(_that.id,_that.type,_that.label,_that.currentGroupName,_that.url,_that.ageSecretKey,_that.headers,_that.lastUpdateDate,_that.autoUpdateDuration,_that.subscriptionInfo,_that.autoUpdate,_that.selectedMap,_that.unfoldSet,_that.extendType,_that.scriptId,_that.matchTarget,_that.order,_that.overrides);case _:
+return $default(_that.id,_that.type,_that.label,_that.currentGroupName,_that.url,_that.ageSecretKey,_that.headers,_that.lastUpdateDate,_that.autoUpdateDuration,_that.subscriptionInfo,_that.trafficQuota,_that.autoUpdate,_that.selectedMap,_that.unfoldSet,_that.extendType,_that.scriptId,_that.matchTarget,_that.order,_that.overrides);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -517,10 +803,10 @@ return $default(_that.id,_that.type,_that.label,_that.currentGroupName,_that.url
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  ProfileType type,  String label,  String? currentGroupName,  String url,  String ageSecretKey,  Map<String, String> headers,  DateTime? lastUpdateDate,  Duration autoUpdateDuration,  SubscriptionInfo? subscriptionInfo,  bool autoUpdate,  Map<String, String> selectedMap,  Set<String> unfoldSet,  ExtendType extendType,  int? scriptId,  String? matchTarget,  int? order, @JsonKey(fromJson: ProfileOverrides.safeFromJson)  ProfileOverrides overrides)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  ProfileType type,  String label,  String? currentGroupName,  String url,  String ageSecretKey,  Map<String, String> headers,  DateTime? lastUpdateDate,  Duration autoUpdateDuration,  SubscriptionInfo? subscriptionInfo,  TrafficQuota? trafficQuota,  bool autoUpdate,  Map<String, String> selectedMap,  Set<String> unfoldSet,  ExtendType extendType,  int? scriptId,  String? matchTarget,  int? order, @JsonKey(fromJson: ProfileOverrides.safeFromJson)  ProfileOverrides overrides)?  $default,) {final _that = this;
 switch (_that) {
 case _Profile() when $default != null:
-return $default(_that.id,_that.type,_that.label,_that.currentGroupName,_that.url,_that.ageSecretKey,_that.headers,_that.lastUpdateDate,_that.autoUpdateDuration,_that.subscriptionInfo,_that.autoUpdate,_that.selectedMap,_that.unfoldSet,_that.extendType,_that.scriptId,_that.matchTarget,_that.order,_that.overrides);case _:
+return $default(_that.id,_that.type,_that.label,_that.currentGroupName,_that.url,_that.ageSecretKey,_that.headers,_that.lastUpdateDate,_that.autoUpdateDuration,_that.subscriptionInfo,_that.trafficQuota,_that.autoUpdate,_that.selectedMap,_that.unfoldSet,_that.extendType,_that.scriptId,_that.matchTarget,_that.order,_that.overrides);case _:
   return null;
 
 }
@@ -532,7 +818,7 @@ return $default(_that.id,_that.type,_that.label,_that.currentGroupName,_that.url
 @JsonSerializable()
 
 class _Profile implements Profile {
-  const _Profile({required this.id, this.type = ProfileType.file, this.label = '', this.currentGroupName, this.url = '', this.ageSecretKey = '',  Map<String, String> headers = const {}, this.lastUpdateDate, required this.autoUpdateDuration, this.subscriptionInfo, this.autoUpdate = true,  Map<String, String> selectedMap = const {},  Set<String> unfoldSet = const {}, this.extendType = ExtendType.standard, this.scriptId, this.matchTarget, this.order, @JsonKey(fromJson: ProfileOverrides.safeFromJson) this.overrides = const ProfileOverrides()}): _headers = headers,_selectedMap = selectedMap,_unfoldSet = unfoldSet;
+  const _Profile({required this.id, this.type = ProfileType.file, this.label = '', this.currentGroupName, this.url = '', this.ageSecretKey = '',  Map<String, String> headers = const {}, this.lastUpdateDate, required this.autoUpdateDuration, this.subscriptionInfo, this.trafficQuota, this.autoUpdate = true,  Map<String, String> selectedMap = const {},  Set<String> unfoldSet = const {}, this.extendType = ExtendType.standard, this.scriptId, this.matchTarget, this.order, @JsonKey(fromJson: ProfileOverrides.safeFromJson) this.overrides = const ProfileOverrides()}): _headers = headers,_selectedMap = selectedMap,_unfoldSet = unfoldSet;
   factory _Profile.fromJson(Map<String, dynamic> json) => _$ProfileFromJson(json);
 
 @override final  int id;
@@ -551,6 +837,7 @@ class _Profile implements Profile {
 @override final  DateTime? lastUpdateDate;
 @override final  Duration autoUpdateDuration;
 @override final  SubscriptionInfo? subscriptionInfo;
+@override final  TrafficQuota? trafficQuota;
 @override@JsonKey() final  bool autoUpdate;
  final  Map<String, String> _selectedMap;
 @override@JsonKey() Map<String, String> get selectedMap {
@@ -585,18 +872,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Profile&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.label, label) || other.label == label)&&(identical(other.currentGroupName, currentGroupName) || other.currentGroupName == currentGroupName)&&(identical(other.url, url) || other.url == url)&&(identical(other.ageSecretKey, ageSecretKey) || other.ageSecretKey == ageSecretKey)&&const DeepCollectionEquality().equals(other.headers, _headers)&&(identical(other.lastUpdateDate, lastUpdateDate) || other.lastUpdateDate == lastUpdateDate)&&(identical(other.autoUpdateDuration, autoUpdateDuration) || other.autoUpdateDuration == autoUpdateDuration)&&(identical(other.subscriptionInfo, subscriptionInfo) || other.subscriptionInfo == subscriptionInfo)&&(identical(other.autoUpdate, autoUpdate) || other.autoUpdate == autoUpdate)&&const DeepCollectionEquality().equals(other.selectedMap, _selectedMap)&&const DeepCollectionEquality().equals(other.unfoldSet, _unfoldSet)&&(identical(other.extendType, extendType) || other.extendType == extendType)&&(identical(other.scriptId, scriptId) || other.scriptId == scriptId)&&(identical(other.matchTarget, matchTarget) || other.matchTarget == matchTarget)&&(identical(other.order, order) || other.order == order)&&(identical(other.overrides, overrides) || other.overrides == overrides));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Profile&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.label, label) || other.label == label)&&(identical(other.currentGroupName, currentGroupName) || other.currentGroupName == currentGroupName)&&(identical(other.url, url) || other.url == url)&&(identical(other.ageSecretKey, ageSecretKey) || other.ageSecretKey == ageSecretKey)&&const DeepCollectionEquality().equals(other.headers, _headers)&&(identical(other.lastUpdateDate, lastUpdateDate) || other.lastUpdateDate == lastUpdateDate)&&(identical(other.autoUpdateDuration, autoUpdateDuration) || other.autoUpdateDuration == autoUpdateDuration)&&(identical(other.subscriptionInfo, subscriptionInfo) || other.subscriptionInfo == subscriptionInfo)&&(identical(other.trafficQuota, trafficQuota) || other.trafficQuota == trafficQuota)&&(identical(other.autoUpdate, autoUpdate) || other.autoUpdate == autoUpdate)&&const DeepCollectionEquality().equals(other.selectedMap, _selectedMap)&&const DeepCollectionEquality().equals(other.unfoldSet, _unfoldSet)&&(identical(other.extendType, extendType) || other.extendType == extendType)&&(identical(other.scriptId, scriptId) || other.scriptId == scriptId)&&(identical(other.matchTarget, matchTarget) || other.matchTarget == matchTarget)&&(identical(other.order, order) || other.order == order)&&(identical(other.overrides, overrides) || other.overrides == overrides));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,type,label,currentGroupName,url,ageSecretKey,const DeepCollectionEquality().hash(_headers),lastUpdateDate,autoUpdateDuration,subscriptionInfo,autoUpdate,const DeepCollectionEquality().hash(_selectedMap),const DeepCollectionEquality().hash(_unfoldSet),extendType,scriptId,matchTarget,order,overrides);
+    return Object.hashAll([runtimeType,id,type,label,currentGroupName,url,ageSecretKey,const DeepCollectionEquality().hash(_headers),lastUpdateDate,autoUpdateDuration,subscriptionInfo,trafficQuota,autoUpdate,const DeepCollectionEquality().hash(_selectedMap),const DeepCollectionEquality().hash(_unfoldSet),extendType,scriptId,matchTarget,order,overrides]);
 }
 
 @override
 String toString() {
-    return 'Profile(id: $id, type: $type, label: $label, currentGroupName: $currentGroupName, url: $url, ageSecretKey: $ageSecretKey, headers: $headers, lastUpdateDate: $lastUpdateDate, autoUpdateDuration: $autoUpdateDuration, subscriptionInfo: $subscriptionInfo, autoUpdate: $autoUpdate, selectedMap: $selectedMap, unfoldSet: $unfoldSet, extendType: $extendType, scriptId: $scriptId, matchTarget: $matchTarget, order: $order, overrides: $overrides)';
+    return 'Profile(id: $id, type: $type, label: $label, currentGroupName: $currentGroupName, url: $url, ageSecretKey: $ageSecretKey, headers: $headers, lastUpdateDate: $lastUpdateDate, autoUpdateDuration: $autoUpdateDuration, subscriptionInfo: $subscriptionInfo, trafficQuota: $trafficQuota, autoUpdate: $autoUpdate, selectedMap: $selectedMap, unfoldSet: $unfoldSet, extendType: $extendType, scriptId: $scriptId, matchTarget: $matchTarget, order: $order, overrides: $overrides)';
 }
 
 
@@ -607,11 +894,11 @@ abstract mixin class _$ProfileCopyWith<$Res> implements $ProfileCopyWith<$Res> {
   factory _$ProfileCopyWith(_Profile value, $Res Function(_Profile) _then) = __$ProfileCopyWithImpl;
 @override @useResult
 $Res call({
- int id, ProfileType type, String label, String? currentGroupName, String url, String ageSecretKey, Map<String, String> headers, DateTime? lastUpdateDate, Duration autoUpdateDuration, SubscriptionInfo? subscriptionInfo, bool autoUpdate, Map<String, String> selectedMap, Set<String> unfoldSet, ExtendType extendType, int? scriptId, String? matchTarget, int? order,@JsonKey(fromJson: ProfileOverrides.safeFromJson) ProfileOverrides overrides
+ int id, ProfileType type, String label, String? currentGroupName, String url, String ageSecretKey, Map<String, String> headers, DateTime? lastUpdateDate, Duration autoUpdateDuration, SubscriptionInfo? subscriptionInfo, TrafficQuota? trafficQuota, bool autoUpdate, Map<String, String> selectedMap, Set<String> unfoldSet, ExtendType extendType, int? scriptId, String? matchTarget, int? order,@JsonKey(fromJson: ProfileOverrides.safeFromJson) ProfileOverrides overrides
 });
 
 
-@override $SubscriptionInfoCopyWith<$Res>? get subscriptionInfo;@override $ProfileOverridesCopyWith<$Res> get overrides;
+@override $SubscriptionInfoCopyWith<$Res>? get subscriptionInfo;@override $TrafficQuotaCopyWith<$Res>? get trafficQuota;@override $ProfileOverridesCopyWith<$Res> get overrides;
 
 }
 /// @nodoc
@@ -624,7 +911,7 @@ class __$ProfileCopyWithImpl<$Res>
 
 /// Create a copy of Profile
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? type = null,Object? label = null,Object? currentGroupName = freezed,Object? url = null,Object? ageSecretKey = null,Object? headers = null,Object? lastUpdateDate = freezed,Object? autoUpdateDuration = null,Object? subscriptionInfo = freezed,Object? autoUpdate = null,Object? selectedMap = null,Object? unfoldSet = null,Object? extendType = null,Object? scriptId = freezed,Object? matchTarget = freezed,Object? order = freezed,Object? overrides = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? type = null,Object? label = null,Object? currentGroupName = freezed,Object? url = null,Object? ageSecretKey = null,Object? headers = null,Object? lastUpdateDate = freezed,Object? autoUpdateDuration = null,Object? subscriptionInfo = freezed,Object? trafficQuota = freezed,Object? autoUpdate = null,Object? selectedMap = null,Object? unfoldSet = null,Object? extendType = null,Object? scriptId = freezed,Object? matchTarget = freezed,Object? order = freezed,Object? overrides = null,}) {
   return _then(_Profile(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -636,7 +923,8 @@ as String,headers: null == headers ? _self._headers : headers // ignore: cast_nu
 as Map<String, String>,lastUpdateDate: freezed == lastUpdateDate ? _self.lastUpdateDate : lastUpdateDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,autoUpdateDuration: null == autoUpdateDuration ? _self.autoUpdateDuration : autoUpdateDuration // ignore: cast_nullable_to_non_nullable
 as Duration,subscriptionInfo: freezed == subscriptionInfo ? _self.subscriptionInfo : subscriptionInfo // ignore: cast_nullable_to_non_nullable
-as SubscriptionInfo?,autoUpdate: null == autoUpdate ? _self.autoUpdate : autoUpdate // ignore: cast_nullable_to_non_nullable
+as SubscriptionInfo?,trafficQuota: freezed == trafficQuota ? _self.trafficQuota : trafficQuota // ignore: cast_nullable_to_non_nullable
+as TrafficQuota?,autoUpdate: null == autoUpdate ? _self.autoUpdate : autoUpdate // ignore: cast_nullable_to_non_nullable
 as bool,selectedMap: null == selectedMap ? _self._selectedMap : selectedMap // ignore: cast_nullable_to_non_nullable
 as Map<String, String>,unfoldSet: null == unfoldSet ? _self._unfoldSet : unfoldSet // ignore: cast_nullable_to_non_nullable
 as Set<String>,extendType: null == extendType ? _self.extendType : extendType // ignore: cast_nullable_to_non_nullable
@@ -659,6 +947,18 @@ $SubscriptionInfoCopyWith<$Res>? get subscriptionInfo {
 
   return $SubscriptionInfoCopyWith<$Res>(_self.subscriptionInfo!, (value) {
     return _then(_self.copyWith(subscriptionInfo: value));
+  });
+}/// Create a copy of Profile
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TrafficQuotaCopyWith<$Res>? get trafficQuota {
+    if (_self.trafficQuota == null) {
+    return null;
+  }
+
+  return $TrafficQuotaCopyWith<$Res>(_self.trafficQuota!, (value) {
+    return _then(_self.copyWith(trafficQuota: value));
   });
 }/// Create a copy of Profile
 /// with the given fields replaced by the non-null parameter values.

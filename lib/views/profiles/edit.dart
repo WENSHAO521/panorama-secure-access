@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/common/traffic_quota_input.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/features/form/form.dart';
 import 'package:fl_clash/l10n/l10n.dart';
@@ -17,7 +18,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum _ProfileField { label, url, autoUpdateInterval }
+enum _ProfileField { label, url, autoUpdateInterval, customTraffic }
 
 class EditProfileView extends ConsumerStatefulWidget {
   final Profile profile;
@@ -35,6 +36,9 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   late final TextEditingController _autoUpdateDurationController;
   late bool _autoUpdate;
   late Map<String, String> _headers;
+  late final TextEditingController _trafficController;
+  late TrafficQuotaPeriod _trafficPeriod;
+  late QuotaUnit _trafficUnit;
   Uint8List? _editedData;
   bool _attempted = false;
   final _fileInfoNotifier = ValueNotifier<FileInfo?>(null);
@@ -51,6 +55,12 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     );
     _autoUpdate = widget.profile.autoUpdate;
     _headers = widget.profile.headers;
+    final quota = widget.profile.trafficQuota;
+    _trafficUnit = quota == null ? QuotaUnit.none : QuotaUnit.of(quota.total);
+    _trafficController = TextEditingController(
+      text: quota == null ? '' : _trafficUnit.format(quota.total),
+    );
+    _trafficPeriod = quota?.period ?? TrafficQuotaPeriod.monthly;
     _autoUpdateDurationController = TextEditingController(
       text: widget.profile.autoUpdateDuration.inMinutes.toString(),
     );
@@ -76,6 +86,12 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     );
     if (labelError != null) {
       return (field: _ProfileField.label, message: labelError);
+    }
+    if (_trafficInput.error case final error?) {
+      return (
+        field: _ProfileField.customTraffic,
+        message: error.label(context),
+      );
     }
     if (widget.profile.type != ProfileType.url) {
       return null;
@@ -113,6 +129,9 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     return null;
   }
 
+  TrafficQuotaInput get _trafficInput =>
+      TrafficQuotaInput.parse(_trafficController.text, _trafficUnit);
+
   void _handleChanged(String _) {
     if (_attempted) {
       setState(() {});
@@ -134,6 +153,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
       url: _urlController.text,
       ageSecretKey: _ageSecretKeyController.text.trim(),
       headers: _headers,
+      trafficQuota: _trafficInput.quota(_trafficPeriod),
       label: _labelController.text,
       autoUpdate: _autoUpdate,
       autoUpdateDuration: interval != null && interval > 0
@@ -325,6 +345,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     _ageSecretKeyController.dispose();
     _fileInfoNotifier.dispose();
     _autoUpdateDurationController.dispose();
+    _trafficController.dispose();
     super.dispose();
     _setupAction.autoApplyProfile();
   }
@@ -372,6 +393,33 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
               ),
           ],
         ),
+      generateSection(
+        footer: appLocalizations.customTrafficDesc,
+        items: [
+          TrafficQuotaField(
+            controller: _trafficController,
+            unit: _trafficUnit,
+            onUnitChanged: (unit) => setState(() => _trafficUnit = unit),
+            invalid: issue?.field == _ProfileField.customTraffic,
+            onChanged: (value) {
+              setState(() {});
+              _handleChanged(value);
+            },
+          ),
+          if (_trafficInput.bytes != null)
+            FormRow(
+              title: appLocalizations.trafficPeriod,
+              trailing: SegmentedControl<TrafficQuotaPeriod>(
+                segments: [
+                  for (final period in TrafficQuotaPeriod.values)
+                    (period, period.label(appLocalizations)),
+                ],
+                value: _trafficPeriod,
+                onChanged: (value) => setState(() => _trafficPeriod = value),
+              ),
+            ),
+        ],
+      ),
       generateSection(
         items: [
           _ProfileFileItem(
@@ -578,7 +626,7 @@ class _AutoUpdateIntervalField extends StatelessWidget {
       invalid: invalid,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
-        spacing: 4,
+        spacing: 8,
         children: [
           Flexible(
             child: FormRowTextField(

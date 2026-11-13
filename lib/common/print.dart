@@ -15,6 +15,26 @@ String compactError(Object error) {
   return error.toString();
 }
 
+final _url = RegExp(
+  r'\b([a-zA-Z][\w+.-]*://)([^\s/?#@]*@)?([^\s/?#]*)([^\s?#]*)(\?[^\s#]*)?',
+);
+final _token = RegExp(r'[A-Za-z0-9_-]{16,}');
+final _ageKey = RegExp(r'AGE-SECRET-KEY-1[0-9A-Z]+');
+
+/// A subscription token hides in the user info, query or a long path segment.
+String redactSecrets(String text) => text
+    .replaceAll(_ageKey, 'AGE-SECRET-KEY-***')
+    .replaceAllMapped(_url, (match) {
+      final path = match[4]!.replaceAll(_token, '***');
+      return [
+        match[1],
+        if (match[2] != null) '***@',
+        match[3],
+        path,
+        if (match[5] != null) '?***',
+      ].join();
+    });
+
 class CommonPrint {
   static CommonPrint? _instance;
 
@@ -26,7 +46,7 @@ class CommonPrint {
   }
 
   void log(String? text, {LogLevel logLevel = LogLevel.info}) {
-    final payload = '[APP] $text';
+    final payload = '[APP] ${text == null ? null : redactSecrets(text)}';
     debugPrint(payload);
     if (!globalState.isAttach) {
       return;

@@ -17,13 +17,13 @@ done
 # Magisk's su keeps the caller's mount namespace by default, where a mount
 # would reach this app alone. The root manager's busybox runs the scripts as
 # it runs a module's, and brings nsenter to an Android older than 10.
-if [ -z "$FLCLASH_ROOT_STAGE" ]; then
-  export FLCLASH_ROOT_STAGE=1 ASH_STANDALONE=1
+if [ -z "$PANORAMA_ROOT_STAGE" ]; then
+  export PANORAMA_ROOT_STAGE=1 ASH_STANDALONE=1
   exec $busybox nsenter --mount=/proc/1/ns/mnt -- $busybox sh "$0" "$@"
 fi
 
 dir=${0%/*}
-id=flclash_mitm_ca
+id=panorama_mitm_ca
 module=/data/adb/modules/$id
 pending=/data/adb/modules_update/$id
 
@@ -33,7 +33,7 @@ case $1 in
     cert=$3
     # The manager overwrites a pending update, so its CA is kept aside to be
     # taken out of the mounted copy.
-    work=/data/local/tmp/flclash-root
+    work=/data/local/tmp/panorama-root
     rm -rf "$work"
     mkdir -m 700 "$work"
     stale=

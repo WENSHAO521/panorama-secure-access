@@ -13,6 +13,12 @@ OutputBaseFilename={{OUTPUT_BASE_FILENAME}}
 Compression=lzma
 SolidCompression=yes
 SetupIconFile={{SETUP_ICON_FILE}}
+UninstallDisplayIcon={app}\\{{EXECUTABLE_NAME}},0
+UninstallDisplayName={{DISPLAY_NAME}}
+VersionInfoCompany={{PUBLISHER_NAME}}
+VersionInfoProductName={{DISPLAY_NAME}}
+VersionInfoProductTextVersion={{APP_VERSION}}
+VersionInfoDescription={{DISPLAY_NAME}} Setup
 WizardStyle=modern
 PrivilegesRequired={{PRIVILEGES_REQUIRED}}
 ArchitecturesAllowed={{ARCH}}
@@ -21,6 +27,13 @@ ArchitecturesInstallIn64BitMode={{ARCH}}
 [Code]
 const
   SYNCHRONIZE = $00100000;
+  // Releases up to 3.5.x shipped under FlClash's AppId, binary and service
+  // names; only an install whose uninstall entry carries our display name is
+  // ours to take over, so a FlClash install on the same machine stays intact.
+  LegacyUninstallKey = 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{728B3532-C74B-4870-9068-BE70FE12A3E6}_is1';
+  LegacyDisplayName = 'Panorama Secure Access';
+  LegacyHelperService = 'FlClashHelperService';
+  LegacyHelperServiceKey = 'SYSTEM\CurrentControlSet\Services\FlClashHelperService';
 
 function OpenProcess(dwDesiredAccess: DWORD; bInheritHandle: BOOL; dwProcessId: DWORD): THandle;
   external 'OpenProcess@kernel32.dll stdcall';
@@ -61,7 +74,7 @@ var
   i: Integer;
   ResultCode: Integer;
 begin
-  Processes := ['FlClash.exe', 'FlClashCore.exe', 'FlClashHelperService.exe'];
+  Processes := ['{{EXECUTABLE_NAME}}', 'panorama-secure-access-core.exe', 'panorama-secure-access-helper.exe'];
 
   for i := 0 to GetArrayLength(Processes)-1 do
   begin
@@ -74,7 +87,7 @@ var
   HelperPath: String;
   ResultCode: Integer;
 begin
-  HelperPath := ExpandConstant('{app}\\FlClashHelperService.exe');
+  HelperPath := ExpandConstant('{app}\\panorama-secure-access-helper.exe');
   if FileExists(HelperPath) then
   begin
     Exec(HelperPath, 'uninstall', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
@@ -93,33 +106,96 @@ begin
   end;
 end;
 
-function PointsIntoApp(Value: String): Boolean;
+function PointsInto(Dir, Value: String): Boolean;
 begin
-  Result := Pos(Lowercase(AddBackslash(ExpandConstant('{app}'))), Lowercase(Value)) > 0;
+  Result := Pos(Lowercase(AddBackslash(Dir)), Lowercase(Value)) > 0;
 end;
 
-// The value name is appName and the schemes are protocolSchemes, both in
-// lib/common.
-procedure RemoveUserRegistrations;
+function PointsIntoApp(Value: String): Boolean;
+begin
+  Result := PointsInto(ExpandConstant('{app}'), Value);
+end;
+
+// The value name is appName in lib/common; the schemes are protocolSchemes
+// plus the flclash scheme that releases up to 3.5.x also registered.
+procedure RemoveRegistrationsInto(Dir: String);
 var
   Schemes: TArrayOfString;
   Value: String;
   i: Integer;
 begin
-  if RegQueryStringValue(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Run', '{{APP_NAME}}', Value) and PointsIntoApp(Value) then
+  if RegQueryStringValue(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Run', 'Panorama Secure Access', Value) and PointsInto(Dir, Value) then
   begin
-    RegDeleteValue(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Run', '{{APP_NAME}}');
-    RegDeleteValue(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run', '{{APP_NAME}}');
+    RegDeleteValue(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Run', 'Panorama Secure Access');
+    RegDeleteValue(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run', 'Panorama Secure Access');
   end;
 
   Schemes := ['clash', 'clashmeta', 'flclash'];
   for i := 0 to GetArrayLength(Schemes)-1 do
   begin
-    if RegQueryStringValue(HKCU, 'Software\Classes\' + Schemes[i] + '\shell\open\command', '', Value) and PointsIntoApp(Value) then
+    if RegQueryStringValue(HKCU, 'Software\Classes\' + Schemes[i] + '\shell\open\command', '', Value) and PointsInto(Dir, Value) then
     begin
       RegDeleteKeyIncludingSubkeys(HKCU, 'Software\Classes\' + Schemes[i]);
     end;
   end;
+end;
+
+procedure RemoveUserRegistrations;
+begin
+  RemoveRegistrationsInto(ExpandConstant('{app}'));
+end;
+
+function LegacyInstallDir(var Dir: String): Boolean;
+var
+  Name: String;
+begin
+  Result := RegQueryStringValue(HKLM, LegacyUninstallKey, 'DisplayName', Name)
+    and (Name = LegacyDisplayName)
+    and RegQueryStringValue(HKLM, LegacyUninstallKey, 'InstallLocation', Dir)
+    and (Dir <> '') and DirExists(Dir);
+  if Result then
+    Dir := RemoveBackslashUnlessRoot(Dir);
+end;
+
+procedure StopProcessesUnder(Dir: String);
+var
+  ResultCode: Integer;
+begin
+  StringChangeEx(Dir, '''', '''''', True);
+  Exec('powershell.exe', '-NoProfile -NonInteractive -Command "Get-Process | Where-Object { $_.Path -and $_.Path.StartsWith(''' + AddBackslash(Dir) + ''', [StringComparison]::OrdinalIgnoreCase) } | Stop-Process -Force"',
+    '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+end;
+
+// Runs after the new files are in place, so a failed install leaves the old
+// one working. A legacy install in this same folder already had its files
+// replaced; only its own binaries, entry and service are left to remove.
+procedure RemoveLegacyInstall;
+var
+  Dir, ImagePath: String;
+  ResultCode: Integer;
+  SameDir: Boolean;
+begin
+  if not LegacyInstallDir(Dir) then
+    Exit;
+  SameDir := CompareText(AddBackslash(Dir), AddBackslash(ExpandConstant('{app}'))) = 0;
+  if RegQueryStringValue(HKLM, LegacyHelperServiceKey, 'ImagePath', ImagePath) and PointsInto(Dir, ImagePath) then
+  begin
+    Exec(ExpandConstant('{sys}\sc.exe'), 'stop ' + LegacyHelperService, '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+    Exec(ExpandConstant('{sys}\sc.exe'), 'delete ' + LegacyHelperService, '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  end;
+  StopProcessesUnder(Dir);
+  RemoveRegistrationsInto(Dir);
+  if SameDir then
+  begin
+    DeleteFile(Dir + '\FlClash.exe');
+    DeleteFile(Dir + '\FlClashCore.exe');
+    DeleteFile(Dir + '\FlClashHelperService.exe');
+  end
+  else
+  begin
+    DelTree(Dir, True, True, True);
+  end;
+  RegDeleteKeyIncludingSubkeys(HKLM, LegacyUninstallKey);
 end;
 
 function PrepareToInstall(var NeedsRestart: Boolean): String;
@@ -134,6 +210,7 @@ procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssPostInstall then
   begin
+    RemoveLegacyInstall;
     ClearStaleProxy;
   end;
 end;
@@ -147,13 +224,18 @@ begin
 end;
 
 // path_provider names these folders after CompanyName and ProductName in
-// windows/runner/Runner.rc.
+// windows/runner/Runner.rc; com.follow\clash belongs to FlClash. The roaming
+// folder holds subscriptions, the local one only path_provider's cache.
+procedure RemoveCache;
+begin
+  DelTree(ExpandConstant('{localappdata}\Panorama Scholarly Group\Panorama Secure Access'), True, True, True);
+  RemoveDir(ExpandConstant('{localappdata}\Panorama Scholarly Group'));
+end;
+
 procedure RemoveUserData;
 begin
-  DelTree(ExpandConstant('{userappdata}\com.follow\clash'), True, True, True);
-  DelTree(ExpandConstant('{localappdata}\com.follow\clash'), True, True, True);
-  RemoveDir(ExpandConstant('{userappdata}\com.follow'));
-  RemoveDir(ExpandConstant('{localappdata}\com.follow'));
+  DelTree(ExpandConstant('{userappdata}\Panorama Scholarly Group\Panorama Secure Access'), True, True, True);
+  RemoveDir(ExpandConstant('{userappdata}\Panorama Scholarly Group'));
 end;
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
@@ -161,6 +243,7 @@ begin
   if CurUninstallStep = usPostUninstall then
   begin
     RemoveUserRegistrations;
+    RemoveCache;
     if not UninstallSilent and (MsgBox(CustomMessage('RemoveUserData'), mbConfirmation, MB_YESNO or MB_DEFBUTTON2) = IDYES) then
     begin
       RemoveUserData;

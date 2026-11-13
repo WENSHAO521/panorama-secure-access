@@ -139,6 +139,15 @@ class $ProfilesTable extends Profiles
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   ).withConverter<SubscriptionInfo?>($ProfilesTable.$convertersubscriptionInfo);
+  @override
+  late final GeneratedColumnWithTypeConverter<TrafficQuota?, String>
+  trafficQuota = GeneratedColumn<String>(
+    'traffic_quota',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  ).withConverter<TrafficQuota?>($ProfilesTable.$convertertrafficQuota);
   static const VerificationMeta _autoUpdateMeta = const VerificationMeta(
     'autoUpdate',
   );
@@ -204,6 +213,7 @@ class $ProfilesTable extends Profiles
     matchTarget,
     autoUpdateDurationMillis,
     subscriptionInfo,
+    trafficQuota,
     autoUpdate,
     selectedMap,
     unfoldSet,
@@ -377,6 +387,12 @@ class $ProfilesTable extends Profiles
           data['${effectivePrefix}subscription_info'],
         ),
       ),
+      trafficQuota: $ProfilesTable.$convertertrafficQuota.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}traffic_quota'],
+        ),
+      ),
       autoUpdate: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}auto_update'],
@@ -421,6 +437,8 @@ class $ProfilesTable extends Profiles
       const EnumNameConverter<ExtendType>(ExtendType.values);
   static TypeConverter<SubscriptionInfo?, String?> $convertersubscriptionInfo =
       const SubscriptionInfoConverter();
+  static TypeConverter<TrafficQuota?, String?> $convertertrafficQuota =
+      const TrafficQuotaConverter();
   static TypeConverter<Map<String, String>, String> $converterselectedMap =
       const StringMapConverter();
   static TypeConverter<Set<String>, String> $converterunfoldSet =
@@ -443,6 +461,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
   final String? matchTarget;
   final int autoUpdateDurationMillis;
   final SubscriptionInfo? subscriptionInfo;
+  final TrafficQuota? trafficQuota;
   final bool autoUpdate;
   final Map<String, String> selectedMap;
   final Set<String> unfoldSet;
@@ -462,6 +481,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     this.matchTarget,
     required this.autoUpdateDurationMillis,
     this.subscriptionInfo,
+    this.trafficQuota,
     required this.autoUpdate,
     required this.selectedMap,
     required this.unfoldSet,
@@ -508,6 +528,11 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     if (!nullToAbsent || subscriptionInfo != null) {
       map['subscription_info'] = Variable<String>(
         $ProfilesTable.$convertersubscriptionInfo.toSql(subscriptionInfo),
+      );
+    }
+    if (!nullToAbsent || trafficQuota != null) {
+      map['traffic_quota'] = Variable<String>(
+        $ProfilesTable.$convertertrafficQuota.toSql(trafficQuota),
       );
     }
     map['auto_update'] = Variable<bool>(autoUpdate);
@@ -561,6 +586,9 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
       subscriptionInfo: subscriptionInfo == null && nullToAbsent
           ? const Value.absent()
           : Value(subscriptionInfo),
+      trafficQuota: trafficQuota == null && nullToAbsent
+          ? const Value.absent()
+          : Value(trafficQuota),
       autoUpdate: Value(autoUpdate),
       selectedMap: Value(selectedMap),
       unfoldSet: Value(unfoldSet),
@@ -600,6 +628,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
       subscriptionInfo: serializer.fromJson<SubscriptionInfo?>(
         json['subscriptionInfo'],
       ),
+      trafficQuota: serializer.fromJson<TrafficQuota?>(json['trafficQuota']),
       autoUpdate: serializer.fromJson<bool>(json['autoUpdate']),
       selectedMap: serializer.fromJson<Map<String, String>>(
         json['selectedMap'],
@@ -634,6 +663,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
       'subscriptionInfo': serializer.toJson<SubscriptionInfo?>(
         subscriptionInfo,
       ),
+      'trafficQuota': serializer.toJson<TrafficQuota?>(trafficQuota),
       'autoUpdate': serializer.toJson<bool>(autoUpdate),
       'selectedMap': serializer.toJson<Map<String, String>>(selectedMap),
       'unfoldSet': serializer.toJson<Set<String>>(unfoldSet),
@@ -656,6 +686,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     Value<String?> matchTarget = const Value.absent(),
     int? autoUpdateDurationMillis,
     Value<SubscriptionInfo?> subscriptionInfo = const Value.absent(),
+    Value<TrafficQuota?> trafficQuota = const Value.absent(),
     bool? autoUpdate,
     Map<String, String>? selectedMap,
     Set<String>? unfoldSet,
@@ -682,6 +713,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     subscriptionInfo: subscriptionInfo.present
         ? subscriptionInfo.value
         : this.subscriptionInfo,
+    trafficQuota: trafficQuota.present ? trafficQuota.value : this.trafficQuota,
     autoUpdate: autoUpdate ?? this.autoUpdate,
     selectedMap: selectedMap ?? this.selectedMap,
     unfoldSet: unfoldSet ?? this.unfoldSet,
@@ -717,6 +749,9 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
       subscriptionInfo: data.subscriptionInfo.present
           ? data.subscriptionInfo.value
           : this.subscriptionInfo,
+      trafficQuota: data.trafficQuota.present
+          ? data.trafficQuota.value
+          : this.trafficQuota,
       autoUpdate: data.autoUpdate.present
           ? data.autoUpdate.value
           : this.autoUpdate,
@@ -745,6 +780,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
           ..write('matchTarget: $matchTarget, ')
           ..write('autoUpdateDurationMillis: $autoUpdateDurationMillis, ')
           ..write('subscriptionInfo: $subscriptionInfo, ')
+          ..write('trafficQuota: $trafficQuota, ')
           ..write('autoUpdate: $autoUpdate, ')
           ..write('selectedMap: $selectedMap, ')
           ..write('unfoldSet: $unfoldSet, ')
@@ -769,6 +805,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     matchTarget,
     autoUpdateDurationMillis,
     subscriptionInfo,
+    trafficQuota,
     autoUpdate,
     selectedMap,
     unfoldSet,
@@ -792,6 +829,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
           other.matchTarget == this.matchTarget &&
           other.autoUpdateDurationMillis == this.autoUpdateDurationMillis &&
           other.subscriptionInfo == this.subscriptionInfo &&
+          other.trafficQuota == this.trafficQuota &&
           other.autoUpdate == this.autoUpdate &&
           other.selectedMap == this.selectedMap &&
           other.unfoldSet == this.unfoldSet &&
@@ -813,6 +851,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
   final Value<String?> matchTarget;
   final Value<int> autoUpdateDurationMillis;
   final Value<SubscriptionInfo?> subscriptionInfo;
+  final Value<TrafficQuota?> trafficQuota;
   final Value<bool> autoUpdate;
   final Value<Map<String, String>> selectedMap;
   final Value<Set<String>> unfoldSet;
@@ -832,6 +871,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     this.matchTarget = const Value.absent(),
     this.autoUpdateDurationMillis = const Value.absent(),
     this.subscriptionInfo = const Value.absent(),
+    this.trafficQuota = const Value.absent(),
     this.autoUpdate = const Value.absent(),
     this.selectedMap = const Value.absent(),
     this.unfoldSet = const Value.absent(),
@@ -852,6 +892,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     this.matchTarget = const Value.absent(),
     required int autoUpdateDurationMillis,
     this.subscriptionInfo = const Value.absent(),
+    this.trafficQuota = const Value.absent(),
     required bool autoUpdate,
     required Map<String, String> selectedMap,
     required Set<String> unfoldSet,
@@ -879,6 +920,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     Expression<String>? matchTarget,
     Expression<int>? autoUpdateDurationMillis,
     Expression<String>? subscriptionInfo,
+    Expression<String>? trafficQuota,
     Expression<bool>? autoUpdate,
     Expression<String>? selectedMap,
     Expression<String>? unfoldSet,
@@ -900,6 +942,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
       if (autoUpdateDurationMillis != null)
         'auto_update_duration_millis': autoUpdateDurationMillis,
       if (subscriptionInfo != null) 'subscription_info': subscriptionInfo,
+      if (trafficQuota != null) 'traffic_quota': trafficQuota,
       if (autoUpdate != null) 'auto_update': autoUpdate,
       if (selectedMap != null) 'selected_map': selectedMap,
       if (unfoldSet != null) 'unfold_set': unfoldSet,
@@ -922,6 +965,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     Value<String?>? matchTarget,
     Value<int>? autoUpdateDurationMillis,
     Value<SubscriptionInfo?>? subscriptionInfo,
+    Value<TrafficQuota?>? trafficQuota,
     Value<bool>? autoUpdate,
     Value<Map<String, String>>? selectedMap,
     Value<Set<String>>? unfoldSet,
@@ -943,6 +987,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
       autoUpdateDurationMillis:
           autoUpdateDurationMillis ?? this.autoUpdateDurationMillis,
       subscriptionInfo: subscriptionInfo ?? this.subscriptionInfo,
+      trafficQuota: trafficQuota ?? this.trafficQuota,
       autoUpdate: autoUpdate ?? this.autoUpdate,
       selectedMap: selectedMap ?? this.selectedMap,
       unfoldSet: unfoldSet ?? this.unfoldSet,
@@ -1003,6 +1048,11 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
         $ProfilesTable.$convertersubscriptionInfo.toSql(subscriptionInfo.value),
       );
     }
+    if (trafficQuota.present) {
+      map['traffic_quota'] = Variable<String>(
+        $ProfilesTable.$convertertrafficQuota.toSql(trafficQuota.value),
+      );
+    }
     if (autoUpdate.present) {
       map['auto_update'] = Variable<bool>(autoUpdate.value);
     }
@@ -1043,6 +1093,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
           ..write('matchTarget: $matchTarget, ')
           ..write('autoUpdateDurationMillis: $autoUpdateDurationMillis, ')
           ..write('subscriptionInfo: $subscriptionInfo, ')
+          ..write('trafficQuota: $trafficQuota, ')
           ..write('autoUpdate: $autoUpdate, ')
           ..write('selectedMap: $selectedMap, ')
           ..write('unfoldSet: $unfoldSet, ')
@@ -5424,6 +5475,7 @@ typedef $$ProfilesTableCreateCompanionBuilder =
       Value<String?> matchTarget,
       required int autoUpdateDurationMillis,
       Value<SubscriptionInfo?> subscriptionInfo,
+      Value<TrafficQuota?> trafficQuota,
       required bool autoUpdate,
       required Map<String, String> selectedMap,
       required Set<String> unfoldSet,
@@ -5445,6 +5497,7 @@ typedef $$ProfilesTableUpdateCompanionBuilder =
       Value<String?> matchTarget,
       Value<int> autoUpdateDurationMillis,
       Value<SubscriptionInfo?> subscriptionInfo,
+      Value<TrafficQuota?> trafficQuota,
       Value<bool> autoUpdate,
       Value<Map<String, String>> selectedMap,
       Value<Set<String>> unfoldSet,
@@ -5609,6 +5662,12 @@ class $$ProfilesTableFilterComposer
   ColumnWithTypeConverterFilters<SubscriptionInfo?, SubscriptionInfo, String>
   get subscriptionInfo => $composableBuilder(
     column: $table.subscriptionInfo,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<TrafficQuota?, TrafficQuota, String>
+  get trafficQuota => $composableBuilder(
+    column: $table.trafficQuota,
     builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
@@ -5819,6 +5878,11 @@ class $$ProfilesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get trafficQuota => $composableBuilder(
+    column: $table.trafficQuota,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get autoUpdate => $composableBuilder(
     column: $table.autoUpdate,
     builder: (column) => ColumnOrderings(column),
@@ -5908,6 +5972,12 @@ class $$ProfilesTableAnnotationComposer
     column: $table.subscriptionInfo,
     builder: (column) => column,
   );
+
+  GeneratedColumnWithTypeConverter<TrafficQuota?, String> get trafficQuota =>
+      $composableBuilder(
+        column: $table.trafficQuota,
+        builder: (column) => column,
+      );
 
   GeneratedColumn<bool> get autoUpdate => $composableBuilder(
     column: $table.autoUpdate,
@@ -6077,6 +6147,7 @@ class $$ProfilesTableTableManager
                 Value<int> autoUpdateDurationMillis = const Value.absent(),
                 Value<SubscriptionInfo?> subscriptionInfo =
                     const Value.absent(),
+                Value<TrafficQuota?> trafficQuota = const Value.absent(),
                 Value<bool> autoUpdate = const Value.absent(),
                 Value<Map<String, String>> selectedMap = const Value.absent(),
                 Value<Set<String>> unfoldSet = const Value.absent(),
@@ -6096,6 +6167,7 @@ class $$ProfilesTableTableManager
                 matchTarget: matchTarget,
                 autoUpdateDurationMillis: autoUpdateDurationMillis,
                 subscriptionInfo: subscriptionInfo,
+                trafficQuota: trafficQuota,
                 autoUpdate: autoUpdate,
                 selectedMap: selectedMap,
                 unfoldSet: unfoldSet,
@@ -6118,6 +6190,7 @@ class $$ProfilesTableTableManager
                 required int autoUpdateDurationMillis,
                 Value<SubscriptionInfo?> subscriptionInfo =
                     const Value.absent(),
+                Value<TrafficQuota?> trafficQuota = const Value.absent(),
                 required bool autoUpdate,
                 required Map<String, String> selectedMap,
                 required Set<String> unfoldSet,
@@ -6137,6 +6210,7 @@ class $$ProfilesTableTableManager
                 matchTarget: matchTarget,
                 autoUpdateDurationMillis: autoUpdateDurationMillis,
                 subscriptionInfo: subscriptionInfo,
+                trafficQuota: trafficQuota,
                 autoUpdate: autoUpdate,
                 selectedMap: selectedMap,
                 unfoldSet: unfoldSet,

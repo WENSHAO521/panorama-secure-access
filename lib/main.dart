@@ -12,6 +12,7 @@ import 'application.dart';
 import 'bootstrap.dart';
 import 'common/app_data.dart';
 import 'common/common.dart';
+import 'common/legacy_data.dart';
 import 'common/preferences_store.dart';
 import 'common/window.dart';
 
@@ -37,6 +38,7 @@ void main(List<String> args) {
       };
       try {
         await RustLib.init();
+        await importLegacyData(await appPath.homeDirPath);
         final version = await system.init();
         final container = await bootstrap.init(version);
         await FlClashHttpOverrides.trustCoreRoots();

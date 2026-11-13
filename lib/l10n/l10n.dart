@@ -4711,20 +4711,20 @@ class AppLocalizations {
     );
   }
 
-  /// `Windows refused to run FlClashCore.exe (error {code}). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow Panorama Secure Access in that policy or turn it off, then try again.`
+  /// `Windows refused to run panorama-secure-access-core.exe (error {code}). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow Panorama Secure Access in that policy or turn it off, then try again.`
   String coreBlockedByPolicyTip(Object code) {
     return Intl.message(
-      'Windows refused to run FlClashCore.exe (error $code). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow Panorama Secure Access in that policy or turn it off, then try again.',
+      'Windows refused to run panorama-secure-access-core.exe (error $code). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow Panorama Secure Access in that policy or turn it off, then try again.',
       name: 'coreBlockedByPolicyTip',
       desc: '',
       args: [code],
     );
   }
 
-  /// `Windows Smart App Control blocked FlClashCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start Panorama Secure Access again. Smart App Control cannot be turned back on without reinstalling Windows.`
+  /// `Windows Smart App Control blocked panorama-secure-access-core.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start Panorama Secure Access again. Smart App Control cannot be turned back on without reinstalling Windows.`
   String get coreBlockedBySmartAppControlTip {
     return Intl.message(
-      'Windows Smart App Control blocked FlClashCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start Panorama Secure Access again. Smart App Control cannot be turned back on without reinstalling Windows.',
+      'Windows Smart App Control blocked panorama-secure-access-core.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start Panorama Secure Access again. Smart App Control cannot be turned back on without reinstalling Windows.',
       name: 'coreBlockedBySmartAppControlTip',
       desc: '',
       args: [],
@@ -7963,6 +7963,91 @@ class AppLocalizations {
     return Intl.message('Stable', name: 'stableChannel', desc: '', args: []);
   }
 
+  /// `Join the beta program?`
+  String get betaJoinConfirmTitle {
+    return Intl.message(
+      'Join the beta program?',
+      name: 'betaJoinConfirmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Beta builds get new features first, but they can be less stable and may not work with every profile, rule set or system. You can leave at any time.`
+  String get betaJoinConfirmDesc {
+    return Intl.message(
+      'Beta builds get new features first, but they can be less stable and may not work with every profile, rule set or system. You can leave at any time.',
+      name: 'betaJoinConfirmDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Join`
+  String get betaJoinConfirm {
+    return Intl.message('Join', name: 'betaJoinConfirm', desc: '', args: []);
+  }
+
+  /// `Leave the beta program?`
+  String get betaLeaveConfirmTitle {
+    return Intl.message(
+      'Leave the beta program?',
+      name: 'betaLeaveConfirmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You will stop receiving beta updates. The installed beta is not removed or downgraded: you keep it until a stable release of the same or a newer version ships, then the app returns to stable.`
+  String get betaLeaveConfirmDesc {
+    return Intl.message(
+      'You will stop receiving beta updates. The installed beta is not removed or downgraded: you keep it until a stable release of the same or a newer version ships, then the app returns to stable.',
+      name: 'betaLeaveConfirmDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leave`
+  String get betaLeaveConfirm {
+    return Intl.message('Leave', name: 'betaLeaveConfirm', desc: '', args: []);
+  }
+
+  /// `Keep the beta`
+  String get betaStay {
+    return Intl.message('Keep the beta', name: 'betaStay', desc: '', args: []);
+  }
+
+  /// `Update channel`
+  String get updateChannel {
+    return Intl.message(
+      'Update channel',
+      name: 'updateChannel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Installed version`
+  String get installedVersion {
+    return Intl.message(
+      'Installed version',
+      name: 'installedVersion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The setting could not be saved, so the update channel is unchanged.`
+  String get betaChannelSaveFailed {
+    return Intl.message(
+      'The setting could not be saved, so the update channel is unchanged.',
+      name: 'betaChannelSaveFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `MITM`
   String get mitm {
     return Intl.message('MITM', name: 'mitm', desc: '', args: []);
@@ -9261,6 +9346,591 @@ class AppLocalizations {
       desc: '',
       args: [],
     );
+  }
+
+  /// `Custom traffic`
+  String get customTraffic {
+    return Intl.message(
+      'Custom traffic',
+      name: 'customTraffic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Replaces the total the subscription reports. Leave empty to use it.`
+  String get customTrafficDesc {
+    return Intl.message(
+      'Replaces the total the subscription reports. Leave empty to use it.',
+      name: 'customTrafficDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Traffic period`
+  String get trafficPeriod {
+    return Intl.message(
+      'Traffic period',
+      name: 'trafficPeriod',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resets monthly`
+  String get trafficMonthly {
+    return Intl.message(
+      'Resets monthly',
+      name: 'trafficMonthly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permanent`
+  String get trafficPermanent {
+    return Intl.message(
+      'Permanent',
+      name: 'trafficPermanent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a traffic amount above 0`
+  String get customTrafficInvalidDesc {
+    return Intl.message(
+      'Enter a traffic amount above 0',
+      name: 'customTrafficInvalidDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter at most 1024 TB`
+  String get customTrafficTooLargeDesc {
+    return Intl.message(
+      'Enter at most 1024 TB',
+      name: 'customTrafficTooLargeDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set up the TUN service`
+  String get linuxHelperSetupTitle {
+    return Intl.message(
+      'Set up the TUN service',
+      name: 'linuxHelperSetupTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TUN mode runs through a system service. Authorize it once as an administrator: after that, starting Panorama Secure Access, turning on TUN and restarting the computer no longer ask for a password. The app itself keeps running under your account.`
+  String get linuxHelperSetupTip {
+    return Intl.message(
+      'TUN mode runs through a system service. Authorize it once as an administrator: after that, starting Panorama Secure Access, turning on TUN and restarting the computer no longer ask for a password. The app itself keeps running under your account.',
+      name: 'linuxHelperSetupTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The TUN service was not installed. Turning on TUN will ask again.`
+  String get linuxHelperSetupFailed {
+    return Intl.message(
+      'The TUN service was not installed. Turning on TUN will ask again.',
+      name: 'linuxHelperSetupFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Finish the update in a terminal`
+  String get ostreeUpdateTitle {
+    return Intl.message(
+      'Finish the update in a terminal',
+      name: 'ostreeUpdateTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This system is managed by rpm-ostree (such as Fedora Silverblue), which installs packages into a new system image. Run the command below, then restart the computer: the new version and its TUN service start only after the restart.`
+  String get ostreeUpdateTip {
+    return Intl.message(
+      'This system is managed by rpm-ostree (such as Fedora Silverblue), which installs packages into a new system image. Run the command below, then restart the computer: the new version and its TUN service start only after the restart.',
+      name: 'ostreeUpdateTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your profiles, rules and settings were copied from the previous installation ({path}). The original files were left unchanged.`
+  String legacyDataImported(Object path) {
+    return Intl.message(
+      'Your profiles, rules and settings were copied from the previous installation ($path). The original files were left unchanged.',
+      name: 'legacyDataImported',
+      desc: '',
+      args: [path],
+    );
+  }
+
+  /// `Previous version still installed`
+  String get legacyInstallTitle {
+    return Intl.message(
+      'Previous version still installed',
+      name: 'legacyInstallTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An earlier Panorama Secure Access, installed under FlClash's identifiers, is still on this device ({name}). Your data has already been copied. Remove it so the two do not compete for the TUN device, ports and system proxy? FlClash itself is not affected.`
+  String legacyInstallTip(Object name) {
+    return Intl.message(
+      'An earlier Panorama Secure Access, installed under FlClash\'s identifiers, is still on this device ($name). Your data has already been copied. Remove it so the two do not compete for the TUN device, ports and system proxy? FlClash itself is not affected.',
+      name: 'legacyInstallTip',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Remove`
+  String get legacyInstallRemove {
+    return Intl.message(
+      'Remove',
+      name: 'legacyInstallRemove',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The previous version could not be removed. Uninstall it with your package manager or move it to the Trash.`
+  String get legacyInstallRemoveFailed {
+    return Intl.message(
+      'The previous version could not be removed. Uninstall it with your package manager or move it to the Trash.',
+      name: 'legacyInstallRemoveFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import from the previous version`
+  String get legacyAndroidImportTitle {
+    return Intl.message(
+      'Import from the previous version',
+      name: 'legacyAndroidImportTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The previous version ({name}) is still installed. Android cannot upgrade it in place because the app ID changed, and it cannot read another app's data. In the previous version open Tools → Backup and restore and back up to a local file, then restore that file here. Uninstall the previous version afterwards.`
+  String legacyAndroidImportTip(Object name) {
+    return Intl.message(
+      'The previous version ($name) is still installed. Android cannot upgrade it in place because the app ID changed, and it cannot read another app\'s data. In the previous version open Tools → Backup and restore and back up to a local file, then restore that file here. Uninstall the previous version afterwards.',
+      name: 'legacyAndroidImportTip',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Restore now`
+  String get legacyAndroidImportAction {
+    return Intl.message(
+      'Restore now',
+      name: 'legacyAndroidImportAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Port {port} is already in use`
+  String portInUseTitle(Object port) {
+    return Intl.message(
+      'Port $port is already in use',
+      name: 'portInUseTitle',
+      desc: '',
+      args: [port],
+    );
+  }
+
+  /// `Another program is listening on port {port}, so the proxy port cannot start there, and the system proxy would send your traffic to that program instead. Switch the mixed port to the free port {free}?`
+  String portInUseTip(Object port, Object free) {
+    return Intl.message(
+      'Another program is listening on port $port, so the proxy port cannot start there, and the system proxy would send your traffic to that program instead. Switch the mixed port to the free port $free?',
+      name: 'portInUseTip',
+      desc: '',
+      args: [port, free],
+    );
+  }
+
+  /// `Switch port`
+  String get portInUseSwitch {
+    return Intl.message(
+      'Switch port',
+      name: 'portInUseSwitch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Port {port} is used by another program, so the proxy port could not start. Change the mixed port under Ports.`
+  String portInUseBanner(Object port) {
+    return Intl.message(
+      'Port $port is used by another program, so the proxy port could not start. Change the mixed port under Ports.',
+      name: 'portInUseBanner',
+      desc: '',
+      args: [port],
+    );
+  }
+
+  /// `Other proxy clients are running: {names}. Two TUN modes or system proxies override each other; quit the others before turning on TUN or the system proxy.`
+  String conflictingClientsTip(Object names) {
+    return Intl.message(
+      'Other proxy clients are running: $names. Two TUN modes or system proxies override each other; quit the others before turning on TUN or the system proxy.',
+      name: 'conflictingClientsTip',
+      desc: '',
+      args: [names],
+    );
+  }
+
+  /// `Restore from before the update`
+  String get restoreBeforeUpdate {
+    return Intl.message(
+      'Restore from before the update',
+      name: 'restoreBeforeUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Data from v{version}, saved before updating to {tag}`
+  String restoreBeforeUpdateTip(Object version, Object tag) {
+    return Intl.message(
+      'Data from v$version, saved before updating to $tag',
+      name: 'restoreBeforeUpdateTip',
+      desc: '',
+      args: [version, tag],
+    );
+  }
+
+  /// `Network diagnosis`
+  String get networkDiagnosis {
+    return Intl.message(
+      'Network diagnosis',
+      name: 'networkDiagnosis',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Run again`
+  String get networkDiagnosisRun {
+    return Intl.message(
+      'Run again',
+      name: 'networkDiagnosisRun',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No problems found.`
+  String get networkDiagnosisAllPassed {
+    return Intl.message(
+      'No problems found.',
+      name: 'networkDiagnosisAllPassed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} problem(s) found. Use the button next to an item to fix it.`
+  String networkDiagnosisProblems(Object count) {
+    return Intl.message(
+      '$count problem(s) found. Use the button next to an item to fix it.',
+      name: 'networkDiagnosisProblems',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Core`
+  String get diagnosisCore {
+    return Intl.message('Core', name: 'diagnosisCore', desc: '', args: []);
+  }
+
+  /// `Proxy port`
+  String get diagnosisMixedPort {
+    return Intl.message(
+      'Proxy port',
+      name: 'diagnosisMixedPort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Other proxy clients`
+  String get diagnosisOtherClients {
+    return Intl.message(
+      'Other proxy clients',
+      name: 'diagnosisOtherClients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `System proxy`
+  String get diagnosisSystemProxy {
+    return Intl.message(
+      'System proxy',
+      name: 'diagnosisSystemProxy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TUN authorization`
+  String get diagnosisTun {
+    return Intl.message(
+      'TUN authorization',
+      name: 'diagnosisTun',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DNS resolution`
+  String get diagnosisDns {
+    return Intl.message(
+      'DNS resolution',
+      name: 'diagnosisDns',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `IPv4 connectivity`
+  String get diagnosisIpv4 {
+    return Intl.message(
+      'IPv4 connectivity',
+      name: 'diagnosisIpv4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `IPv6 connectivity`
+  String get diagnosisIpv6 {
+    return Intl.message(
+      'IPv6 connectivity',
+      name: 'diagnosisIpv6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request through the proxy`
+  String get diagnosisProxyRequest {
+    return Intl.message(
+      'Request through the proxy',
+      name: 'diagnosisProxyRequest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not configured on this network`
+  String get diagnosisNotConfigured {
+    return Intl.message(
+      'Not configured on this network',
+      name: 'diagnosisNotConfigured',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No route`
+  String get diagnosisUnreachable {
+    return Intl.message(
+      'No route',
+      name: 'diagnosisUnreachable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connection refused`
+  String get diagnosisRefused {
+    return Intl.message(
+      'Connection refused',
+      name: 'diagnosisRefused',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Timed out`
+  String get diagnosisTimeout {
+    return Intl.message(
+      'Timed out',
+      name: 'diagnosisTimeout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TLS handshake failed`
+  String get diagnosisTls {
+    return Intl.message(
+      'TLS handshake failed',
+      name: 'diagnosisTls',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name lookup failed`
+  String get diagnosisHostLookup {
+    return Intl.message(
+      'Name lookup failed',
+      name: 'diagnosisHostLookup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The proxy answered with an error`
+  String get diagnosisProxyFault {
+    return Intl.message(
+      'The proxy answered with an error',
+      name: 'diagnosisProxyFault',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed`
+  String get diagnosisFailed {
+    return Intl.message('Failed', name: 'diagnosisFailed', desc: '', args: []);
+  }
+
+  /// `Restart core`
+  String get repairRestartCore {
+    return Intl.message(
+      'Restart core',
+      name: 'repairRestartCore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set again`
+  String get repairReapplyProxy {
+    return Intl.message(
+      'Set again',
+      name: 'repairReapplyProxy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear`
+  String get repairClearProxy {
+    return Intl.message('Clear', name: 'repairClearProxy', desc: '', args: []);
+  }
+
+  /// `Authorize`
+  String get repairAuthorizeTun {
+    return Intl.message(
+      'Authorize',
+      name: 'repairAuthorizeTun',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn off IPv6`
+  String get repairDisableIpv6 {
+    return Intl.message(
+      'Turn off IPv6',
+      name: 'repairDisableIpv6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Flush DNS`
+  String get repairFlushDns {
+    return Intl.message(
+      'Flush DNS',
+      name: 'repairFlushDns',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Uninstall`
+  String get uninstallApp {
+    return Intl.message('Uninstall', name: 'uninstallApp', desc: '', args: []);
+  }
+
+  /// `Remove the app, its background service and cache from this computer`
+  String get uninstallAppDesc {
+    return Intl.message(
+      'Remove the app, its background service and cache from this computer',
+      name: 'uninstallAppDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove Panorama Secure Access from this computer? Its background service, launch at login, link handler and cache go too, and the app quits.`
+  String get uninstallConfirm {
+    return Intl.message(
+      'Remove Panorama Secure Access from this computer? Its background service, launch at login, link handler and cache go too, and the app quits.',
+      name: 'uninstallConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `On Fedora Atomic (rpm-ostree) the app disappears after the next reboot.`
+  String get uninstallRebootTip {
+    return Intl.message(
+      'On Fedora Atomic (rpm-ostree) the app disappears after the next reboot.',
+      name: 'uninstallRebootTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Also delete your subscriptions, settings and logs? They cannot be recovered. Keep them if you plan to install again.`
+  String get uninstallDeleteDataTip {
+    return Intl.message(
+      'Also delete your subscriptions, settings and logs? They cannot be recovered. Keep them if you plan to install again.',
+      name: 'uninstallDeleteDataTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The app was not removed, so nothing was deleted.`
+  String get uninstallFailed {
+    return Intl.message(
+      'The app was not removed, so nothing was deleted.',
+      name: 'uninstallFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep`
+  String get keep {
+    return Intl.message('Keep', name: 'keep', desc: '', args: []);
   }
 }
 

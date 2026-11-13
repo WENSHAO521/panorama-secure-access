@@ -65,9 +65,11 @@ func pinEgressNow(cfg *config.Config) {
 		return
 	}
 	egressPin.mu.Lock()
+	previous := egressPin.name
 	egressPin.name = name
 	egressPin.mu.Unlock()
-	dialer.DefaultInterface.CompareAndSwap("", name)
+	// An apply while stopped leaves its pin in place, and the network may have moved since.
+	dialer.DefaultInterface.CompareAndSwap(previous, name)
 }
 
 func egressPinned() bool {

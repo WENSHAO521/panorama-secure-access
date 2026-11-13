@@ -1,4 +1,4 @@
-package com.follow.clash.common
+package com.panoramasg.secureaccess.common
 
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors

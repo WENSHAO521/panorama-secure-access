@@ -4,9 +4,13 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/common/update_backup.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/action.dart';
+import 'package:fl_clash/state.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
+import 'package:flutter/painting.dart' show TextSpan;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'generated/update.g.dart';
@@ -16,6 +20,10 @@ const _speedSmoothing = 0.3;
 
 @Riverpod(keepAlive: true)
 class UpdateController extends _$UpdateController {
+  @visibleForTesting
+  static Future<String> Function() currentVersion = () async =>
+      globalState.appVersion;
+
   CancelToken? _cancelToken;
   List<UpdateAsset> _assets = const [];
 
@@ -33,9 +41,11 @@ class UpdateController extends _$UpdateController {
   }) async {
     final tag = release['tag_name'] as String;
     final current = state;
+    // A download under way finishes into whatever state is current, so a
+    // newer release waits for the next check instead of replacing it.
     if (current != null &&
-        current.tag == tag &&
-        current.stage != UpdateStage.failed) {
+        (current.isBusy ||
+            current.tag == tag && current.stage != UpdateStage.failed)) {
       show();
       return true;
     }
@@ -140,10 +150,21 @@ class UpdateController extends _$UpdateController {
 
   void cancel() => _cancelToken?.cancel();
 
+  /// Leaving the beta drops a pre-release found or fetched while in it, so no
+  /// check from the old channel installs one afterwards.
+  void dropPreRelease() {
+    final current = state;
+    if (current == null || !current.tag.contains('-')) return;
+    _cancelToken?.cancel();
+    _assets = const [];
+    state = null;
+  }
+
   Future<void> install() async {
     final path = state?.filePath;
     if (path == null) return;
     try {
+      await _backupBeforeInstall();
       if (!await Updater.install(File(path))) {
         _fail('installer did not start');
         return;
@@ -151,9 +172,43 @@ class UpdateController extends _$UpdateController {
       if (system.isWindows) {
         await ref.read(systemActionProvider.notifier).handleExit();
       }
+      if (system.isOstree) {
+        await _showOstreeUpdateCommand(path);
+      }
     } catch (error) {
       _fail(error);
     }
+  }
+
+  /// A failed backup is logged and does not hold back the update.
+  Future<void> _backupBeforeInstall() async {
+    final tag = state?.tag;
+    if (tag == null) return;
+    try {
+      final version = await currentVersion();
+      await ref.read(backupActionProvider.notifier).backup((archive) async {
+        await updateBackups.save(archive, fromVersion: version, toTag: tag);
+        return true;
+      });
+    } catch (error) {
+      commonPrint.log(
+        'pre-update backup failed ${compactError(error)}',
+        logLevel: LogLevel.warning,
+      );
+    }
+  }
+
+  Future<void> _showOstreeUpdateCommand(String path) async {
+    final command = Linux.ostreeUpdateCommand(
+      path,
+      await linux?.installedPackageName(),
+    );
+    await dialogs.showAlert(
+      title: currentAppLocalizations.ostreeUpdateTitle,
+      message: TextSpan(
+        text: '${currentAppLocalizations.ostreeUpdateTip}\n\n$command',
+      ),
+    );
   }
 
   void show() => _patch((value) => value.copyWith(cardVisible: true));
