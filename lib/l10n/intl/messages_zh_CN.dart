@@ -435,6 +435,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "checkUpdate": MessageLookupByLibrary.simpleMessage("检查更新"),
     "checkUpdateError": MessageLookupByLibrary.simpleMessage("当前应用已经是最新版了"),
     "cipher": MessageLookupByLibrary.simpleMessage("加密方式"),
+    "classicLook": MessageLookupByLibrary.simpleMessage("经典"),
     "clearData": MessageLookupByLibrary.simpleMessage("清除数据"),
     "clearDataAndExitTip": MessageLookupByLibrary.simpleMessage(
       "将删除所有配置、设置和本地数据，随后关闭应用。重新打开即可从头开始。",
@@ -501,7 +502,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Windows 智能应用控制拦截了未签名的 panorama-secure-access-core.exe。请打开 Windows 安全中心 → 应用和浏览器控制 → 智能应用控制设置，选择「关闭」后重新启动 Panorama Secure Access。智能应用控制关闭后无法再开启，除非重装 Windows。",
     ),
+    "coreStarting": MessageLookupByLibrary.simpleMessage("正在启动…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("核心状态"),
+    "coreStopping": MessageLookupByLibrary.simpleMessage("正在停止…"),
     "country": MessageLookupByLibrary.simpleMessage("区域"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("检测到崩溃"),
     "crashDetectedTip": m7,
@@ -1679,7 +1682,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "标准模式，在配置的基础上附加规则",
     ),
+    "starChart": MessageLookupByLibrary.simpleMessage("星官笺"),
     "start": MessageLookupByLibrary.simpleMessage("启动"),
+    "startFailedRetry": MessageLookupByLibrary.simpleMessage("启动失败，点击重试"),
     "startFromScratch": MessageLookupByLibrary.simpleMessage("从零开始"),
     "startVpn": MessageLookupByLibrary.simpleMessage("正在启动VPN…"),
     "startupAndBackground": MessageLookupByLibrary.simpleMessage("启动与后台"),

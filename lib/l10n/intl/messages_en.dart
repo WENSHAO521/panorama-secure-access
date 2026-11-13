@@ -532,6 +532,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "The app is already up to date",
     ),
     "cipher": MessageLookupByLibrary.simpleMessage("Cipher"),
+    "classicLook": MessageLookupByLibrary.simpleMessage("Classic"),
     "clearData": MessageLookupByLibrary.simpleMessage("Clear data"),
     "clearDataAndExitTip": MessageLookupByLibrary.simpleMessage(
       "This deletes all profiles, settings, and local data, then closes the app. Open it again to start fresh.",
@@ -626,7 +627,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Windows Smart App Control blocked panorama-secure-access-core.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start Panorama Secure Access again. Smart App Control cannot be turned back on without reinstalling Windows.",
     ),
+    "coreStarting": MessageLookupByLibrary.simpleMessage("Starting…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("Core status"),
+    "coreStopping": MessageLookupByLibrary.simpleMessage("Stopping…"),
     "country": MessageLookupByLibrary.simpleMessage("Region"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("Crash detected"),
     "crashDetectedTip": m7,
@@ -2171,7 +2174,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "Standard mode: adds rules on top of the profile",
     ),
+    "starChart": MessageLookupByLibrary.simpleMessage("Star chart"),
     "start": MessageLookupByLibrary.simpleMessage("Start"),
+    "startFailedRetry": MessageLookupByLibrary.simpleMessage(
+      "Start failed. Tap to retry",
+    ),
     "startFromScratch": MessageLookupByLibrary.simpleMessage(
       "Start from scratch",
     ),

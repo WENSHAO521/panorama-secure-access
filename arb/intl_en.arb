@@ -1169,5 +1169,10 @@
   "uninstallRebootTip": "On Fedora Atomic (rpm-ostree) the app disappears after the next reboot.",
   "uninstallDeleteDataTip": "Also delete your subscriptions, settings and logs? They cannot be recovered. Keep them if you plan to install again.",
   "uninstallFailed": "The app was not removed, so nothing was deleted.",
-  "keep": "Keep"
+  "keep": "Keep",
+  "starChart": "Star chart",
+  "coreStarting": "Starting…",
+  "coreStopping": "Stopping…",
+  "startFailedRetry": "Start failed. Tap to retry",
+  "classicLook": "Classic"
 }

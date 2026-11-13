@@ -572,6 +572,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "L’app est déjà à jour",
     ),
     "cipher": MessageLookupByLibrary.simpleMessage("Chiffrement"),
+    "classicLook": MessageLookupByLibrary.simpleMessage("Classique"),
     "clearData": MessageLookupByLibrary.simpleMessage("Effacer les données"),
     "clearDataAndExitTip": MessageLookupByLibrary.simpleMessage(
       "Cela supprime tous les profils, réglages et données locales, puis ferme l’app. Rouvrez-la pour repartir de zéro.",
@@ -672,7 +673,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Windows Smart App Control a bloqué panorama-secure-access-core.exe car il n’est pas signé. Ouvrez Sécurité Windows → Contrôle des applications et du navigateur → Paramètres de Smart App Control, choisissez Désactivé, puis relancez Panorama Secure Access. Smart App Control ne peut pas être réactivé sans réinstaller Windows.",
     ),
+    "coreStarting": MessageLookupByLibrary.simpleMessage("Démarrage…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("État du cœur"),
+    "coreStopping": MessageLookupByLibrary.simpleMessage("Arrêt…"),
     "country": MessageLookupByLibrary.simpleMessage("Région"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("Plantage détecté"),
     "crashDetectedTip": m7,
@@ -2345,7 +2348,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "Mode standard : ajoute des règles par-dessus le profil",
     ),
+    "starChart": MessageLookupByLibrary.simpleMessage("Carte céleste"),
     "start": MessageLookupByLibrary.simpleMessage("Démarrer"),
+    "startFailedRetry": MessageLookupByLibrary.simpleMessage(
+      "Échec du démarrage. Touchez pour réessayer",
+    ),
     "startFromScratch": MessageLookupByLibrary.simpleMessage("Partir de zéro"),
     "startVpn": MessageLookupByLibrary.simpleMessage("Démarrage du VPN…"),
     "startupAndBackground": MessageLookupByLibrary.simpleMessage(

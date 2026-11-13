@@ -31,6 +31,8 @@ class ThemeView extends StatelessWidget {
           const SizedBox(height: 16),
           const _ThemeModeItem(),
           const SizedBox(height: 16),
+          const _StarChartItem(),
+          const SizedBox(height: 16),
           const _PureBlackItem(),
           const SizedBox(height: 16),
           const _PrimaryColorItem(),
@@ -559,6 +561,52 @@ final _floatingBarProvider = appSettingProvider.select(
 final _liquidGlassProvider = themeSettingProvider.select(
   (state) => state.liquidGlass != LiquidGlassMode.none,
 );
+
+class _StarChartItem extends ConsumerWidget {
+  const _StarChartItem();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appLocalizations = context.appLocalizations;
+    final starChart = ref.watch(
+      themeSettingProvider.select((state) => state.starChart),
+    );
+    final brightness = ref.watch(currentBrightnessProvider);
+    final floatingBar = ref.watch(_floatingBarProvider);
+    final liquidGlass = ref.watch(_liquidGlassProvider);
+    Widget preview(bool starChart) => MiniScreenThumb(
+      screen: MiniScreen(
+        colorScheme: ref.watch(
+          genColorSchemeProvider(brightness, starChart: starChart),
+        ),
+        floatingBar: floatingBar,
+        liquidGlass: liquidGlass,
+        starChart: starChart,
+      ),
+    );
+    return PreviewChoiceGroup<bool>(
+      info: Info(label: appLocalizations.starChart, glyph: AppGlyphs.star),
+      value: starChart,
+      choices: [
+        PreviewChoice(
+          value: false,
+          label: appLocalizations.classicLook,
+          pictogram: preview(false),
+        ),
+        PreviewChoice(
+          value: true,
+          label: appLocalizations.starChart,
+          pictogram: preview(true),
+        ),
+      ],
+      onChanged: (value) {
+        ref
+            .read(themeSettingProvider.notifier)
+            .update((state) => state.copyWith(starChart: value));
+      },
+    );
+  }
+}
 
 class _PureBlackItem extends ConsumerWidget {
   const _PureBlackItem();

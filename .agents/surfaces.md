@@ -238,3 +238,13 @@ widget test does it: pump `HomePage` or the view inside a `RepaintBoundary`, loa
 gets real glyphs, and write `RenderRepaintBoundary.toImage` to a PNG outside the repository. Look for a surface that
 matches the one it sits on, which means it skipped `SurfaceScope`, and for a tonal container fill that survived on a
 card or row.
+
+## Star Chart Look
+
+`ThemeProps.starChart` (星官箋, on by default, toggled on the theme page) is this fork's deliberate exception to the
+rules above. `genColorScheme` swaps the seeded scheme for the fixed mineral palette in `lib/ui/star_chart.dart`
+(`ColorScheme.toStarChart`), and widgets read `StarChartScope.of(context)` to add the look's decorations: the
+dashboard cards' double hairline frame (文武邊), serif card titles, the yin-yang line switch (陰陽爻), the star plate
+start button (`star_plate.dart`) and the sky-and-mountains page (`star_backdrop.dart`). The theme page preview
+(`MiniScreen.starChart`) draws the same pieces; keep it in step with the dashboard. Tests run the classic look
+unless they wrap their widget in `StarChartScope(enabled: true)`.

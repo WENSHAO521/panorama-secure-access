@@ -42,6 +42,7 @@ ColorScheme genColorScheme(
   Color? color,
   bool ignoreConfig = false,
   bool? pureBlack,
+  bool? starChart,
 }) {
   final themeSetting = ref.watch(
     themeSettingProvider.select(
@@ -49,6 +50,7 @@ ColorScheme genColorScheme(
         primaryColor: state.primaryColor,
         colorStyle: state.colorStyle,
         pureBlack: state.pureBlack,
+        starChart: state.starChart,
       ),
     ),
   );
@@ -65,27 +67,35 @@ ColorScheme genColorScheme(
     brightness,
     themeSetting.colorStyle,
     pureBlack ?? themeSetting.pureBlack,
+    // A swatch previews its own seed; the app and its previews wear the look.
+    starChart: color == null && (starChart ?? themeSetting.starChart),
   );
 }
 
 const _maxCachedColorSchemes = 64;
 
-final _colorSchemes = <(Color, Brightness, ColorStyle, bool), ColorScheme>{};
+final _colorSchemes =
+    <(Color, Brightness, ColorStyle, bool, bool), ColorScheme>{};
 
 ColorScheme _cachedColorScheme(
   Color seedColor,
   Brightness brightness,
   ColorStyle style,
-  bool pureBlack,
-) {
-  final key = (seedColor, brightness, style, pureBlack);
-  final colorScheme =
-      _colorSchemes.remove(key) ??
-      seededColorScheme(
-        seedColor: seedColor,
-        brightness: brightness,
-        style: style,
-      ).toPureBlack(pureBlack);
+  bool pureBlack, {
+  required bool starChart,
+}) {
+  final key = (seedColor, brightness, style, pureBlack, starChart);
+  var colorScheme = _colorSchemes.remove(key);
+  if (colorScheme == null) {
+    final seeded = seededColorScheme(
+      seedColor: seedColor,
+      brightness: brightness,
+      style: style,
+    );
+    colorScheme = (starChart ? seeded.toStarChart() : seeded).toPureBlack(
+      pureBlack,
+    );
+  }
   _colorSchemes[key] = colorScheme;
   if (_colorSchemes.length > _maxCachedColorSchemes) {
     _colorSchemes.remove(_colorSchemes.keys.first);

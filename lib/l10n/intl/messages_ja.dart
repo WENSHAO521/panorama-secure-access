@@ -459,6 +459,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "checkUpdate": MessageLookupByLibrary.simpleMessage("更新を確認"),
     "checkUpdateError": MessageLookupByLibrary.simpleMessage("すでに最新バージョンです"),
     "cipher": MessageLookupByLibrary.simpleMessage("暗号方式"),
+    "classicLook": MessageLookupByLibrary.simpleMessage("クラシック"),
     "clearData": MessageLookupByLibrary.simpleMessage("データを消去"),
     "clearDataAndExitTip": MessageLookupByLibrary.simpleMessage(
       "すべてのプロファイル、設定、ローカルデータを削除してアプリを終了します。もう一度開くと最初から始められます。",
@@ -537,7 +538,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Windows のスマート アプリ コントロールが、署名されていない panorama-secure-access-core.exe をブロックしました。Windows セキュリティ → アプリとブラウザーの制御 → スマート アプリ コントロールの設定で「オフ」を選び、Panorama Secure Access を再起動してください。一度オフにすると、Windows を再インストールしない限り再度オンにはできません。",
     ),
+    "coreStarting": MessageLookupByLibrary.simpleMessage("起動中…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("コアの状態"),
+    "coreStopping": MessageLookupByLibrary.simpleMessage("停止中…"),
     "country": MessageLookupByLibrary.simpleMessage("地域"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("クラッシュを検出しました"),
     "crashDetectedTip": m7,
@@ -1865,7 +1868,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "標準モード：プロファイルにルールを追加します",
     ),
+    "starChart": MessageLookupByLibrary.simpleMessage("星図"),
     "start": MessageLookupByLibrary.simpleMessage("開始"),
+    "startFailedRetry": MessageLookupByLibrary.simpleMessage(
+      "起動に失敗しました。タップして再試行",
+    ),
     "startFromScratch": MessageLookupByLibrary.simpleMessage("最初から作成"),
     "startVpn": MessageLookupByLibrary.simpleMessage("VPNを起動しています…"),
     "startupAndBackground": MessageLookupByLibrary.simpleMessage("起動とバックグラウンド"),

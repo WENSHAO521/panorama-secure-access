@@ -553,6 +553,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "У вас уже последняя версия",
     ),
     "cipher": MessageLookupByLibrary.simpleMessage("Шифр"),
+    "classicLook": MessageLookupByLibrary.simpleMessage("Классика"),
     "clearData": MessageLookupByLibrary.simpleMessage("Очистить данные"),
     "clearDataAndExitTip": MessageLookupByLibrary.simpleMessage(
       "Все профили, настройки и локальные данные будут удалены, после чего приложение закроется. Откройте его снова, чтобы начать заново.",
@@ -655,7 +656,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Smart App Control в Windows заблокировал неподписанный panorama-secure-access-core.exe. Откройте Безопасность Windows → Управление приложениями и браузером → Параметры Smart App Control, выберите «Выкл.» и снова запустите Panorama Secure Access. Повторно включить Smart App Control без переустановки Windows нельзя.",
     ),
+    "coreStarting": MessageLookupByLibrary.simpleMessage("Запуск…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("Статус ядра"),
+    "coreStopping": MessageLookupByLibrary.simpleMessage("Остановка…"),
     "country": MessageLookupByLibrary.simpleMessage("Регион"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("Обнаружен сбой"),
     "crashDetectedTip": m7,
@@ -2280,7 +2283,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "Стандартный режим: добавляет правила поверх профиля",
     ),
+    "starChart": MessageLookupByLibrary.simpleMessage("Звёздная карта"),
     "start": MessageLookupByLibrary.simpleMessage("Старт"),
+    "startFailedRetry": MessageLookupByLibrary.simpleMessage(
+      "Не удалось запустить. Нажмите, чтобы повторить",
+    ),
     "startFromScratch": MessageLookupByLibrary.simpleMessage("С нуля"),
     "startVpn": MessageLookupByLibrary.simpleMessage("Запуск VPN…"),
     "startupAndBackground": MessageLookupByLibrary.simpleMessage(
