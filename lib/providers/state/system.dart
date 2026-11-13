@@ -23,11 +23,12 @@ CoreOptions coreOptions(Ref ref) {
       (state) => (testUrl: state.testUrl, mitmCapture: state.mitm.capture),
     ),
   );
-  final (:checkCertificate, :delayTestTimeout) = ref.watch(
+  final (:checkCertificate, :delayTestTimeout, :memoryLimit) = ref.watch(
     appSettingProvider.select(
       (state) => (
         checkCertificate: state.checkCertificate,
         delayTestTimeout: state.delayTestTimeout,
+        memoryLimit: state.coreMemoryLimit,
       ),
     ),
   );
@@ -36,6 +37,11 @@ CoreOptions coreOptions(Ref ref) {
     skipCertVerify: !checkCertificate,
     delayTestTimeout: delayTestTimeout,
     mitmCapture: mitmFeature && mitmCapture,
+    memoryLimit: memoryLimit != coreMemoryLimitAuto
+        ? memoryLimit
+        : system.isAndroid
+        ? androidCoreMemoryLimit
+        : 0,
   );
 }
 

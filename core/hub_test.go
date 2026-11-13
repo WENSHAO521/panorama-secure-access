@@ -7,10 +7,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"net"
 	"net/url"
 	"os"
 	"path/filepath"
+	"runtime/debug"
 	"slices"
 	"strconv"
 	"strings"
@@ -1180,5 +1182,19 @@ func TestDumpRuleSetRejectsText(t *testing.T) {
 	}
 	if _, err := handleDumpRuleSet(PathParams{Path: path}); err == nil {
 		t.Fatal("dumping a text rule set succeeded")
+	}
+}
+
+func TestApplyMemoryLimitSetsAndLiftsTheSoftCap(t *testing.T) {
+	previous := debug.SetMemoryLimit(-1)
+	t.Cleanup(func() { debug.SetMemoryLimit(previous) })
+
+	applyMemoryLimit(128)
+	if got := debug.SetMemoryLimit(-1); got != 128<<20 {
+		t.Fatalf("limit = %d, want %d", got, 128<<20)
+	}
+	applyMemoryLimit(0)
+	if got := debug.SetMemoryLimit(-1); got != math.MaxInt64 {
+		t.Fatalf("limit = %d, want none", got)
 	}
 }

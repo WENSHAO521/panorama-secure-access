@@ -502,6 +502,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Windows 智能应用控制拦截了未签名的 panorama-secure-access-core.exe。请打开 Windows 安全中心 → 应用和浏览器控制 → 智能应用控制设置，选择「关闭」后重新启动 Panorama Secure Access。智能应用控制关闭后无法再开启，除非重装 Windows。",
     ),
+    "coreMemoryLimit": MessageLookupByLibrary.simpleMessage("内核内存上限"),
     "coreStarting": MessageLookupByLibrary.simpleMessage("正在启动…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("核心状态"),
     "coreStopping": MessageLookupByLibrary.simpleMessage("正在停止…"),
@@ -1785,6 +1786,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "unknown": MessageLookupByLibrary.simpleMessage("未知"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage("未知网络错误"),
+    "unlimited": MessageLookupByLibrary.simpleMessage("不限制"),
     "unmaximize": MessageLookupByLibrary.simpleMessage("向下还原"),
     "unnamed": MessageLookupByLibrary.simpleMessage("未命名"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("取消置顶"),

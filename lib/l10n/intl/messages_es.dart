@@ -673,6 +673,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Smart App Control de Windows bloqueó panorama-secure-access-core.exe porque no está firmado. Abre Seguridad de Windows → Control de aplicaciones y navegador → Configuración de Smart App Control, elige Desactivado y vuelve a iniciar Panorama Secure Access. Smart App Control no se puede volver a activar sin reinstalar Windows.",
     ),
+    "coreMemoryLimit": MessageLookupByLibrary.simpleMessage(
+      "Límite de memoria del núcleo",
+    ),
     "coreStarting": MessageLookupByLibrary.simpleMessage("Iniciando…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("Estado del núcleo"),
     "coreStopping": MessageLookupByLibrary.simpleMessage("Deteniendo…"),
@@ -1253,9 +1256,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Certificado instalado",
     ),
     "installNow": MessageLookupByLibrary.simpleMessage("Instalar ahora"),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Se denegó el permiso de lista de apps, por lo que no se pueden mostrar las apps instaladas. Concédelo manualmente en los ajustes del sistema.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Se denegó el permiso de lista de apps, por lo que no se pueden mostrar las apps instaladas. Concédelo manualmente en los ajustes del sistema.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Este sistema oculta la lista de apps instaladas hasta que se concede el permiso. Autorízalo para configurar el proxy por app.",
     ),
@@ -2487,6 +2491,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "Error de red desconocido",
     ),
+    "unlimited": MessageLookupByLibrary.simpleMessage("Sin límite"),
     "unmaximize": MessageLookupByLibrary.simpleMessage("Restaurar tamaño"),
     "unnamed": MessageLookupByLibrary.simpleMessage("Sin nombre"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("Desfijar ventana"),

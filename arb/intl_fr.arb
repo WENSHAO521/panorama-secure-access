@@ -184,6 +184,8 @@
   "paste": "Coller",
   "testUrl": "URL de test",
   "delayTestTimeout": "Délai d’expiration du test de latence",
+  "coreMemoryLimit": "Limite mémoire du cœur",
+  "unlimited": "Sans limite",
   "sync": "Synchroniser",
   "exclude": "Masquer des tâches récentes",
   "compact": "Compact",

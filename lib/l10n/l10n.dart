@@ -1451,6 +1451,21 @@ class AppLocalizations {
     );
   }
 
+  /// `Core memory limit`
+  String get coreMemoryLimit {
+    return Intl.message(
+      'Core memory limit',
+      name: 'coreMemoryLimit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No limit`
+  String get unlimited {
+    return Intl.message('No limit', name: 'unlimited', desc: '', args: []);
+  }
+
   /// `Sync`
   String get sync {
     return Intl.message('Sync', name: 'sync', desc: '', args: []);
@@ -7743,8 +7758,7 @@ class AppLocalizations {
   String customImportDroppedSubRules(num count, Object label) {
     return Intl.plural(
       count,
-      one:
-          '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
+      one: '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
       other:
           '$label SUB-RULE rules were dropped, since custom profiles do not support sub-rules',
       name: 'customImportDroppedSubRules',

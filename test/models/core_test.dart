@@ -30,6 +30,7 @@ void main() {
         'skip-cert-verify': false,
         'delay-test-timeout': defaultDelayTestTimeout,
         'mitm-capture': false,
+        'memory-limit': 0,
       });
     });
   });

@@ -173,8 +173,8 @@ class PoleStarHalo extends StatefulWidget {
 class _PoleStarHaloState extends State<PoleStarHalo>
     with SingleTickerProviderStateMixin {
   /// How many turns round the pole the dipper has gone. The run time moves
-  /// it on about once a second, and each move eases over that second, so it
-  /// stands still between moves and never holds a frame running.
+  /// it on once a second; easing each move over the whole second would draw
+  /// every frame for as long as the core runs, so a move takes a fraction.
   late final AnimationController _orbit = AnimationController.unbounded(
     vsync: this,
   );
@@ -204,7 +204,7 @@ class _PoleStarHaloState extends State<PoleStarHalo>
     if (runTime != null) {
       _orbit.animateTo(
         runTime / _orbitPeriod.inMilliseconds,
-        duration: const Duration(seconds: 1),
+        duration: const Duration(milliseconds: 240),
       );
       return;
     }

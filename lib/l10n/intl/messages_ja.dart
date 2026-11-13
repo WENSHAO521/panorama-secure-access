@@ -538,6 +538,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Windows のスマート アプリ コントロールが、署名されていない panorama-secure-access-core.exe をブロックしました。Windows セキュリティ → アプリとブラウザーの制御 → スマート アプリ コントロールの設定で「オフ」を選び、Panorama Secure Access を再起動してください。一度オフにすると、Windows を再インストールしない限り再度オンにはできません。",
     ),
+    "coreMemoryLimit": MessageLookupByLibrary.simpleMessage("コアのメモリ上限"),
     "coreStarting": MessageLookupByLibrary.simpleMessage("起動中…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("コアの状態"),
     "coreStopping": MessageLookupByLibrary.simpleMessage("停止中…"),
@@ -1979,6 +1980,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "unknown": MessageLookupByLibrary.simpleMessage("不明"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage("不明なネットワークエラー"),
+    "unlimited": MessageLookupByLibrary.simpleMessage("制限なし"),
     "unmaximize": MessageLookupByLibrary.simpleMessage("元に戻す"),
     "unnamed": MessageLookupByLibrary.simpleMessage("名称未設定"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("固定を解除"),

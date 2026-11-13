@@ -200,6 +200,8 @@ void paintStarPlate(
           ..strokeWidth = math.max(2, radius * 0.022)
           ..color = bright,
       );
+  } else if (lit >= 1) {
+    canvas.drawPicture(_ringsOf(radius, brightness, glyphs, lit: true));
   } else if (lit > 0) {
     canvas
       ..saveLayer(
@@ -500,23 +502,25 @@ class _StarPlateToggleState extends ConsumerState<StarPlateToggle>
                       lit,
                     )!,
                   );
-                  return AnimatedBuilder(
-                    animation: _sweep,
-                    builder: (_, _) => CustomPaint(
-                      size: Size.square(size),
-                      painter: _StarPlatePainter(
-                        brightness: brightness,
-                        lit: enabled ? lit : 0,
-                        turn: turn,
-                        disc: disc,
-                        error: colorScheme.error,
-                        glyphs: glyphs,
-                        sweep: _busy
-                            ? (phase == StarPlatePhase.starting
-                                  ? _sweep.value
-                                  : 1 - _sweep.value)
-                            : null,
-                        failed: phase == StarPlatePhase.failed,
+                  return RepaintBoundary(
+                    child: AnimatedBuilder(
+                      animation: _sweep,
+                      builder: (_, _) => CustomPaint(
+                        size: Size.square(size),
+                        painter: _StarPlatePainter(
+                          brightness: brightness,
+                          lit: enabled ? lit : 0,
+                          turn: turn,
+                          disc: disc,
+                          error: colorScheme.error,
+                          glyphs: glyphs,
+                          sweep: _busy
+                              ? (phase == StarPlatePhase.starting
+                                    ? _sweep.value
+                                    : 1 - _sweep.value)
+                              : null,
+                          failed: phase == StarPlatePhase.failed,
+                        ),
                       ),
                     ),
                   );

@@ -184,6 +184,8 @@
   "paste": "붙여넣기",
   "testUrl": "테스트 URL",
   "delayTestTimeout": "지연 테스트 시간 제한",
+  "coreMemoryLimit": "코어 메모리 상한",
+  "unlimited": "제한 없음",
   "sync": "동기화",
   "exclude": "최근 작업에서 숨기기",
   "compact": "간결하게",

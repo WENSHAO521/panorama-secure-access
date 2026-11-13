@@ -656,6 +656,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Smart App Control в Windows заблокировал неподписанный panorama-secure-access-core.exe. Откройте Безопасность Windows → Управление приложениями и браузером → Параметры Smart App Control, выберите «Выкл.» и снова запустите Panorama Secure Access. Повторно включить Smart App Control без переустановки Windows нельзя.",
     ),
+    "coreMemoryLimit": MessageLookupByLibrary.simpleMessage(
+      "Лимит памяти ядра",
+    ),
     "coreStarting": MessageLookupByLibrary.simpleMessage("Запуск…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("Статус ядра"),
     "coreStopping": MessageLookupByLibrary.simpleMessage("Остановка…"),
@@ -1224,9 +1227,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Сертификат установлен",
     ),
     "installNow": MessageLookupByLibrary.simpleMessage("Установить"),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -2422,6 +2426,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "Неизвестная сетевая ошибка",
     ),
+    "unlimited": MessageLookupByLibrary.simpleMessage("Без ограничения"),
     "unmaximize": MessageLookupByLibrary.simpleMessage("Свернуть в окно"),
     "unnamed": MessageLookupByLibrary.simpleMessage("Без названия"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("Открепить окно"),

@@ -69,6 +69,12 @@ const delayTestTimeoutOptions = [500, 1000, 2000, 5000, 8000];
 
 const defaultDelayTestTimeout = 8000;
 
+/// In MB; [coreMemoryLimitAuto] picks [androidCoreMemoryLimit] on Android,
+/// where the core shares the app's process, and none on desktop.
+const coreMemoryLimitAuto = -1;
+const androidCoreMemoryLimit = 128;
+const coreMemoryLimitOptions = [coreMemoryLimitAuto, 0, 64, 128, 256, 512];
+
 const delayTestGuardDuration = Duration(seconds: 30);
 
 const delayTimedOutValue = -1;

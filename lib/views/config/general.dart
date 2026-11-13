@@ -66,6 +66,27 @@ class DelayTestTimeoutItem extends ConsumerWidget {
   }
 }
 
+class CoreMemoryLimitItem extends ConsumerWidget {
+  const CoreMemoryLimitItem({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    return ConfigOptionsItem<int>(
+      title: (l) => l.coreMemoryLimit,
+      options: coreMemoryLimitOptions,
+      textBuilder: (value) => switch (value) {
+        coreMemoryLimitAuto => context.appLocalizations.auto,
+        0 => context.appLocalizations.unlimited,
+        _ => '$value MB',
+      },
+      selector: appSettingProvider.select((state) => state.coreMemoryLimit),
+      onChanged: (ref, value) => ref
+          .read(appSettingProvider.notifier)
+          .update((state) => state.copyWith(coreMemoryLimit: value)),
+    );
+  }
+}
+
 class PortItem extends ConsumerWidget {
   const PortItem({super.key});
 
@@ -320,6 +341,7 @@ class GeneralView extends ConsumerWidget {
   List<Widget> _connectionItems() {
     return [
       const DelayTestTimeoutItem(),
+      const CoreMemoryLimitItem(),
       _clashToggle(
         title: (l) => l.findProcessMode,
         select: (state) => state.findProcessMode == FindProcessMode.always,

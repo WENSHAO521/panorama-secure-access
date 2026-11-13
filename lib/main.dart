@@ -20,6 +20,9 @@ void main(List<String> args) {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+      // Package icons are the only images held; the default 100 MB cap would
+      // keep every icon of a long app list decoded.
+      PaintingBinding.instance.imageCache.maximumSizeBytes = 32 << 20;
       if (Platform.isWindows || Platform.isLinux) {
         SharedPreferencesStorePlatform.instance = AtomicFilePreferencesStore(
           appPath.sharedPreferencesPath,
