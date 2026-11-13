@@ -70,7 +70,11 @@ pub fn extract(archive: &Path, staging: &Path) -> Result<u32, ArchiveError> {
         if entry.is_dir() {
             continue;
         }
-        let Some(path) = staged_path(staging, entry.name()) else {
+        let name = entry
+            .name()
+            .map_err(|_| ArchiveError::Invalid)?
+            .into_owned();
+        let Some(path) = staged_path(staging, &name) else {
             continue;
         };
         let compressed = entry.compressed_size().max(1);
