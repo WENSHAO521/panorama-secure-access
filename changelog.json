@@ -2,6 +2,24 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.5.11",
+      "tag": "v3.5.11",
+      "date": "2026-11-13",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "82b4e51",
+              "scope": "scripts",
+              "text": "New subscriptions use a built-in default routing script with chain proxy groups and Daoist-style group icons"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.5.10",
       "tag": "v3.5.10",
       "date": "2026-11-13",
