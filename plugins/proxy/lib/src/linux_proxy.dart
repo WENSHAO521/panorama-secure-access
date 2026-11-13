@@ -14,6 +14,10 @@ class LinuxProxy {
   final ProxyCommandRunner _commandRunner;
   final ProxyExecutableChecker _executableChecker;
 
+  /// Taken at the first start, so stop puts back the user's own mode, PAC
+  /// or proxy instead of switching the proxy off.
+  _LinuxSnapshot? _snapshot;
+
   LinuxProxy({
     required ProxyCommandRunner commandRunner,
     ProxyExecutableChecker? executableChecker,
@@ -33,6 +37,7 @@ class LinuxProxy {
     if (selection == null) {
       return false;
     }
+    _snapshot ??= await _readSnapshot(selection, homeDir);
     return _commandRunner.run(
       LinuxProxyCommands.buildStartForBackend(
         port: port,
@@ -55,13 +60,59 @@ class LinuxProxy {
     if (selection == null) {
       return false;
     }
-    return _commandRunner.run(
-      LinuxProxyCommands.buildStopForBackend(
-        homeDir: homeDir,
-        backend: selection.backend,
-        kdeConfigWriter: selection.executable,
-      ),
+    final snapshot = _snapshot;
+    final stopped = await _commandRunner.run(
+      snapshot != null && snapshot.backend == selection.backend
+          ? snapshot.restore
+          : LinuxProxyCommands.buildStopForBackend(
+              homeDir: homeDir,
+              backend: selection.backend,
+              kdeConfigWriter: selection.executable,
+            ),
     );
+    if (stopped) {
+      _snapshot = null;
+    }
+    return stopped;
+  }
+
+  Future<_LinuxSnapshot?> _readSnapshot(
+    _LinuxBackendSelection selection,
+    String homeDir,
+  ) async {
+    final values = <String, String>{};
+    final List<ProxyCommand>? restore;
+    switch (selection.backend) {
+      case LinuxProxyBackend.gnome:
+      case LinuxProxyBackend.mate:
+        final schema = LinuxProxyCommands.gsettingsSchema(selection.backend);
+        for (final (path, key) in LinuxProxyCommands.gsettingsKeys(schema)) {
+          final value = await _output('gsettings', ['get', path, key]);
+          if (value == null) {
+            return null;
+          }
+          values['$path $key'] = value.trim();
+        }
+        restore = LinuxProxyCommands.buildGSettingsRestore(schema, values);
+      case LinuxProxyBackend.kde:
+        final reader = selection.executable.replaceFirst('kwrite', 'kread');
+        for (final key in LinuxProxyCommands.kdeKeys) {
+          final value = await _output(
+            reader,
+            LinuxProxyCommands.kdeKeyArguments(homeDir, key),
+          );
+          if (value == null) {
+            return null;
+          }
+          values[key] = value.trim();
+        }
+        restore = LinuxProxyCommands.buildKdeRestore(
+          homeDir: homeDir,
+          executable: selection.executable,
+          values: values,
+        );
+    }
+    return restore == null ? null : _LinuxSnapshot(selection.backend, restore);
   }
 
   /// GNOME, MATE and KDE keep the setting across a killed run, like macOS.
@@ -182,6 +233,80 @@ class LinuxProxy {
 }
 
 class LinuxProxyCommands {
+  static const kdeKeys = [
+    'NoProxyFor',
+    'httpProxy',
+    'httpsProxy',
+    'socksProxy',
+    'ProxyType',
+  ];
+
+  static String gsettingsSchema(LinuxProxyBackend backend) =>
+      backend == LinuxProxyBackend.mate
+      ? 'org.mate.system.proxy'
+      : 'org.gnome.system.proxy';
+
+  /// Every key a start writes; `mode` comes last so a restore switches back
+  /// only after the values behind it are in place.
+  static List<(String, String)> gsettingsKeys(String schemaPrefix) => [
+    (schemaPrefix, 'ignore-hosts'),
+    for (final type in _ProxyType.values) ...[
+      ('$schemaPrefix.${type.name}', 'host'),
+      ('$schemaPrefix.${type.name}', 'port'),
+    ],
+    (schemaPrefix, 'mode'),
+  ];
+
+  /// Null when what was read is a proxy a killed run left on a loopback port:
+  /// there is nothing of the user's to put back, so stop just turns it off.
+  static List<ProxyCommand>? buildGSettingsRestore(
+    String schemaPrefix,
+    Map<String, String> values,
+  ) {
+    final mode = unquote(values['$schemaPrefix mode']);
+    final http = '$schemaPrefix.${_ProxyType.http.name}';
+    if (mode == 'manual' &&
+        loopbackPort(unquote(values['$http host']), values['$http port']) !=
+            null) {
+      return null;
+    }
+    return [
+      for (final (path, key) in gsettingsKeys(schemaPrefix))
+        ProxyCommand('gsettings', ['set', path, key, values['$path $key']!]),
+    ];
+  }
+
+  static List<String> kdeKeyArguments(String homeDir, String key) => [
+    '--file',
+    path.join(homeDir, '.config', 'kioslaverc'),
+    '--group',
+    'Proxy Settings',
+    '--key',
+    key,
+  ];
+
+  static List<ProxyCommand>? buildKdeRestore({
+    required String homeDir,
+    required String executable,
+    required Map<String, String> values,
+  }) {
+    final url = Uri.tryParse(values['httpProxy'] ?? '');
+    if (values['ProxyType'] == '1' &&
+        url != null &&
+        url.hasPort &&
+        loopbackPort(url.host, '${url.port}') != null) {
+      return null;
+    }
+    return [
+      for (final key in kdeKeys)
+        ProxyCommand(executable, [
+          ...kdeKeyArguments(homeDir, key),
+          if (values[key]?.isNotEmpty ?? false) values[key]! else '--delete',
+        ]),
+      _kdeReparseConfiguration,
+    ];
+  }
+
   static String? unquote(String? value) {
     final trimmed = value?.trim();
     if (trimmed == null || trimmed.length < 2) {
@@ -480,6 +605,13 @@ class LinuxProxyCommands {
         .where((value) => value.isNotEmpty)
         .toSet();
   }
+}
+
+class _LinuxSnapshot {
+  final LinuxProxyBackend backend;
+  final List<ProxyCommand> restore;
+
+  const _LinuxSnapshot(this.backend, this.restore);
 }
 
 class _LinuxBackendSelection {

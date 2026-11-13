@@ -129,7 +129,11 @@ void main() {
           'kwriteconfig6',
           'kwriteconfig5',
         ]);
-        expect(executedCommands.toSet(), {'kwriteconfig5', 'dbus-send'});
+        expect(executedCommands.toSet(), {
+          'kreadconfig5',
+          'kwriteconfig5',
+          'dbus-send',
+        });
       },
     );
 
@@ -581,6 +585,126 @@ USB 10/100/1000 LAN
       );
 
       expect(await proxy.readLoopbackProxyPort(), isNull);
+    });
+  });
+
+  group('Linux restores what start replaced', () {
+    const gnome = 'org.gnome.system.proxy';
+    const kdeFile = '--file /home/u/.config/kioslaverc --group Proxy Settings';
+
+    (LinuxProxy, List<String>) proxyWith(Map<String, String> answers) {
+      final calls = <String>[];
+      final proxy = LinuxProxy(
+        commandRunner: ProxyCommandRunner((
+          executable,
+          arguments, {
+          runInShell = false,
+        }) async {
+          final call = '$executable ${arguments.join(' ')}';
+          calls.add(call);
+          final answer = answers[call];
+          final isRead =
+              arguments.isNotEmpty && arguments.first == 'get' ||
+              executable.startsWith('kread');
+          return ProcessResult(
+            0,
+            isRead && answer == null ? 1 : 0,
+            answer ?? '',
+            '',
+          );
+        }),
+        executableChecker: (executable) async =>
+            executable == 'gsettings' || executable == 'kwriteconfig6',
+      );
+      return (proxy, calls);
+    }
+
+    Map<String, String> gnomeAnswers({
+      String mode = "'auto'",
+      String host = "''",
+      String port = '0',
+    }) => {
+      'gsettings get $gnome ignore-hosts': "['localhost', '10.0.0.0/8']\n",
+      for (final type in ['http', 'https', 'socks']) ...{
+        'gsettings get $gnome.$type host': '$host\n',
+        'gsettings get $gnome.$type port': '$port\n',
+      },
+      'gsettings get $gnome mode': '$mode\n',
+    };
+
+    test('GNOME gets its own mode and values back, mode last', () async {
+      final (proxy, calls) = proxyWith(gnomeAnswers());
+
+      await proxy.start(7890, const [], desktop: 'GNOME', homeDir: '/home/u');
+      calls.clear();
+      expect(await proxy.stop(desktop: 'GNOME', homeDir: '/home/u'), isTrue);
+
+      expect(
+        calls.first,
+        "gsettings set $gnome ignore-hosts "
+        "['localhost', '10.0.0.0/8']",
+      );
+      expect(calls, contains("gsettings set $gnome.http host ''"));
+      expect(calls.last, "gsettings set $gnome mode 'auto'");
+    });
+
+    test('a GNOME proxy a killed run left behind is only turned off', () async {
+      final (proxy, calls) = proxyWith(
+        gnomeAnswers(mode: "'manual'", host: "'127.0.0.1'", port: '7890'),
+      );
+
+      await proxy.start(7890, const [], desktop: 'GNOME', homeDir: '/home/u');
+      calls.clear();
+      await proxy.stop(desktop: 'GNOME', homeDir: '/home/u');
+
+      expect(calls, ["gsettings set $gnome mode none"]);
+    });
+
+    test('the second stop no longer restores', () async {
+      final (proxy, calls) = proxyWith(gnomeAnswers());
+
+      await proxy.start(7890, const [], desktop: 'GNOME', homeDir: '/home/u');
+      await proxy.stop(desktop: 'GNOME', homeDir: '/home/u');
+      calls.clear();
+      await proxy.stop(desktop: 'GNOME', homeDir: '/home/u');
+
+      expect(calls, ["gsettings set $gnome mode none"]);
+    });
+
+    test(
+      'KDE writes back its values and deletes keys it did not have',
+      () async {
+        final (proxy, calls) = proxyWith({
+          'kreadconfig6 $kdeFile --key NoProxyFor': '\n',
+          'kreadconfig6 $kdeFile --key httpProxy': 'http://10.0.0.2:3128\n',
+          'kreadconfig6 $kdeFile --key httpsProxy': '\n',
+          'kreadconfig6 $kdeFile --key socksProxy': '\n',
+          'kreadconfig6 $kdeFile --key ProxyType': '1\n',
+        });
+
+        await proxy.start(7890, const [], desktop: 'KDE', homeDir: '/home/u');
+        calls.clear();
+        await proxy.stop(desktop: 'KDE', homeDir: '/home/u');
+
+        expect(calls, [
+          'kwriteconfig6 $kdeFile --key NoProxyFor --delete',
+          'kwriteconfig6 $kdeFile --key httpProxy http://10.0.0.2:3128',
+          'kwriteconfig6 $kdeFile --key httpsProxy --delete',
+          'kwriteconfig6 $kdeFile --key socksProxy --delete',
+          'kwriteconfig6 $kdeFile --key ProxyType 1',
+          startsWith('dbus-send'),
+        ]);
+      },
+    );
+
+    test('an unreadable setting falls back to turning the proxy off', () async {
+      final (proxy, calls) = proxyWith(const {});
+
+      await proxy.start(7890, const [], desktop: 'GNOME', homeDir: '/home/u');
+      calls.clear();
+      await proxy.stop(desktop: 'GNOME', homeDir: '/home/u');
+
+      expect(calls, ["gsettings set $gnome mode none"]);
     });
   });
 
