@@ -20,7 +20,7 @@ require (
 	github.com/Yawning/aez v0.0.0-20211027044916-e49e68abd344 // indirect
 	github.com/ajg/form v1.7.1 // indirect
 	github.com/akutz/memconn v0.1.0 // indirect
-	github.com/andybalholm/brotli v1.1.1 // indirect
+	github.com/andybalholm/brotli v1.2.7 // indirect
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/bodgit/plumbing v1.3.0 // indirect
 	github.com/bodgit/windows v1.0.1 // indirect
@@ -50,7 +50,7 @@ require (
 	github.com/insomniacslk/dhcp v0.0.0-20260901064844-234b97448fae // indirect
 	github.com/josharian/native v1.1.0 // indirect
 	github.com/jsimonetti/rtnetlink v1.4.0 // indirect
-	github.com/klauspost/compress v1.20.1 // indirect
+	github.com/klauspost/compress v1.20.2 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/klauspost/reedsolomon v1.12.3 // indirect
 	github.com/mdlayher/netlink v1.7.2 // indirect
