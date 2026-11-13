@@ -108,7 +108,7 @@ class DipperGauge extends StatelessWidget {
   final double? download;
   final bool dark;
 
-  static const _ease = Duration(milliseconds: 600);
+  static const _ease = Duration(milliseconds: 360);
 
   @override
   Widget build(BuildContext context) {

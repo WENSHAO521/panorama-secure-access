@@ -184,6 +184,8 @@
   "paste": "貼り付け",
   "testUrl": "テストURL",
   "delayTestTimeout": "遅延テストのタイムアウト",
+  "coreMemoryLimit": "コアのメモリ上限",
+  "unlimited": "制限なし",
   "sync": "同期",
   "exclude": "最近のタスクから隠す",
   "compact": "コンパクト",

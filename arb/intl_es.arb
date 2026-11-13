@@ -184,6 +184,8 @@
   "paste": "Pegar",
   "testUrl": "URL de prueba",
   "delayTestTimeout": "Tiempo de espera de la prueba de latencia",
+  "coreMemoryLimit": "Límite de memoria del núcleo",
+  "unlimited": "Sin límite",
   "sync": "Sincronizar",
   "exclude": "Ocultar de aplicaciones recientes",
   "compact": "Compacto",

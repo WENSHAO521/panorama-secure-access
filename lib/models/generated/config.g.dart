@@ -34,6 +34,8 @@ _AppSettingProps _$AppSettingPropsFromJson(
       RequestFeed.live,
   delayTestTimeout:
       (json['delayTestTimeout'] as num?)?.toInt() ?? defaultDelayTestTimeout,
+  coreMemoryLimit:
+      (json['coreMemoryLimit'] as num?)?.toInt() ?? coreMemoryLimitAuto,
   tabAnimation:
       $enumDecodeNullable(
         _$TabAnimationEnumMap,
@@ -113,6 +115,7 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
       'closeConnections': instance.closeConnections,
       'requestFeed': _$RequestFeedEnumMap[instance.requestFeed]!,
       'delayTestTimeout': instance.delayTestTimeout,
+      'coreMemoryLimit': instance.coreMemoryLimit,
       'tabAnimation': _$TabAnimationEnumMap[instance.tabAnimation]!,
       'floatingNavigationBar': instance.floatingNavigationBar,
       'autoCheckUpdate': instance.autoCheckUpdate,

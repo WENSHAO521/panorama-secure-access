@@ -126,6 +126,7 @@ void main() {
         'skip-cert-verify': true,
         'delay-test-timeout': 5000,
         'mitm-capture': true,
+        'memory-limit': 0,
       });
       expect(json, isNot(contains('mitm')));
     });

@@ -2,9 +2,11 @@ package core
 
 import (
 	"errors"
+	"math"
 	"os"
 	"path/filepath"
 	"runtime"
+	"runtime/debug"
 	"strings"
 	"sync"
 
@@ -256,6 +258,15 @@ func applyOptions(options CoreOptions) {
 	setTestURL(options.TestURL)
 	provider.SetDefaultTestTimeout(timeoutFromMillis(options.DelayTestTimeout, 0))
 	skipCertVerify.Store(options.SkipCertVerify)
+	applyMemoryLimit(options.MemoryLimit)
+}
+
+func applyMemoryLimit(megabytes int64) {
+	limit := int64(math.MaxInt64)
+	if megabytes > 0 {
+		limit = megabytes << 20
+	}
+	debug.SetMemoryLimit(limit)
 }
 
 func patchTun(target *LC.Tun, params *tunSchema) {

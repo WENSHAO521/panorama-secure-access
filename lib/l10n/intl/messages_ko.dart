@@ -527,6 +527,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "서명되지 않아 Windows Smart App Control이 panorama-secure-access-core.exe를 차단했습니다. Windows 보안 → 앱 및 브라우저 컨트롤 → Smart App Control 설정에서 끔을 선택한 후 Panorama Secure Access를 다시 시작하세요. Smart App Control은 Windows를 다시 설치하지 않으면 다시 켤 수 없습니다.",
     ),
+    "coreMemoryLimit": MessageLookupByLibrary.simpleMessage("코어 메모리 상한"),
     "coreStarting": MessageLookupByLibrary.simpleMessage("시작 중…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("코어 상태"),
     "coreStopping": MessageLookupByLibrary.simpleMessage("중지 중…"),
@@ -1940,6 +1941,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "알 수 없는 네트워크 오류",
     ),
+    "unlimited": MessageLookupByLibrary.simpleMessage("제한 없음"),
     "unmaximize": MessageLookupByLibrary.simpleMessage("이전 크기로 복원"),
     "unnamed": MessageLookupByLibrary.simpleMessage("이름 없음"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("창 고정 해제"),

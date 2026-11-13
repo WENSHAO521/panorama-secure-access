@@ -340,7 +340,7 @@ $CoreOptionsCopyWith<$Res> get options {
 /// @nodoc
 mixin _$CoreOptions {
 
-@JsonKey(name: 'test-url') String get testUrl;@JsonKey(name: 'skip-cert-verify') bool get skipCertVerify;@JsonKey(name: 'delay-test-timeout') int get delayTestTimeout;@JsonKey(name: 'mitm-capture') bool get mitmCapture;
+@JsonKey(name: 'test-url') String get testUrl;@JsonKey(name: 'skip-cert-verify') bool get skipCertVerify;@JsonKey(name: 'delay-test-timeout') int get delayTestTimeout;@JsonKey(name: 'mitm-capture') bool get mitmCapture;@JsonKey(name: 'memory-limit') int get memoryLimit;
 /// Create a copy of CoreOptions
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -354,20 +354,20 @@ $CoreOptionsCopyWith<CoreOptions> get copyWith => _$CoreOptionsCopyWithImpl<Core
 @override
 bool operator ==(Object other) {
   final _this = this as CoreOptions;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CoreOptions&&(identical(other.testUrl, _this.testUrl) || other.testUrl == _this.testUrl)&&(identical(other.skipCertVerify, _this.skipCertVerify) || other.skipCertVerify == _this.skipCertVerify)&&(identical(other.delayTestTimeout, _this.delayTestTimeout) || other.delayTestTimeout == _this.delayTestTimeout)&&(identical(other.mitmCapture, _this.mitmCapture) || other.mitmCapture == _this.mitmCapture));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CoreOptions&&(identical(other.testUrl, _this.testUrl) || other.testUrl == _this.testUrl)&&(identical(other.skipCertVerify, _this.skipCertVerify) || other.skipCertVerify == _this.skipCertVerify)&&(identical(other.delayTestTimeout, _this.delayTestTimeout) || other.delayTestTimeout == _this.delayTestTimeout)&&(identical(other.mitmCapture, _this.mitmCapture) || other.mitmCapture == _this.mitmCapture)&&(identical(other.memoryLimit, _this.memoryLimit) || other.memoryLimit == _this.memoryLimit));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as CoreOptions;
-  return Object.hash(runtimeType,_this.testUrl,_this.skipCertVerify,_this.delayTestTimeout,_this.mitmCapture);
+  return Object.hash(runtimeType,_this.testUrl,_this.skipCertVerify,_this.delayTestTimeout,_this.mitmCapture,_this.memoryLimit);
 }
 
 @override
 String toString() {
   final _this = this as CoreOptions;
-  return 'CoreOptions(testUrl: ${_this.testUrl}, skipCertVerify: ${_this.skipCertVerify}, delayTestTimeout: ${_this.delayTestTimeout}, mitmCapture: ${_this.mitmCapture})';
+  return 'CoreOptions(testUrl: ${_this.testUrl}, skipCertVerify: ${_this.skipCertVerify}, delayTestTimeout: ${_this.delayTestTimeout}, mitmCapture: ${_this.mitmCapture}, memoryLimit: ${_this.memoryLimit})';
 }
 
 
@@ -378,7 +378,7 @@ abstract mixin class $CoreOptionsCopyWith<$Res>  {
   factory $CoreOptionsCopyWith(CoreOptions value, $Res Function(CoreOptions) _then) = _$CoreOptionsCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'test-url') String testUrl,@JsonKey(name: 'skip-cert-verify') bool skipCertVerify,@JsonKey(name: 'delay-test-timeout') int delayTestTimeout,@JsonKey(name: 'mitm-capture') bool mitmCapture
+@JsonKey(name: 'test-url') String testUrl,@JsonKey(name: 'skip-cert-verify') bool skipCertVerify,@JsonKey(name: 'delay-test-timeout') int delayTestTimeout,@JsonKey(name: 'mitm-capture') bool mitmCapture,@JsonKey(name: 'memory-limit') int memoryLimit
 });
 
 
@@ -395,13 +395,14 @@ class _$CoreOptionsCopyWithImpl<$Res>
 
 /// Create a copy of CoreOptions
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? testUrl = null,Object? skipCertVerify = null,Object? delayTestTimeout = null,Object? mitmCapture = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? testUrl = null,Object? skipCertVerify = null,Object? delayTestTimeout = null,Object? mitmCapture = null,Object? memoryLimit = null,}) {
   return _then(CoreOptions(
 testUrl: null == testUrl ? _self.testUrl : testUrl // ignore: cast_nullable_to_non_nullable
 as String,skipCertVerify: null == skipCertVerify ? _self.skipCertVerify : skipCertVerify // ignore: cast_nullable_to_non_nullable
 as bool,delayTestTimeout: null == delayTestTimeout ? _self.delayTestTimeout : delayTestTimeout // ignore: cast_nullable_to_non_nullable
 as int,mitmCapture: null == mitmCapture ? _self.mitmCapture : mitmCapture // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,memoryLimit: null == memoryLimit ? _self.memoryLimit : memoryLimit // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -486,10 +487,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'test-url')  String testUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(name: 'delay-test-timeout')  int delayTestTimeout, @JsonKey(name: 'mitm-capture')  bool mitmCapture)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'test-url')  String testUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(name: 'delay-test-timeout')  int delayTestTimeout, @JsonKey(name: 'mitm-capture')  bool mitmCapture, @JsonKey(name: 'memory-limit')  int memoryLimit)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CoreOptions() when $default != null:
-return $default(_that.testUrl,_that.skipCertVerify,_that.delayTestTimeout,_that.mitmCapture);case _:
+return $default(_that.testUrl,_that.skipCertVerify,_that.delayTestTimeout,_that.mitmCapture,_that.memoryLimit);case _:
   return orElse();
 
 }
@@ -507,10 +508,10 @@ return $default(_that.testUrl,_that.skipCertVerify,_that.delayTestTimeout,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'test-url')  String testUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(name: 'delay-test-timeout')  int delayTestTimeout, @JsonKey(name: 'mitm-capture')  bool mitmCapture)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'test-url')  String testUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(name: 'delay-test-timeout')  int delayTestTimeout, @JsonKey(name: 'mitm-capture')  bool mitmCapture, @JsonKey(name: 'memory-limit')  int memoryLimit)  $default,) {final _that = this;
 switch (_that) {
 case _CoreOptions():
-return $default(_that.testUrl,_that.skipCertVerify,_that.delayTestTimeout,_that.mitmCapture);case _:
+return $default(_that.testUrl,_that.skipCertVerify,_that.delayTestTimeout,_that.mitmCapture,_that.memoryLimit);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -527,10 +528,10 @@ return $default(_that.testUrl,_that.skipCertVerify,_that.delayTestTimeout,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'test-url')  String testUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(name: 'delay-test-timeout')  int delayTestTimeout, @JsonKey(name: 'mitm-capture')  bool mitmCapture)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'test-url')  String testUrl, @JsonKey(name: 'skip-cert-verify')  bool skipCertVerify, @JsonKey(name: 'delay-test-timeout')  int delayTestTimeout, @JsonKey(name: 'mitm-capture')  bool mitmCapture, @JsonKey(name: 'memory-limit')  int memoryLimit)?  $default,) {final _that = this;
 switch (_that) {
 case _CoreOptions() when $default != null:
-return $default(_that.testUrl,_that.skipCertVerify,_that.delayTestTimeout,_that.mitmCapture);case _:
+return $default(_that.testUrl,_that.skipCertVerify,_that.delayTestTimeout,_that.mitmCapture,_that.memoryLimit);case _:
   return null;
 
 }
@@ -542,13 +543,14 @@ return $default(_that.testUrl,_that.skipCertVerify,_that.delayTestTimeout,_that.
 @JsonSerializable()
 
 class _CoreOptions implements CoreOptions {
-  const _CoreOptions({@JsonKey(name: 'test-url') required this.testUrl, @JsonKey(name: 'skip-cert-verify') this.skipCertVerify = false, @JsonKey(name: 'delay-test-timeout') this.delayTestTimeout = defaultDelayTestTimeout, @JsonKey(name: 'mitm-capture') this.mitmCapture = false});
+  const _CoreOptions({@JsonKey(name: 'test-url') required this.testUrl, @JsonKey(name: 'skip-cert-verify') this.skipCertVerify = false, @JsonKey(name: 'delay-test-timeout') this.delayTestTimeout = defaultDelayTestTimeout, @JsonKey(name: 'mitm-capture') this.mitmCapture = false, @JsonKey(name: 'memory-limit') this.memoryLimit = 0});
   factory _CoreOptions.fromJson(Map<String, dynamic> json) => _$CoreOptionsFromJson(json);
 
 @override@JsonKey(name: 'test-url') final  String testUrl;
 @override@JsonKey(name: 'skip-cert-verify') final  bool skipCertVerify;
 @override@JsonKey(name: 'delay-test-timeout') final  int delayTestTimeout;
 @override@JsonKey(name: 'mitm-capture') final  bool mitmCapture;
+@override@JsonKey(name: 'memory-limit') final  int memoryLimit;
 
 /// Create a copy of CoreOptions
 /// with the given fields replaced by the non-null parameter values.
@@ -563,18 +565,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CoreOptions&&(identical(other.testUrl, testUrl) || other.testUrl == testUrl)&&(identical(other.skipCertVerify, skipCertVerify) || other.skipCertVerify == skipCertVerify)&&(identical(other.delayTestTimeout, delayTestTimeout) || other.delayTestTimeout == delayTestTimeout)&&(identical(other.mitmCapture, mitmCapture) || other.mitmCapture == mitmCapture));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CoreOptions&&(identical(other.testUrl, testUrl) || other.testUrl == testUrl)&&(identical(other.skipCertVerify, skipCertVerify) || other.skipCertVerify == skipCertVerify)&&(identical(other.delayTestTimeout, delayTestTimeout) || other.delayTestTimeout == delayTestTimeout)&&(identical(other.mitmCapture, mitmCapture) || other.mitmCapture == mitmCapture)&&(identical(other.memoryLimit, memoryLimit) || other.memoryLimit == memoryLimit));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,testUrl,skipCertVerify,delayTestTimeout,mitmCapture);
+    return Object.hash(runtimeType,testUrl,skipCertVerify,delayTestTimeout,mitmCapture,memoryLimit);
 }
 
 @override
 String toString() {
-    return 'CoreOptions(testUrl: $testUrl, skipCertVerify: $skipCertVerify, delayTestTimeout: $delayTestTimeout, mitmCapture: $mitmCapture)';
+    return 'CoreOptions(testUrl: $testUrl, skipCertVerify: $skipCertVerify, delayTestTimeout: $delayTestTimeout, mitmCapture: $mitmCapture, memoryLimit: $memoryLimit)';
 }
 
 
@@ -585,7 +587,7 @@ abstract mixin class _$CoreOptionsCopyWith<$Res> implements $CoreOptionsCopyWith
   factory _$CoreOptionsCopyWith(_CoreOptions value, $Res Function(_CoreOptions) _then) = __$CoreOptionsCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'test-url') String testUrl,@JsonKey(name: 'skip-cert-verify') bool skipCertVerify,@JsonKey(name: 'delay-test-timeout') int delayTestTimeout,@JsonKey(name: 'mitm-capture') bool mitmCapture
+@JsonKey(name: 'test-url') String testUrl,@JsonKey(name: 'skip-cert-verify') bool skipCertVerify,@JsonKey(name: 'delay-test-timeout') int delayTestTimeout,@JsonKey(name: 'mitm-capture') bool mitmCapture,@JsonKey(name: 'memory-limit') int memoryLimit
 });
 
 
@@ -602,13 +604,14 @@ class __$CoreOptionsCopyWithImpl<$Res>
 
 /// Create a copy of CoreOptions
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? testUrl = null,Object? skipCertVerify = null,Object? delayTestTimeout = null,Object? mitmCapture = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? testUrl = null,Object? skipCertVerify = null,Object? delayTestTimeout = null,Object? mitmCapture = null,Object? memoryLimit = null,}) {
   return _then(_CoreOptions(
 testUrl: null == testUrl ? _self.testUrl : testUrl // ignore: cast_nullable_to_non_nullable
 as String,skipCertVerify: null == skipCertVerify ? _self.skipCertVerify : skipCertVerify // ignore: cast_nullable_to_non_nullable
 as bool,delayTestTimeout: null == delayTestTimeout ? _self.delayTestTimeout : delayTestTimeout // ignore: cast_nullable_to_non_nullable
 as int,mitmCapture: null == mitmCapture ? _self.mitmCapture : mitmCapture // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,memoryLimit: null == memoryLimit ? _self.memoryLimit : memoryLimit // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

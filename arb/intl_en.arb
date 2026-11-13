@@ -184,6 +184,8 @@
   "paste": "Paste",
   "testUrl": "Test URL",
   "delayTestTimeout": "Delay test timeout",
+  "coreMemoryLimit": "Core memory limit",
+  "unlimited": "No limit",
   "sync": "Sync",
   "exclude": "Hide from recent tasks",
   "compact": "Compact",

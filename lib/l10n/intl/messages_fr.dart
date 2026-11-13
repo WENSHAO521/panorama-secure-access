@@ -673,6 +673,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Windows Smart App Control a bloqué panorama-secure-access-core.exe car il n’est pas signé. Ouvrez Sécurité Windows → Contrôle des applications et du navigateur → Paramètres de Smart App Control, choisissez Désactivé, puis relancez Panorama Secure Access. Smart App Control ne peut pas être réactivé sans réinstaller Windows.",
     ),
+    "coreMemoryLimit": MessageLookupByLibrary.simpleMessage(
+      "Limite mémoire du cœur",
+    ),
     "coreStarting": MessageLookupByLibrary.simpleMessage("Démarrage…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("État du cœur"),
     "coreStopping": MessageLookupByLibrary.simpleMessage("Arrêt…"),
@@ -2483,6 +2486,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "Erreur réseau inconnue",
     ),
+    "unlimited": MessageLookupByLibrary.simpleMessage("Sans limite"),
     "unmaximize": MessageLookupByLibrary.simpleMessage("Restaurer"),
     "unnamed": MessageLookupByLibrary.simpleMessage("Sans nom"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage(

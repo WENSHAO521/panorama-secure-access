@@ -1451,6 +1451,21 @@ class AppLocalizations {
     );
   }
 
+  /// `Core memory limit`
+  String get coreMemoryLimit {
+    return Intl.message(
+      'Core memory limit',
+      name: 'coreMemoryLimit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No limit`
+  String get unlimited {
+    return Intl.message('No limit', name: 'unlimited', desc: '', args: []);
+  }
+
   /// `Sync`
   String get sync {
     return Intl.message('Sync', name: 'sync', desc: '', args: []);
