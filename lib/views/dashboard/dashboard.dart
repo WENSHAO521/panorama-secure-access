@@ -15,7 +15,6 @@ import 'layout.dart';
 import 'style.dart';
 import 'widget_registry.dart';
 import 'widgets/core_status_button.dart';
-import 'widgets/star_backdrop.dart';
 import 'widgets/widgets.dart';
 
 // Narrower columns leave a pair of service cells too tight for a status, so
@@ -81,52 +80,29 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
           ),
       ],
       // The providers learn a resize a frame late, too late for the cards.
-      body: _StarChartPage(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final room = constraints.biggest / scale;
-            final layout = DashboardDensity.of(room);
-            return DashboardDensityScope(
-              density: layout,
-              scale: scale,
-              child: layout.isDesktop
-                  ? _DesktopDashboard(
-                      platform: platform,
-                      columns: dashboardColumnsOf(room.width),
-                      gap: gap,
-                    )
-                  : _MobileDashboard(
-                      platform: platform,
-                      gap: gap,
-                      editing: editing,
-                      cardKeyOf: _cardKeyOf,
-                      onDone: () => _setEditing(false),
-                    ),
-            );
-          },
-        ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final room = constraints.biggest / scale;
+          final layout = DashboardDensity.of(room);
+          return DashboardDensityScope(
+            density: layout,
+            scale: scale,
+            child: layout.isDesktop
+                ? _DesktopDashboard(
+                    platform: platform,
+                    columns: dashboardColumnsOf(room.width),
+                    gap: gap,
+                  )
+                : _MobileDashboard(
+                    platform: platform,
+                    gap: gap,
+                    editing: editing,
+                    cardKeyOf: _cardKeyOf,
+                    onDone: () => _setEditing(false),
+                  ),
+          );
+        },
       ),
-    );
-  }
-}
-
-/// Lays the star-chart sky and land under the cards when the look is on.
-class _StarChartPage extends ConsumerWidget {
-  const _StarChartPage({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    if (!StarChartScope.of(context)) {
-      return child;
-    }
-    final lit = ref.watch(isStartProvider) && !ref.watch(suspendProvider);
-    return Stack(
-      children: [
-        Positioned.fill(child: StarChartBackdrop(lit: lit)),
-        child,
-      ],
     );
   }
 }

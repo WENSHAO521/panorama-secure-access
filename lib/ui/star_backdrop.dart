@@ -1,8 +1,10 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:fl_clash/ui/ui.dart';
 import 'package:flutter/widgets.dart';
+import 'package:prism_ui/prism_ui.dart';
+
+import 'star_chart.dart';
 
 /// The page behind the star-chart dashboard: sky with the Purple Forbidden
 /// Enclosure's two walls (紫微垣) above, ink-wash mountains and a river

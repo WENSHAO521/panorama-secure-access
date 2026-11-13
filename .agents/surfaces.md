@@ -253,3 +253,12 @@ dashboard cards' double hairline frame (文武邊), serif card titles, the yin-y
 start button (`star_plate.dart`) and the sky-and-mountains page (`star_backdrop.dart`). The theme page preview
 (`MiniScreen.starChart`) draws the same pieces; keep it in step with the dashboard. Tests run the classic look
 unless they wrap their widget in `StarChartScope(enabled: true)`.
+
+The look reaches every page through `lib/ui`, not through each view. `lib/ui/ui.dart` re-exports prism_ui with
+`Switch`, `ListHeader` and the `generate*Section`/`generateGroup` builders hidden and puts same-named
+stand-ins in their place (`star_switch.dart`, `star_list.dart`): with the look off they build prism_ui's own widget,
+with it on a yao switch in the same footprint, a gilt serif section title with a rule, and the frame round each
+grouped section. Keep call sites on these names so upstream code picks the look up unchanged; a file that imports
+`package:prism_ui/prism_ui.dart` itself must hide those names. The app `Scaffold` lays the backdrop under every
+full page (not under sheets) and sets its title in the serif face; `StarChartScope.litOf` brightens the backdrop
+while the core runs.

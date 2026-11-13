@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/widgets.dart';
 import 'package:prism_ui/prism_ui.dart';
 
@@ -106,17 +108,33 @@ const starChartSerifFamilies = [
   'serif',
 ];
 
-class StarChartScope extends InheritedWidget {
+enum StarChartAspect { enabled, lit }
+
+class StarChartScope extends InheritedModel<StarChartAspect> {
   const StarChartScope({
     super.key,
     required this.enabled,
+    this.lit = false,
     required super.child,
   });
 
   final bool enabled;
 
+  /// Whether the core is running, which brightens the backdrop.
+  final bool lit;
+
   static bool of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<StarChartScope>()?.enabled ??
+      InheritedModel.inheritFrom<StarChartScope>(
+        context,
+        aspect: StarChartAspect.enabled,
+      )?.enabled ??
+      false;
+
+  static bool litOf(BuildContext context) =>
+      InheritedModel.inheritFrom<StarChartScope>(
+        context,
+        aspect: StarChartAspect.lit,
+      )?.lit ??
       false;
 
   static TextStyle titleOf(BuildContext context, TextStyle style) => of(context)
@@ -132,5 +150,82 @@ class StarChartScope extends InheritedWidget {
 
   @override
   bool updateShouldNotify(StarChartScope oldWidget) =>
-      oldWidget.enabled != enabled;
+      oldWidget.enabled != enabled || oldWidget.lit != lit;
+
+  @override
+  bool updateShouldNotifyDependent(
+    StarChartScope oldWidget,
+    Set<StarChartAspect> dependencies,
+  ) =>
+      (dependencies.contains(StarChartAspect.enabled) &&
+          oldWidget.enabled != enabled) ||
+      (dependencies.contains(StarChartAspect.lit) && oldWidget.lit != lit);
+}
+
+/// The star-chart frame (文武邊): a firm line at the edge and a fine one
+/// inside it.
+class StarFrameDecoration extends Decoration {
+  const StarFrameDecoration({required this.radius, required this.color});
+
+  static const inset = 4.0;
+
+  final BorderRadius radius;
+  final Color color;
+
+  @override
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) =>
+      _StarFramePainter(this);
+
+  @override
+  bool operator ==(Object other) =>
+      other is StarFrameDecoration &&
+      other.radius == radius &&
+      other.color == color;
+
+  @override
+  int get hashCode => Object.hash(radius, color);
+}
+
+class _StarFramePainter extends BoxPainter {
+  _StarFramePainter(this.decoration);
+
+  final StarFrameDecoration decoration;
+
+  @override
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    final size = configuration.size;
+    if (size == null || size.isEmpty) {
+      return;
+    }
+    const inset = StarFrameDecoration.inset;
+    final rect = offset & size;
+    final radius = decoration.radius;
+    final inner = BorderRadius.only(
+      topLeft: _shrink(radius.topLeft),
+      topRight: _shrink(radius.topRight),
+      bottomLeft: _shrink(radius.bottomLeft),
+      bottomRight: _shrink(radius.bottomRight),
+    );
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..color = decoration.color;
+    canvas
+      ..drawPath(
+        AppShape.of(radius).getOuterPath(rect.deflate(0.6)),
+        paint..strokeWidth = 1.2,
+      )
+      ..drawPath(
+        AppShape.of(inner).getOuterPath(rect.deflate(inset)),
+        paint
+          ..strokeWidth = 0.7
+          ..color = decoration.color.withValues(
+            alpha: decoration.color.a * 0.7,
+          ),
+      );
+  }
+
+  static Radius _shrink(Radius radius) => Radius.elliptical(
+    math.max(radius.x - StarFrameDecoration.inset, 0),
+    math.max(radius.y - StarFrameDecoration.inset, 0),
+  );
 }
