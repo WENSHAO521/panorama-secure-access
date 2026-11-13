@@ -465,6 +465,7 @@
   "deleteTip": "Are you sure you want to delete this {label}?",
   "deleteMultipTip": "Are you sure you want to delete the selected {label}?",
   "nullTip": "No {label} yet",
+  "defaultScript": "Default script",
   "script": "Script",
   "color": "Color",
   "unnamed": "Unnamed",
