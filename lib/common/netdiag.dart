@@ -5,7 +5,9 @@ import 'package:rust_api/netdiag.dart'
         FailureKind,
         HttpStatusClass,
         LocalInterface,
-        NetworkChangeReaction;
+        NetworkChangeReaction,
+        ProbeFailure,
+        ProbeStage;
 
 export 'package:rust_api/netdiag.dart'
     show
@@ -14,7 +16,9 @@ export 'package:rust_api/netdiag.dart'
         HttpStatusClass,
         LocalAddress,
         LocalInterface,
-        NetworkChangeReaction;
+        NetworkChangeReaction,
+        ProbeFailure,
+        ProbeStage;
 
 DnsApplyRoute dnsApplyRoute(String? appliedService, String service) =>
     native.dnsApplyRoute(appliedService: appliedService, service: service);
@@ -44,3 +48,13 @@ NetworkChangeReaction networkChangeReaction({
   hasVpn: hasVpn,
   desktop: desktop,
 );
+
+ProbeFailure probeFailure(
+  ProbeStage stage, {
+  int? errno,
+  bool timedOut = false,
+}) => native.probeFailure(stage: stage, errno: errno, timedOut: timedOut);
+
+/// Null when any target answered.
+ProbeFailure? summarizeProbes(List<ProbeFailure?> results) =>
+    native.summarizeProbes(results: results);

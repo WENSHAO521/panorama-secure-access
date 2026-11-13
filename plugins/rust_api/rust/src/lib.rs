@@ -1,4 +1,5 @@
 pub mod api;
+mod backup;
 mod editor;
 mod frb_generated;
 mod hotkey;

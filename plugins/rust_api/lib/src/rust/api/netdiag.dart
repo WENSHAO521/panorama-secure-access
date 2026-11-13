@@ -43,6 +43,19 @@ NetworkChangeReaction networkChangeReaction({
   desktop: desktop,
 );
 
+ProbeFailure probeFailure({
+  required ProbeStage stage,
+  int? errno,
+  required bool timedOut,
+}) => RustLib.instance.api.crateApiNetdiagProbeFailure(
+  stage: stage,
+  errno: errno,
+  timedOut: timedOut,
+);
+
+ProbeFailure? summarizeProbes({required List<ProbeFailure?> results}) =>
+    RustLib.instance.api.crateApiNetdiagSummarizeProbes(results: results);
+
 enum DnsApplyRoute { fresh, reapply, releaseFirst }
 
 enum FailureKind { timeout, hostLookup, connection, tls, unknown }
@@ -121,3 +134,15 @@ class NetworkChangeReaction {
           reportToCore == other.reportToCore &&
           bumpHostEpoch == other.bumpHostEpoch;
 }
+
+enum ProbeFailure {
+  notConfigured,
+  unreachable,
+  refused,
+  timeout,
+  tls,
+  hostLookup,
+  unknown,
+}
+
+enum ProbeStage { lookup, connect, handshake }

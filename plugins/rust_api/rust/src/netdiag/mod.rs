@@ -127,6 +127,84 @@ pub fn network_change_reaction(
     }
 }
 
+/// Each platform names the same failure with its own errno, which Dart only
+/// sees as a number.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ProbeFailure {
+    NotConfigured,
+    Unreachable,
+    Refused,
+    Timeout,
+    Tls,
+    HostLookup,
+    Unknown,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ProbeStage {
+    Lookup,
+    Connect,
+    Handshake,
+}
+
+pub fn probe_failure(stage: ProbeStage, errno: Option<i32>, timed_out: bool) -> ProbeFailure {
+    if timed_out {
+        return ProbeFailure::Timeout;
+    }
+    match stage {
+        ProbeStage::Lookup => ProbeFailure::HostLookup,
+        ProbeStage::Handshake => ProbeFailure::Tls,
+        ProbeStage::Connect => errno.map_or(ProbeFailure::Unknown, connect_errno),
+    }
+}
+
+#[cfg(unix)]
+fn connect_errno(errno: i32) -> ProbeFailure {
+    match errno {
+        libc::ENETUNREACH | libc::EADDRNOTAVAIL | libc::EAFNOSUPPORT => ProbeFailure::NotConfigured,
+        libc::EHOSTUNREACH | libc::ENETDOWN | libc::EHOSTDOWN => ProbeFailure::Unreachable,
+        libc::ECONNREFUSED | libc::ECONNRESET => ProbeFailure::Refused,
+        libc::ETIMEDOUT => ProbeFailure::Timeout,
+        _ => ProbeFailure::Unknown,
+    }
+}
+
+#[cfg(windows)]
+fn connect_errno(errno: i32) -> ProbeFailure {
+    // WSAENETUNREACH, WSAEADDRNOTAVAIL, WSAEAFNOSUPPORT, WSAEHOSTUNREACH,
+    // WSAENETDOWN, WSAECONNREFUSED, WSAECONNRESET, WSAETIMEDOUT.
+    match errno {
+        10051 | 10049 | 10047 => ProbeFailure::NotConfigured,
+        10065 | 10050 => ProbeFailure::Unreachable,
+        10061 | 10054 => ProbeFailure::Refused,
+        10060 => ProbeFailure::Timeout,
+        _ => ProbeFailure::Unknown,
+    }
+}
+
+/// None when any target answered: one blocked address must not fail a check.
+pub fn summarize_probes(results: &[Option<ProbeFailure>]) -> Option<ProbeFailure> {
+    if results.is_empty() || results.iter().any(Option::is_none) {
+        return None;
+    }
+    let failures: Vec<ProbeFailure> = results.iter().flatten().copied().collect();
+    if failures.iter().all(|failure| *failure == failures[0]) {
+        return Some(failures[0]);
+    }
+    const PRECEDENCE: [ProbeFailure; 6] = [
+        ProbeFailure::Tls,
+        ProbeFailure::Refused,
+        ProbeFailure::Timeout,
+        ProbeFailure::Unreachable,
+        ProbeFailure::HostLookup,
+        ProbeFailure::NotConfigured,
+    ];
+    PRECEDENCE
+        .into_iter()
+        .find(|kind| failures.contains(kind))
+        .or(Some(ProbeFailure::Unknown))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -198,5 +276,58 @@ mod tests {
         assert!(!phone.report_to_core && phone.bump_host_epoch);
         let vpn_up = network_change_reaction(false, true, true);
         assert!(!vpn_up.report_to_core && !vpn_up.bump_host_epoch && vpn_up.refresh_local_ip);
+    }
+    #[test]
+    fn probe_failure_reads_the_stage_before_the_errno() {
+        assert_eq!(
+            probe_failure(ProbeStage::Connect, Some(1), true),
+            ProbeFailure::Timeout
+        );
+        assert_eq!(
+            probe_failure(ProbeStage::Lookup, None, false),
+            ProbeFailure::HostLookup
+        );
+        assert_eq!(
+            probe_failure(ProbeStage::Handshake, Some(1), false),
+            ProbeFailure::Tls
+        );
+        assert_eq!(
+            probe_failure(ProbeStage::Connect, None, false),
+            ProbeFailure::Unknown
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn probe_failure_maps_this_platforms_errno() {
+        let connect = |errno| probe_failure(ProbeStage::Connect, Some(errno), false);
+        assert_eq!(connect(libc::ENETUNREACH), ProbeFailure::NotConfigured);
+        assert_eq!(connect(libc::EHOSTUNREACH), ProbeFailure::Unreachable);
+        assert_eq!(connect(libc::ECONNREFUSED), ProbeFailure::Refused);
+        assert_eq!(connect(libc::ETIMEDOUT), ProbeFailure::Timeout);
+        assert_eq!(connect(libc::EPERM), ProbeFailure::Unknown);
+    }
+
+    #[test]
+    fn summarize_probes_passes_when_one_target_answers() {
+        use ProbeFailure::*;
+        assert_eq!(summarize_probes(&[Some(Timeout), None]), None);
+        assert_eq!(summarize_probes(&[]), None);
+        assert_eq!(
+            summarize_probes(&[Some(NotConfigured), Some(NotConfigured)]),
+            Some(NotConfigured)
+        );
+        assert_eq!(
+            summarize_probes(&[Some(NotConfigured), Some(Timeout)]),
+            Some(Timeout)
+        );
+        assert_eq!(
+            summarize_probes(&[Some(Unknown), Some(Refused), Some(Tls)]),
+            Some(Tls)
+        );
+        assert_eq!(
+            summarize_probes(&[Some(Unknown), Some(Unknown)]),
+            Some(Unknown)
+        );
     }
 }

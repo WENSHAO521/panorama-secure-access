@@ -11,6 +11,7 @@ import 'package:fl_clash/database/database.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
+import 'package:rust_api/backup.dart' as native;
 
 enum BackupFailure { invalid, newerVersion }
 
@@ -89,6 +90,10 @@ typedef BackupArchiveRequest = ({
   List<String> entries,
 });
 
+const maxBackupEntries = 10000;
+const maxBackupEntryBytes = 512 << 20;
+const maxBackupTotalBytes = 1 << 30;
+
 typedef RestoreArchiveRequest = ({String archivePath, String stagingDirPath});
 
 Future<void> backupTask(BackupArchiveRequest request) {
@@ -105,7 +110,9 @@ Future<void> _backupTask(BackupArchiveRequest request) {
   );
 }
 
-Future<MigrationData> restoreTask(RestoreArchiveRequest request) {
+/// Unpacks on a Rust worker first: the compute isolate has no Rust library.
+Future<MigrationData> restoreTask(RestoreArchiveRequest request) async {
+  await extractBackupArchive(request.archivePath, request.stagingDirPath);
   return compute(_restoreTask, request);
 }
 
@@ -113,7 +120,28 @@ Future<MigrationData> _restoreTask(RestoreArchiveRequest request) {
   return readBackupArchive(
     archivePath: request.archivePath,
     stagingDirPath: request.stagingDirPath,
+    extracted: true,
   );
+}
+
+Future<void> extractBackupArchive(
+  String archivePath,
+  String stagingDirPath,
+) async {
+  try {
+    await native.extractBackupArchive(
+      archivePath: archivePath,
+      stagingDir: stagingDirPath,
+    );
+  } on native.ArchiveError catch (error) {
+    if (error == native.ArchiveError.io) {
+      throw FileSystemException(
+        'Cannot write the restore files',
+        stagingDirPath,
+      );
+    }
+    throw const BackupException(BackupFailure.invalid);
+  }
 }
 
 @visibleForTesting
@@ -147,8 +175,11 @@ Future<void> writeBackupArchive({
 Future<MigrationData> readBackupArchive({
   required String archivePath,
   required String stagingDirPath,
+  bool extracted = false,
 }) async {
-  await _extract(archivePath, stagingDirPath);
+  if (!extracted) {
+    await _extract(archivePath, stagingDirPath);
+  }
   final configFile = File(join(stagingDirPath, configJsonName));
   if (!await configFile.exists()) {
     throw const BackupException(BackupFailure.invalid);
@@ -237,6 +268,10 @@ Future<void> _extract(String archivePath, String stagingDirPath) async {
     } on Exception {
       throw const BackupException(BackupFailure.invalid);
     }
+    if (archive.files.length > maxBackupEntries) {
+      throw const BackupException(BackupFailure.invalid);
+    }
+    var total = 0;
     for (final file in archive.files) {
       if (!file.isFile) {
         continue;
@@ -245,12 +280,19 @@ Future<void> _extract(String archivePath, String stagingDirPath) async {
       if (outPath == null) {
         continue;
       }
+      total += file.size;
+      if (file.size > maxBackupEntryBytes || total > maxBackupTotalBytes) {
+        throw const BackupException(BackupFailure.invalid);
+      }
       await Directory(dirname(outPath)).create(recursive: true);
       final output = OutputFileStream(outPath);
       try {
         file.writeContent(output);
       } finally {
         await output.close();
+      }
+      if (await File(outPath).length() > file.size) {
+        throw const BackupException(BackupFailure.invalid);
       }
     }
   } finally {
