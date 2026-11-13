@@ -21,11 +21,16 @@ postinstall_scripts:
   - '[ "${1:-}" = configure ] && [ -n "${2:-}" ] && /opt/panorama-secure-access/panorama-secure-access-helper upgrade >/dev/null 2>&1 || true'
 
 # Only teardown belongs here; the binary is already gone when postrm runs.
+# Files left in homes would start or open a binary that no longer exists;
+# subscriptions stay unless the package is purged.
 postuninstall_scripts:
   - 'case "${1:-}" in remove|purge) ;; *) exit 0 ;; esac'
   - 'systemctl disable --now panorama-secure-access-helper.service >/dev/null 2>&1 || true'
   - 'rm -f /etc/systemd/system/panorama-secure-access-helper.service /etc/polkit-1/rules.d/49-panorama-secure-access-helper.rules'
   - 'systemctl daemon-reload >/dev/null 2>&1 || true'
+  - 'getent passwd | while IFS=: read -r _ _ uid _ _ home _; do [ "$uid" -ge 1000 ] 2>/dev/null && [ -d "$home" ] || continue; rm -rf "$home/.cache/com.panoramasg.secureaccess" "$home/.config/autostart/Panorama Secure Access.desktop" "$home/.local/share/applications/panorama-secure-access-url-handler.desktop"; done; true'
+  - '[ "${1:-}" = purge ] || exit 0'
+  - 'getent passwd | while IFS=: read -r _ _ uid _ _ home _; do [ "$uid" -ge 1000 ] 2>/dev/null && [ -d "$home" ] && rm -rf "$home/.local/share/com.panoramasg.secureaccess"; done; true'
 
 supported_mime_type:
   - x-scheme-handler/clash

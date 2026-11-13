@@ -9872,6 +9872,66 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Uninstall`
+  String get uninstallApp {
+    return Intl.message('Uninstall', name: 'uninstallApp', desc: '', args: []);
+  }
+
+  /// `Remove the app, its background service and cache from this computer`
+  String get uninstallAppDesc {
+    return Intl.message(
+      'Remove the app, its background service and cache from this computer',
+      name: 'uninstallAppDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove Panorama Secure Access from this computer? Its background service, launch at login, link handler and cache go too, and the app quits.`
+  String get uninstallConfirm {
+    return Intl.message(
+      'Remove Panorama Secure Access from this computer? Its background service, launch at login, link handler and cache go too, and the app quits.',
+      name: 'uninstallConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `On Fedora Atomic (rpm-ostree) the app disappears after the next reboot.`
+  String get uninstallRebootTip {
+    return Intl.message(
+      'On Fedora Atomic (rpm-ostree) the app disappears after the next reboot.',
+      name: 'uninstallRebootTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Also delete your subscriptions, settings and logs? They cannot be recovered. Keep them if you plan to install again.`
+  String get uninstallDeleteDataTip {
+    return Intl.message(
+      'Also delete your subscriptions, settings and logs? They cannot be recovered. Keep them if you plan to install again.',
+      name: 'uninstallDeleteDataTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The app was not removed, so nothing was deleted.`
+  String get uninstallFailed {
+    return Intl.message(
+      'The app was not removed, so nothing was deleted.',
+      name: 'uninstallFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep`
+  String get keep {
+    return Intl.message('Keep', name: 'keep', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

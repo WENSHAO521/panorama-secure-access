@@ -1161,5 +1161,12 @@
   "repairClearProxy": "해제",
   "repairAuthorizeTun": "권한 부여",
   "repairDisableIpv6": "IPv6 끄기",
-  "repairFlushDns": "DNS 초기화"
+  "repairFlushDns": "DNS 초기화",
+  "uninstallApp": "제거",
+  "uninstallAppDesc": "이 컴퓨터에서 앱, 백그라운드 서비스, 캐시를 제거합니다",
+  "uninstallConfirm": "이 컴퓨터에서 Panorama Secure Access를 제거할까요? 백그라운드 서비스, 로그인 시 자동 실행, 링크 연결, 캐시도 함께 제거되고 앱이 종료됩니다.",
+  "uninstallRebootTip": "Fedora Atomic(rpm-ostree)에서는 다음 재부팅 후 앱이 사라집니다.",
+  "uninstallDeleteDataTip": "구독, 설정, 로그도 삭제할까요? 삭제하면 복구할 수 없습니다. 다시 설치할 계획이라면 유지하세요.",
+  "uninstallFailed": "앱이 제거되지 않아 아무것도 삭제하지 않았습니다.",
+  "keep": "유지"
 }

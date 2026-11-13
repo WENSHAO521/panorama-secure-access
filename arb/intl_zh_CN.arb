@@ -1161,5 +1161,12 @@
   "repairClearProxy": "清除",
   "repairAuthorizeTun": "授权",
   "repairDisableIpv6": "关闭 IPv6",
-  "repairFlushDns": "刷新 DNS"
+  "repairFlushDns": "刷新 DNS",
+  "uninstallApp": "卸载",
+  "uninstallAppDesc": "从这台电脑移除应用、后台服务和缓存",
+  "uninstallConfirm": "要从这台电脑移除 Panorama Secure Access 吗？后台服务、开机自启、链接关联和缓存会一起移除，随后应用退出。",
+  "uninstallRebootTip": "在 Fedora Atomic（rpm-ostree）上，应用会在下次重启后消失。",
+  "uninstallDeleteDataTip": "同时删除订阅、设置和日志吗？删除后无法恢复。如果之后还会重新安装，请选择保留。",
+  "uninstallFailed": "应用未被移除，因此没有删除任何内容。",
+  "keep": "保留"
 }

@@ -224,13 +224,18 @@ begin
 end;
 
 // path_provider names these folders after CompanyName and ProductName in
-// windows/runner/Runner.rc; com.follow\clash belongs to FlClash.
+// windows/runner/Runner.rc; com.follow\clash belongs to FlClash. The roaming
+// folder holds subscriptions, the local one only path_provider's cache.
+procedure RemoveCache;
+begin
+  DelTree(ExpandConstant('{localappdata}\Panorama Scholarly Group\Panorama Secure Access'), True, True, True);
+  RemoveDir(ExpandConstant('{localappdata}\Panorama Scholarly Group'));
+end;
+
 procedure RemoveUserData;
 begin
   DelTree(ExpandConstant('{userappdata}\Panorama Scholarly Group\Panorama Secure Access'), True, True, True);
-  DelTree(ExpandConstant('{localappdata}\Panorama Scholarly Group\Panorama Secure Access'), True, True, True);
   RemoveDir(ExpandConstant('{userappdata}\Panorama Scholarly Group'));
-  RemoveDir(ExpandConstant('{localappdata}\Panorama Scholarly Group'));
 end;
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
@@ -238,6 +243,7 @@ begin
   if CurUninstallStep = usPostUninstall then
   begin
     RemoveUserRegistrations;
+    RemoveCache;
     if not UninstallSilent and (MsgBox(CustomMessage('RemoveUserData'), mbConfirmation, MB_YESNO or MB_DEFBUTTON2) = IDYES) then
     begin
       RemoveUserData;
