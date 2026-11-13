@@ -1962,6 +1962,12 @@ UTF-8 bytes rather than a `String` so that decoding them stays off the UI isolat
   `RustLib` is not initialized (a background isolate, or a test that never loads the library);
   `test/common/netcfg_parity_test.dart` holds the two to the same answers. Dart prints an IPv4-compatible IPv6 block
   dotted (`::1.2.3.4`) where Rust and Go print hex; the core and the Android VPN builder read both.
+- `lifecycle/` holds the decisions of the desktop Core lifecycle: which pending commands a settled intent answers and
+  how, what reconciling an intent stops, starts or closes, when the transport is replaced, and which transport events
+  fail a running session. `lib/core/desktop/lifecycle.dart` keeps the waiting, the processes and the socket, and asks
+  `lifecyclePolicy` (`lib/core/desktop/lifecycle_policy.dart`), which is Rust once `RustLib` is loaded and
+  `DartLifecyclePolicy` otherwise. `lifecycle_policy_test.dart` compares the two on every input, and
+  `lifecycle_rust_test.dart` runs the lifecycle suite again with Rust deciding.
 - `hotkey/` registers desktop global shortcuts through `global-hotkey`: `keys` maps Flutter USB HID usages to key
   codes, `owner` runs every registration on the thread the platform binds it to (a dedicated message-loop thread on
   Windows, the main dispatch queue on macOS, in place on Linux), and `service` owns the registry and forwards presses

@@ -7,6 +7,7 @@ import 'api/charset.dart';
 import 'api/editor.dart';
 import 'api/hotkey.dart';
 import 'api/ipc.dart';
+import 'api/lifecycle.dart';
 import 'api/netcfg.dart';
 import 'api/script.dart';
 import 'dart:async';
@@ -105,10 +106,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_bool(dynamic raw);
 
   @protected
+  LifecycleOutcome dco_decode_box_autoadd_lifecycle_outcome(dynamic raw);
+
+  @protected
   int dco_decode_box_autoadd_u_32(dynamic raw);
 
   @protected
   BigInt dco_decode_box_autoadd_usize(dynamic raw);
+
+  @protected
+  DisconnectReaction dco_decode_disconnect_reaction(dynamic raw);
 
   @protected
   EditorOpenError dco_decode_editor_open_error(dynamic raw);
@@ -132,10 +139,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int dco_decode_i_32(dynamic raw);
 
   @protected
+  PlatformInt64 dco_decode_i_64(dynamic raw);
+
+  @protected
   IpcEvent dco_decode_ipc_event(dynamic raw);
 
   @protected
   IpcEventKind dco_decode_ipc_event_kind(dynamic raw);
+
+  @protected
+  LifecycleAchievement dco_decode_lifecycle_achievement(dynamic raw);
+
+  @protected
+  LifecycleOutcome dco_decode_lifecycle_outcome(dynamic raw);
+
+  @protected
+  LifecycleTarget dco_decode_lifecycle_target(dynamic raw);
 
   @protected
   List<String> dco_decode_list_String(dynamic raw);
@@ -165,6 +184,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String? dco_decode_opt_String(dynamic raw);
 
   @protected
+  LifecycleOutcome? dco_decode_opt_box_autoadd_lifecycle_outcome(dynamic raw);
+
+  @protected
   int? dco_decode_opt_box_autoadd_u_32(dynamic raw);
 
   @protected
@@ -174,7 +196,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List? dco_decode_opt_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  ReconcilePlan dco_decode_reconcile_plan(dynamic raw);
+
+  @protected
   RustFoldRange dco_decode_rust_fold_range(dynamic raw);
+
+  @protected
+  TransportEventKind dco_decode_transport_event_kind(dynamic raw);
+
+  @protected
+  TransportPhase dco_decode_transport_phase(dynamic raw);
 
   @protected
   int dco_decode_u_32(dynamic raw);
@@ -262,10 +293,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
+  LifecycleOutcome sse_decode_box_autoadd_lifecycle_outcome(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   int sse_decode_box_autoadd_u_32(SseDeserializer deserializer);
 
   @protected
   BigInt sse_decode_box_autoadd_usize(SseDeserializer deserializer);
+
+  @protected
+  DisconnectReaction sse_decode_disconnect_reaction(
+    SseDeserializer deserializer,
+  );
 
   @protected
   EditorOpenError sse_decode_editor_open_error(SseDeserializer deserializer);
@@ -291,10 +332,24 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
+  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
+
+  @protected
   IpcEvent sse_decode_ipc_event(SseDeserializer deserializer);
 
   @protected
   IpcEventKind sse_decode_ipc_event_kind(SseDeserializer deserializer);
+
+  @protected
+  LifecycleAchievement sse_decode_lifecycle_achievement(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  LifecycleOutcome sse_decode_lifecycle_outcome(SseDeserializer deserializer);
+
+  @protected
+  LifecycleTarget sse_decode_lifecycle_target(SseDeserializer deserializer);
 
   @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer);
@@ -330,6 +385,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String? sse_decode_opt_String(SseDeserializer deserializer);
 
   @protected
+  LifecycleOutcome? sse_decode_opt_box_autoadd_lifecycle_outcome(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   int? sse_decode_opt_box_autoadd_u_32(SseDeserializer deserializer);
 
   @protected
@@ -339,7 +399,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List? sse_decode_opt_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  ReconcilePlan sse_decode_reconcile_plan(SseDeserializer deserializer);
+
+  @protected
   RustFoldRange sse_decode_rust_fold_range(SseDeserializer deserializer);
+
+  @protected
+  TransportEventKind sse_decode_transport_event_kind(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  TransportPhase sse_decode_transport_phase(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer);
@@ -441,10 +512,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_lifecycle_outcome(
+    LifecycleOutcome self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_usize(BigInt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_disconnect_reaction(
+    DisconnectReaction self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_editor_open_error(
@@ -477,10 +560,31 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_i_32(int self, SseSerializer serializer);
 
   @protected
+  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
+
+  @protected
   void sse_encode_ipc_event(IpcEvent self, SseSerializer serializer);
 
   @protected
   void sse_encode_ipc_event_kind(IpcEventKind self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_lifecycle_achievement(
+    LifecycleAchievement self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_lifecycle_outcome(
+    LifecycleOutcome self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_lifecycle_target(
+    LifecycleTarget self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
@@ -528,6 +632,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_opt_String(String? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_box_autoadd_lifecycle_outcome(
+    LifecycleOutcome? self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer);
 
   @protected
@@ -540,7 +650,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_reconcile_plan(ReconcilePlan self, SseSerializer serializer);
+
+  @protected
   void sse_encode_rust_fold_range(RustFoldRange self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_transport_event_kind(
+    TransportEventKind self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_transport_phase(
+    TransportPhase self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer);

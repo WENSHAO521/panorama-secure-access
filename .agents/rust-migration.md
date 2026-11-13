@@ -22,7 +22,7 @@ One module per pull request, into `beta`; `main` only with the user's authorizat
 | Stage | Module | State |
 |---|---|---|
 | 1 | Config validation: CIDR, host, listen address, port range, TUN route subtraction (`netcfg`) | Rust primary, Dart fallback |
-| 2 | Core process state machine (desktop lifecycle convergence in `lib/core/desktop/`) | Not started |
+| 2 | Core lifecycle decisions (`lifecycle`; the waiting, processes and socket stay in `lib/core/desktop/`) | Rust primary, Dart fallback |
 | 3 | DNS and IPv4/IPv6 diagnosis | Waits on the network diagnosis page in Dart |
 | 4 | Network recovery after TUN or interface changes | Waits on stage 3 |
 | 5 | System service install and legacy install migration (`legacy_install.dart`, `legacy_data.dart`) | Waits on device tests of the brand migration |
