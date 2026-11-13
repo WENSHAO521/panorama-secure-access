@@ -2,6 +2,29 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.5.10",
+      "tag": "v3.5.10",
+      "date": "2026-11-13",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "d62d920",
+              "scope": "dashboard",
+              "text": "Upload and download share one Big Dipper, and the start button sits in a pole star halo"
+            },
+            {
+              "id": "bb98893",
+              "scope": "dashboard",
+              "text": "The speed gauge's stars take the real Big Dipper's shape"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.5.9",
       "tag": "v3.5.9",
       "date": "2026-11-13",
