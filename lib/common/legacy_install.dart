@@ -2,6 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+import 'install_policy.dart' as install_policy;
+import 'install_policy.dart'
+    show
+        LegacyPackageKind,
+        isLegacyDebStatus,
+        isLegacyMacBundle,
+        isLegacyRpmPackager;
 import 'legacy_data.dart';
 import 'linux_elevation.dart';
 import 'print.dart';
@@ -29,9 +36,6 @@ class LegacyInstall {
   String toString() => 'LegacyInstall(${kind.name}, $id)';
 }
 
-const _legacyPackagePublisher = 'Panorama';
-const _legacyHelperUnit = 'flclash-helper.service';
-const _legacyHelperRules = '/etc/polkit-1/rules.d/49-flclash-helper.rules';
 const _legacyMacApp = '/Applications/FlClash.app';
 
 typedef ProcessRunner =
@@ -74,9 +78,7 @@ class LegacyInstalls {
           name,
         ]);
         final output = result.stdout.toString();
-        if (result.exitCode == 0 &&
-            output.contains('install ok installed') &&
-            output.contains(_legacyPackagePublisher)) {
+        if (result.exitCode == 0 && isLegacyDebStatus(output)) {
           return [LegacyInstall(LegacyInstallKind.deb, name)];
         }
       }
@@ -84,7 +86,7 @@ class LegacyInstalls {
     if (exists('/usr/bin/rpm')) {
       final result = await run('rpm', ['-q', '--qf', '%{PACKAGER}', 'FlClash']);
       if (result.exitCode == 0 &&
-          result.stdout.toString().contains(_legacyPackagePublisher)) {
+          isLegacyRpmPackager(result.stdout.toString())) {
         return [
           LegacyInstall(
             ostree ? LegacyInstallKind.ostree : LegacyInstallKind.rpm,
@@ -106,9 +108,10 @@ class LegacyInstalls {
       return result.exitCode == 0 ? result.stdout.toString().trim() : '';
     }
 
-    final ours =
-        await read('CFBundleName') == 'Panorama Secure Access' &&
-        await read('CFBundleIdentifier') == legacyBundleId;
+    final ours = isLegacyMacBundle(
+      await read('CFBundleName'),
+      await read('CFBundleIdentifier'),
+    );
     return ours
         ? const [LegacyInstall(LegacyInstallKind.macApp, _legacyMacApp)]
         : const [];
@@ -117,19 +120,19 @@ class LegacyInstalls {
   /// The legacy Helper goes first so a running one stops holding the TUN.
   @visibleForTesting
   static String linuxRemovalScript(LegacyInstall install) {
-    final package = install.id;
-    final remove = switch (install.kind) {
-      LegacyInstallKind.deb => 'dpkg -r $package',
-      LegacyInstallKind.rpm => 'rpm -e $package',
-      LegacyInstallKind.ostree => 'rpm-ostree uninstall $package',
-      _ => throw ArgumentError.value(install, 'install'),
+    final kind = switch (install.kind) {
+      LegacyInstallKind.deb => LegacyPackageKind.deb,
+      LegacyInstallKind.rpm => LegacyPackageKind.rpm,
+      LegacyInstallKind.ostree => LegacyPackageKind.ostree,
+      _ => null,
     };
-    return [
-      'systemctl disable --now $_legacyHelperUnit >/dev/null 2>&1',
-      'rm -f /etc/systemd/system/$_legacyHelperUnit $_legacyHelperRules',
-      'systemctl daemon-reload >/dev/null 2>&1',
-      remove,
-    ].join('; ');
+    final script = kind == null
+        ? null
+        : install_policy.linuxRemovalScript(kind, install.id);
+    if (script == null) {
+      throw ArgumentError.value(install, 'install');
+    }
+    return script;
   }
 
   Future<bool> remove(LegacyInstall install) async {

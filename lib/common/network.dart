@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+import 'netdiag.dart';
+
 typedef NetworkInterfaceLister =
     Future<List<NetworkInterface>> Function({bool includeLoopback});
 
@@ -10,24 +12,6 @@ NetworkInterfaceLister listNetworkInterfaces =
     ({bool includeLoopback = false}) =>
         NetworkInterface.list(includeLoopback: includeLoopback);
 
-extension NetworkInterfaceExt on NetworkInterface {
-  bool get isWifi {
-    final nameLowCase = name.toLowerCase();
-    if (nameLowCase.contains('wlan') ||
-        nameLowCase.contains('wi-fi') ||
-        nameLowCase == 'en0' ||
-        nameLowCase == 'eth0') {
-      return true;
-    }
-
-    return false;
-  }
-
-  bool get includesIPv4 {
-    return addresses.any((addr) => addr.isIPv4);
-  }
-}
-
 extension InternetAddressExt on InternetAddress {
   bool get isIPv4 {
     return type == InternetAddressType.IPv4;
@@ -35,26 +19,15 @@ extension InternetAddressExt on InternetAddress {
 }
 
 Future<String?> getLocalIpAddress() async {
-  final List<NetworkInterface> interfaces =
-      await listNetworkInterfaces(includeLoopback: false)
-        ..sort((a, b) {
-          if (a.isWifi && !b.isWifi) return -1;
-          if (!a.isWifi && b.isWifi) return 1;
-          if (a.includesIPv4 && !b.includesIPv4) return -1;
-          if (!a.includesIPv4 && b.includesIPv4) return 1;
-          return 0;
-        });
-  for (final interface in interfaces) {
-    final addresses = interface.addresses;
-    if (addresses.isEmpty) {
-      continue;
-    }
-    addresses.sort((a, b) {
-      if (a.isIPv4 && !b.isIPv4) return -1;
-      if (!a.isIPv4 && b.isIPv4) return 1;
-      return 0;
-    });
-    return addresses.first.address;
-  }
-  return '';
+  final interfaces = await listNetworkInterfaces(includeLoopback: false);
+  return pickLocalAddress([
+    for (final interface in interfaces)
+      LocalInterface(
+        name: interface.name,
+        addresses: [
+          for (final address in interface.addresses)
+            LocalAddress(address: address.address, ipv4: address.isIPv4),
+        ],
+      ),
+  ]);
 }

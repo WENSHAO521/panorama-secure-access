@@ -13,7 +13,8 @@ core stays the core, and the platform adapters (Android `VpnService`, the Window
 3. Add a parity test that loads the library (`test/helpers/rust_native.dart`) and compares Rust with the Dart
    reference, including generated inputs. Differences are either fixed or written down as intended.
 4. Compare performance against the Dart path the app actually took (for work run off the UI isolate, `Isolate.run`).
-5. Ship to beta. Delete the Dart fallback only after the user confirms the beta on every platform.
+5. Ship to beta. Delete the Dart fallback and the parity test once the user confirms the beta; the Rust unit tests
+   and the existing Dart suites, which run with the library loaded, cover the module from then on.
 
 One module per pull request, into `beta`; `main` only with the user's authorization.
 
@@ -21,11 +22,11 @@ One module per pull request, into `beta`; `main` only with the user's authorizat
 
 | Stage | Module | State |
 |---|---|---|
-| 1 | Config validation: CIDR, host, listen address, port range, TUN route subtraction (`netcfg`) | Rust primary, Dart fallback |
-| 2 | Core lifecycle decisions (`lifecycle`; the waiting, processes and socket stay in `lib/core/desktop/`) | Rust primary, Dart fallback |
-| 3 | DNS and IPv4/IPv6 diagnosis | Waits on the network diagnosis page in Dart |
-| 4 | Network recovery after TUN or interface changes | Waits on stage 3 |
-| 5 | System service install and legacy install migration (`legacy_install.dart`, `legacy_data.dart`) | Waits on device tests of the brand migration |
+| 1 | Config validation: CIDR, host, listen address, port range, TUN route subtraction (`netcfg`) | Rust |
+| 2 | Core lifecycle decisions (`lifecycle`; the waiting, processes and socket stay in `lib/core/desktop/`) | Rust |
+| 3 | DNS and network diagnosis decisions (`netdiag`: system DNS patch, failure classification, local address) | Rust |
+| 4 | Network change reaction (`netdiag::network_change_reaction`) | Rust |
+| 5 | Legacy data and install migration decisions (`install`) | Rust |
 
-Stages 3 to 5 overlap code that is still changing in Dart; start one only once its Dart version has been tested on
-devices, so the Rust port is not chasing a moving reference.
+The one-click network diagnosis page, update rollback and the Windows and Linux proxy snapshot are still being built in
+Dart; port their decisions the same way once they have been tested on devices.

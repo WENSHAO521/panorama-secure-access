@@ -9503,6 +9503,206 @@ class AppLocalizations {
     );
   }
 
+  /// `Restore from before the update`
+  String get restoreBeforeUpdate {
+    return Intl.message(
+      'Restore from before the update',
+      name: 'restoreBeforeUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Data from v{version}, saved before updating to {tag}`
+  String restoreBeforeUpdateTip(Object version, Object tag) {
+    return Intl.message(
+      'Data from v$version, saved before updating to $tag',
+      name: 'restoreBeforeUpdateTip',
+      desc: '',
+      args: [version, tag],
+    );
+  }
+
+  /// `Network diagnosis`
+  String get networkDiagnosis {
+    return Intl.message(
+      'Network diagnosis',
+      name: 'networkDiagnosis',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Run again`
+  String get networkDiagnosisRun {
+    return Intl.message(
+      'Run again',
+      name: 'networkDiagnosisRun',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No problems found.`
+  String get networkDiagnosisAllPassed {
+    return Intl.message(
+      'No problems found.',
+      name: 'networkDiagnosisAllPassed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} problem(s) found. Use the button next to an item to fix it.`
+  String networkDiagnosisProblems(Object count) {
+    return Intl.message(
+      '$count problem(s) found. Use the button next to an item to fix it.',
+      name: 'networkDiagnosisProblems',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Core`
+  String get diagnosisCore {
+    return Intl.message('Core', name: 'diagnosisCore', desc: '', args: []);
+  }
+
+  /// `Proxy port`
+  String get diagnosisMixedPort {
+    return Intl.message(
+      'Proxy port',
+      name: 'diagnosisMixedPort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Other proxy clients`
+  String get diagnosisOtherClients {
+    return Intl.message(
+      'Other proxy clients',
+      name: 'diagnosisOtherClients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `System proxy`
+  String get diagnosisSystemProxy {
+    return Intl.message(
+      'System proxy',
+      name: 'diagnosisSystemProxy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TUN authorization`
+  String get diagnosisTun {
+    return Intl.message(
+      'TUN authorization',
+      name: 'diagnosisTun',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DNS resolution`
+  String get diagnosisDns {
+    return Intl.message(
+      'DNS resolution',
+      name: 'diagnosisDns',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `IPv4 connectivity`
+  String get diagnosisIpv4 {
+    return Intl.message(
+      'IPv4 connectivity',
+      name: 'diagnosisIpv4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `IPv6 connectivity`
+  String get diagnosisIpv6 {
+    return Intl.message(
+      'IPv6 connectivity',
+      name: 'diagnosisIpv6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request through the proxy`
+  String get diagnosisProxyRequest {
+    return Intl.message(
+      'Request through the proxy',
+      name: 'diagnosisProxyRequest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restart core`
+  String get repairRestartCore {
+    return Intl.message(
+      'Restart core',
+      name: 'repairRestartCore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set again`
+  String get repairReapplyProxy {
+    return Intl.message(
+      'Set again',
+      name: 'repairReapplyProxy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear`
+  String get repairClearProxy {
+    return Intl.message('Clear', name: 'repairClearProxy', desc: '', args: []);
+  }
+
+  /// `Authorize`
+  String get repairAuthorizeTun {
+    return Intl.message(
+      'Authorize',
+      name: 'repairAuthorizeTun',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn off IPv6`
+  String get repairDisableIpv6 {
+    return Intl.message(
+      'Turn off IPv6',
+      name: 'repairDisableIpv6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Flush DNS`
+  String get repairFlushDns {
+    return Intl.message(
+      'Flush DNS',
+      name: 'repairFlushDns',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Uninstall`
   String get uninstallApp {
     return Intl.message('Uninstall', name: 'uninstallApp', desc: '', args: []);

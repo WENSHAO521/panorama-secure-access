@@ -4,10 +4,13 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/common/update_backup.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/action.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/painting.dart' show TextSpan;
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'generated/update.g.dart';
@@ -17,6 +20,10 @@ const _speedSmoothing = 0.3;
 
 @Riverpod(keepAlive: true)
 class UpdateController extends _$UpdateController {
+  @visibleForTesting
+  static Future<String> Function() currentVersion = () async =>
+      (await PackageInfo.fromPlatform()).version;
+
   CancelToken? _cancelToken;
   List<UpdateAsset> _assets = const [];
 
@@ -147,6 +154,7 @@ class UpdateController extends _$UpdateController {
     final path = state?.filePath;
     if (path == null) return;
     try {
+      await _backupBeforeInstall();
       if (!await Updater.install(File(path))) {
         _fail('installer did not start');
         return;
@@ -159,6 +167,24 @@ class UpdateController extends _$UpdateController {
       }
     } catch (error) {
       _fail(error);
+    }
+  }
+
+  /// A failed backup is logged and does not hold back the update.
+  Future<void> _backupBeforeInstall() async {
+    final tag = state?.tag;
+    if (tag == null) return;
+    try {
+      final version = await currentVersion();
+      await ref.read(backupActionProvider.notifier).backup((archive) async {
+        await updateBackups.save(archive, fromVersion: version, toTag: tag);
+        return true;
+      });
+    } catch (error) {
+      commonPrint.log(
+        'pre-update backup failed ${compactError(error)}',
+        logLevel: LogLevel.warning,
+      );
     }
   }
 

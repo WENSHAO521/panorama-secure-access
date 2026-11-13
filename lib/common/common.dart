@@ -31,6 +31,7 @@ export 'log_payload.dart';
 export 'lock.dart';
 export 'mixin.dart';
 export 'netcfg.dart';
+export 'netdiag.dart';
 export 'network.dart';
 export 'network_error.dart';
 export 'num.dart';

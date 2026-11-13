@@ -180,7 +180,7 @@ final class DesktopCoreLifecycle implements DesktopCoreLifecycleController {
 
   DesktopCoreTransport get transport => _transport;
 
-  LifecyclePolicy get _policy => lifecyclePolicy;
+  static const _policy = lifecyclePolicy;
 
   @override
   DesktopCoreState get state => _state;
