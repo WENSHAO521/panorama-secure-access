@@ -839,7 +839,7 @@ void main() {
     await container.read(vpnOptionsProvider.future);
     expect(
       container.read(sharedStateProvider).vpnOptions?.routeAddress,
-      subtractCidrs(const [], privateRouteAddress, wholeWhenEmpty: true),
+      await subtractCidrs(const [], privateRouteAddress, wholeWhenEmpty: true),
     );
   });
 

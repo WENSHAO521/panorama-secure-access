@@ -20,7 +20,6 @@ void main(List<String> args) {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
-      await importLegacyData(await appPath.homeDirPath);
       if (Platform.isWindows || Platform.isLinux) {
         SharedPreferencesStorePlatform.instance = AtomicFilePreferencesStore(
           appPath.sharedPreferencesPath,
@@ -39,6 +38,7 @@ void main(List<String> args) {
       };
       try {
         await RustLib.init();
+        await importLegacyData(await appPath.homeDirPath);
         final version = await system.init();
         final container = await bootstrap.init(version);
         await FlClashHttpOverrides.trustCoreRoots();

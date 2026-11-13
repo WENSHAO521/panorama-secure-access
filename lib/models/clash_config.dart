@@ -1189,7 +1189,7 @@ extension TunExt on Tun {
     if (routeAddress.isEmpty && excluded.isEmpty) {
       return const [];
     }
-    return subtractCidrsTask(routeAddress, excluded, wholeWhenEmpty: true);
+    return subtractCidrs(routeAddress, excluded, wholeWhenEmpty: true);
   }
 
   Map<String, Object?> get coreJson {
