@@ -1,7 +1,6 @@
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/ui/ui.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -40,21 +39,21 @@ class _PageState extends State<_Page> {
                   value: _on,
                   onChanged: (value) => setState(() => _on = value),
                 ),
-                ListItem(
-                  leading: const GlyphIcon(Glyphs.sort),
-                  title: const Text('Plain'),
+                const ListItem(
+                  leading: GlyphIcon(Glyphs.sort),
+                  title: Text('Plain'),
                 ),
               ],
             ),
           ),
           SliverToBoxAdapter(
-            child: generateSection(items: [ListItem(title: const Text('Gap'))]),
+            child: generateSection(items: [const ListItem(title: Text('Gap'))]),
           ),
           SliverToBoxAdapter(
             child: generateAnimatedSection(
               title: 'Animated',
               footer: 'Animated footer',
-              items: [ListItem(key: const ValueKey(1), title: const Text('A'))],
+              items: [const ListItem(key: ValueKey(1), title: Text('A'))],
             ),
           ),
           generateSliverSection<int>(
