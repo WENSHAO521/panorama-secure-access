@@ -58,6 +58,9 @@ const _companionReach = 0.011;
 const _restReach = 0.038;
 const _litReach = 0.06;
 
+/// The width past which stars and lines stop growing with the asterism.
+const _starScaleCap = 140.0;
+
 /// How much room a star's glow takes beyond its reach.
 const _glowReach = 1.7;
 
@@ -67,30 +70,58 @@ const _glowReach = 1.7;
 double _sizeOf(double magnitude) =>
     math.pow(10, -0.13 * (magnitude - 1.77)).toDouble();
 
+/// The handle, Alkaid to Alioth, and the bowl, Megrez to Dubhe, as the
+/// first and last star of each in [_stars].
+const _handle = (0, 2);
+const _bowl = (_bowlStart, _bowlEnd);
+
+/// Where the asterism sits when it spans a box [width] wide, as shares of
+/// that width: the room left above its handle, from the top of the box to
+/// the top of its stars there, and the top of the room under its bowl.
+const dipperBoxDepth = (_depth + _litReach * 2) / (1 + _litReach * 2);
+const dipperRoomOverHandle = 0.268 / (1 + _litReach * 2);
+const dipperRoomUnderBowl = 0.51 / (1 + _litReach * 2);
+
 /// The seven stars of the Northern Dipper over a speed: a faint outline of
 /// the asterism, a violet-to-gold trail along it up to [level], and the stars
 /// it has passed lit in gold, each as large as it is bright and the newest
 /// with a halo. [level] eases to each new speed.
+///
+/// [DipperGauge.split] shows two speeds at once: the upload climbs the
+/// handle in violet and the download fills the bowl in gold.
 class DipperGauge extends StatelessWidget {
-  const DipperGauge({super.key, required this.level, required this.dark});
+  const DipperGauge({super.key, required this.level, required this.dark})
+    : download = null;
 
-  /// How full the gauge stands, from 0 to 1: see [dipperLevel].
+  const DipperGauge.split({
+    super.key,
+    required double upload,
+    required double this.download,
+    required this.dark,
+  }) : level = upload;
+
+  /// How full the gauge stands, from 0 to 1: see [dipperLevel]. On a split
+  /// gauge, the upload's.
   final double level;
+
+  /// On a split gauge, how full the download stands.
+  final double? download;
   final bool dark;
 
   static const _ease = Duration(milliseconds: 600);
 
   @override
   Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween(end: level),
+    final download = this.download;
+    return TweenAnimationBuilder<Offset>(
+      tween: Tween(end: Offset(level, download ?? 0)),
       duration: _ease,
       curve: Curves.easeOutCubic,
-      builder: (context, level, _) => CustomPaint(
-        painter: _DipperPainter(
-          level: level,
-          palette: dark ? StarPalette.dark : StarPalette.light,
-          track: dark ? const Color(0x33B9A4F0) : const Color(0x265B3FB8),
+      builder: (context, levels, _) => CustomPaint(
+        painter: _DipperPainter.of(
+          level: levels.dx,
+          download: download == null ? null : levels.dy,
+          dark: dark,
         ),
         size: Size.infinite,
       ),
@@ -98,18 +129,93 @@ class DipperGauge extends StatelessWidget {
   }
 }
 
+/// Paints the gauge at [level] into [box] of [canvas] without easing, for a
+/// sketch of the dashboard such as the theme preview. With [download], it is
+/// split as [DipperGauge.split] is.
+///
+/// [starScaleCap] keeps the stars in proportion to a sketch drawn smaller
+/// than the real card.
+void paintDipper(
+  Canvas canvas,
+  Rect box, {
+  required double level,
+  double? download,
+  required bool dark,
+  double starScaleCap = _starScaleCap,
+}) {
+  canvas
+    ..save()
+    ..translate(box.left, box.top);
+  _DipperPainter.of(
+    level: level,
+    download: download,
+    dark: dark,
+    starScaleCap: starScaleCap,
+  ).paint(canvas, box.size);
+  canvas.restore();
+}
+
+/// A run of stars that lights up together, from [first] to [last], as far as
+/// [level], in [colors] from its first star to its last.
+typedef _Run = ({int first, int last, double level, List<Color> colors});
+
 class _DipperPainter extends CustomPainter {
   _DipperPainter({
     required this.level,
+    required this.download,
     required this.palette,
     required this.track,
+    required this.starScaleCap,
   });
 
+  _DipperPainter.of({
+    required double level,
+    double? download,
+    required bool dark,
+    double starScaleCap = _starScaleCap,
+  }) : this(
+         level: level,
+         download: download,
+         starScaleCap: starScaleCap,
+         palette: dark ? StarPalette.dark : StarPalette.light,
+         track: dark ? const Color(0x33B9A4F0) : const Color(0x265B3FB8),
+       );
+
   final double level;
+  final double? download;
   final StarPalette palette;
   final Color track;
+  final double starScaleCap;
 
   static final _heart = Paint()..color = const Color(0xFFFFFFFF);
+
+  List<_Run> get _runs {
+    final download = this.download;
+    if (download == null) {
+      return [
+        (
+          first: 0,
+          last: _stars.length - 1,
+          level: level,
+          colors: [palette.ringLight, palette.gold],
+        ),
+      ];
+    }
+    return [
+      (
+        first: _handle.$1,
+        last: _handle.$2,
+        level: level,
+        colors: [palette.ringLight, palette.ringDeep],
+      ),
+      (
+        first: _bowl.$1,
+        last: _bowl.$2,
+        level: download,
+        colors: [palette.gold, palette.gold],
+      ),
+    ];
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -133,7 +239,10 @@ class _DipperPainter extends CustomPainter {
     );
     Offset place(Offset at) => origin + at * width;
     final points = [for (final star in _stars) place(star.$1)];
-    final stroke = width * 0.009;
+    // Stars and lines keep to a size that reads as a sky of points however
+    // wide the asterism is drawn.
+    final unit = math.min(width, starScaleCap);
+    final stroke = unit * 0.009;
     final trackPaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = stroke
@@ -146,41 +255,60 @@ class _DipperPainter extends CustomPainter {
     outline.lineTo(points[_bowlStart].dx, points[_bowlStart].dy);
     canvas.drawPath(outline, trackPaint);
 
-    // The trail reaches star i once it has gone i sixths of the way; each
-    // star brightens over the step before it, and none lights at idle.
-    final steps = (_stars.length - 1).toDouble();
-    final reached = level * steps;
-    final awake = (level * 12).clamp(0.0, 1.0);
-    double litOf(int index) => (reached - index + 1).clamp(0.0, 1.0) * awake;
-    if (level > 0) {
-      final trail = Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = stroke * 1.5
-        ..strokeCap = StrokeCap.round
-        ..strokeJoin = StrokeJoin.round
-        ..shader = ui.Gradient.linear(
-          place(Offset.zero),
-          place(const Offset(1, 0)),
-          [palette.ringLight, palette.gold],
-        );
-      final path = Path()..moveTo(points.first.dx, points.first.dy);
-      for (var index = 1; index < points.length; index++) {
-        final share = (reached - index + 1).clamp(0.0, 1.0);
+    // Along each run, the trail reaches its k-th star once it has gone k
+    // steps of the way; each star brightens over the step before it, and
+    // none lights at idle.
+    final lit = List.filled(_stars.length, 0.0);
+    final newest = <int>{};
+    for (final run in _runs) {
+      final steps = (run.last - run.first).toDouble();
+      final reached = run.level * steps;
+      final awake = (run.level * 12).clamp(0.0, 1.0);
+      for (var k = 0; k <= steps; k++) {
+        lit[run.first + k] = (reached - k + 1).clamp(0.0, 1.0) * awake;
+      }
+      if (run.level <= 0) {
+        continue;
+      }
+      newest.add(run.first + math.min(reached.ceil(), steps.toInt()));
+      final from = points[run.first];
+      final path = Path()..moveTo(from.dx, from.dy);
+      for (var k = 1; k <= steps; k++) {
+        final share = (reached - k + 1).clamp(0.0, 1.0);
         if (share == 0) {
           break;
         }
+        final index = run.first + k;
         final to = Offset.lerp(points[index - 1], points[index], share)!;
         path.lineTo(to.dx, to.dy);
       }
       // The bowl closes once its lip, the last star, is lit.
-      final closing = litOf(_bowlEnd);
-      if (closing > 0) {
-        final to = Offset.lerp(points[_bowlEnd], points[_bowlStart], closing)!;
-        path
-          ..moveTo(points[_bowlEnd].dx, points[_bowlEnd].dy)
-          ..lineTo(to.dx, to.dy);
+      if (run.last == _bowlEnd) {
+        final closing = lit[_bowlEnd];
+        if (closing > 0) {
+          final to = Offset.lerp(
+            points[_bowlEnd],
+            points[_bowlStart],
+            closing,
+          )!;
+          path
+            ..moveTo(points[_bowlEnd].dx, points[_bowlEnd].dy)
+            ..lineTo(to.dx, to.dy);
+        }
       }
-      canvas.drawPath(path, trail);
+      canvas.drawPath(
+        path,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = stroke * 1.5
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round
+          ..shader = ui.Gradient.linear(
+            Offset(points[run.first].dx, 0),
+            Offset(math.max(points[run.last].dx, points[run.first].dx + 1), 0),
+            run.colors,
+          ),
+      );
     }
 
     final rest = Paint()
@@ -189,13 +317,10 @@ class _DipperPainter extends CustomPainter {
       ..color = track.withValues(alpha: math.min(1, track.a * 2.5));
     final restHeart = Paint()
       ..color = track.withValues(alpha: math.min(1, track.a * 3));
-    final newestIndex = level > 0
-        ? math.min(reached.ceil(), steps.toInt())
-        : -1;
 
     void drawStar(Offset at, double scale, double lit, {bool newest = false}) {
       final reach =
-          width * scale * (_restReach + (_litReach - _restReach) * lit);
+          unit * scale * (_restReach + (_litReach - _restReach) * lit);
       canvas.save();
       canvas.translate(at.dx, at.dy);
       canvas.scale(reach);
@@ -225,17 +350,23 @@ class _DipperPainter extends CustomPainter {
     }
 
     for (var index = 0; index < _stars.length; index++) {
-      final lit = litOf(index);
       final scale = _sizeOf(_stars[index].$2);
-      drawStar(points[index], scale, lit, newest: index == newestIndex);
+      drawStar(
+        points[index],
+        scale,
+        lit[index],
+        newest: newest.contains(index),
+      );
       if (index == _companionOf) {
         canvas.drawCircle(
           place(_stars[index].$1 + _companionOffset),
-          width * _companionReach * (0.8 + 0.2 * lit),
-          lit == 0
+          unit * _companionReach * (0.8 + 0.2 * lit[index]),
+          lit[index] == 0
               ? restHeart
               : (Paint()
-                  ..color = palette.gold.withValues(alpha: 0.35 + 0.65 * lit)),
+                  ..color = palette.gold.withValues(
+                    alpha: 0.35 + 0.65 * lit[index],
+                  )),
         );
       }
     }
@@ -244,6 +375,8 @@ class _DipperPainter extends CustomPainter {
   @override
   bool shouldRepaint(_DipperPainter oldDelegate) =>
       oldDelegate.level != level ||
+      oldDelegate.download != download ||
       oldDelegate.palette != palette ||
-      oldDelegate.track != track;
+      oldDelegate.track != track ||
+      oldDelegate.starScaleCap != starScaleCap;
 }

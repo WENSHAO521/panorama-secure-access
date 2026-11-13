@@ -1,8 +1,8 @@
-import 'dart:math' as math;
-
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/providers/state.dart';
+import 'package:fl_clash/views/dashboard/widgets/dipper_gauge.dart';
+import 'package:fl_clash/views/dashboard/widgets/pole_star.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -724,15 +724,18 @@ class _PageSketch {
     _block(status, card);
     canvas
       ..save()
-      ..clipPath(_shape(5).getOuterPath(status))
-      ..drawCircle(
-        _rect(buttonX, buttonY, 0, 0).topLeft,
-        unit * 4.6,
-        Paint()
-          ..color = colorScheme.primary.withValues(alpha: 0.1)
-          ..maskFilter = blur,
-      )
-      ..restore();
+      ..clipPath(_shape(5).getOuterPath(status));
+    // The pole star's halo, as behind the running dashboard's button.
+    paintPoleStar(
+      canvas,
+      _rect(buttonX, buttonY, 0, 0).topLeft,
+      unit * 4.6,
+      field: colorScheme.primary.withValues(alpha: 0.1),
+      lit: 1,
+      turn: 0,
+      dark: colorScheme.brightness == Brightness.dark,
+    );
+    canvas.restore();
     _dot(buttonX, buttonY, 1.8, colorScheme.primary);
     for (final dx in [-0.675, 0.325]) {
       _pill(buttonX + dx, buttonY - 0.6, 0.35, 1.2, colorScheme.onPrimary);
@@ -745,23 +748,28 @@ class _PageSketch {
     _pill(4.6, y + 4.8, 3.6, 0.7, line);
     y += 6.2 + _gap;
 
-    _block(_rect(0, y, width, 5.8), card);
+    // One Northern Dipper for both directions, laid out as the phone card
+    // lays it: the upload's figure over its handle, the download's under its
+    // bowl.
+    final span = width - 2;
+    final gaugeTop = y + 2.3;
+    final downloadTop = gaugeTop + span * dipperRoomUnderBowl;
+    final blockHeight = downloadTop + 2.4 - y;
+    _block(_rect(0, y, width, blockHeight), card);
     _pill(1, y + 0.9, 4.5, 0.7, line);
-    final tileWidth = (width - 2.6) / 2;
-    for (var i = 0; i < 2; i++) {
-      final x = 1 + i * (tileWidth + 0.6);
-      final tile = _rect(x, y + 2.1, tileWidth, 2.9);
-      _block(tile, inset, extent: 2.9);
-      _pill(x + 0.6, y + 2.65, 2.4, 0.7, line);
-      _speedGraph(
-        tile,
-        phase: i * 1.7,
-        color: i == 0
-            ? colorScheme.primary.withValues(alpha: 0.5)
-            : colorScheme.primary,
-      );
-    }
-    y += 5.8 + _gap;
+    paintDipper(
+      canvas,
+      _rect(1, gaugeTop, span, span * dipperBoxDepth),
+      level: 0.6,
+      download: 0.8,
+      dark: colorScheme.brightness == Brightness.dark,
+      starScaleCap: span * unit * 0.5,
+    );
+    _pill(1, gaugeTop, 2, 0.6, line);
+    _pill(1, gaugeTop + 0.9, 3.6, 1, text);
+    _pill(width - 3, downloadTop, 2, 0.6, line);
+    _pill(width - 4.6, downloadTop + 0.9, 3.6, 1, text);
+    y += blockHeight + _gap;
 
     _block(_rect(0, y, width, 4.4), card);
     _pill(1, y + 0.9, 4, 0.7, line);
@@ -790,45 +798,6 @@ class _PageSketch {
       _pill(1, y + 0.9, 3.5 + i % 2, 0.7, line);
       y += 4.5 + _gap;
     }
-  }
-
-  void _speedGraph(Rect tile, {required double phase, required Color color}) {
-    const steps = 16;
-    final path = Path();
-    for (var i = 0; i <= steps; i++) {
-      final x = tile.left + tile.width * i / steps;
-      final y =
-          tile.top +
-          tile.height * 0.68 +
-          math.sin(i * 0.9 + phase) * unit * 0.35;
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
-      }
-    }
-    final area = Path.from(path)
-      ..lineTo(tile.right, tile.bottom)
-      ..lineTo(tile.left, tile.bottom)
-      ..close();
-    canvas
-      ..save()
-      ..clipPath(_shape(2.9).getOuterPath(tile))
-      ..drawPath(
-        area,
-        Paint()
-          ..color = color.withValues(alpha: color.a * 0.2)
-          ..maskFilter = blur,
-      )
-      ..drawPath(
-        path,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = unit * 0.15
-          ..color = color
-          ..maskFilter = blur,
-      )
-      ..restore();
   }
 
   void _proxies(double top) {
