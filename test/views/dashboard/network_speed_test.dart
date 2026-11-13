@@ -5,8 +5,8 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/views/dashboard/widgets/dipper_gauge.dart';
 import 'package:fl_clash/views/dashboard/widgets/traffic.dart';
-import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -98,28 +98,29 @@ void main() {
     await teardownCard(tester);
   });
 
-  testWidgets('a phone tile keeps its ratio and charts under its title', (
-    tester,
-  ) async {
-    await pumpCard(tester, const NetworkSpeedCard());
+  testWidgets(
+    'a phone tile keeps its ratio and arches its stars under its title',
+    (tester) async {
+      await pumpCard(tester, const NetworkSpeedCard());
 
-    for (final label in ['Upload', 'Download']) {
-      final tile = tileOf(label);
-      final rect = tester.getRect(tile);
-      expect(rect.height, closeTo(rect.width / 1.45, 0.5));
+      for (final label in ['Upload', 'Download']) {
+        final tile = tileOf(label);
+        final rect = tester.getRect(tile);
+        expect(rect.height, closeTo(rect.width / 1.45, 0.5));
 
-      final chart = tester.getRect(
-        find.descendant(of: tile, matching: find.byType(LineChart)),
-      );
-      final title = tester.getRect(
-        find.descendant(of: tile, matching: find.text(label)),
-      );
-      expect(chart.top, greaterThanOrEqualTo(title.bottom));
-      expect(chart.bottom, greaterThanOrEqualTo(rect.bottom));
-    }
+        final chart = tester.getRect(
+          find.descendant(of: tile, matching: find.byType(DipperGauge)),
+        );
+        final title = tester.getRect(
+          find.descendant(of: tile, matching: find.text(label)),
+        );
+        expect(chart.top, greaterThanOrEqualTo(title.bottom));
+        expect(chart.bottom, lessThanOrEqualTo(rect.bottom));
+      }
 
-    await teardownCard(tester);
-  });
+      await teardownCard(tester);
+    },
+  );
 
   testWidgets('a phone tile grows rather than clip a scaled up total', (
     tester,
@@ -136,6 +137,17 @@ void main() {
     expect(tester.takeException(), isNull);
 
     await teardownCard(tester);
+  });
+
+  test('the dipper climbs by doublings from idle to full', () {
+    expect(dipperLevel(0), 0);
+    expect(dipperLevel(512), 0);
+    final kilo = dipperLevel(16 * 1024);
+    final mega = dipperLevel(4 * 1024 * 1024);
+    expect(kilo, greaterThan(0));
+    expect(mega, greaterThan(kilo));
+    expect(dipperLevel(64 * 1024 * 1024), 1);
+    expect(dipperLevel(1 << 40), 1);
   });
 
   testWidgets('a desktop card keeps its peak to the window it charts', (
