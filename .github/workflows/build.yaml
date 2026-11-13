@@ -362,7 +362,8 @@ jobs:
 
       - name: Audit Rust dependencies
         run: |
-          cargo audit --file services/helper/Cargo.lock
+          # h2 0.3 comes from warp 0.3; no 0.3 fix exists, so it stays ignored until the Helper moves to warp 0.4.
+          cargo audit --file services/helper/Cargo.lock --ignore RUSTSEC-2026-0258
           cargo audit --file plugins/rust_api/rust/Cargo.lock
 
       - name: Setup Go
