@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.5.11 (2026-11-13)
+
+**Features**
+
+- **scripts** New subscriptions use a built-in default routing script with chain proxy groups and Daoist-style group icons (82b4e51)
+
 ## v3.5.10 (2026-11-13)
 
 **Features**

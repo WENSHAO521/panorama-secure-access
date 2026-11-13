@@ -465,6 +465,7 @@
   "deleteTip": "이 {label}을(를) 삭제하시겠습니까?",
   "deleteMultipTip": "선택한 {label}을(를) 삭제하시겠습니까?",
   "nullTip": "{label}이(가) 아직 없습니다",
+  "defaultScript": "기본 스크립트",
   "script": "스크립트",
   "color": "색상",
   "unnamed": "이름 없음",

@@ -581,6 +581,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "defaultNameserverDesc": MessageLookupByLibrary.simpleMessage(
       "다른 DNS 서버의 도메인을 확인합니다. IP 주소만 입력할 수 있습니다.",
     ),
+    "defaultScript": MessageLookupByLibrary.simpleMessage("기본 스크립트"),
     "defaultSelected": MessageLookupByLibrary.simpleMessage("기본 선택"),
     "defaultText": MessageLookupByLibrary.simpleMessage("기본값"),
     "definitionNotMap": MessageLookupByLibrary.simpleMessage(

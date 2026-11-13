@@ -465,6 +465,7 @@
   "deleteTip": "この{label}を削除してもよろしいですか？",
   "deleteMultipTip": "選択した{label}を削除してもよろしいですか？",
   "nullTip": "{label}はまだありません",
+  "defaultScript": "デフォルトスクリプト",
   "script": "スクリプト",
   "color": "カラー",
   "unnamed": "名称未設定",
