@@ -7,6 +7,7 @@ import 'api/charset.dart';
 import 'api/editor.dart';
 import 'api/hotkey.dart';
 import 'api/ipc.dart';
+import 'api/lifecycle.dart';
 import 'api/netcfg.dart';
 import 'api/script.dart';
 import 'dart:async';
@@ -71,7 +72,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => 832137953;
+  int get rustContentHash => -2130929855;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -205,6 +206,44 @@ abstract class RustLibApi extends BaseApi {
   bool crateApiNetcfgIsListenAddress({required String value});
 
   bool crateApiNetcfgIsPortRange({required String value});
+
+  LifecycleOutcome? crateApiLifecycleLifecycleCommandOutcome({
+    required PlatformInt64 revision,
+    required LifecycleTarget target,
+    required PlatformInt64 settledRevision,
+    required LifecycleTarget settledTarget,
+  });
+
+  DisconnectReaction crateApiLifecycleLifecycleDisconnectReaction({
+    required TransportEventKind event,
+    required bool sessionRunning,
+    required bool sameGeneration,
+  });
+
+  ReconcilePlan crateApiLifecycleLifecyclePlanReconcile({
+    required LifecycleTarget target,
+    required bool hasSession,
+    required bool sessionRunning,
+    required bool terminalRequested,
+  });
+
+  bool crateApiLifecycleLifecycleSatisfies({
+    required LifecycleAchievement achievement,
+    required LifecycleTarget target,
+  });
+
+  bool crateApiLifecycleLifecycleTransportNeedsReplacement({
+    required TransportPhase phase,
+    required bool hasSession,
+  });
+
+  bool crateApiLifecycleLifecycleTransportUsable({
+    required TransportPhase phase,
+  });
+
+  bool crateApiLifecycleLifecycleUnconfirmedLeaseMayFail({
+    required LifecycleTarget target,
+  });
 
   Future<List<HotKeyFailure>> crateApiHotkeySetHotKeys({
     required List<HotKeySpec> specs,
@@ -1328,6 +1367,230 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "is_port_range", argNames: ["value"]);
 
   @override
+  LifecycleOutcome? crateApiLifecycleLifecycleCommandOutcome({
+    required PlatformInt64 revision,
+    required LifecycleTarget target,
+    required PlatformInt64 settledRevision,
+    required LifecycleTarget settledTarget,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_i_64(revision, serializer);
+          sse_encode_lifecycle_target(target, serializer);
+          sse_encode_i_64(settledRevision, serializer);
+          sse_encode_lifecycle_target(settledTarget, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 35)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_opt_box_autoadd_lifecycle_outcome,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiLifecycleLifecycleCommandOutcomeConstMeta,
+        argValues: [revision, target, settledRevision, settledTarget],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLifecycleLifecycleCommandOutcomeConstMeta =>
+      const TaskConstMeta(
+        debugName: "lifecycle_command_outcome",
+        argNames: ["revision", "target", "settledRevision", "settledTarget"],
+      );
+
+  @override
+  DisconnectReaction crateApiLifecycleLifecycleDisconnectReaction({
+    required TransportEventKind event,
+    required bool sessionRunning,
+    required bool sameGeneration,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_transport_event_kind(event, serializer);
+          sse_encode_bool(sessionRunning, serializer);
+          sse_encode_bool(sameGeneration, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 36)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_disconnect_reaction,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiLifecycleLifecycleDisconnectReactionConstMeta,
+        argValues: [event, sessionRunning, sameGeneration],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLifecycleLifecycleDisconnectReactionConstMeta =>
+      const TaskConstMeta(
+        debugName: "lifecycle_disconnect_reaction",
+        argNames: ["event", "sessionRunning", "sameGeneration"],
+      );
+
+  @override
+  ReconcilePlan crateApiLifecycleLifecyclePlanReconcile({
+    required LifecycleTarget target,
+    required bool hasSession,
+    required bool sessionRunning,
+    required bool terminalRequested,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_lifecycle_target(target, serializer);
+          sse_encode_bool(hasSession, serializer);
+          sse_encode_bool(sessionRunning, serializer);
+          sse_encode_bool(terminalRequested, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 37)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_reconcile_plan,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiLifecycleLifecyclePlanReconcileConstMeta,
+        argValues: [target, hasSession, sessionRunning, terminalRequested],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLifecycleLifecyclePlanReconcileConstMeta =>
+      const TaskConstMeta(
+        debugName: "lifecycle_plan_reconcile",
+        argNames: [
+          "target",
+          "hasSession",
+          "sessionRunning",
+          "terminalRequested",
+        ],
+      );
+
+  @override
+  bool crateApiLifecycleLifecycleSatisfies({
+    required LifecycleAchievement achievement,
+    required LifecycleTarget target,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_lifecycle_achievement(achievement, serializer);
+          sse_encode_lifecycle_target(target, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 38)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiLifecycleLifecycleSatisfiesConstMeta,
+        argValues: [achievement, target],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLifecycleLifecycleSatisfiesConstMeta =>
+      const TaskConstMeta(
+        debugName: "lifecycle_satisfies",
+        argNames: ["achievement", "target"],
+      );
+
+  @override
+  bool crateApiLifecycleLifecycleTransportNeedsReplacement({
+    required TransportPhase phase,
+    required bool hasSession,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_transport_phase(phase, serializer);
+          sse_encode_bool(hasSession, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 39)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiLifecycleLifecycleTransportNeedsReplacementConstMeta,
+        argValues: [phase, hasSession],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiLifecycleLifecycleTransportNeedsReplacementConstMeta =>
+      const TaskConstMeta(
+        debugName: "lifecycle_transport_needs_replacement",
+        argNames: ["phase", "hasSession"],
+      );
+
+  @override
+  bool crateApiLifecycleLifecycleTransportUsable({
+    required TransportPhase phase,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_transport_phase(phase, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 40)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiLifecycleLifecycleTransportUsableConstMeta,
+        argValues: [phase],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLifecycleLifecycleTransportUsableConstMeta =>
+      const TaskConstMeta(
+        debugName: "lifecycle_transport_usable",
+        argNames: ["phase"],
+      );
+
+  @override
+  bool crateApiLifecycleLifecycleUnconfirmedLeaseMayFail({
+    required LifecycleTarget target,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_lifecycle_target(target, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 41)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiLifecycleLifecycleUnconfirmedLeaseMayFailConstMeta,
+        argValues: [target],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiLifecycleLifecycleUnconfirmedLeaseMayFailConstMeta =>
+      const TaskConstMeta(
+        debugName: "lifecycle_unconfirmed_lease_may_fail",
+        argNames: ["target"],
+      );
+
+  @override
   Future<List<HotKeyFailure>> crateApiHotkeySetHotKeys({
     required List<HotKeySpec> specs,
   }) {
@@ -1339,7 +1602,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 35,
+            funcId: 42,
             port: port_,
           );
         },
@@ -1373,7 +1636,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 36,
+            funcId: 43,
             port: port_,
           );
         },
@@ -1410,7 +1673,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 37,
+            funcId: 44,
             port: port_,
           );
         },
@@ -1444,7 +1707,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 38,
+            funcId: 45,
             port: port_,
           );
         },
@@ -1598,6 +1861,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  LifecycleOutcome dco_decode_box_autoadd_lifecycle_outcome(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_lifecycle_outcome(raw);
+  }
+
+  @protected
   int dco_decode_box_autoadd_u_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
@@ -1607,6 +1876,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   BigInt dco_decode_box_autoadd_usize(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_usize(raw);
+  }
+
+  @protected
+  DisconnectReaction dco_decode_disconnect_reaction(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return DisconnectReaction.values[raw as int];
   }
 
   @protected
@@ -1679,6 +1954,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PlatformInt64 dco_decode_i_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeI64(raw);
+  }
+
+  @protected
   IpcEvent dco_decode_ipc_event(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -1696,6 +1977,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   IpcEventKind dco_decode_ipc_event_kind(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return IpcEventKind.values[raw as int];
+  }
+
+  @protected
+  LifecycleAchievement dco_decode_lifecycle_achievement(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return LifecycleAchievement.values[raw as int];
+  }
+
+  @protected
+  LifecycleOutcome dco_decode_lifecycle_outcome(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return LifecycleOutcome.values[raw as int];
+  }
+
+  @protected
+  LifecycleTarget dco_decode_lifecycle_target(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return LifecycleTarget.values[raw as int];
   }
 
   @protected
@@ -1753,6 +2052,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  LifecycleOutcome? dco_decode_opt_box_autoadd_lifecycle_outcome(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_lifecycle_outcome(raw);
+  }
+
+  @protected
   int? dco_decode_opt_box_autoadd_u_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_u_32(raw);
@@ -1771,6 +2076,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ReconcilePlan dco_decode_reconcile_plan(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return ReconcilePlan(
+      keepExisting: dco_decode_bool(arr[0]),
+      stopSession: dco_decode_bool(arr[1]),
+      allowUnconfirmedExit: dco_decode_bool(arr[2]),
+      start: dco_decode_bool(arr[3]),
+      close: dco_decode_bool(arr[4]),
+    );
+  }
+
+  @protected
   RustFoldRange dco_decode_rust_fold_range(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -1780,6 +2100,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       startLine: dco_decode_i_32(arr[0]),
       endLine: dco_decode_i_32(arr[1]),
     );
+  }
+
+  @protected
+  TransportEventKind dco_decode_transport_event_kind(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return TransportEventKind.values[raw as int];
+  }
+
+  @protected
+  TransportPhase dco_decode_transport_phase(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return TransportPhase.values[raw as int];
   }
 
   @protected
@@ -1951,6 +2283,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  LifecycleOutcome sse_decode_box_autoadd_lifecycle_outcome(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_lifecycle_outcome(deserializer));
+  }
+
+  @protected
   int sse_decode_box_autoadd_u_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_u_32(deserializer));
@@ -1960,6 +2300,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   BigInt sse_decode_box_autoadd_usize(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_usize(deserializer));
+  }
+
+  @protected
+  DisconnectReaction sse_decode_disconnect_reaction(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return DisconnectReaction.values[inner];
   }
 
   @protected
@@ -2025,6 +2374,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getPlatformInt64();
+  }
+
+  @protected
   IpcEvent sse_decode_ipc_event(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_kind = sse_decode_ipc_event_kind(deserializer);
@@ -2044,6 +2399,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
     return IpcEventKind.values[inner];
+  }
+
+  @protected
+  LifecycleAchievement sse_decode_lifecycle_achievement(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return LifecycleAchievement.values[inner];
+  }
+
+  @protected
+  LifecycleOutcome sse_decode_lifecycle_outcome(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return LifecycleOutcome.values[inner];
+  }
+
+  @protected
+  LifecycleTarget sse_decode_lifecycle_target(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return LifecycleTarget.values[inner];
   }
 
   @protected
@@ -2150,6 +2528,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  LifecycleOutcome? sse_decode_opt_box_autoadd_lifecycle_outcome(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_lifecycle_outcome(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   int? sse_decode_opt_box_autoadd_u_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -2183,11 +2574,44 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ReconcilePlan sse_decode_reconcile_plan(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_keepExisting = sse_decode_bool(deserializer);
+    var var_stopSession = sse_decode_bool(deserializer);
+    var var_allowUnconfirmedExit = sse_decode_bool(deserializer);
+    var var_start = sse_decode_bool(deserializer);
+    var var_close = sse_decode_bool(deserializer);
+    return ReconcilePlan(
+      keepExisting: var_keepExisting,
+      stopSession: var_stopSession,
+      allowUnconfirmedExit: var_allowUnconfirmedExit,
+      start: var_start,
+      close: var_close,
+    );
+  }
+
+  @protected
   RustFoldRange sse_decode_rust_fold_range(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_startLine = sse_decode_i_32(deserializer);
     var var_endLine = sse_decode_i_32(deserializer);
     return RustFoldRange(startLine: var_startLine, endLine: var_endLine);
+  }
+
+  @protected
+  TransportEventKind sse_decode_transport_event_kind(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return TransportEventKind.values[inner];
+  }
+
+  @protected
+  TransportPhase sse_decode_transport_phase(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return TransportPhase.values[inner];
   }
 
   @protected
@@ -2386,6 +2810,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_lifecycle_outcome(
+    LifecycleOutcome self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_lifecycle_outcome(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_u_32(self, serializer);
@@ -2395,6 +2828,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_box_autoadd_usize(BigInt self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(self, serializer);
+  }
+
+  @protected
+  void sse_encode_disconnect_reaction(
+    DisconnectReaction self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
   }
 
   @protected
@@ -2459,6 +2901,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putPlatformInt64(self);
+  }
+
+  @protected
   void sse_encode_ipc_event(IpcEvent self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_ipc_event_kind(self.kind, serializer);
@@ -2469,6 +2917,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void sse_encode_ipc_event_kind(IpcEventKind self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_lifecycle_achievement(
+    LifecycleAchievement self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_lifecycle_outcome(
+    LifecycleOutcome self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_lifecycle_target(
+    LifecycleTarget self,
+    SseSerializer serializer,
+  ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
   }
@@ -2575,6 +3050,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_opt_box_autoadd_lifecycle_outcome(
+    LifecycleOutcome? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_lifecycle_outcome(self, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -2611,6 +3099,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_reconcile_plan(ReconcilePlan self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self.keepExisting, serializer);
+    sse_encode_bool(self.stopSession, serializer);
+    sse_encode_bool(self.allowUnconfirmedExit, serializer);
+    sse_encode_bool(self.start, serializer);
+    sse_encode_bool(self.close, serializer);
+  }
+
+  @protected
   void sse_encode_rust_fold_range(
     RustFoldRange self,
     SseSerializer serializer,
@@ -2618,6 +3116,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.startLine, serializer);
     sse_encode_i_32(self.endLine, serializer);
+  }
+
+  @protected
+  void sse_encode_transport_event_kind(
+    TransportEventKind self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_transport_phase(
+    TransportPhase self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
   }
 
   @protected

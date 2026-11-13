@@ -41,7 +41,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 832137953;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -2130929855;
 
 // Section: executor
 
@@ -1536,6 +1536,258 @@ fn wire__crate__api__netcfg__is_port_range_impl(
         },
     )
 }
+fn wire__crate__api__lifecycle__lifecycle_command_outcome_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "lifecycle_command_outcome",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_revision = <i64>::sse_decode(&mut deserializer);
+            let api_target =
+                <crate::api::lifecycle::LifecycleTarget>::sse_decode(&mut deserializer);
+            let api_settled_revision = <i64>::sse_decode(&mut deserializer);
+            let api_settled_target =
+                <crate::api::lifecycle::LifecycleTarget>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let output_ok = Ok::<_, ()>(crate::api::lifecycle::lifecycle_command_outcome(
+                    api_revision,
+                    api_target,
+                    api_settled_revision,
+                    api_settled_target,
+                ))?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__lifecycle__lifecycle_disconnect_reaction_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "lifecycle_disconnect_reaction",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_event =
+                <crate::api::lifecycle::TransportEventKind>::sse_decode(&mut deserializer);
+            let api_session_running = <bool>::sse_decode(&mut deserializer);
+            let api_same_generation = <bool>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let output_ok = Ok::<_, ()>(crate::api::lifecycle::lifecycle_disconnect_reaction(
+                    api_event,
+                    api_session_running,
+                    api_same_generation,
+                ))?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__lifecycle__lifecycle_plan_reconcile_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "lifecycle_plan_reconcile",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_target =
+                <crate::api::lifecycle::LifecycleTarget>::sse_decode(&mut deserializer);
+            let api_has_session = <bool>::sse_decode(&mut deserializer);
+            let api_session_running = <bool>::sse_decode(&mut deserializer);
+            let api_terminal_requested = <bool>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let output_ok = Ok::<_, ()>(crate::api::lifecycle::lifecycle_plan_reconcile(
+                    api_target,
+                    api_has_session,
+                    api_session_running,
+                    api_terminal_requested,
+                ))?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__lifecycle__lifecycle_satisfies_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "lifecycle_satisfies",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_achievement =
+                <crate::api::lifecycle::LifecycleAchievement>::sse_decode(&mut deserializer);
+            let api_target =
+                <crate::api::lifecycle::LifecycleTarget>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let output_ok = Ok::<_, ()>(crate::api::lifecycle::lifecycle_satisfies(
+                    api_achievement,
+                    api_target,
+                ))?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__lifecycle__lifecycle_transport_needs_replacement_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "lifecycle_transport_needs_replacement",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_phase = <crate::api::lifecycle::TransportPhase>::sse_decode(&mut deserializer);
+            let api_has_session = <bool>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let output_ok = Ok::<_, ()>(
+                    crate::api::lifecycle::lifecycle_transport_needs_replacement(
+                        api_phase,
+                        api_has_session,
+                    ),
+                )?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__lifecycle__lifecycle_transport_usable_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "lifecycle_transport_usable",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_phase = <crate::api::lifecycle::TransportPhase>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let output_ok =
+                    Ok::<_, ()>(crate::api::lifecycle::lifecycle_transport_usable(api_phase))?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__lifecycle__lifecycle_unconfirmed_lease_may_fail_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "lifecycle_unconfirmed_lease_may_fail",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_target =
+                <crate::api::lifecycle::LifecycleTarget>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let output_ok = Ok::<_, ()>(
+                    crate::api::lifecycle::lifecycle_unconfirmed_lease_may_fail(api_target),
+                )?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
 fn wire__crate__api__hotkey__set_hot_keys_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1696,6 +1948,18 @@ fn wire__crate__api__editor__words_extract_impl(
     )
 }
 
+// Section: static_checks
+
+#[allow(clippy::unnecessary_literal_unwrap)]
+const _: fn() = || {
+    let ReconcilePlan = None::<crate::api::lifecycle::ReconcilePlan>.unwrap();
+    let _: bool = ReconcilePlan.keep_existing;
+    let _: bool = ReconcilePlan.stop_session;
+    let _: bool = ReconcilePlan.allow_unconfirmed_exit;
+    let _: bool = ReconcilePlan.start;
+    let _: bool = ReconcilePlan.close;
+};
+
 // Section: related_funcs
 
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
@@ -1811,6 +2075,19 @@ impl SseDecode for bool {
     }
 }
 
+impl SseDecode for crate::api::lifecycle::DisconnectReaction {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::lifecycle::DisconnectReaction::Ignore,
+            1 => crate::api::lifecycle::DisconnectReaction::UnexpectedDisconnect,
+            2 => crate::api::lifecycle::DisconnectReaction::TransportFailed,
+            _ => unreachable!("Invalid variant for DisconnectReaction: {}", inner),
+        };
+    }
+}
+
 impl SseDecode for crate::api::editor::EditorOpenError {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1901,6 +2178,13 @@ impl SseDecode for i32 {
     }
 }
 
+impl SseDecode for i64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_i64::<NativeEndian>().unwrap()
+    }
+}
+
 impl SseDecode for crate::api::ipc::IpcEvent {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1927,6 +2211,47 @@ impl SseDecode for crate::api::ipc::IpcEventKind {
             2 => crate::api::ipc::IpcEventKind::Disconnected,
             3 => crate::api::ipc::IpcEventKind::Failed,
             _ => unreachable!("Invalid variant for IpcEventKind: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::api::lifecycle::LifecycleAchievement {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::lifecycle::LifecycleAchievement::RunningExisting,
+            1 => crate::api::lifecycle::LifecycleAchievement::RunningFresh,
+            2 => crate::api::lifecycle::LifecycleAchievement::Idle,
+            3 => crate::api::lifecycle::LifecycleAchievement::Closed,
+            _ => unreachable!("Invalid variant for LifecycleAchievement: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::api::lifecycle::LifecycleOutcome {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::lifecycle::LifecycleOutcome::Applied,
+            1 => crate::api::lifecycle::LifecycleOutcome::Coalesced,
+            2 => crate::api::lifecycle::LifecycleOutcome::Superseded,
+            _ => unreachable!("Invalid variant for LifecycleOutcome: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::api::lifecycle::LifecycleTarget {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::lifecycle::LifecycleTarget::Running,
+            1 => crate::api::lifecycle::LifecycleTarget::Restarted,
+            2 => crate::api::lifecycle::LifecycleTarget::Stopped,
+            3 => crate::api::lifecycle::LifecycleTarget::Closed,
+            _ => unreachable!("Invalid variant for LifecycleTarget: {}", inner),
         };
     }
 }
@@ -2032,6 +2357,19 @@ impl SseDecode for Option<String> {
     }
 }
 
+impl SseDecode for Option<crate::api::lifecycle::LifecycleOutcome> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::api::lifecycle::LifecycleOutcome>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<u32> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2065,6 +2403,24 @@ impl SseDecode for Option<Vec<u8>> {
     }
 }
 
+impl SseDecode for crate::api::lifecycle::ReconcilePlan {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_keepExisting = <bool>::sse_decode(deserializer);
+        let mut var_stopSession = <bool>::sse_decode(deserializer);
+        let mut var_allowUnconfirmedExit = <bool>::sse_decode(deserializer);
+        let mut var_start = <bool>::sse_decode(deserializer);
+        let mut var_close = <bool>::sse_decode(deserializer);
+        return crate::api::lifecycle::ReconcilePlan {
+            keep_existing: var_keepExisting,
+            stop_session: var_stopSession,
+            allow_unconfirmed_exit: var_allowUnconfirmedExit,
+            start: var_start,
+            close: var_close,
+        };
+    }
+}
+
 impl SseDecode for crate::api::editor::RustFoldRange {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2073,6 +2429,36 @@ impl SseDecode for crate::api::editor::RustFoldRange {
         return crate::api::editor::RustFoldRange {
             start_line: var_startLine,
             end_line: var_endLine,
+        };
+    }
+}
+
+impl SseDecode for crate::api::lifecycle::TransportEventKind {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::lifecycle::TransportEventKind::Ready,
+            1 => crate::api::lifecycle::TransportEventKind::Connected,
+            2 => crate::api::lifecycle::TransportEventKind::Disconnected,
+            3 => crate::api::lifecycle::TransportEventKind::Failed,
+            _ => unreachable!("Invalid variant for TransportEventKind: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::api::lifecycle::TransportPhase {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::lifecycle::TransportPhase::Idle,
+            1 => crate::api::lifecycle::TransportPhase::Starting,
+            2 => crate::api::lifecycle::TransportPhase::Ready,
+            3 => crate::api::lifecycle::TransportPhase::Connected,
+            4 => crate::api::lifecycle::TransportPhase::Failed,
+            5 => crate::api::lifecycle::TransportPhase::Closed,
+            _ => unreachable!("Invalid variant for TransportPhase: {}", inner),
         };
     }
 }
@@ -2128,10 +2514,10 @@ fn pde_ffi_dispatcher_primary_impl(
         25 => wire__crate__api__editor__folds_compute_all_impl(port, ptr, rust_vec_len, data_len),
         28 => wire__crate__api__hotkey__hot_key_events_impl(port, ptr, rust_vec_len, data_len),
         29 => wire__crate__api__init__init_app_impl(port, ptr, rust_vec_len, data_len),
-        35 => wire__crate__api__hotkey__set_hot_keys_impl(port, ptr, rust_vec_len, data_len),
-        36 => wire__crate__api__netcfg__subtract_cidrs_impl(port, ptr, rust_vec_len, data_len),
-        37 => wire__crate__api__charset__transcode_charset_impl(port, ptr, rust_vec_len, data_len),
-        38 => wire__crate__api__editor__words_extract_impl(port, ptr, rust_vec_len, data_len),
+        42 => wire__crate__api__hotkey__set_hot_keys_impl(port, ptr, rust_vec_len, data_len),
+        43 => wire__crate__api__netcfg__subtract_cidrs_impl(port, ptr, rust_vec_len, data_len),
+        44 => wire__crate__api__charset__transcode_charset_impl(port, ptr, rust_vec_len, data_len),
+        45 => wire__crate__api__editor__words_extract_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -2172,6 +2558,33 @@ fn pde_ffi_dispatcher_sync_impl(
         32 => wire__crate__api__netcfg__is_ip_matcher_impl(ptr, rust_vec_len, data_len),
         33 => wire__crate__api__netcfg__is_listen_address_impl(ptr, rust_vec_len, data_len),
         34 => wire__crate__api__netcfg__is_port_range_impl(ptr, rust_vec_len, data_len),
+        35 => {
+            wire__crate__api__lifecycle__lifecycle_command_outcome_impl(ptr, rust_vec_len, data_len)
+        }
+        36 => wire__crate__api__lifecycle__lifecycle_disconnect_reaction_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        37 => {
+            wire__crate__api__lifecycle__lifecycle_plan_reconcile_impl(ptr, rust_vec_len, data_len)
+        }
+        38 => wire__crate__api__lifecycle__lifecycle_satisfies_impl(ptr, rust_vec_len, data_len),
+        39 => wire__crate__api__lifecycle__lifecycle_transport_needs_replacement_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        40 => wire__crate__api__lifecycle__lifecycle_transport_usable_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        41 => wire__crate__api__lifecycle__lifecycle_unconfirmed_lease_may_fail_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
         _ => unreachable!(),
     }
 }
@@ -2223,6 +2636,28 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<RopeUpload>> for RopeUpload {
     }
 }
 
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<crate::api::lifecycle::DisconnectReaction> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            crate::api::lifecycle::DisconnectReaction::Ignore => 0.into_dart(),
+            crate::api::lifecycle::DisconnectReaction::UnexpectedDisconnect => 1.into_dart(),
+            crate::api::lifecycle::DisconnectReaction::TransportFailed => 2.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<crate::api::lifecycle::DisconnectReaction>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<crate::api::lifecycle::DisconnectReaction>>
+    for crate::api::lifecycle::DisconnectReaction
+{
+    fn into_into_dart(self) -> FrbWrapper<crate::api::lifecycle::DisconnectReaction> {
+        self.into()
+    }
+}
 // Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::editor::EditorOpenError {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
@@ -2396,6 +2831,98 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::ipc::IpcEventKind>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<crate::api::lifecycle::LifecycleAchievement> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            crate::api::lifecycle::LifecycleAchievement::RunningExisting => 0.into_dart(),
+            crate::api::lifecycle::LifecycleAchievement::RunningFresh => 1.into_dart(),
+            crate::api::lifecycle::LifecycleAchievement::Idle => 2.into_dart(),
+            crate::api::lifecycle::LifecycleAchievement::Closed => 3.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<crate::api::lifecycle::LifecycleAchievement>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<crate::api::lifecycle::LifecycleAchievement>>
+    for crate::api::lifecycle::LifecycleAchievement
+{
+    fn into_into_dart(self) -> FrbWrapper<crate::api::lifecycle::LifecycleAchievement> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<crate::api::lifecycle::LifecycleOutcome> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            crate::api::lifecycle::LifecycleOutcome::Applied => 0.into_dart(),
+            crate::api::lifecycle::LifecycleOutcome::Coalesced => 1.into_dart(),
+            crate::api::lifecycle::LifecycleOutcome::Superseded => 2.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<crate::api::lifecycle::LifecycleOutcome>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<crate::api::lifecycle::LifecycleOutcome>>
+    for crate::api::lifecycle::LifecycleOutcome
+{
+    fn into_into_dart(self) -> FrbWrapper<crate::api::lifecycle::LifecycleOutcome> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<crate::api::lifecycle::LifecycleTarget> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            crate::api::lifecycle::LifecycleTarget::Running => 0.into_dart(),
+            crate::api::lifecycle::LifecycleTarget::Restarted => 1.into_dart(),
+            crate::api::lifecycle::LifecycleTarget::Stopped => 2.into_dart(),
+            crate::api::lifecycle::LifecycleTarget::Closed => 3.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<crate::api::lifecycle::LifecycleTarget>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<crate::api::lifecycle::LifecycleTarget>>
+    for crate::api::lifecycle::LifecycleTarget
+{
+    fn into_into_dart(self) -> FrbWrapper<crate::api::lifecycle::LifecycleTarget> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<crate::api::lifecycle::ReconcilePlan> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.keep_existing.into_into_dart().into_dart(),
+            self.0.stop_session.into_into_dart().into_dart(),
+            self.0.allow_unconfirmed_exit.into_into_dart().into_dart(),
+            self.0.start.into_into_dart().into_dart(),
+            self.0.close.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<crate::api::lifecycle::ReconcilePlan>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<crate::api::lifecycle::ReconcilePlan>>
+    for crate::api::lifecycle::ReconcilePlan
+{
+    fn into_into_dart(self) -> FrbWrapper<crate::api::lifecycle::ReconcilePlan> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::editor::RustFoldRange {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -2414,6 +2941,54 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::editor::RustFoldRange>
 {
     fn into_into_dart(self) -> crate::api::editor::RustFoldRange {
         self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<crate::api::lifecycle::TransportEventKind> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            crate::api::lifecycle::TransportEventKind::Ready => 0.into_dart(),
+            crate::api::lifecycle::TransportEventKind::Connected => 1.into_dart(),
+            crate::api::lifecycle::TransportEventKind::Disconnected => 2.into_dart(),
+            crate::api::lifecycle::TransportEventKind::Failed => 3.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<crate::api::lifecycle::TransportEventKind>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<crate::api::lifecycle::TransportEventKind>>
+    for crate::api::lifecycle::TransportEventKind
+{
+    fn into_into_dart(self) -> FrbWrapper<crate::api::lifecycle::TransportEventKind> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<crate::api::lifecycle::TransportPhase> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            crate::api::lifecycle::TransportPhase::Idle => 0.into_dart(),
+            crate::api::lifecycle::TransportPhase::Starting => 1.into_dart(),
+            crate::api::lifecycle::TransportPhase::Ready => 2.into_dart(),
+            crate::api::lifecycle::TransportPhase::Connected => 3.into_dart(),
+            crate::api::lifecycle::TransportPhase::Failed => 4.into_dart(),
+            crate::api::lifecycle::TransportPhase::Closed => 5.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<crate::api::lifecycle::TransportPhase>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<crate::api::lifecycle::TransportPhase>>
+    for crate::api::lifecycle::TransportPhase
+{
+    fn into_into_dart(self) -> FrbWrapper<crate::api::lifecycle::TransportPhase> {
+        self.into()
     }
 }
 
@@ -2508,6 +3083,23 @@ impl SseEncode for bool {
     }
 }
 
+impl SseEncode for crate::api::lifecycle::DisconnectReaction {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::lifecycle::DisconnectReaction::Ignore => 0,
+                crate::api::lifecycle::DisconnectReaction::UnexpectedDisconnect => 1,
+                crate::api::lifecycle::DisconnectReaction::TransportFailed => 2,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
 impl SseEncode for crate::api::editor::EditorOpenError {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2587,6 +3179,13 @@ impl SseEncode for i32 {
     }
 }
 
+impl SseEncode for i64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_i64::<NativeEndian>(self).unwrap();
+    }
+}
+
 impl SseEncode for crate::api::ipc::IpcEvent {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2606,6 +3205,59 @@ impl SseEncode for crate::api::ipc::IpcEventKind {
                 crate::api::ipc::IpcEventKind::Message => 1,
                 crate::api::ipc::IpcEventKind::Disconnected => 2,
                 crate::api::ipc::IpcEventKind::Failed => 3,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::api::lifecycle::LifecycleAchievement {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::lifecycle::LifecycleAchievement::RunningExisting => 0,
+                crate::api::lifecycle::LifecycleAchievement::RunningFresh => 1,
+                crate::api::lifecycle::LifecycleAchievement::Idle => 2,
+                crate::api::lifecycle::LifecycleAchievement::Closed => 3,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::api::lifecycle::LifecycleOutcome {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::lifecycle::LifecycleOutcome::Applied => 0,
+                crate::api::lifecycle::LifecycleOutcome::Coalesced => 1,
+                crate::api::lifecycle::LifecycleOutcome::Superseded => 2,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::api::lifecycle::LifecycleTarget {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::lifecycle::LifecycleTarget::Running => 0,
+                crate::api::lifecycle::LifecycleTarget::Restarted => 1,
+                crate::api::lifecycle::LifecycleTarget::Stopped => 2,
+                crate::api::lifecycle::LifecycleTarget::Closed => 3,
                 _ => {
                     unimplemented!("");
                 }
@@ -2695,6 +3347,16 @@ impl SseEncode for Option<String> {
     }
 }
 
+impl SseEncode for Option<crate::api::lifecycle::LifecycleOutcome> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::lifecycle::LifecycleOutcome>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<u32> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2725,11 +3387,60 @@ impl SseEncode for Option<Vec<u8>> {
     }
 }
 
+impl SseEncode for crate::api::lifecycle::ReconcilePlan {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.keep_existing, serializer);
+        <bool>::sse_encode(self.stop_session, serializer);
+        <bool>::sse_encode(self.allow_unconfirmed_exit, serializer);
+        <bool>::sse_encode(self.start, serializer);
+        <bool>::sse_encode(self.close, serializer);
+    }
+}
+
 impl SseEncode for crate::api::editor::RustFoldRange {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.start_line, serializer);
         <i32>::sse_encode(self.end_line, serializer);
+    }
+}
+
+impl SseEncode for crate::api::lifecycle::TransportEventKind {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::lifecycle::TransportEventKind::Ready => 0,
+                crate::api::lifecycle::TransportEventKind::Connected => 1,
+                crate::api::lifecycle::TransportEventKind::Disconnected => 2,
+                crate::api::lifecycle::TransportEventKind::Failed => 3,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::api::lifecycle::TransportPhase {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::lifecycle::TransportPhase::Idle => 0,
+                crate::api::lifecycle::TransportPhase::Starting => 1,
+                crate::api::lifecycle::TransportPhase::Ready => 2,
+                crate::api::lifecycle::TransportPhase::Connected => 3,
+                crate::api::lifecycle::TransportPhase::Failed => 4,
+                crate::api::lifecycle::TransportPhase::Closed => 5,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
     }
 }
 
