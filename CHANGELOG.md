@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.5.10 (2026-11-13)
+
+**Features**
+
+- **dashboard** Upload and download share one Big Dipper, and the start button sits in a pole star halo (d62d920)
+- **dashboard** The speed gauge's stars take the real Big Dipper's shape (bb98893)
+
 ## v3.5.9 (2026-11-13)
 
 **Breaking Changes**
