@@ -1956,6 +1956,12 @@ UTF-8 bytes rather than a `String` so that decoding them stays off the UI isolat
   text itself, fold ranges and bracket matching, indent guides for the viewport, and completion words. `api/editor.rs` exposes the buffer as the opaque `RopeBridge`; the selection
   stays in Dart. Only the editor imports this module, through `lib/editor.dart`, so `lib/rust_api.dart` keeps its
   generic names such as `GuideBlock` out of app code.
+- `netcfg/` checks network settings the way the core reads them (`is_cidr` as strictly as Go's `netip.ParsePrefix`,
+  hosts, listen addresses, port ranges) and subtracts route lists for TUN. App code reaches it through
+  `lib/common/cidr.dart` and `lib/common/netcfg.dart`, which fall back to their Dart reference functions where
+  `RustLib` is not initialized (a background isolate, or a test that never loads the library);
+  `test/common/netcfg_parity_test.dart` holds the two to the same answers. Dart prints an IPv4-compatible IPv6 block
+  dotted (`::1.2.3.4`) where Rust and Go print hex; the core and the Android VPN builder read both.
 - `hotkey/` registers desktop global shortcuts through `global-hotkey`: `keys` maps Flutter USB HID usages to key
   codes, `owner` runs every registration on the thread the platform binds it to (a dedicated message-loop thread on
   Windows, the main dispatch queue on macOS, in place on Linux), and `service` owns the registry and forwards presses

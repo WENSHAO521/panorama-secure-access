@@ -7,6 +7,7 @@ import 'api/charset.dart';
 import 'api/editor.dart';
 import 'api/hotkey.dart';
 import 'api/ipc.dart';
+import 'api/netcfg.dart';
 import 'api/script.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -70,7 +71,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => 1412991893;
+  int get rustContentHash => 832137953;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -195,8 +196,24 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiInitInitApp();
 
+  bool crateApiNetcfgIsCidr({required String value});
+
+  bool crateApiNetcfgIsHost({required String value});
+
+  bool crateApiNetcfgIsIpMatcher({required String value});
+
+  bool crateApiNetcfgIsListenAddress({required String value});
+
+  bool crateApiNetcfgIsPortRange({required String value});
+
   Future<List<HotKeyFailure>> crateApiHotkeySetHotKeys({
     required List<HotKeySpec> specs,
+  });
+
+  Future<List<String>> crateApiNetcfgSubtractCidrs({
+    required List<String> include,
+    required List<String> exclude,
+    required bool wholeWhenEmpty,
   });
 
   Future<Uint8List?> crateApiCharsetTranscodeCharset({
@@ -1196,6 +1213,121 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "init_app", argNames: []);
 
   @override
+  bool crateApiNetcfgIsCidr({required String value}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(value, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 30)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiNetcfgIsCidrConstMeta,
+        argValues: [value],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNetcfgIsCidrConstMeta =>
+      const TaskConstMeta(debugName: "is_cidr", argNames: ["value"]);
+
+  @override
+  bool crateApiNetcfgIsHost({required String value}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(value, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 31)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiNetcfgIsHostConstMeta,
+        argValues: [value],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNetcfgIsHostConstMeta =>
+      const TaskConstMeta(debugName: "is_host", argNames: ["value"]);
+
+  @override
+  bool crateApiNetcfgIsIpMatcher({required String value}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(value, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 32)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiNetcfgIsIpMatcherConstMeta,
+        argValues: [value],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNetcfgIsIpMatcherConstMeta =>
+      const TaskConstMeta(debugName: "is_ip_matcher", argNames: ["value"]);
+
+  @override
+  bool crateApiNetcfgIsListenAddress({required String value}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(value, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 33)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiNetcfgIsListenAddressConstMeta,
+        argValues: [value],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNetcfgIsListenAddressConstMeta =>
+      const TaskConstMeta(debugName: "is_listen_address", argNames: ["value"]);
+
+  @override
+  bool crateApiNetcfgIsPortRange({required String value}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(value, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 34)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiNetcfgIsPortRangeConstMeta,
+        argValues: [value],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNetcfgIsPortRangeConstMeta =>
+      const TaskConstMeta(debugName: "is_port_range", argNames: ["value"]);
+
+  @override
   Future<List<HotKeyFailure>> crateApiHotkeySetHotKeys({
     required List<HotKeySpec> specs,
   }) {
@@ -1207,7 +1339,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 30,
+            funcId: 35,
             port: port_,
           );
         },
@@ -1226,6 +1358,43 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "set_hot_keys", argNames: ["specs"]);
 
   @override
+  Future<List<String>> crateApiNetcfgSubtractCidrs({
+    required List<String> include,
+    required List<String> exclude,
+    required bool wholeWhenEmpty,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_String(include, serializer);
+          sse_encode_list_String(exclude, serializer);
+          sse_encode_bool(wholeWhenEmpty, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 36,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiNetcfgSubtractCidrsConstMeta,
+        argValues: [include, exclude, wholeWhenEmpty],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNetcfgSubtractCidrsConstMeta =>
+      const TaskConstMeta(
+        debugName: "subtract_cidrs",
+        argNames: ["include", "exclude", "wholeWhenEmpty"],
+      );
+
+  @override
   Future<Uint8List?> crateApiCharsetTranscodeCharset({
     required List<int> bytes,
     required String label,
@@ -1241,7 +1410,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 31,
+            funcId: 37,
             port: port_,
           );
         },
@@ -1275,7 +1444,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 32,
+            funcId: 38,
             port: port_,
           );
         },

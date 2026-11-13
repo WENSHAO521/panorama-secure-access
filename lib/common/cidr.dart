@@ -1,7 +1,10 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
-import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart';
+import 'package:rust_api/netcfg.dart' as native;
+import 'package:rust_api/rust_api.dart' show isRustLibInitialized;
 
 typedef _Range = ({BigInt start, BigInt end});
 
@@ -39,6 +42,13 @@ Future<List<String>> subtractCidrsTask(
   List<String> exclude, {
   bool wholeWhenEmpty = false,
 }) {
+  if (isRustLibInitialized) {
+    return native.subtractCidrs(
+      include: include,
+      exclude: exclude,
+      wholeWhenEmpty: wholeWhenEmpty,
+    );
+  }
   return Isolate.run(
     () => subtractCidrs(include, exclude, wholeWhenEmpty: wholeWhenEmpty),
   );
@@ -48,7 +58,11 @@ final _decimal = RegExp(r'^(0|[1-9][0-9]{0,2})$');
 
 /// As strict as Go's netip.ParsePrefix, since the core fails a whole config or
 /// update on one CIDR that parser refuses.
-bool isCidr(String value) {
+bool isCidr(String value) =>
+    isRustLibInitialized ? native.isCidr(value: value) : dartIsCidr(value);
+
+@visibleForTesting
+bool dartIsCidr(String value) {
   final slash = value.lastIndexOf('/');
   if (slash < 0) {
     return false;
@@ -76,6 +90,19 @@ bool isCidr(String value) {
     bits = 32;
   }
   return int.parse(prefix) <= bits;
+}
+
+/// The sniffer's address lists also take mihomo's geoip: and rule-set: items.
+bool isIpMatcher(String value) => isRustLibInitialized
+    ? native.isIpMatcher(value: value)
+    : dartIsIpMatcher(value);
+
+@visibleForTesting
+bool dartIsIpMatcher(String value) {
+  final lower = value.toLowerCase();
+  return lower.startsWith('geoip:') ||
+      lower.startsWith('rule-set:') ||
+      dartIsCidr(value);
 }
 
 Map<int, List<_Range>> _parseAll(Iterable<String> cidrs) {
