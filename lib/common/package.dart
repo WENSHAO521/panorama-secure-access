@@ -1,16 +1,14 @@
 import 'dart:io';
 
-import 'package:package_info_plus/package_info_plus.dart';
 
 import 'common.dart';
 
-extension PackageInfoExtension on PackageInfo {
-  String get ua => [
-    '$appName/v$version',
-    'clash-verge',
-    'Platform/${Platform.operatingSystem}',
-  ].join(' ');
-}
+/// The user agent of a request made as this app at [version].
+String appUserAgent(String version) => [
+  '$appName/v$version',
+  'clash-verge',
+  'Platform/${Platform.operatingSystem}',
+].join(' ');
 
 /// Orders `major.minor.patch[-pre][+build]`; a pre-release such as `1.2.0-beta.3`
 /// sorts before its release `1.2.0`.

@@ -5,6 +5,8 @@ import 'package:args/args.dart';
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 
+import 'tool/release_version.dart';
+
 const _allTargets = <String, String>{
   'android': 'apk',
   'linux': 'deb,appimage,rpm',
@@ -55,6 +57,22 @@ Future<void> main(List<String> args) async {
   final env = results['env'] as String;
   final releaseTag = results['release-tag'] as String?;
   final rootDir = Directory.current.path;
+  final ReleaseVersion? release;
+  try {
+    release = releaseTag == null
+        ? null
+        : ReleaseVersion.parse(
+            releaseTag,
+            buildTime: DateTime.fromMillisecondsSinceEpoch(
+              int.parse(results['build-time'] as String) * 1000,
+              isUtc: true,
+            ),
+            runNumber: int.parse(results['run-number'] as String),
+          );
+  } on FormatException catch (error) {
+    stderr.writeln('Invalid release version: ${error.message}');
+    exit(1);
+  }
   final skipped = packagesNotBuildingAssets(
     File(p.join(rootDir, 'pubspec.yaml')).readAsStringSync(),
   );
@@ -78,7 +96,7 @@ Future<void> main(List<String> args) async {
     targets,
     rootDir,
     arch,
-    releaseTag: releaseTag,
+    release: release,
     androidArch: androidArch,
     verbose: verbose,
   );
@@ -97,6 +115,17 @@ ArgParser createSetupArgParser() {
       'release-tag',
       valueHelp: 'v1.2.3-beta.4',
       help: 'Release tag the build is published under',
+    )
+    ..addOption(
+      'build-time',
+      valueHelp: 'unix seconds',
+      defaultsTo: '${DateTime.now().millisecondsSinceEpoch ~/ 1000}',
+      help: 'Time the build numbers of --release-tag derive from',
+    )
+    ..addOption(
+      'run-number',
+      defaultsTo: Platform.environment['GITHUB_RUN_NUMBER'] ?? '0',
+      help: 'CI run number, the last field of the Windows file version',
     )
     ..addOption(
       'targets',
@@ -120,19 +149,17 @@ ArgParser createSetupArgParser() {
 List<String> createFlutterBuildArgs({
   required String platform,
   required bool verbose,
-  String? releaseTag,
+  ReleaseVersion? release,
 }) {
-  final flutterBuildArgs = <String>[
+  return [
     if (verbose) 'verbose',
     'dart-define-from-file=env.json',
+    if (platform == 'android') 'split-per-abi',
+    if (release != null) ...[
+      'build-name=${release.buildName(platform)}',
+      'build-number=${release.buildNumberFor(platform)}',
+    ],
   ];
-  if (platform == 'android') {
-    flutterBuildArgs.add('split-per-abi');
-    if (releaseTag != null && releaseTag.contains('-')) {
-      flutterBuildArgs.add('build-name=${releaseTag.replaceFirst('v', '')}');
-    }
-  }
-  return flutterBuildArgs;
 }
 
 Map<String, String> createBuildEnvironment(String env, {String? releaseTag}) {
@@ -171,19 +198,19 @@ Future<int> _package(
   String targets,
   String rootDir,
   String arch, {
-  String? releaseTag,
+  ReleaseVersion? release,
   String? androidArch,
   required bool verbose,
 }) async {
   final file = File(p.join(rootDir, 'env.json'));
   await file.writeAsString(
-    jsonEncode(createBuildEnvironment(env, releaseTag: releaseTag)),
+    jsonEncode(createBuildEnvironment(env, releaseTag: release?.tag)),
   );
 
   final flutterBuildArgs = createFlutterBuildArgs(
     platform: platform,
     verbose: verbose,
-    releaseTag: releaseTag,
+    release: release,
   );
   final descriptionArgs = <String>[];
   if (platform != 'android') {
@@ -210,6 +237,40 @@ Future<int> _package(
     return activateResult.exitCode;
   }
 
+  // flutter_distributor reads the installer and package versions from
+  // pubspec.yaml alone, so the release's version goes there for this build.
+  final pubspec = File(p.join(rootDir, 'pubspec.yaml'));
+  final originalPubspec = pubspec.readAsStringSync();
+  if (release != null) {
+    pubspec.writeAsStringSync(
+      withPubspecVersion(originalPubspec, release.pubspecVersion(platform)),
+    );
+  }
+  final int exitCode;
+  try {
+    exitCode = await _runDistributor(
+      platform,
+      targets,
+      androidArch,
+      flutterBuildArgs,
+      descriptionArgs,
+    );
+  } finally {
+    if (release != null) pubspec.writeAsStringSync(originalPubspec);
+  }
+  if (exitCode != 0 || platform != 'linux' || !targets.contains('appimage')) {
+    return exitCode;
+  }
+  return _dropBundledRuntimeLibraries(p.join(rootDir, 'dist'), arch);
+}
+
+Future<int> _runDistributor(
+  String platform,
+  String targets,
+  String? androidArch,
+  List<String> flutterBuildArgs,
+  List<String> descriptionArgs,
+) async {
   final process = await Process.start(
     'flutter_distributor',
     [
@@ -235,11 +296,7 @@ Future<int> _package(
   process.stderr.listen((data) {
     stderr.write(utf8.decode(data));
   });
-  final exitCode = await process.exitCode;
-  if (exitCode != 0 || platform != 'linux' || !targets.contains('appimage')) {
-    return exitCode;
-  }
-  return _dropBundledRuntimeLibraries(p.join(rootDir, 'dist'), arch);
+  return process.exitCode;
 }
 
 /// The packager bundles every library the plugins link, the C++ runtime

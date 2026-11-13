@@ -8,9 +8,9 @@ import 'package:fl_clash/common/update_backup.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/action.dart';
+import 'package:fl_clash/state.dart';
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/painting.dart' show TextSpan;
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'generated/update.g.dart';
@@ -22,7 +22,7 @@ const _speedSmoothing = 0.3;
 class UpdateController extends _$UpdateController {
   @visibleForTesting
   static Future<String> Function() currentVersion = () async =>
-      (await PackageInfo.fromPlatform()).version;
+      globalState.appVersion;
 
   CancelToken? _cancelToken;
   List<UpdateAsset> _assets = const [];

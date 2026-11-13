@@ -8,6 +8,9 @@ on:
       - 'v*'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/v') && github.ref != 'refs/heads/main' }}
@@ -364,13 +367,18 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.tag.outputs.tag }}
+      build_time: ${{ steps.tag.outputs.build_time }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
+      # Every platform derives its build numbers from the commit time, so the
+      # matrix agrees on them however long each job waits for a runner.
       - name: Release tag
         id: tag
-        run: echo "tag=$(tool/release_tag.sh)" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "tag=$(tool/release_tag.sh)" >> "$GITHUB_OUTPUT"
+          echo "build_time=$(git log -1 --format=%ct)" >> "$GITHUB_OUTPUT"
 
   build:
     needs: release-tag
@@ -427,15 +435,16 @@ jobs:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          # Without the signing secrets the release build stays unsigned.
-          if [ -n "$KEYSTORE" ]; then
-            echo "$KEYSTORE" | base64 --decode > android/app/keystore.jks
-            echo "keyAlias=$KEY_ALIAS" >> android/local.properties
-            echo "storePassword=$STORE_PASSWORD" >> android/local.properties
-            echo "keyPassword=$KEY_PASSWORD" >> android/local.properties
-          else
-            echo "KEYSTORE secret not set, skipping release signing (unsigned build)."
+          # An APK signed with any other key cannot update an installed one,
+          # so a release without the signing secrets is not published at all.
+          if [ -z "$KEYSTORE" ] || [ -z "$KEY_ALIAS" ] || [ -z "$STORE_PASSWORD" ] || [ -z "$KEY_PASSWORD" ]; then
+            echo '::error::The Android signing secrets are not set; refusing to publish an unsigned release.'
+            exit 1
           fi
+          echo "$KEYSTORE" | base64 --decode > android/app/keystore.jks
+          echo "keyAlias=$KEY_ALIAS" >> android/local.properties
+          echo "storePassword=$STORE_PASSWORD" >> android/local.properties
+          echo "keyPassword=$KEY_PASSWORD" >> android/local.properties
 
       - name: Setup Go
         uses: actions/setup-go@v6
@@ -509,7 +518,11 @@ jobs:
       - name: Setup
         env:
           ANDROID_NDK_HOME: ${{ steps.build-ndk.outputs.ndk-path }}
-        run: dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} --release-tag ${{ needs.release-tag.outputs.tag }} -v
+        run: dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} --release-tag ${{ needs.release-tag.outputs.tag }} --build-time ${{ needs.release-tag.outputs.build_time }} --run-number ${{ github.run_number }} -v
+
+      - name: Verify the built version
+        shell: bash
+        run: dart tool/verify_release_version.dart ${{ matrix.platform }} ${{ needs.release-tag.outputs.tag }} ${{ needs.release-tag.outputs.build_time }} ${{ github.run_number }}
 
       - name: Verify Android 16 KB page sizes
         if: matrix.platform == 'android'
@@ -546,13 +559,18 @@ jobs:
       - name: Rename artifacts
         env:
           TAG: ${{ needs.release-tag.outputs.tag }}
+        # The packages carry each platform's own form of the version (verified
+        # in the build job); the file names all use the tag's.
         run: |
-          pubspec_version="$(sed -n 's/^version: *\([^+]*\).*/\1/p' pubspec.yaml)"
           cd ./dist
           for f in panorama-secure-access-*; do
             [ -e "$f" ] || continue
-            name="PanoramaSecureAccess-${f#panorama-secure-access-}"
-            mv "$f" "${name/-$pubspec_version-/-${TAG#v}-}"
+            name="$(printf '%s' "$f" | sed -E "s/^panorama-secure-access-.*-(android|linux|macos|windows)-/PanoramaSecureAccess-${TAG#v}-\1-/")"
+            if [ "$name" = "$f" ]; then
+              echo "::error::Unexpected artifact name $f"
+              exit 1
+            fi
+            mv "$f" "$name"
           done
           ls -1
 
