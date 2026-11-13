@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/dav_client.dart';
+import 'package:fl_clash/common/update_backup.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/features/form/form.dart';
 import 'package:fl_clash/l10n/l10n.dart';
@@ -27,6 +28,7 @@ class BackupAndRestore extends ConsumerStatefulWidget {
 class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
     with UniqueKeyStateMixin {
   final _davConnection = DAVConnectionController();
+  final _updateBackup = updateBackups.latest();
 
   @override
   void initState() {
@@ -136,6 +138,12 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
     await _restore(option, (_) async => path);
   }
 
+  Future<void> _restoreBeforeUpdate(UpdateBackupInfo backup) async {
+    final option = await _pickRestoreOption();
+    if (option == null || !mounted) return;
+    await _restore(option, (_) async => backup.archivePath);
+  }
+
   void _handleChange(String? value, WidgetRef ref) {
     if (value == null) {
       return;
@@ -241,6 +249,25 @@ class _BackupAndRestoreState extends ConsumerState<BackupAndRestore>
                   _restoreOnLocal();
                 },
                 title: Text(appLocalizations.restore),
+              ),
+              FutureBuilder(
+                future: _updateBackup,
+                builder: (_, snapshot) {
+                  final backup = snapshot.data;
+                  if (backup == null) return const SizedBox.shrink();
+                  return ListItem(
+                    onTap: () {
+                      _restoreBeforeUpdate(backup);
+                    },
+                    title: Text(appLocalizations.restoreBeforeUpdate),
+                    subtitle: Text(
+                      appLocalizations.restoreBeforeUpdateTip(
+                        backup.fromVersion,
+                        backup.toTag,
+                      ),
+                    ),
+                  );
+                },
               ),
             ],
           ),

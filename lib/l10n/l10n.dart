@@ -9502,6 +9502,26 @@ class AppLocalizations {
       args: [names],
     );
   }
+
+  /// `Restore from before the update`
+  String get restoreBeforeUpdate {
+    return Intl.message(
+      'Restore from before the update',
+      name: 'restoreBeforeUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Data from v{version}, saved before updating to {tag}`
+  String restoreBeforeUpdateTip(Object version, Object tag) {
+    return Intl.message(
+      'Data from v$version, saved before updating to $tag',
+      name: 'restoreBeforeUpdateTip',
+      desc: '',
+      args: [version, tag],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

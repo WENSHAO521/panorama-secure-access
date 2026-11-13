@@ -1121,5 +1121,7 @@
   "portInUseTip": "Un autre programme écoute sur le port {port} : le port proxy ne peut pas y démarrer et le proxy système enverrait votre trafic à ce programme. Passer le port mixte sur le port libre {free} ?",
   "portInUseSwitch": "Changer de port",
   "portInUseBanner": "Le port {port} est utilisé par un autre programme, le port proxy n’a pas pu démarrer. Modifiez le port mixte dans Ports.",
-  "conflictingClientsTip": "D’autres clients proxy sont en cours d’exécution : {names}. Deux modes TUN ou proxys système s’écrasent mutuellement ; quittez-les avant d’activer le TUN ou le proxy système."
+  "conflictingClientsTip": "D’autres clients proxy sont en cours d’exécution : {names}. Deux modes TUN ou proxys système s’écrasent mutuellement ; quittez-les avant d’activer le TUN ou le proxy système.",
+  "restoreBeforeUpdate": "Restaurer les données d’avant la mise à jour",
+  "restoreBeforeUpdateTip": "Données de la v{version}, enregistrées avant la mise à jour vers {tag}"
 }

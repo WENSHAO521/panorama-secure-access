@@ -1121,5 +1121,7 @@
   "portInUseTip": "Otro programa escucha en el puerto {port}, así que el puerto del proxy no puede iniciarse ahí y el proxy del sistema enviaría tu tráfico a ese programa. ¿Cambiar el puerto mixto al puerto libre {free}?",
   "portInUseSwitch": "Cambiar puerto",
   "portInUseBanner": "Otro programa usa el puerto {port}, así que el puerto del proxy no pudo iniciarse. Cambia el puerto mixto en Puertos.",
-  "conflictingClientsTip": "Hay otros clientes proxy en ejecución: {names}. Dos modos TUN o proxies del sistema se sobrescriben entre sí; ciérralos antes de activar TUN o el proxy del sistema."
+  "conflictingClientsTip": "Hay otros clientes proxy en ejecución: {names}. Dos modos TUN o proxies del sistema se sobrescriben entre sí; ciérralos antes de activar TUN o el proxy del sistema.",
+  "restoreBeforeUpdate": "Restaurar los datos anteriores a la actualización",
+  "restoreBeforeUpdateTip": "Datos de la v{version}, guardados antes de actualizar a {tag}"
 }
