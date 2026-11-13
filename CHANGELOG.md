@@ -1,5 +1,57 @@
 # Changelog
 
+## v3.5.9 (2026-11-13)
+
+**Breaking Changes**
+
+- **desktop** Own binary, Helper, service and bundle identifiers (eb63f64)
+- **android** Ship as com.panoramasg.secureaccess (25f5cc6)
+- **android** Android installs this version as a new app. Back up the configuration in the old app, restore it in the new one, then uninstall the old app. (52d7d33)
+
+**Features**
+
+- Confirm beta channel changes, custom traffic on link import, clearer network diagnosis (cd82481)
+- **dashboard** Arch the Northern Dipper over the desktop speed cards (5089bac)
+- **uninstall** Remove leftovers when the app is uninstalled (6e7ad4f)
+- **diagnosis** One-click network diagnosis with repairs (a0ae682)
+- **update** Back up the data before installing an update and offer to restore it (6f309f9)
+- **dashboard** Show the exit flag as a round flag under the Northern Dipper (148d405)
+- **desktop** Check for a busy mixed port and other proxy clients before start (25f79a5)
+- **app** Carry data over from installs under FlClash's identifiers (5456f9c)
+- **desktop** Own binary, Helper, service and bundle identifiers (eb63f64)
+- **android** Ship as com.panoramasg.secureaccess (25f5cc6)
+- **linux** Linux asks for administrator authorization once for TUN; the service survives reboots and upgrades and recovers without a password (7c892a4)
+- **dashboard** Show the exit flag on a round disc (40cdaa8)
+- **dashboard** Refine the exit flag badge (ac691f1)
+- **profiles** Custom traffic totals can be entered in MB, GB or TB (db9770e)
+- **dashboard** The dashboard shows the current exit's flag (a53a91e)
+- **core** Core updated to mihomo v1.19.34 (cb2cd3f)
+- **profiles** Profiles can set a custom traffic total, monthly or permanent (6c4914d)
+- **android** The Android app installs alongside FlClash under its own package name (52d7d33)
+- **core** Every proxy group and provider tests its nodes every 300 seconds (b4200c8)
+- **delay** Delay tests use http://cp.cloudflare.com/generate_204 by default (edbe798)
+
+**Bug Fixes**
+
+- **core** Build with Go 1.27.4 and patched brotli and compress (f913486)
+- **security** Redact secrets from app logs and audit dependencies in CI (68bbfc1)
+- **release** Derive every platform's version from the release tag (4263693)
+- **dashboard** Set the dipper arch over the speed figure (875b764)
+- **proxy** Put back the Windows and Linux proxy settings a start replaced (c9bf018)
+- **providers** Finish removing a stale download before putProvider returns (906aa17)
+- **proxy** Put back the macOS proxy settings a start replaced (abb1adb)
+- **core** Replace a TUN device name the OS cannot create (44e9717)
+- **windows** Install under an own AppId and stop deleting FlClash's data (f4d532d)
+- **dashboard** Size the exit flag through AppTextStyle.custom (ea3d9f0)
+- **android** Android betas show their own version number when installed (e1819ad)
+- **update** Updates that cannot be verified are no longer installed, and Linux updates match how the app was installed (e273458)
+- **core** Desktop TUN no longer loses the network when it starts after the network changed (d135ef0)
+- **update** Updates are verified against the published checksums again (7ca950d)
+- **windows** Hand the foreground back after the tray menu closes (6b0587e)
+- **core** Update sing-tun to v0.4.29 plus the macOS DNS flush fix (297ab2b)
+- **dns** Keep proxy nameservers when respect-rules is enabled (9facfce)
+- **macos** Keep the menu bar menu working with traffic titles and full-screen apps (0b99841)
+
 ## v3.5.8 (2026-11-09)
 
 **Bug Fixes**
