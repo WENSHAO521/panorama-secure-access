@@ -29,6 +29,9 @@ const _starCount = 7;
 const _startAngle = -168.0;
 const _endAngle = -12.0;
 
+/// How many times wider than tall the arch may stand.
+const _widest = 2.4;
+
 /// How far a star reaches at rest and at its brightest, as a share of the
 /// gauge's width.
 const _restReach = 0.03;
@@ -79,12 +82,16 @@ class _DipperPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final unit = size.width;
+    // On a wide card the arch keeps its shape and stands in the middle.
+    final width = math.min(size.width, size.height * _widest);
+    final left = (size.width - width) / 2;
+    // Stars and strokes keep to the height on a wide card, so they stay fine.
+    final unit = math.min(width, size.height * 1.8);
     final margin = unit * _litReach;
     final rect = Rect.fromLTRB(
+      left + margin,
       margin,
-      margin,
-      size.width - margin,
+      left + width - margin,
       // The arch's ends sit on the bottom edge.
       size.height * 2 - margin,
     );

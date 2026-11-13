@@ -150,7 +150,7 @@ void main() {
     expect(dipperLevel(1 << 40), 1);
   });
 
-  testWidgets('a desktop card keeps its peak to the window it charts', (
+  testWidgets('a desktop card keeps its peak to the window it samples', (
     tester,
   ) async {
     addTraffic(const Traffic(up: 1 << 20));
@@ -162,6 +162,29 @@ void main() {
 
     expect(find.textContaining(_traffic(1 << 20)), findsNothing);
     expect(find.textContaining('${_traffic(2048)}/s'), findsWidgets);
+
+    await teardownCard(tester);
+  });
+  testWidgets('a desktop card arches its stars between its title and figure', (
+    tester,
+  ) async {
+    addTraffic(const Traffic(down: 1 << 20));
+
+    await pumpCard(
+      tester,
+      const SizedBox(
+        height: 208,
+        child: SpeedCard(direction: TrafficDirection.download),
+      ),
+    );
+
+    final card = tester.getRect(find.byType(SpeedCard));
+    final gauge = tester.getRect(find.byType(DipperGauge));
+    final title = tester.getRect(find.text('Download'));
+    expect(gauge.top, greaterThanOrEqualTo(title.bottom));
+    expect(gauge.bottom, lessThanOrEqualTo(card.bottom));
+    expect(find.textContaining('${_traffic(1 << 20)}/s'), findsNWidgets(2));
+    expect(tester.takeException(), isNull);
 
     await teardownCard(tester);
   });

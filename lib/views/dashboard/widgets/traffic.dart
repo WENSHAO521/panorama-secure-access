@@ -13,10 +13,6 @@ import 'package:flutter/widgets.dart';
 import 'card.dart';
 import 'dipper_gauge.dart';
 
-const _minSpeedScale = 8 * 1024.0;
-
-const _chartBleed = 3.0;
-
 enum TrafficDirection {
   upload,
   download;
@@ -24,10 +20,6 @@ enum TrafficDirection {
   num of(Traffic traffic) => this == upload ? traffic.up : traffic.down;
 
   Glyph get glyph => this == upload ? AppGlyphs.arrowUp : AppGlyphs.arrowDown;
-
-  Color colorOf(BuildContext context) => this == upload
-      ? DashboardColors.of(context).series2
-      : context.colorScheme.primary;
 
   Color glyphColorOf(BuildContext context) => this == upload
       ? context.colorScheme.onSurfaceVariant
@@ -74,30 +66,9 @@ class _Figure extends StatelessWidget {
   }
 }
 
-/// The zero line is the chart's bottom: a card lets the chart bleed past its
-/// edge so idle traffic, or none sampled yet, leaves no line.
-class _SpeedChart extends StatelessWidget {
-  const _SpeedChart({required this.direction, required this.traffics});
-
-  final TrafficDirection direction;
-  final FixedList<Traffic> traffics;
-
-  @override
-  Widget build(BuildContext context) {
-    return LineChart(
-      values: [
-        for (final traffic in traffics.list) direction.of(traffic).toDouble(),
-      ],
-      revision: traffics.revision,
-      capacity: traffics.maxLength,
-      minScale: _minSpeedScale,
-      baselineRatio: 1,
-      color: direction.colorOf(context),
-    );
-  }
-}
-
-/// The upload or the download on its own desktop card.
+/// The upload or the download on its own desktop card: the title row with
+/// the peak over the window, then an arch of the seven stars of the Northern
+/// Dipper that lights up with the speed, over the figure and the total.
 class SpeedCard extends ConsumerWidget {
   const SpeedCard({super.key, required this.direction});
 
@@ -120,28 +91,33 @@ class SpeedCard extends ConsumerWidget {
       (peak, traffic) => math.max(peak, direction.of(traffic)),
     );
     final speed = current.traffic;
+    final titleHeight = 24 * scale;
+    final gaugeGap = compact ? 6.0 : 10.0;
     return DashboardCard(
       padding: EdgeInsets.zero,
       semanticLabel: direction.labelOf(context),
-      clipBehavior: Clip.antiAlias,
       child: Stack(
+        fit: StackFit.passthrough,
         children: [
           Positioned(
-            left: -_chartBleed,
-            right: -_chartBleed,
-            bottom: -_chartBleed,
-            height: compact ? 62 : 88,
+            left: padding.left,
+            right: padding.right,
+            top: padding.top + titleHeight + gaugeGap,
+            bottom: padding.bottom,
             child: RepaintBoundary(
-              child: _SpeedChart(direction: direction, traffics: traffics),
+              child: DipperGauge(
+                level: dipperLevel(current),
+                dark: context.colorScheme.brightness == Brightness.dark,
+              ),
             ),
           ),
           Padding(
             padding: padding,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(
-                  height: 24 * scale,
+                  height: titleHeight,
                   child: Row(
                     spacing: 8,
                     children: [
@@ -169,20 +145,23 @@ class SpeedCard extends ConsumerWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: compact ? 6 : 10),
-                _Figure(
-                  show: speed,
-                  unit: _speedUnit(speed),
-                  style: compact
-                      ? AppTextStyle.largeTitle
-                      : AppTextStyle.display,
-                  unitStyle: AppTextStyle.subheadline,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  appLocalizations.trafficTotal(dashboardTraffic(total)),
-                  maxLines: 1,
-                  style: DashboardText.label(context),
+                Column(
+                  children: [
+                    _Figure(
+                      show: speed,
+                      unit: _speedUnit(speed),
+                      style: compact
+                          ? AppTextStyle.title1
+                          : AppTextStyle.largeTitle,
+                      unitStyle: AppTextStyle.subheadline,
+                    ),
+                    Text(
+                      appLocalizations.trafficTotal(dashboardTraffic(total)),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: DashboardText.label(context),
+                    ),
+                  ],
                 ),
               ],
             ),
