@@ -1142,5 +1142,12 @@
   "repairClearProxy": "Сбросить",
   "repairAuthorizeTun": "Разрешить",
   "repairDisableIpv6": "Отключить IPv6",
-  "repairFlushDns": "Сбросить кэш DNS"
+  "repairFlushDns": "Сбросить кэш DNS",
+  "uninstallApp": "Удалить",
+  "uninstallAppDesc": "Удалить приложение, фоновую службу и кэш с этого компьютера",
+  "uninstallConfirm": "Удалить Panorama Secure Access с этого компьютера? Фоновая служба, автозапуск, обработчик ссылок и кэш тоже будут удалены, а приложение закроется.",
+  "uninstallRebootTip": "В Fedora Atomic (rpm-ostree) приложение исчезнет после следующей перезагрузки.",
+  "uninstallDeleteDataTip": "Также удалить подписки, настройки и журналы? Восстановить их будет нельзя. Оставьте их, если планируете установить приложение снова.",
+  "uninstallFailed": "Приложение не было удалено, поэтому ничего не стёрто.",
+  "keep": "Оставить"
 }

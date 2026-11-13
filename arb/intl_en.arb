@@ -1142,5 +1142,12 @@
   "repairClearProxy": "Clear",
   "repairAuthorizeTun": "Authorize",
   "repairDisableIpv6": "Turn off IPv6",
-  "repairFlushDns": "Flush DNS"
+  "repairFlushDns": "Flush DNS",
+  "uninstallApp": "Uninstall",
+  "uninstallAppDesc": "Remove the app, its background service and cache from this computer",
+  "uninstallConfirm": "Remove Panorama Secure Access from this computer? Its background service, launch at login, link handler and cache go too, and the app quits.",
+  "uninstallRebootTip": "On Fedora Atomic (rpm-ostree) the app disappears after the next reboot.",
+  "uninstallDeleteDataTip": "Also delete your subscriptions, settings and logs? They cannot be recovered. Keep them if you plan to install again.",
+  "uninstallFailed": "The app was not removed, so nothing was deleted.",
+  "keep": "Keep"
 }

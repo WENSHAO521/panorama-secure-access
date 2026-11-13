@@ -1321,6 +1321,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "itemsCount": m49,
     "ja": MessageLookupByLibrary.simpleMessage("Japonés"),
     "justNow": MessageLookupByLibrary.simpleMessage("Ahora mismo"),
+    "keep": MessageLookupByLibrary.simpleMessage("Conservar"),
     "keepAliveIdle": MessageLookupByLibrary.simpleMessage(
       "Inactividad de keep-alive TCP",
     ),
@@ -2412,6 +2413,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "ultra": MessageLookupByLibrary.simpleMessage("Ultra"),
     "undo": MessageLookupByLibrary.simpleMessage("Deshacer"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("Latencia unificada"),
+    "uninstallApp": MessageLookupByLibrary.simpleMessage("Desinstalar"),
+    "uninstallAppDesc": MessageLookupByLibrary.simpleMessage(
+      "Quitar la aplicación, su servicio en segundo plano y la caché de este equipo",
+    ),
+    "uninstallConfirm": MessageLookupByLibrary.simpleMessage(
+      "¿Quitar Panorama Secure Access de este equipo? También se quitan el servicio en segundo plano, el inicio al iniciar sesión, el gestor de enlaces y la caché, y la aplicación se cierra.",
+    ),
+    "uninstallDeleteDataTip": MessageLookupByLibrary.simpleMessage(
+      "¿Eliminar también tus suscripciones, ajustes y registros? No se podrán recuperar. Consérvalos si piensas volver a instalar.",
+    ),
+    "uninstallFailed": MessageLookupByLibrary.simpleMessage(
+      "La aplicación no se quitó, así que no se eliminó nada.",
+    ),
+    "uninstallRebootTip": MessageLookupByLibrary.simpleMessage(
+      "En Fedora Atomic (rpm-ostree) la aplicación desaparece tras el próximo reinicio.",
+    ),
     "unknown": MessageLookupByLibrary.simpleMessage("Desconocido"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "Error de red desconocido",

@@ -961,6 +961,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "itemsCount": m49,
     "ja": MessageLookupByLibrary.simpleMessage("日语"),
     "justNow": MessageLookupByLibrary.simpleMessage("刚刚"),
+    "keep": MessageLookupByLibrary.simpleMessage("保留"),
     "keepAliveIdle": MessageLookupByLibrary.simpleMessage("TCP 保持活动空闲时间"),
     "keepAliveIntervalDesc": MessageLookupByLibrary.simpleMessage("TCP保持活动间隔"),
     "key": MessageLookupByLibrary.simpleMessage("键"),
@@ -1728,6 +1729,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "ultra": MessageLookupByLibrary.simpleMessage("极致"),
     "undo": MessageLookupByLibrary.simpleMessage("撤销"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("统一延迟"),
+    "uninstallApp": MessageLookupByLibrary.simpleMessage("卸载"),
+    "uninstallAppDesc": MessageLookupByLibrary.simpleMessage(
+      "从这台电脑移除应用、后台服务和缓存",
+    ),
+    "uninstallConfirm": MessageLookupByLibrary.simpleMessage(
+      "要从这台电脑移除 Panorama Secure Access 吗？后台服务、开机自启、链接关联和缓存会一起移除，随后应用退出。",
+    ),
+    "uninstallDeleteDataTip": MessageLookupByLibrary.simpleMessage(
+      "同时删除订阅、设置和日志吗？删除后无法恢复。如果之后还会重新安装，请选择保留。",
+    ),
+    "uninstallFailed": MessageLookupByLibrary.simpleMessage(
+      "应用未被移除，因此没有删除任何内容。",
+    ),
+    "uninstallRebootTip": MessageLookupByLibrary.simpleMessage(
+      "在 Fedora Atomic（rpm-ostree）上，应用会在下次重启后消失。",
+    ),
     "unknown": MessageLookupByLibrary.simpleMessage("未知"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage("未知网络错误"),
     "unmaximize": MessageLookupByLibrary.simpleMessage("向下还原"),
