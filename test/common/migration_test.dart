@@ -1,3 +1,4 @@
+import 'package:fl_clash/ui/color_style.dart';
 import 'dart:convert';
 
 import 'package:fl_clash/common/constant.dart';
@@ -211,7 +212,7 @@ void main() {
         final theme = config.themeProps;
         expect(theme.primaryColor, defaultPrimaryColor);
         expect(theme.primaryColors, defaultPrimaryColors);
-        expect(theme.colorStyle, ColorStyle.vivid);
+        expect(theme.colorStyle, AppColorStyle.xingGuan);
         expect(theme.themeMode, ThemeMode.dark);
         expect(theme.pureBlack, isTrue);
         expect(theme.liquidGlass, LiquidGlassMode.ultra);
@@ -281,6 +282,7 @@ void main() {
         final moved = await upgrade(2);
         expect(moved.primaryColor, 0xFFFF8D28);
         expect(moved.primaryColors, [
+          ...taoistPrimaryColors,
           0xFF007AFF,
           0xFFCB30E0,
           0xFFFF8D28,
@@ -378,6 +380,42 @@ void main() {
         );
         expect(await upgrade(formerDefaultTestUrl, 7), formerDefaultTestUrl);
       });
+
+      test(
+        'adds the Taoist colors and moves the former default, once',
+        () async {
+          Future<ThemeProps> upgrade(int color, String style, int from) async {
+            final configMap = _createConfigMap();
+            (configMap['themeProps']! as Map<String, Object?>)
+              ..['primaryColor'] = color
+              ..['colorStyle'] = style
+              ..['primaryColors'] = [0xFF007AFF, 0xFF5B3FB8, 0xFF123456];
+            final store = _FakeMigrationStore(
+              configMap: configMap,
+              version: Migration.currentVersion,
+              upgradeVersion: from,
+            );
+            return (await Migration(store: store).run()).themeProps;
+          }
+
+          final moved = await upgrade(formerDefaultPrimaryColor, 'vivid', 7);
+          expect(moved.primaryColor, defaultPrimaryColor);
+          expect(moved.colorStyle, AppColorStyle.xingGuan);
+          expect(moved.primaryColors, [
+            ...taoistPrimaryColors,
+            0xFF007AFF,
+            0xFF123456,
+          ]);
+
+          final picked = await upgrade(0xFF123456, 'soft', 7);
+          expect(picked.primaryColor, 0xFF123456);
+          expect(picked.colorStyle, AppColorStyle.soft);
+
+          final done = await upgrade(formerDefaultPrimaryColor, 'vivid', 8);
+          expect(done.primaryColor, formerDefaultPrimaryColor);
+          expect(done.primaryColors, [0xFF007AFF, 0xFF5B3FB8, 0xFF123456]);
+        },
+      );
 
       test('a new install only records it', () async {
         final store = _FakeMigrationStore(

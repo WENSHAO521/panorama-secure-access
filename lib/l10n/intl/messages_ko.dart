@@ -1494,6 +1494,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "publicKey": MessageLookupByLibrary.simpleMessage("공개 키"),
     "pureBlack": MessageLookupByLibrary.simpleMessage("퓨어 블랙"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("퓨어 블랙 모드"),
+    "qingLuStyle": MessageLookupByLibrary.simpleMessage("청록"),
     "qrcode": MessageLookupByLibrary.simpleMessage("QR 코드"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage("QR 코드를 스캔하여 프로필 가져오기"),
     "qrcodeTooLongTip": MessageLookupByLibrary.simpleMessage(
@@ -1785,6 +1786,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "알림에 중지 버튼 표시",
     ),
     "showPassword": MessageLookupByLibrary.simpleMessage("비밀번호 표시"),
+    "shuiMoStyle": MessageLookupByLibrary.simpleMessage("수묵"),
     "sidebar": MessageLookupByLibrary.simpleMessage("사이드바"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("백그라운드 실행"),
     "singleImport": MessageLookupByLibrary.simpleMessage("개별 가져오기"),
@@ -1998,9 +2000,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "시스템에 기록하면 시스템 시계도 설정합니다. Android에서는 무시됩니다.",
     ),
+    "xingGuanStyle": MessageLookupByLibrary.simpleMessage("성관전"),
     "yearsAgo": m111,
     "yearsAgoShort": m112,
     "yes": MessageLookupByLibrary.simpleMessage("예"),
     "zhCN": MessageLookupByLibrary.simpleMessage("중국어 간체"),
+    "ziFuStyle": MessageLookupByLibrary.simpleMessage("자부"),
   };
 }

@@ -710,13 +710,7 @@ final class GenColorSchemeProvider
     with $Provider<ColorScheme> {
   GenColorSchemeProvider._({
     required GenColorSchemeFamily super.from,
-    required (
-      Brightness, {
-      Color? color,
-      bool ignoreConfig,
-      bool? pureBlack,
-      bool? starChart,
-    })
+    required (Brightness, {Color? color, bool ignoreConfig, bool? pureBlack})
     super.argument,
   }) : super(
          retry: null,
@@ -745,20 +739,13 @@ final class GenColorSchemeProvider
   ColorScheme create(Ref ref) {
     final argument =
         this.argument
-            as (
-              Brightness, {
-              Color? color,
-              bool ignoreConfig,
-              bool? pureBlack,
-              bool? starChart,
-            });
+            as (Brightness, {Color? color, bool ignoreConfig, bool? pureBlack});
     return genColorScheme(
       ref,
       argument.$1,
       color: argument.color,
       ignoreConfig: argument.ignoreConfig,
       pureBlack: argument.pureBlack,
-      starChart: argument.starChart,
     );
   }
 
@@ -781,19 +768,13 @@ final class GenColorSchemeProvider
   }
 }
 
-String _$genColorSchemeHash() => r'66ceceac017b221e347c286fe4884e0ceb267cf5';
+String _$genColorSchemeHash() => r'c6838e224d41780617f7338c5e56173a7620cd87';
 
 final class GenColorSchemeFamily extends $Family
     with
         $FunctionalFamilyOverride<
           ColorScheme,
-          (
-            Brightness, {
-            Color? color,
-            bool ignoreConfig,
-            bool? pureBlack,
-            bool? starChart,
-          })
+          (Brightness, {Color? color, bool ignoreConfig, bool? pureBlack})
         > {
   GenColorSchemeFamily._()
     : super(
@@ -809,14 +790,12 @@ final class GenColorSchemeFamily extends $Family
     Color? color,
     bool ignoreConfig = false,
     bool? pureBlack,
-    bool? starChart,
   }) => GenColorSchemeProvider._(
     argument: (
       brightness,
       color: color,
       ignoreConfig: ignoreConfig,
       pureBlack: pureBlack,
-      starChart: starChart,
     ),
     from: this,
   );

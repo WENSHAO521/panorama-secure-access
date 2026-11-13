@@ -1783,6 +1783,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "publicKey": MessageLookupByLibrary.simpleMessage("Public key"),
     "pureBlack": MessageLookupByLibrary.simpleMessage("Pure black"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("Pure black mode"),
+    "qingLuStyle": MessageLookupByLibrary.simpleMessage("Blue-Green"),
     "qrcode": MessageLookupByLibrary.simpleMessage("QR code"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage(
       "Scan a QR code to obtain a profile",
@@ -2128,6 +2129,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Stop button in notification",
     ),
     "showPassword": MessageLookupByLibrary.simpleMessage("Show password"),
+    "shuiMoStyle": MessageLookupByLibrary.simpleMessage("Ink Wash"),
     "sidebar": MessageLookupByLibrary.simpleMessage("Sidebar"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("Silent launch"),
     "singleImport": MessageLookupByLibrary.simpleMessage("Single import"),
@@ -2369,9 +2371,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "Write to system also sets the system clock; Android ignores it.",
     ),
+    "xingGuanStyle": MessageLookupByLibrary.simpleMessage("Star Chart"),
     "yearsAgo": m111,
     "yearsAgoShort": m112,
     "yes": MessageLookupByLibrary.simpleMessage("Yes"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
+    "ziFuStyle": MessageLookupByLibrary.simpleMessage("Purple Palace"),
   };
 }

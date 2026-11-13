@@ -1,3 +1,4 @@
+import 'package:fl_clash/ui/color_style.dart';
 import 'package:fl_clash/common/constant.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/ui/star_chart.dart';
@@ -36,18 +37,16 @@ void main() {
     final style = container.read(themeSettingProvider).colorStyle;
 
     expect(
-      container.read(
-        genColorSchemeProvider(Brightness.light, starChart: false),
-      ),
-      seededColorScheme(
+      container.read(genColorSchemeProvider(Brightness.light)),
+      appColorScheme(
         seedColor: lightSeed,
         brightness: Brightness.light,
         style: style,
       ),
     );
     expect(
-      container.read(genColorSchemeProvider(Brightness.dark, starChart: false)),
-      seededColorScheme(
+      container.read(genColorSchemeProvider(Brightness.dark)),
+      appColorScheme(
         seedColor: darkSeed,
         brightness: Brightness.dark,
         style: style,
@@ -90,10 +89,8 @@ void main() {
         .seed(lightSeed: null, darkSeed: null, accentColor: accent);
 
     expect(
-      container.read(
-        genColorSchemeProvider(Brightness.light, starChart: false),
-      ),
-      seededColorScheme(
+      container.read(genColorSchemeProvider(Brightness.light)),
+      appColorScheme(
         seedColor: accent,
         brightness: Brightness.light,
         style: container.read(themeSettingProvider).colorStyle,
@@ -101,14 +98,15 @@ void main() {
     );
   });
 
-  test('the star chart look replaces the seeded scheme by default', () {
+  test('the default 星官箋 style with 泥金 is the star chart palette', () {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
     expect(container.read(themeSettingProvider).starChart, isTrue);
     for (final brightness in Brightness.values) {
-      final seeded = container.read(
-        genColorSchemeProvider(brightness, starChart: false),
+      final seeded = seededColorScheme(
+        seedColor: const Color(defaultPrimaryColor),
+        brightness: brightness,
       );
       expect(
         container.read(genColorSchemeProvider(brightness)),

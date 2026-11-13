@@ -1383,6 +1383,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "publicKey": MessageLookupByLibrary.simpleMessage("公钥"),
     "pureBlack": MessageLookupByLibrary.simpleMessage("纯黑"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("纯黑模式"),
+    "qingLuStyle": MessageLookupByLibrary.simpleMessage("青绿"),
     "qrcode": MessageLookupByLibrary.simpleMessage("二维码"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage("扫描二维码获取配置文件"),
     "qrcodeTooLongTip": MessageLookupByLibrary.simpleMessage(
@@ -1646,6 +1647,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "通知栏显示停止按钮",
     ),
     "showPassword": MessageLookupByLibrary.simpleMessage("显示密码"),
+    "shuiMoStyle": MessageLookupByLibrary.simpleMessage("水墨"),
     "sidebar": MessageLookupByLibrary.simpleMessage("侧边栏"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("静默启动"),
     "singleImport": MessageLookupByLibrary.simpleMessage("单条导入"),
@@ -1835,9 +1837,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "写入系统会同时设置系统时钟，Android 上不生效。",
     ),
+    "xingGuanStyle": MessageLookupByLibrary.simpleMessage("星官笺"),
     "yearsAgo": m111,
     "yearsAgoShort": m112,
     "yes": MessageLookupByLibrary.simpleMessage("是"),
     "zhCN": MessageLookupByLibrary.simpleMessage("中文简体"),
+    "ziFuStyle": MessageLookupByLibrary.simpleMessage("紫府"),
   };
 }
