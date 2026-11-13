@@ -33,10 +33,14 @@ void main() {
       overrides: const ProfileOverrides(
         dnsOverrideKeys: {DnsOverrideKey.nameserver},
       ),
+      trafficQuota: const TrafficQuota(
+        total: 1 << 30,
+        period: TrafficQuotaPeriod.permanent,
+      ),
     );
 
-    expect(profile.toColumns(true), hasLength(18));
-    expect(profile.toCompanion(true).toColumns(true), hasLength(18));
+    expect(profile.toColumns(true), hasLength(19));
+    expect(profile.toCompanion(true).toColumns(true), hasLength(19));
     expect(RawProfile.fromJson(profile.toJson()).toJson(), profile.toJson());
     expect(profile.copyWith(label: 'Next').label, 'Next');
     expect(
@@ -67,7 +71,7 @@ void main() {
       unfoldSet: {},
     );
     expect(emptyProfile.toColumns(true), hasLength(9));
-    expect(emptyProfile.toColumns(false), hasLength(18));
+    expect(emptyProfile.toColumns(false), hasLength(19));
     expect(emptyProfile.toCompanion(true).toColumns(true), hasLength(9));
 
     final insertedProfile = ProfilesCompanion.insert(
@@ -102,8 +106,9 @@ void main() {
         unfoldSet: const Variable('[]'),
         order: const Variable(1),
         overrides: const Variable('{}'),
+        trafficQuota: const Variable('{"total":1}'),
       ).toColumns(false),
-      hasLength(18),
+      hasLength(19),
     );
 
     final script = RawScript(id: 2, label: 'Script', lastUpdateTime: date);

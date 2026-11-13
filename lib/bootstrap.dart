@@ -5,6 +5,8 @@ import 'package:fl_clash/common/boot_guard.dart';
 import 'package:fl_clash/common/boot_record.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/launch.dart';
+import 'package:fl_clash/common/legacy_data.dart';
+import 'package:fl_clash/common/startup_checks.dart';
 import 'package:fl_clash/common/migration.dart';
 import 'package:fl_clash/common/tray.dart';
 import 'package:fl_clash/common/window.dart';
@@ -12,8 +14,10 @@ import 'package:fl_clash/database/database.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/views/backup_and_restore.dart';
 import 'package:fl_clash/views/disclaimer.dart';
 import 'package:fl_clash/views/navigation.dart';
 import 'package:flutter/widgets.dart';
@@ -21,6 +25,8 @@ import 'package:flutter/services.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:prism_ui/banner.dart';
+import 'package:prism_ui/navigator.dart';
 
 class Bootstrap {
   static Bootstrap? _instance;
@@ -169,6 +175,9 @@ class Bootstrap {
       return;
     }
     await _showCrashRecoveryTip();
+    await _offerLinuxHelper();
+    await _handleLegacyInstalls();
+    await _checkConflicts();
     await _container.read(coreActionProvider.notifier).startCore();
     if (!_bootDecision.isDegraded) {
       await _container.read(setupActionProvider.notifier).initStatus();
@@ -178,6 +187,81 @@ class Bootstrap {
     unawaited(_container.read(mitmModulesActionProvider.notifier).autoUpdate());
     await bootGuard.markRunning();
     unawaited(_container.read(locationPermissionsProvider.notifier).refresh());
+  }
+
+  /// Before the first Core start, so a release still installed under
+  /// FlClash's identifiers does not hold the TUN or ports this one needs.
+  Future<void> _handleLegacyInstalls() async {
+    if (safeModeBuild) {
+      return;
+    }
+    final silent = _container.read(appSettingProvider).silentLaunch;
+    if (!system.isAndroid) {
+      await startupChecks.handleLegacyDesktop(
+        imported: lastLegacyDataImport,
+        silent: silent,
+      );
+      return;
+    }
+    final restore = await startupChecks.guideAndroidImport(
+      silent: silent,
+      hasProfiles: _container.read(profilesProvider).isNotEmpty,
+      installedPackages: () async => [
+        for (final item in await app?.getPackages() ?? const <Package>[])
+          item.packageName,
+      ],
+    );
+    final context = rootNavigatorKey.currentContext;
+    if (restore && context != null && context.mounted) {
+      unawaited(BaseNavigator.push(context, const BackupAndRestore()));
+    }
+  }
+
+  /// Another client on the mixed port would receive the traffic the system
+  /// proxy sends there while this app reports itself connected.
+  Future<void> _checkConflicts() async {
+    if (!system.isDesktop || safeModeBuild) {
+      return;
+    }
+    final free = await startupChecks.checkConflicts(
+      mixedPort: _container.read(patchClashConfigProvider).mixedPort,
+      silent: _container.read(appSettingProvider).silentLaunch,
+    );
+    if (free != null) {
+      _container
+          .read(patchClashConfigProvider.notifier)
+          .update((state) => state.copyWith(mixedPort: free));
+    }
+  }
+
+  /// Asked once, before the first Core start, never during a silent autostart.
+  Future<void> _offerLinuxHelper() async {
+    final linuxHelper = linux;
+    if (linuxHelper == null ||
+        safeModeBuild ||
+        _container.read(appSettingProvider).silentLaunch ||
+        await preferences.getLinuxHelperOffered()) {
+      return;
+    }
+    await preferences.setLinuxHelperOffered();
+    if (linuxHelper.isServiceInstalled) {
+      return;
+    }
+    final confirmed = await dialogs.showMessage(
+      title: currentAppLocalizations.linuxHelperSetupTitle,
+      message: TextSpan(text: currentAppLocalizations.linuxHelperSetupTip),
+      confirmText: currentAppLocalizations.authorize,
+      cancelText: currentAppLocalizations.updateLater,
+    );
+    if (confirmed != true) {
+      return;
+    }
+    if (await linuxHelper.registerService() == AuthorizeCode.error) {
+      dialogs.showBanner(
+        currentAppLocalizations.linuxHelperSetupFailed,
+        level: BannerLevel.error,
+      );
+    }
   }
 
   Future<void> _showCrashRecoveryTip() async {

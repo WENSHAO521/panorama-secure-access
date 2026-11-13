@@ -91,7 +91,7 @@ class Migration {
 
   /// One-off setting changes for upgrades, apart from [currentVersion], which
   /// backups carry and an older app refuses when it is newer than its own.
-  static const upgradeVersion = 6;
+  static const upgradeVersion = 7;
 
   static const Map<int, Config Function(Config config)> _upgrades = {
     1: _resetThemeColors,
@@ -100,6 +100,7 @@ class Migration {
     4: _turnOffSidebarBlur,
     5: _dropFormerTunMtu,
     6: _moveToMipstack,
+    7: _dropFormerTestUrl,
   };
 
   Future<Config> run() async {
@@ -264,6 +265,17 @@ Config _moveToMipstack(Config config) {
     patchClashConfig: clash.copyWith(
       tun: clash.tun.copyWith(stack: TunStack.mips),
     ),
+  );
+}
+
+// A test URL left at the former default follows the new one; a picked one stays.
+Config _dropFormerTestUrl(Config config) {
+  final clash = config.patchClashConfig;
+  if (clash.testUrl != formerDefaultTestUrl) {
+    return config;
+  }
+  return config.copyWith(
+    patchClashConfig: clash.copyWith(testUrl: defaultTestUrl),
   );
 }
 

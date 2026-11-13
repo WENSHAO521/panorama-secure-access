@@ -1,6 +1,11 @@
 pub mod api;
+mod backup;
 mod editor;
 mod frb_generated;
 mod hotkey;
+mod install;
 mod ipc;
+mod lifecycle;
+mod netcfg;
+mod netdiag;
 mod script;

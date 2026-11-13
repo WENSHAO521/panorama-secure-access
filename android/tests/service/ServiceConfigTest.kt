@@ -1,9 +1,9 @@
-package com.follow.clash.service
+package com.panoramasg.secureaccess.service
 
-import com.follow.clash.common.AccessControlMode
-import com.follow.clash.service.models.AccessControlProps
-import com.follow.clash.service.models.NotificationParams
-import com.follow.clash.service.models.VpnOptions
+import com.panoramasg.secureaccess.common.AccessControlMode
+import com.panoramasg.secureaccess.service.models.AccessControlProps
+import com.panoramasg.secureaccess.service.models.NotificationParams
+import com.panoramasg.secureaccess.service.models.VpnOptions
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotSame

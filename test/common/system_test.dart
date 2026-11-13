@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/core/desktop/helper_client.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -441,6 +442,170 @@ void main() {
 
       expect(await Linux().installService(), isFalse);
       expect(processes.ran('sudo'), isFalse);
+    });
+  });
+
+  group('Linux registerService', () {
+    late Linux service;
+    late List<HelperReadiness> readinessAnswers;
+    late List<Duration> waits;
+    late bool waitSucceeds;
+    late int installs;
+    late bool installSucceeds;
+    String? unit;
+
+    const sandboxedUnit =
+        '$helperUnitVersionPrefix$helperUnitVersion\n[Unit]\n';
+
+    setUp(() {
+      service = Linux();
+      readinessAnswers = [];
+      waits = [];
+      waitSucceeds = true;
+      installs = 0;
+      installSucceeds = true;
+      unit = null;
+      service
+        ..run = processes.run
+        ..environment = const {'HOME': '/home/u'}
+        ..readUnit = (() => unit)
+        ..readiness = (() async => readinessAnswers.isEmpty
+            ? HelperReadiness.notReady
+            : readinessAnswers.removeAt(0))
+        ..waitForHelper = (timeout) async {
+          waits.add(timeout);
+          return waitSucceeds;
+        }
+        ..install = () async {
+          installs++;
+          return installSucceeds;
+        };
+    });
+
+    tearDown(() {
+      service
+        ..run = Process.run
+        ..environment = Platform.environment
+        ..install = service.installService;
+    });
+
+    test('first authorization installs the Helper once', () async {
+      expect(await service.registerService(), AuthorizeCode.success);
+      expect(installs, 1);
+      expect(waits, hasLength(1));
+      expect(processes.ran('systemctl --no-ask-password'), isFalse);
+    });
+
+    test('a declined authorization leaves nothing installed', () async {
+      installSucceeds = false;
+
+      expect(await service.registerService(), AuthorizeCode.error);
+      expect(installs, 1);
+      expect(waits, isEmpty);
+    });
+
+    test('an installed Helper that answers asks for nothing, as after a '
+        'reboot', () async {
+      unit = sandboxedUnit;
+      readinessAnswers = [HelperReadiness.ready];
+
+      expect(await service.registerService(), AuthorizeCode.none);
+      expect(installs, 0);
+      expect(processes.ran('systemctl --no-ask-password'), isFalse);
+    });
+
+    test('a failed Helper is restarted without a password', () async {
+      unit = sandboxedUnit;
+
+      expect(await service.registerService(), AuthorizeCode.success);
+      expect(installs, 0);
+      final restarts = processes.runs
+          .where((run) => run.key == 'systemctl --no-ask-password')
+          .map((run) => run.arguments.sublist(1))
+          .toList();
+      expect(restarts, [
+        ['reset-failed', helperUnitName],
+        ['restart', helperUnitName],
+      ]);
+    });
+
+    test('a Helper that cannot be restarted asks for authorization', () async {
+      unit = sandboxedUnit;
+      processes.stub(
+        'systemctl --no-ask-password reset-failed $helperUnitName',
+        '',
+        exitCode: 1,
+      );
+      processes.stub(
+        'systemctl --no-ask-password restart $helperUnitName',
+        '',
+        exitCode: 1,
+      );
+
+      expect(await service.registerService(), AuthorizeCode.success);
+      expect(installs, 1);
+    });
+
+    test(
+      'a restarted Helper that stays silent asks for authorization',
+      () async {
+        unit = sandboxedUnit;
+        var waited = 0;
+        service.waitForHelper = (timeout) async => ++waited > 1;
+
+        expect(await service.registerService(), AuthorizeCode.success);
+        expect(installs, 1);
+      },
+    );
+
+    test('a unit from before the sandbox is reinstalled once', () async {
+      unit = '[Unit]\nDescription=FlClash Helper\n';
+      readinessAnswers = [HelperReadiness.ready];
+
+      expect(await service.registerService(), AuthorizeCode.success);
+      expect(installs, 1);
+    });
+
+    test('a host the Helper would refuse is not authorized', () async {
+      for (final variable in linuxLoaderInjectionVariables) {
+        service.environment = {variable: '/tmp/x.so'};
+
+        expect(await service.registerService(), AuthorizeCode.error);
+      }
+      expect(installs, 0);
+      expect(processes.runs, isEmpty);
+    });
+
+    test('an empty loader variable is no injection', () {
+      expect(Linux.loaderInjectionIn(const {'LD_PRELOAD': ''}), isNull);
+      expect(Linux.loaderInjectionIn(const {'LD_AUDIT': 'a.so'}), 'LD_AUDIT');
+    });
+  });
+
+  group('Linux unit and rpm-ostree helpers', () {
+    test('reads the unit version marker', () {
+      expect(Linux.helperUnitVersionOf('[Unit]\n'), 1);
+      expect(
+        Linux.helperUnitVersionOf('${helperUnitVersionPrefix}2\n[Unit]\n'),
+        2,
+      );
+      expect(Linux.helperUnitVersionOf('${helperUnitVersionPrefix}x\n'), 1);
+    });
+
+    test('replaces the layered package in one transaction', () {
+      expect(
+        Linux.ostreeUpdateCommand('/tmp/u/FlClash-3.6.0.rpm', 'FlClash'),
+        "rpm-ostree uninstall FlClash --install '/tmp/u/FlClash-3.6.0.rpm'",
+      );
+    });
+
+    test('layers the package alone when its name is unknown or odd', () {
+      for (final name in [null, '', 'a b', r'$(id)']) {
+        expect(
+          Linux.ostreeUpdateCommand("/tmp/it's.rpm", name),
+          "rpm-ostree install '/tmp/it'\\''s.rpm'",
+        );
+      }
     });
   });
 

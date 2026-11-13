@@ -1189,7 +1189,7 @@ extension TunExt on Tun {
     if (routeAddress.isEmpty && excluded.isEmpty) {
       return const [];
     }
-    return subtractCidrsTask(routeAddress, excluded, wholeWhenEmpty: true);
+    return subtractCidrs(routeAddress, excluded, wholeWhenEmpty: true);
   }
 
   Map<String, Object?> get coreJson {
@@ -2124,7 +2124,9 @@ Map<String, Object?> _withLegacyGeneralOverrideKeys(Map<String, Object?> json) {
     ...json,
     _generalOverrideKeysJsonKey: [
       for (final key in _legacyForcedGeneralKeys) key.path,
-      if (testUrl != null && testUrl != defaultTestUrl)
+      if (testUrl != null &&
+          testUrl != defaultTestUrl &&
+          testUrl != formerDefaultTestUrl)
         GeneralOverrideKey.testUrl.path,
     ],
   };

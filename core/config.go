@@ -113,6 +113,7 @@ func loadConfig(path string) (*config.Config, error) {
 		return nil, err
 	}
 	withQuicDefaults(raw)
+	withTestInterval(raw)
 	cfg, err := config.ParseRawConfig(raw)
 	if err != nil {
 		return nil, err
@@ -263,7 +264,7 @@ func patchTun(target *LC.Tun, params *tunSchema) {
 		target.AutoRoute = *params.AutoRoute
 	}
 	if params.Device != nil {
-		target.Device = *params.Device
+		target.Device = sanitizeTunDevice(*params.Device)
 	}
 	if params.Stack != nil {
 		target.Stack = *params.Stack

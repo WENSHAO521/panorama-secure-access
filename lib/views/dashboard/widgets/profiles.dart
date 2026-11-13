@@ -20,7 +20,7 @@ import 'package:prism_ui/prism_ui.dart';
 typedef _Usage = ({int used, int total, double share});
 
 _Usage? _usageOf(Profile? profile) {
-  final info = profile?.subscriptionInfo;
+  final info = profile?.trafficInfo;
   if (info == null || info.total <= 0) {
     return null;
   }

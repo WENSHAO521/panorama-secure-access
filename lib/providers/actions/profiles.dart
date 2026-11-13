@@ -353,17 +353,21 @@ class ProfilesAction extends _$ProfilesAction {
     String link, {
     String? label,
     String ageSecretKey = '',
+    TrafficQuota? trafficQuota,
   }) async {
     _showProfiles();
     final profile = await globalState.loadingRun(
       tag: LoadingTag.profiles,
       () => link.isShareLink
-          ? _fromShareLinks(Profile.normal(label: label), [link])
+          ? _fromShareLinks(
+              Profile.normal(label: label).copyWith(trafficQuota: trafficQuota),
+              [link],
+            )
           : _withAgeSecretKey(
-              Profile.normal(
-                label: label,
-                url: link,
-              ).copyWith(ageSecretKey: ageSecretKey),
+              Profile.normal(label: label, url: link).copyWith(
+                ageSecretKey: ageSecretKey,
+                trafficQuota: trafficQuota,
+              ),
               _download,
             ),
       title: currentAppLocalizations.addProfile,

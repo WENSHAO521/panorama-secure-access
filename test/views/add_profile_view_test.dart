@@ -19,15 +19,18 @@ class _RecordingProfilesAction extends ProfilesAction {
   final batches = <List<String>>[];
   final singles = <String>[];
   final ageSecretKeys = <String>[];
+  final trafficQuotas = <TrafficQuota?>[];
 
   @override
   Future<void> addProfileFromLink(
     String link, {
     String? label,
     String ageSecretKey = '',
+    TrafficQuota? trafficQuota,
   }) async {
     singles.add(link);
     ageSecretKeys.add(ageSecretKey);
+    trafficQuotas.add(trafficQuota);
   }
 
   @override
@@ -195,6 +198,69 @@ void main() {
 
     expect(find.text(l10n.invalidLinkTip), findsOne);
     expect(action.singles, isEmpty);
+    expect(tester.takeException(), null);
+  });
+
+  testWidgets('the link import places custom traffic between the link and '
+      'the age key and passes it along', (tester) async {
+    final action = _RecordingProfilesAction();
+    final container = _containerFor(tester, profilesAction: action);
+
+    await _openMenu(tester, container);
+
+    final l10n = currentAppLocalizations;
+    await tester.tap(find.text(l10n.link));
+    await tester.pumpAndSettle();
+    final traffic = _field(l10n.customTraffic);
+    expect(
+      tester.getTopLeft(_field(l10n.link)).dy,
+      lessThan(tester.getTopLeft(traffic).dy),
+    );
+    expect(
+      tester.getTopLeft(traffic).dy,
+      lessThan(tester.getTopLeft(_field(l10n.ageSecretKey)).dy),
+    );
+
+    await tester.enterText(_field(l10n.link), 'https://example.com/sub');
+    await tester.enterText(traffic, '1.5');
+    await tester.pump();
+    await tester.tap(find.text('TB'));
+    await tester.pump();
+    await tester.tap(find.text(l10n.submit));
+    await tester.pumpAndSettle();
+
+    expect(action.trafficQuotas, [
+      TrafficQuota(total: (1.5 * (1 << 40)).round()),
+    ]);
+    expect(tester.takeException(), null);
+  });
+
+  testWidgets('the link import keeps the subscription traffic by default and '
+      'refuses an invalid amount', (tester) async {
+    final action = _RecordingProfilesAction();
+    final container = _containerFor(tester, profilesAction: action);
+
+    await _openMenu(tester, container);
+
+    final l10n = currentAppLocalizations;
+    await tester.tap(find.text(l10n.link));
+    await tester.pumpAndSettle();
+    await tester.enterText(_field(l10n.link), 'https://example.com/sub');
+    await tester.enterText(_field(l10n.customTraffic), '0');
+    await tester.pump();
+    await tester.tap(find.text(l10n.submit));
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.customTrafficInvalidDesc), findsOne);
+    expect(action.singles, isEmpty);
+
+    await tester.tap(find.text(l10n.none).last);
+    await tester.pump();
+    await tester.tap(find.text(l10n.submit));
+    await tester.pumpAndSettle();
+
+    expect(action.singles, ['https://example.com/sub']);
+    expect(action.trafficQuotas, [null]);
     expect(tester.takeException(), null);
   });
 }

@@ -95,6 +95,10 @@ class CommonAction extends _$CommonAction {
       );
       return false;
     }
+    // The channel was switched while GitHub answered; the next check asks again.
+    if (ref.read(appSettingProvider).betaUpdates != settings.betaUpdates) {
+      return false;
+    }
     await checkUpdateResultHandle(data: res);
     return res != null;
   }

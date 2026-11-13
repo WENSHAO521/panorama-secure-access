@@ -1,5 +1,6 @@
 export 'app_localizations.dart';
 export 'app_ports.dart';
+export 'app_uninstall.dart';
 export 'backup.dart';
 export 'changelog.dart';
 export 'cidr.dart';
@@ -29,6 +30,8 @@ export 'linux_elevation.dart';
 export 'log_payload.dart';
 export 'lock.dart';
 export 'mixin.dart';
+export 'netcfg.dart';
+export 'netdiag.dart';
 export 'network.dart';
 export 'network_error.dart';
 export 'num.dart';

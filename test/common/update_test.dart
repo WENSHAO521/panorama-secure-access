@@ -53,6 +53,25 @@ void main() {
       expect(_pick(UpdatePlatform.linux), endsWith('linux-amd64.AppImage'));
     });
 
+    test('keeps to the package kind this install can take', () {
+      final asset = selectUpdateAsset(
+        _assets,
+        platform: UpdatePlatform.linux,
+        arch: 'amd64',
+        linuxPackages: const ['.deb'],
+      );
+      expect(asset?.name, endsWith('linux-amd64.deb'));
+      expect(
+        selectUpdateAsset(
+          _assets,
+          platform: UpdatePlatform.linux,
+          arch: 'amd64',
+          linuxPackages: const ['.rpm'],
+        ),
+        isNull,
+      );
+    });
+
     test('matches the macOS architecture', () {
       expect(_pick(UpdatePlatform.macos, arch: 'arm64'), endsWith('.dmg'));
       expect(_pick(UpdatePlatform.macos), isNull);
@@ -111,6 +130,20 @@ void main() {
 
     test('returns null for an unknown file', () {
       expect(findChecksum(sums, 'missing.apk'), isNull);
+    });
+
+    test('reads the ./ entries the release workflow writes', () {
+      const released =
+          'abcdef01  ./PanoramaSecureAccess-3.5.8-linux-amd64.deb\n'
+          '1234abcd *./PanoramaSecureAccess-3.5.8-macos-arm64.dmg\n';
+      expect(
+        findChecksum(released, 'PanoramaSecureAccess-3.5.8-linux-amd64.deb'),
+        'abcdef01',
+      );
+      expect(
+        findChecksum(released, 'PanoramaSecureAccess-3.5.8-macos-arm64.dmg'),
+        '1234abcd',
+      );
     });
   });
 

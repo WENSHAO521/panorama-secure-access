@@ -13,6 +13,10 @@ import 'package:flutter/foundation.dart' show visibleForTesting;
 class Request {
   late final Dio dio;
   late final Dio _clashDio;
+
+  /// Refuses an untrusted certificate even with the certificate check turned
+  /// off, because what it fetches is installed, on Windows as administrator.
+  late final Dio _releaseDio;
   String? userAgent;
 
   ProviderReader? _read;
@@ -25,19 +29,26 @@ class Request {
     dio = Dio(BaseOptions(headers: {'User-Agent': browserUa}));
     _clashDio = Dio();
     _clashDio.httpClientAdapter = IOHttpClientAdapter(
-      createHttpClient: () {
-        final client = HttpClient();
-        client.findProxy = (Uri uri) {
-          client.userAgent = globalState.ua;
-          final read = _read;
-          if (read == null) {
-            return 'DIRECT';
-          }
-          return FlClashHttpOverrides.findProxyForReader(read, uri);
-        };
-        return client;
-      },
+      createHttpClient: _createClient,
     );
+    _releaseDio = Dio(BaseOptions(connectTimeout: downloadTimeoutDuration));
+    _releaseDio.httpClientAdapter = IOHttpClientAdapter(
+      createHttpClient: () =>
+          _createClient()..badCertificateCallback = (_, _, _) => false,
+    );
+  }
+
+  HttpClient _createClient() {
+    final client = HttpClient();
+    client.findProxy = (Uri uri) {
+      client.userAgent = globalState.ua;
+      final read = _read;
+      if (read == null) {
+        return 'DIRECT';
+      }
+      return FlClashHttpOverrides.findProxyForReader(read, uri);
+    };
+    return client;
   }
 
   Future<Response<T>> _download<T>(
@@ -96,14 +107,25 @@ class Request {
     }
   }
 
-  Future<void> download(
+  Future<String> getReleaseText(String url) async {
+    final response = await _releaseDio.get<String>(
+      url,
+      options: Options(
+        responseType: ResponseType.plain,
+        receiveTimeout: downloadTimeoutDuration,
+      ),
+    );
+    return response.data ?? '';
+  }
+
+  Future<void> downloadRelease(
     String url,
     String savePath, {
     CancelToken? cancelToken,
     void Function(int received, int total)? onProgress,
   }) async {
     try {
-      await _clashDio.download(
+      await _releaseDio.download(
         url,
         savePath,
         cancelToken: cancelToken,

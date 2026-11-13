@@ -1,14 +1,24 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/ui/ui.dart';
 import 'package:flutter/widgets.dart';
 
 const _expireGap = 12.0;
 
+extension TrafficQuotaPeriodLabel on TrafficQuotaPeriod {
+  String label(AppLocalizations appLocalizations) => switch (this) {
+    TrafficQuotaPeriod.monthly => appLocalizations.trafficMonthly,
+    TrafficQuotaPeriod.permanent => appLocalizations.trafficPermanent,
+  };
+}
+
 class SubscriptionInfoView extends StatelessWidget {
   final SubscriptionInfo? subscriptionInfo;
+  final TrafficQuotaPeriod? period;
 
-  const SubscriptionInfoView({super.key, this.subscriptionInfo});
+  const SubscriptionInfoView({super.key, this.subscriptionInfo, this.period});
 
   double _textWidth(BuildContext context, String text, TextStyle? style) {
     final painter = TextPainter(
@@ -42,7 +52,11 @@ class SubscriptionInfoView extends StatelessWidget {
         .of(context, emphasized: true)
         .copyWith(color: context.colorScheme.onSurfaceVariant);
     final metaStyle = AppTextStyle.footnote.of(context).toLight;
-    final trafficLabel = '$useShow / $totalShow';
+    final trafficLabel = switch (period) {
+      final period? =>
+        '$useShow / $totalShow · ${period.label(context.appLocalizations)}',
+      null => '$useShow / $totalShow',
+    };
     final trafficText = Text(
       trafficLabel,
       style: valueStyle,

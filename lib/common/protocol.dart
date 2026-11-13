@@ -4,7 +4,11 @@ import 'package:win32_registry/win32_registry.dart';
 
 import 'print.dart';
 
-const protocolSchemes = ['clash', 'clashmeta', 'flclash'];
+const protocolSchemes = ['clash', 'clashmeta'];
+
+/// Accepted when scanned or pasted, never registered with the system, so a
+/// FlClash install keeps its own `flclash://` links.
+const importSchemes = [...protocolSchemes, 'flclash'];
 
 class ProtocolRegistrationPlan {
   final String scheme;
@@ -29,6 +33,8 @@ class ProtocolRegistrationPlan {
 /// A user-level desktop entry that claims the schemes for the running binary,
 /// so an AppImage or a development build is reachable without a packaged
 /// .desktop file. Rewritten on every launch, like the Windows registry keys.
+const linuxUrlHandlerDesktopId = 'panorama-secure-access-url-handler.desktop';
+
 class LinuxProtocolRegistrationPlan {
   final List<String> schemes;
   final String executable;
@@ -40,7 +46,7 @@ class LinuxProtocolRegistrationPlan {
     required this.applicationsDir,
   });
 
-  String get desktopId => 'flclash-url-handler.desktop';
+  String get desktopId => linuxUrlHandlerDesktopId;
 
   String get desktopPath => '$applicationsDir/$desktopId';
 

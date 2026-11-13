@@ -6,10 +6,15 @@
 // Static analysis wrongly picks the IO variant, thus ignore this
 // ignore_for_file: argument_type_not_assignable
 
+import 'api/backup.dart';
 import 'api/charset.dart';
 import 'api/editor.dart';
 import 'api/hotkey.dart';
+import 'api/install.dart';
 import 'api/ipc.dart';
+import 'api/lifecycle.dart';
+import 'api/netcfg.dart';
+import 'api/netdiag.dart';
 import 'api/script.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -76,6 +81,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  Map<String, String> dco_decode_Map_String_String_None(dynamic raw);
+
+  @protected
   IpcServer
   dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerIpcServer(
     dynamic raw,
@@ -103,7 +111,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
+  ArchiveError dco_decode_archive_error(dynamic raw);
+
+  @protected
   bool dco_decode_bool(dynamic raw);
+
+  @protected
+  int dco_decode_box_autoadd_i_32(dynamic raw);
+
+  @protected
+  LifecycleOutcome dco_decode_box_autoadd_lifecycle_outcome(dynamic raw);
+
+  @protected
+  ProbeFailure dco_decode_box_autoadd_probe_failure(dynamic raw);
 
   @protected
   int dco_decode_box_autoadd_u_32(dynamic raw);
@@ -112,10 +132,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt dco_decode_box_autoadd_usize(dynamic raw);
 
   @protected
+  DataCandidate dco_decode_data_candidate(dynamic raw);
+
+  @protected
+  DisconnectReaction dco_decode_disconnect_reaction(dynamic raw);
+
+  @protected
+  DnsApplyRoute dco_decode_dns_apply_route(dynamic raw);
+
+  @protected
   EditorOpenError dco_decode_editor_open_error(dynamic raw);
 
   @protected
   EditorOpenErrorKind dco_decode_editor_open_error_kind(dynamic raw);
+
+  @protected
+  FailureKind dco_decode_failure_kind(dynamic raw);
 
   @protected
   GuideBlock dco_decode_guide_block(dynamic raw);
@@ -130,7 +162,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   HotKeySpec dco_decode_hot_key_spec(dynamic raw);
 
   @protected
+  HttpStatusClass dco_decode_http_status_class(dynamic raw);
+
+  @protected
   int dco_decode_i_32(dynamic raw);
+
+  @protected
+  PlatformInt64 dco_decode_i_64(dynamic raw);
 
   @protected
   IpcEvent dco_decode_ipc_event(dynamic raw);
@@ -139,7 +177,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   IpcEventKind dco_decode_ipc_event_kind(dynamic raw);
 
   @protected
+  LegacyPackageKind dco_decode_legacy_package_kind(dynamic raw);
+
+  @protected
+  LifecycleAchievement dco_decode_lifecycle_achievement(dynamic raw);
+
+  @protected
+  LifecycleOutcome dco_decode_lifecycle_outcome(dynamic raw);
+
+  @protected
+  LifecycleTarget dco_decode_lifecycle_target(dynamic raw);
+
+  @protected
   List<String> dco_decode_list_String(dynamic raw);
+
+  @protected
+  List<DataCandidate> dco_decode_list_data_candidate(dynamic raw);
 
   @protected
   List<GuideBlock> dco_decode_list_guide_block(dynamic raw);
@@ -154,16 +207,48 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<HotKeySpec> dco_decode_list_hot_key_spec(dynamic raw);
 
   @protected
+  List<LocalAddress> dco_decode_list_local_address(dynamic raw);
+
+  @protected
+  List<LocalInterface> dco_decode_list_local_interface(dynamic raw);
+
+  @protected
+  List<ProbeFailure?> dco_decode_list_opt_box_autoadd_probe_failure(
+    dynamic raw,
+  );
+
+  @protected
   List<int> dco_decode_list_prim_u_8_loose(dynamic raw);
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<(String, String)> dco_decode_list_record_string_string(dynamic raw);
+
+  @protected
   List<RustFoldRange> dco_decode_list_rust_fold_range(dynamic raw);
 
   @protected
+  LocalAddress dco_decode_local_address(dynamic raw);
+
+  @protected
+  LocalInterface dco_decode_local_interface(dynamic raw);
+
+  @protected
+  NetworkChangeReaction dco_decode_network_change_reaction(dynamic raw);
+
+  @protected
   String? dco_decode_opt_String(dynamic raw);
+
+  @protected
+  int? dco_decode_opt_box_autoadd_i_32(dynamic raw);
+
+  @protected
+  LifecycleOutcome? dco_decode_opt_box_autoadd_lifecycle_outcome(dynamic raw);
+
+  @protected
+  ProbeFailure? dco_decode_opt_box_autoadd_probe_failure(dynamic raw);
 
   @protected
   int? dco_decode_opt_box_autoadd_u_32(dynamic raw);
@@ -172,10 +257,31 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt? dco_decode_opt_box_autoadd_usize(dynamic raw);
 
   @protected
+  List<String>? dco_decode_opt_list_String(dynamic raw);
+
+  @protected
   Uint8List? dco_decode_opt_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  ProbeFailure dco_decode_probe_failure(dynamic raw);
+
+  @protected
+  ProbeStage dco_decode_probe_stage(dynamic raw);
+
+  @protected
+  ReconcilePlan dco_decode_reconcile_plan(dynamic raw);
+
+  @protected
+  (String, String) dco_decode_record_string_string(dynamic raw);
+
+  @protected
   RustFoldRange dco_decode_rust_fold_range(dynamic raw);
+
+  @protected
+  TransportEventKind dco_decode_transport_event_kind(dynamic raw);
+
+  @protected
+  TransportPhase dco_decode_transport_phase(dynamic raw);
 
   @protected
   int dco_decode_u_32(dynamic raw);
@@ -229,6 +335,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  Map<String, String> sse_decode_Map_String_String_None(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   IpcServer
   sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerIpcServer(
     SseDeserializer deserializer,
@@ -260,7 +371,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
+  ArchiveError sse_decode_archive_error(SseDeserializer deserializer);
+
+  @protected
   bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_box_autoadd_i_32(SseDeserializer deserializer);
+
+  @protected
+  LifecycleOutcome sse_decode_box_autoadd_lifecycle_outcome(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  ProbeFailure sse_decode_box_autoadd_probe_failure(
+    SseDeserializer deserializer,
+  );
 
   @protected
   int sse_decode_box_autoadd_u_32(SseDeserializer deserializer);
@@ -269,12 +396,26 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt sse_decode_box_autoadd_usize(SseDeserializer deserializer);
 
   @protected
+  DataCandidate sse_decode_data_candidate(SseDeserializer deserializer);
+
+  @protected
+  DisconnectReaction sse_decode_disconnect_reaction(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  DnsApplyRoute sse_decode_dns_apply_route(SseDeserializer deserializer);
+
+  @protected
   EditorOpenError sse_decode_editor_open_error(SseDeserializer deserializer);
 
   @protected
   EditorOpenErrorKind sse_decode_editor_open_error_kind(
     SseDeserializer deserializer,
   );
+
+  @protected
+  FailureKind sse_decode_failure_kind(SseDeserializer deserializer);
 
   @protected
   GuideBlock sse_decode_guide_block(SseDeserializer deserializer);
@@ -289,7 +430,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   HotKeySpec sse_decode_hot_key_spec(SseDeserializer deserializer);
 
   @protected
+  HttpStatusClass sse_decode_http_status_class(SseDeserializer deserializer);
+
+  @protected
   int sse_decode_i_32(SseDeserializer deserializer);
+
+  @protected
+  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
 
   @protected
   IpcEvent sse_decode_ipc_event(SseDeserializer deserializer);
@@ -298,7 +445,28 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   IpcEventKind sse_decode_ipc_event_kind(SseDeserializer deserializer);
 
   @protected
+  LegacyPackageKind sse_decode_legacy_package_kind(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  LifecycleAchievement sse_decode_lifecycle_achievement(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  LifecycleOutcome sse_decode_lifecycle_outcome(SseDeserializer deserializer);
+
+  @protected
+  LifecycleTarget sse_decode_lifecycle_target(SseDeserializer deserializer);
+
+  @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer);
+
+  @protected
+  List<DataCandidate> sse_decode_list_data_candidate(
+    SseDeserializer deserializer,
+  );
 
   @protected
   List<GuideBlock> sse_decode_list_guide_block(SseDeserializer deserializer);
@@ -317,10 +485,30 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<HotKeySpec> sse_decode_list_hot_key_spec(SseDeserializer deserializer);
 
   @protected
+  List<LocalAddress> sse_decode_list_local_address(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  List<LocalInterface> sse_decode_list_local_interface(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  List<ProbeFailure?> sse_decode_list_opt_box_autoadd_probe_failure(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer);
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  List<(String, String)> sse_decode_list_record_string_string(
+    SseDeserializer deserializer,
+  );
 
   @protected
   List<RustFoldRange> sse_decode_list_rust_fold_range(
@@ -328,7 +516,31 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  LocalAddress sse_decode_local_address(SseDeserializer deserializer);
+
+  @protected
+  LocalInterface sse_decode_local_interface(SseDeserializer deserializer);
+
+  @protected
+  NetworkChangeReaction sse_decode_network_change_reaction(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
+  int? sse_decode_opt_box_autoadd_i_32(SseDeserializer deserializer);
+
+  @protected
+  LifecycleOutcome? sse_decode_opt_box_autoadd_lifecycle_outcome(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  ProbeFailure? sse_decode_opt_box_autoadd_probe_failure(
+    SseDeserializer deserializer,
+  );
 
   @protected
   int? sse_decode_opt_box_autoadd_u_32(SseDeserializer deserializer);
@@ -337,10 +549,35 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt? sse_decode_opt_box_autoadd_usize(SseDeserializer deserializer);
 
   @protected
+  List<String>? sse_decode_opt_list_String(SseDeserializer deserializer);
+
+  @protected
   Uint8List? sse_decode_opt_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  ProbeFailure sse_decode_probe_failure(SseDeserializer deserializer);
+
+  @protected
+  ProbeStage sse_decode_probe_stage(SseDeserializer deserializer);
+
+  @protected
+  ReconcilePlan sse_decode_reconcile_plan(SseDeserializer deserializer);
+
+  @protected
+  (String, String) sse_decode_record_string_string(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   RustFoldRange sse_decode_rust_fold_range(SseDeserializer deserializer);
+
+  @protected
+  TransportEventKind sse_decode_transport_event_kind(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  TransportPhase sse_decode_transport_phase(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer);
@@ -403,6 +640,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_Map_String_String_None(
+    Map<String, String> self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void
   sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerIpcServer(
     IpcServer self,
@@ -439,13 +682,43 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
+  void sse_encode_archive_error(ArchiveError self, SseSerializer serializer);
+
+  @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_i_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_lifecycle_outcome(
+    LifecycleOutcome self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_probe_failure(
+    ProbeFailure self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_usize(BigInt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_data_candidate(DataCandidate self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_disconnect_reaction(
+    DisconnectReaction self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_dns_apply_route(DnsApplyRoute self, SseSerializer serializer);
 
   @protected
   void sse_encode_editor_open_error(
@@ -458,6 +731,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     EditorOpenErrorKind self,
     SseSerializer serializer,
   );
+
+  @protected
+  void sse_encode_failure_kind(FailureKind self, SseSerializer serializer);
 
   @protected
   void sse_encode_guide_block(GuideBlock self, SseSerializer serializer);
@@ -475,7 +751,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_hot_key_spec(HotKeySpec self, SseSerializer serializer);
 
   @protected
+  void sse_encode_http_status_class(
+    HttpStatusClass self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
 
   @protected
   void sse_encode_ipc_event(IpcEvent self, SseSerializer serializer);
@@ -484,7 +769,37 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_ipc_event_kind(IpcEventKind self, SseSerializer serializer);
 
   @protected
+  void sse_encode_legacy_package_kind(
+    LegacyPackageKind self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_lifecycle_achievement(
+    LifecycleAchievement self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_lifecycle_outcome(
+    LifecycleOutcome self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_lifecycle_target(
+    LifecycleTarget self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_data_candidate(
+    List<DataCandidate> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_guide_block(
@@ -511,11 +826,35 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_list_local_address(
+    List<LocalAddress> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_local_interface(
+    List<LocalInterface> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_opt_box_autoadd_probe_failure(
+    List<ProbeFailure?> self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_list_prim_u_8_loose(List<int> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_prim_u_8_strict(
     Uint8List self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_record_string_string(
+    List<(String, String)> self,
     SseSerializer serializer,
   );
 
@@ -526,7 +865,37 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_local_address(LocalAddress self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_local_interface(
+    LocalInterface self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_network_change_reaction(
+    NetworkChangeReaction self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_i_32(int? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_lifecycle_outcome(
+    LifecycleOutcome? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_probe_failure(
+    ProbeFailure? self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer);
@@ -535,13 +904,43 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_opt_box_autoadd_usize(BigInt? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_list_String(List<String>? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_list_prim_u_8_strict(
     Uint8List? self,
     SseSerializer serializer,
   );
 
   @protected
+  void sse_encode_probe_failure(ProbeFailure self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_probe_stage(ProbeStage self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_reconcile_plan(ReconcilePlan self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_string_string(
+    (String, String) self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_rust_fold_range(RustFoldRange self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_transport_event_kind(
+    TransportEventKind self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_transport_phase(
+    TransportPhase self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer);

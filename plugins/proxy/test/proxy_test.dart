@@ -129,7 +129,11 @@ void main() {
           'kwriteconfig6',
           'kwriteconfig5',
         ]);
-        expect(executedCommands.toSet(), {'kwriteconfig5', 'dbus-send'});
+        expect(executedCommands.toSet(), {
+          'kreadconfig5',
+          'kwriteconfig5',
+          'dbus-send',
+        });
       },
     );
 
@@ -430,6 +434,87 @@ USB 10/100/1000 LAN
     });
   });
 
+  group('macOS restores what start replaced', () {
+    late List<List<String>> sets;
+
+    MacosProxy proxyWith(Map<String, String> answers) {
+      sets = [];
+      return MacosProxy(
+        commandRunner: ProxyCommandRunner((
+          executable,
+          arguments, {
+          runInShell = false,
+        }) async {
+          final key = arguments.join(' ');
+          if (arguments.first.startsWith('-set')) {
+            sets.add(arguments);
+          }
+          return ProcessResult(0, 0, answers[key] ?? '', '');
+        }),
+      );
+    }
+
+    test(
+      'a user proxy, bypass list and PAC survive a start and stop',
+      () async {
+        final proxy = proxyWith({
+          '-listallnetworkservices':
+              'An asterisk (*) denotes that a network service is disabled.\n'
+              'Wi-Fi\n',
+          '-getwebproxy Wi-Fi':
+              'Enabled: Yes\nServer: proxy.corp\nPort: 3128\n'
+              'Authenticated Proxy Enabled: 0\n',
+          '-getsecurewebproxy Wi-Fi': 'Enabled: No\nServer: \nPort: 0\n',
+          '-getsocksfirewallproxy Wi-Fi': 'Enabled: No\nServer: \nPort: 0\n',
+          '-getproxybypassdomains Wi-Fi': '*.local\n169.254/16\n',
+        });
+
+        expect(await proxy.start(7890, const ['localhost']), isTrue);
+        sets.clear();
+        expect(await proxy.stop(), isTrue);
+
+        expect(sets, [
+          ['-setwebproxy', 'Wi-Fi', 'proxy.corp', '3128'],
+          ['-setwebproxystate', 'Wi-Fi', 'on'],
+          ['-setsecurewebproxystate', 'Wi-Fi', 'off'],
+          ['-setsocksfirewallproxystate', 'Wi-Fi', 'off'],
+          ['-setproxybypassdomains', 'Wi-Fi', '*.local', '169.254/16'],
+        ]);
+        expect(sets.any((args) => args.first == '-setautoproxystate'), isFalse);
+      },
+    );
+
+    test('a proxy left on our port by a killed run is not restored', () async {
+      final proxy = proxyWith({
+        '-listallnetworkservices': 'Wi-Fi\n',
+        '-getwebproxy Wi-Fi': 'Enabled: Yes\nServer: 127.0.0.1\nPort: 7890\n',
+      });
+
+      await proxy.start(7890, const []);
+      sets.clear();
+      await proxy.stop();
+
+      expect(sets, contains(equals(['-setwebproxystate', 'Wi-Fi', 'off'])));
+      expect(sets.any((args) => args.first == '-setwebproxy'), isFalse);
+    });
+
+    test('a stop without a start of this run still turns ours off', () async {
+      final proxy = proxyWith({'-listallnetworkservices': 'Wi-Fi\n'});
+
+      expect(await proxy.stop(), isTrue);
+      expect(sets.map((args) => args.first), contains('-setwebproxystate'));
+    });
+
+    test('reads "no bypass domains" as an empty list', () {
+      expect(
+        MacosProxyCommands.parseBypassDomains(
+          "There aren't any bypass domains set on Wi-Fi.\n",
+        ),
+        isEmpty,
+      );
+    });
+  });
+
   group('macOS loopback proxy detection', () {
     MacosProxy proxyReturning(String stdout) {
       return MacosProxy(
@@ -500,6 +585,126 @@ USB 10/100/1000 LAN
       );
 
       expect(await proxy.readLoopbackProxyPort(), isNull);
+    });
+  });
+
+  group('Linux restores what start replaced', () {
+    const gnome = 'org.gnome.system.proxy';
+    const kdeFile = '--file /home/u/.config/kioslaverc --group Proxy Settings';
+
+    (LinuxProxy, List<String>) proxyWith(Map<String, String> answers) {
+      final calls = <String>[];
+      final proxy = LinuxProxy(
+        commandRunner: ProxyCommandRunner((
+          executable,
+          arguments, {
+          runInShell = false,
+        }) async {
+          final call = '$executable ${arguments.join(' ')}';
+          calls.add(call);
+          final answer = answers[call];
+          final isRead =
+              arguments.isNotEmpty && arguments.first == 'get' ||
+              executable.startsWith('kread');
+          return ProcessResult(
+            0,
+            isRead && answer == null ? 1 : 0,
+            answer ?? '',
+            '',
+          );
+        }),
+        executableChecker: (executable) async =>
+            executable == 'gsettings' || executable == 'kwriteconfig6',
+      );
+      return (proxy, calls);
+    }
+
+    Map<String, String> gnomeAnswers({
+      String mode = "'auto'",
+      String host = "''",
+      String port = '0',
+    }) => {
+      'gsettings get $gnome ignore-hosts': "['localhost', '10.0.0.0/8']\n",
+      for (final type in ['http', 'https', 'socks']) ...{
+        'gsettings get $gnome.$type host': '$host\n',
+        'gsettings get $gnome.$type port': '$port\n',
+      },
+      'gsettings get $gnome mode': '$mode\n',
+    };
+
+    test('GNOME gets its own mode and values back, mode last', () async {
+      final (proxy, calls) = proxyWith(gnomeAnswers());
+
+      await proxy.start(7890, const [], desktop: 'GNOME', homeDir: '/home/u');
+      calls.clear();
+      expect(await proxy.stop(desktop: 'GNOME', homeDir: '/home/u'), isTrue);
+
+      expect(
+        calls.first,
+        "gsettings set $gnome ignore-hosts "
+        "['localhost', '10.0.0.0/8']",
+      );
+      expect(calls, contains("gsettings set $gnome.http host ''"));
+      expect(calls.last, "gsettings set $gnome mode 'auto'");
+    });
+
+    test('a GNOME proxy a killed run left behind is only turned off', () async {
+      final (proxy, calls) = proxyWith(
+        gnomeAnswers(mode: "'manual'", host: "'127.0.0.1'", port: '7890'),
+      );
+
+      await proxy.start(7890, const [], desktop: 'GNOME', homeDir: '/home/u');
+      calls.clear();
+      await proxy.stop(desktop: 'GNOME', homeDir: '/home/u');
+
+      expect(calls, ["gsettings set $gnome mode none"]);
+    });
+
+    test('the second stop no longer restores', () async {
+      final (proxy, calls) = proxyWith(gnomeAnswers());
+
+      await proxy.start(7890, const [], desktop: 'GNOME', homeDir: '/home/u');
+      await proxy.stop(desktop: 'GNOME', homeDir: '/home/u');
+      calls.clear();
+      await proxy.stop(desktop: 'GNOME', homeDir: '/home/u');
+
+      expect(calls, ["gsettings set $gnome mode none"]);
+    });
+
+    test(
+      'KDE writes back its values and deletes keys it did not have',
+      () async {
+        final (proxy, calls) = proxyWith({
+          'kreadconfig6 $kdeFile --key NoProxyFor': '\n',
+          'kreadconfig6 $kdeFile --key httpProxy': 'http://10.0.0.2:3128\n',
+          'kreadconfig6 $kdeFile --key httpsProxy': '\n',
+          'kreadconfig6 $kdeFile --key socksProxy': '\n',
+          'kreadconfig6 $kdeFile --key ProxyType': '1\n',
+        });
+
+        await proxy.start(7890, const [], desktop: 'KDE', homeDir: '/home/u');
+        calls.clear();
+        await proxy.stop(desktop: 'KDE', homeDir: '/home/u');
+
+        expect(calls, [
+          'kwriteconfig6 $kdeFile --key NoProxyFor --delete',
+          'kwriteconfig6 $kdeFile --key httpProxy http://10.0.0.2:3128',
+          'kwriteconfig6 $kdeFile --key httpsProxy --delete',
+          'kwriteconfig6 $kdeFile --key socksProxy --delete',
+          'kwriteconfig6 $kdeFile --key ProxyType 1',
+          startsWith('dbus-send'),
+        ]);
+      },
+    );
+
+    test('an unreadable setting falls back to turning the proxy off', () async {
+      final (proxy, calls) = proxyWith(const {});
+
+      await proxy.start(7890, const [], desktop: 'GNOME', homeDir: '/home/u');
+      calls.clear();
+      await proxy.stop(desktop: 'GNOME', homeDir: '/home/u');
+
+      expect(calls, ["gsettings set $gnome mode none"]);
     });
   });
 

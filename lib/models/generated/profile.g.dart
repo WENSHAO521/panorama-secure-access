@@ -22,6 +22,25 @@ Map<String, dynamic> _$SubscriptionInfoToJson(_SubscriptionInfo instance) =>
       'expire': instance.expire,
     };
 
+_TrafficQuota _$TrafficQuotaFromJson(Map<String, dynamic> json) =>
+    _TrafficQuota(
+      total: (json['total'] as num).toInt(),
+      period:
+          $enumDecodeNullable(_$TrafficQuotaPeriodEnumMap, json['period']) ??
+          TrafficQuotaPeriod.monthly,
+    );
+
+Map<String, dynamic> _$TrafficQuotaToJson(_TrafficQuota instance) =>
+    <String, dynamic>{
+      'total': instance.total,
+      'period': _$TrafficQuotaPeriodEnumMap[instance.period]!,
+    };
+
+const _$TrafficQuotaPeriodEnumMap = {
+  TrafficQuotaPeriod.monthly: 'monthly',
+  TrafficQuotaPeriod.permanent: 'permanent',
+};
+
 _Profile _$ProfileFromJson(Map<String, dynamic> json) => _Profile(
   id: (json['id'] as num).toInt(),
   type:
@@ -47,6 +66,9 @@ _Profile _$ProfileFromJson(Map<String, dynamic> json) => _Profile(
       : SubscriptionInfo.fromJson(
           json['subscriptionInfo'] as Map<String, dynamic>,
         ),
+  trafficQuota: json['trafficQuota'] == null
+      ? null
+      : TrafficQuota.fromJson(json['trafficQuota'] as Map<String, dynamic>),
   autoUpdate: json['autoUpdate'] as bool? ?? true,
   selectedMap:
       (json['selectedMap'] as Map<String, dynamic>?)?.map(
@@ -80,6 +102,7 @@ Map<String, dynamic> _$ProfileToJson(_Profile instance) => <String, dynamic>{
   'lastUpdateDate': instance.lastUpdateDate?.toIso8601String(),
   'autoUpdateDuration': instance.autoUpdateDuration.inMicroseconds,
   'subscriptionInfo': instance.subscriptionInfo,
+  'trafficQuota': instance.trafficQuota,
   'autoUpdate': instance.autoUpdate,
   'selectedMap': instance.selectedMap,
   'unfoldSet': instance.unfoldSet.toList(),

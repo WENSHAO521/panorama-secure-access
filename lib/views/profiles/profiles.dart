@@ -322,14 +322,17 @@ class ProfileItem extends ConsumerWidget {
     );
   }
 
-  SubscriptionInfo? get _subscriptionInfo =>
-      profile.type == ProfileType.url ? profile.subscriptionInfo : null;
+  SubscriptionInfo? get _subscriptionInfo => profile.trafficInfo;
 
   String _subtitle(BuildContext context) {
     final info = _subscriptionInfo;
     if (info != null && info.usage != null) {
       final used = info.upload + info.download;
-      return '${used.traffic.show} / ${info.total.traffic.show}';
+      final traffic = '${used.traffic.show} / ${info.total.traffic.show}';
+      return switch (profile.trafficQuota?.period) {
+        final period? => '$traffic · ${period.label(context.appLocalizations)}',
+        null => traffic,
+      };
     }
     final appLocalizations = context.appLocalizations;
     return switch (profile.type) {

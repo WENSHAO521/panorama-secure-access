@@ -93,6 +93,7 @@ func updateListeners(cfg *config.Config) {
 	listener.ReCreateTuic(general.TuicServer, tunnel.Tunnel)
 	if !features.Android {
 		defer beginTunSettle(cfg)()
+		general.Tun.Device = sanitizeTunDevice(general.Tun.Device)
 		pinEgressNow(cfg)
 		listener.ReCreateTun(general.Tun, tunnel.Tunnel)
 		pinned := egressPinned()
