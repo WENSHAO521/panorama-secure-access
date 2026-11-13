@@ -25,17 +25,14 @@ double dipperLevel(num bytesPerSecond) {
 /// The seven stars of the Northern Dipper (北斗七星) strung along an arch.
 const _starCount = 7;
 
-/// Where the arch starts and ends, in degrees from three o'clock.
-const _startAngle = -168.0;
-const _endAngle = -12.0;
-
-/// How many times wider than tall the arch may stand.
-const _widest = 2.4;
+/// How much of a circle the arch spans, centered on twelve o'clock, in
+/// degrees: a low arch, so it sits over the figure without reaching round it.
+const _sweepDegrees = 116.0;
 
 /// How far a star reaches at rest and at its brightest, as a share of the
-/// gauge's width.
-const _restReach = 0.03;
-const _litReach = 0.052;
+/// arch's radius.
+const _restReach = 0.05;
+const _litReach = 0.085;
 
 /// An arch of the seven stars of the Northern Dipper over a speed: a faint
 /// track, a violet-to-gold trail up to [level], and the stars it has passed
@@ -82,23 +79,23 @@ class _DipperPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // On a wide card the arch keeps its shape and stands in the middle.
-    final width = math.min(size.width, size.height * _widest);
-    final left = (size.width - width) / 2;
-    // Stars and strokes keep to the height on a wide card, so they stay fine.
-    final unit = math.min(width, size.height * 1.8);
-    final margin = unit * _litReach;
-    final rect = Rect.fromLTRB(
-      left + margin,
-      margin,
-      left + width - margin,
-      // The arch's ends sit on the bottom edge.
-      size.height * 2 - margin,
+    const sweep = _sweepDegrees * math.pi / 180;
+    const start = -math.pi / 2 - sweep / 2;
+    final halfChord = math.sin(sweep / 2);
+    final sagitta = 1 - math.cos(sweep / 2);
+    // The largest circle whose arch, and the halo of its stars, fits the box.
+    var radius = math.min(
+      size.width / 2 / (halfChord + _litReach * 1.6),
+      size.height / (sagitta + _litReach * 3.2),
     );
-    double radians(double degrees) => degrees * math.pi / 180;
-    final start = radians(_startAngle);
-    final sweep = radians(_endAngle - _startAngle);
-    final stroke = unit * 0.012;
+    radius = math.max(radius, 0);
+    final margin = radius * _litReach * 1.6;
+    // The arch stands in the middle of the box.
+    final top = (size.height - radius * sagitta - margin * 2) / 2 + margin;
+    final center = Offset(size.width / 2, top + radius);
+    final rect = Rect.fromCircle(center: center, radius: radius);
+    final unit = radius;
+    final stroke = unit * 0.02;
     canvas.drawArc(
       rect,
       start,
@@ -118,32 +115,33 @@ class _DipperPainter extends CustomPainter {
         false,
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = stroke * 1.3
+          ..strokeWidth = stroke * 1.4
           ..strokeCap = StrokeCap.round
-          ..shader = ui.Gradient.linear(rect.centerLeft, rect.centerRight, [
-            palette.ringLight,
-            palette.gold,
-          ]),
+          ..shader = ui.Gradient.linear(
+            center + Offset(-radius * halfChord, 0),
+            center + Offset(radius * halfChord, 0),
+            [palette.ringLight, palette.gold],
+          ),
       );
     }
     Offset pointAt(double angle) =>
-        rect.center +
-        Offset(
-          math.cos(angle) * rect.width / 2,
-          math.sin(angle) * rect.height / 2,
-        );
+        center + Offset.fromDirection(angle, radius);
     final outline = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.18
       ..color = track.withValues(alpha: math.min(1, track.a * 2.5));
-    final reached = level * _starCount;
+    // The trail reaches star i once it has gone i sixths of the way; each
+    // star brightens over the step before it, and none lights at idle.
+    final steps = (_starCount - 1).toDouble();
+    final reached = level * steps;
+    final awake = (level * 12).clamp(0.0, 1.0);
+    final newestIndex = level > 0
+        ? math.min(reached.ceil(), steps.toInt())
+        : -1;
     for (var index = 0; index < _starCount; index++) {
-      // Each star sits at the end of its share of the arch, so the last one
-      // lights only once the gauge is full.
-      final share = (index + 1) / _starCount;
-      final at = pointAt(start + sweep * share);
-      final lit = (reached - index).clamp(0.0, 1.0);
-      final newest = lit > 0 && reached <= index + 1;
+      final at = pointAt(start + sweep * index / steps);
+      final lit = (reached - index + 1).clamp(0.0, 1.0) * awake;
+      final newest = index == newestIndex;
       final reach = unit * (_restReach + (_litReach - _restReach) * lit);
       canvas.save();
       canvas.translate(at.dx, at.dy);

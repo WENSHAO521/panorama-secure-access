@@ -66,6 +66,15 @@ void main() {
   void addTraffic(Traffic traffic) =>
       container.read(trafficsProvider.notifier).addTraffic(traffic);
 
+  Rect figureIn(WidgetTester tester, Finder card) => tester.getRect(
+    find.descendant(
+      of: card,
+      matching: find.byWidgetPredicate(
+        (widget) => widget.runtimeType.toString() == '_Figure',
+      ),
+    ),
+  );
+
   Finder tileOf(String label) => find.ancestor(
     of: find.text(label),
     matching: find.byWidgetPredicate(
@@ -106,7 +115,7 @@ void main() {
       for (final label in ['Upload', 'Download']) {
         final tile = tileOf(label);
         final rect = tester.getRect(tile);
-        expect(rect.height, closeTo(rect.width / 1.45, 0.5));
+        expect(rect.height, closeTo(rect.width / 1.2, 0.5));
 
         final chart = tester.getRect(
           find.descendant(of: tile, matching: find.byType(DipperGauge)),
@@ -115,7 +124,7 @@ void main() {
           find.descendant(of: tile, matching: find.text(label)),
         );
         expect(chart.top, greaterThanOrEqualTo(title.bottom));
-        expect(chart.bottom, lessThanOrEqualTo(rect.bottom));
+        expect(chart.bottom, lessThanOrEqualTo(figureIn(tester, tile).top));
       }
 
       await teardownCard(tester);
@@ -131,7 +140,7 @@ void main() {
     await pumpCard(tester, const NetworkSpeedCard());
 
     final rect = tester.getRect(tileOf('Upload'));
-    expect(rect.height, greaterThan(rect.width / 1.45 + 1));
+    expect(rect.height, greaterThan(rect.width / 1.2 + 1));
     final total = tester.getRect(find.textContaining('Total').first);
     expect(total.bottom, lessThanOrEqualTo(rect.bottom));
     expect(tester.takeException(), isNull);
@@ -158,7 +167,13 @@ void main() {
       addTraffic(const Traffic(up: 2048));
     }
 
-    await pumpCard(tester, const SpeedCard(direction: TrafficDirection.upload));
+    await pumpCard(
+      tester,
+      const SizedBox(
+        height: 208,
+        child: SpeedCard(direction: TrafficDirection.upload),
+      ),
+    );
 
     expect(find.textContaining(_traffic(1 << 20)), findsNothing);
     expect(find.textContaining('${_traffic(2048)}/s'), findsWidgets);
@@ -182,7 +197,14 @@ void main() {
     final gauge = tester.getRect(find.byType(DipperGauge));
     final title = tester.getRect(find.text('Download'));
     expect(gauge.top, greaterThanOrEqualTo(title.bottom));
-    expect(gauge.bottom, lessThanOrEqualTo(card.bottom));
+    expect(
+      gauge.bottom,
+      lessThanOrEqualTo(figureIn(tester, find.byType(SpeedCard)).top),
+    );
+    expect(
+      figureIn(tester, find.byType(SpeedCard)).bottom,
+      lessThanOrEqualTo(card.bottom),
+    );
     expect(find.textContaining('${_traffic(1 << 20)}/s'), findsNWidgets(2));
     expect(tester.takeException(), isNull);
 
