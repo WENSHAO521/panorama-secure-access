@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:fl_clash/enum/enum.dart';
 
 import 'conflicts.dart';
+import 'netdiag.dart';
+
+export 'netdiag.dart' show ProbeFailure;
 
 enum DiagnosisCheck {
   core,
@@ -18,6 +21,48 @@ enum DiagnosisCheck {
 }
 
 enum DiagnosisLevel { ok, warning, failure, skipped }
+
+/// Why a check did not pass, shown before the raw error.
+enum DiagnosisCause {
+  notConfigured,
+  unreachable,
+  refused,
+  timeout,
+  tls,
+  hostLookup,
+  proxy,
+  unknown;
+
+  static DiagnosisCause of(ProbeFailure failure) => switch (failure) {
+    ProbeFailure.notConfigured => notConfigured,
+    ProbeFailure.unreachable => unreachable,
+    ProbeFailure.refused => refused,
+    ProbeFailure.timeout => timeout,
+    ProbeFailure.tls => tls,
+    ProbeFailure.hostLookup => hostLookup,
+    ProbeFailure.unknown => unknown,
+  };
+}
+
+/// A failed probe: what kind of failure, and the error as the OS gave it.
+class ProbeError {
+  final ProbeFailure failure;
+  final String message;
+
+  const ProbeError(this.failure, this.message);
+
+  @override
+  bool operator ==(Object other) =>
+      other is ProbeError &&
+      other.failure == failure &&
+      other.message == message;
+
+  @override
+  int get hashCode => Object.hash(failure, message);
+
+  @override
+  String toString() => 'ProbeError(${failure.name}, $message)';
+}
 
 enum DiagnosisRepair {
   restartCore,
@@ -34,8 +79,15 @@ class DiagnosisResult {
   final DiagnosisLevel level;
   final String? detail;
   final DiagnosisRepair? repair;
+  final DiagnosisCause? cause;
 
-  const DiagnosisResult(this.check, this.level, {this.detail, this.repair});
+  const DiagnosisResult(
+    this.check,
+    this.level, {
+    this.detail,
+    this.repair,
+    this.cause,
+  });
 
   @override
   bool operator ==(Object other) =>
@@ -43,14 +95,16 @@ class DiagnosisResult {
       other.check == check &&
       other.level == level &&
       other.detail == detail &&
-      other.repair == repair;
+      other.repair == repair &&
+      other.cause == cause;
 
   @override
-  int get hashCode => Object.hash(check, level, detail, repair);
+  int get hashCode => Object.hash(check, level, detail, repair, cause);
 
   @override
   String toString() =>
-      'DiagnosisResult(${check.name}, ${level.name}, $detail, ${repair?.name})';
+      'DiagnosisResult(${check.name}, ${level.name}, $detail, '
+      '${repair?.name}, ${cause?.name})';
 }
 
 /// What a probe saw, null where it did not run. Kept apart from grading, so
@@ -68,12 +122,12 @@ class NetworkObservations {
   final bool? systemProxyPortListening;
   final bool tunEnabled;
   final bool? tunAuthorized;
-  final String? dnsError;
-  final String? ipv4Error;
-  final String? ipv6Error;
+  final ProbeError? dnsError;
+  final ProbeError? ipv4Error;
+  final ProbeError? ipv6Error;
   final bool ipv6Enabled;
   final int? proxyStatus;
-  final String? proxyError;
+  final ProbeError? proxyError;
   final bool canFlushDns;
 
   const NetworkObservations({
@@ -163,40 +217,61 @@ List<DiagnosisResult> gradeNetworkDiagnosis(NetworkObservations o) {
           repair: DiagnosisRepair.authorizeTun,
         ),
       },
-    o.dnsError == null
-        ? const DiagnosisResult(DiagnosisCheck.dns, ok)
-        : DiagnosisResult(
-            DiagnosisCheck.dns,
-            failure,
-            detail: o.dnsError,
-            repair: o.canFlushDns ? DiagnosisRepair.flushDns : null,
-          ),
-    o.ipv4Error == null
-        ? const DiagnosisResult(DiagnosisCheck.ipv4, ok)
-        : DiagnosisResult(DiagnosisCheck.ipv4, failure, detail: o.ipv4Error),
+    switch (o.dnsError) {
+      null => const DiagnosisResult(DiagnosisCheck.dns, ok),
+      final error => DiagnosisResult(
+        DiagnosisCheck.dns,
+        failure,
+        detail: error.message,
+        cause: DiagnosisCause.of(error.failure),
+        repair: o.canFlushDns ? DiagnosisRepair.flushDns : null,
+      ),
+    },
+    switch (o.ipv4Error) {
+      null => const DiagnosisResult(DiagnosisCheck.ipv4, ok),
+      final error => DiagnosisResult(
+        DiagnosisCheck.ipv4,
+        failure,
+        detail: error.message,
+        cause: DiagnosisCause.of(error.failure),
+      ),
+    },
     switch ((o.ipv6Error, o.ipv6Enabled)) {
       (null, _) => const DiagnosisResult(DiagnosisCheck.ipv6, ok),
-      (final error, true) => DiagnosisResult(
+      (final error?, true) => DiagnosisResult(
         DiagnosisCheck.ipv6,
         warning,
-        detail: error,
+        detail: error.message,
+        cause: DiagnosisCause.of(error.failure),
         repair: DiagnosisRepair.disableIpv6,
       ),
-      (final error, false) => DiagnosisResult(
+      (final error?, false) => DiagnosisResult(
         DiagnosisCheck.ipv6,
         skipped,
-        detail: error,
+        detail: error.message,
+        cause: DiagnosisCause.of(error.failure),
       ),
     },
     if (!running)
       const DiagnosisResult(DiagnosisCheck.proxyRequest, skipped)
     else if (o.proxyStatus case final status? when status < 400)
       DiagnosisResult(DiagnosisCheck.proxyRequest, ok, detail: 'HTTP $status')
+    else if (o.proxyStatus case final status?)
+      DiagnosisResult(
+        DiagnosisCheck.proxyRequest,
+        failure,
+        detail: 'HTTP $status',
+        cause: DiagnosisCause.proxy,
+      )
     else
       DiagnosisResult(
         DiagnosisCheck.proxyRequest,
         failure,
-        detail: o.proxyStatus != null ? 'HTTP ${o.proxyStatus}' : o.proxyError,
+        detail: o.proxyError?.message,
+        cause: switch (o.proxyError) {
+          final error? => DiagnosisCause.of(error.failure),
+          null => DiagnosisCause.unknown,
+        },
       ),
   ];
 }
@@ -230,46 +305,124 @@ DiagnosisResult _gradeSystemProxy(NetworkObservations o, bool running) {
 
 const _probeTimeout = Duration(seconds: 5);
 
+/// Several targets per check, run together: one blocked, retired or
+/// rate-limited address must not read as a broken network.
+const dnsProbeHosts = ['www.cloudflare.com', 'www.apple.com', 'www.baidu.com'];
+const ipv4ProbeAddresses = ['1.1.1.1', '8.8.8.8', '223.5.5.5'];
+const ipv6ProbeAddresses = [
+  '2606:4700:4700::1111',
+  '2001:4860:4860::8888',
+  '2400:3200::1',
+];
+const proxyProbeFallbackUrls = [
+  'http://cp.cloudflare.com/generate_204',
+  'https://www.gstatic.com/generate_204',
+];
+
 String _describe(Object error) => switch (error) {
   TimeoutException() => 'timeout',
   SocketException(:final osError?) => osError.message,
   SocketException(:final message) => message,
   HttpException(:final message) => message,
+  TlsException(:final message) => message,
   _ => '$error',
 };
 
+/// [stage] is where [error] came from when its type does not say.
+ProbeError probeErrorOf(Object error, ProbeStage stage) {
+  final osError = error is SocketException ? error.osError : null;
+  final timedOut =
+      error is TimeoutException ||
+      (error is SocketException &&
+          osError == null &&
+          error.message.contains('timed out'));
+  return ProbeError(
+    probeFailure(
+      error is TlsException ? ProbeStage.handshake : stage,
+      errno: osError?.errorCode,
+      timedOut: timedOut,
+    ),
+    _describe(error),
+  );
+}
+
 /// Returns null when [run] succeeds, otherwise what went wrong.
-Future<String?> probe(Future<void> Function() run) async {
+Future<ProbeError?> probe(
+  Future<void> Function() run, {
+  ProbeStage stage = ProbeStage.connect,
+}) async {
   try {
     await run().timeout(_probeTimeout);
     return null;
   } catch (error) {
-    return _describe(error);
+    return probeErrorOf(error, stage);
   }
 }
 
-Future<String?> probeDns([String host = 'www.cloudflare.com']) {
-  return probe(() async {
-    final addresses = await InternetAddress.lookup(host);
-    if (addresses.isEmpty) {
-      throw const SocketException('no address');
-    }
-  });
+/// Null as soon as one target passes; the probes still running are dropped.
+Future<ProbeError?> probeAny(
+  Iterable<String> targets,
+  Future<ProbeError?> Function(String target) run,
+) async {
+  final pending = [for (final target in targets) run(target)];
+  final done = Completer<ProbeError?>();
+  final errors = <ProbeError?>[];
+  for (final result in pending) {
+    unawaited(
+      result.then((error) {
+        if (done.isCompleted) return;
+        if (error == null) {
+          done.complete(null);
+          return;
+        }
+        errors.add(error);
+        if (errors.length == pending.length) {
+          final failure = summarizeProbes([
+            for (final error in errors) error?.failure,
+          ]);
+          done.complete(
+            errors.firstWhere(
+              (error) => error?.failure == failure,
+              orElse: () => errors.first,
+            ),
+          );
+        }
+      }),
+    );
+  }
+  return done.future;
 }
 
-Future<String?> probeTcp(String address, {int port = 443}) {
-  return probe(() async {
-    final socket = await Socket.connect(
-      InternetAddress(address),
-      port,
-      timeout: _probeTimeout,
-    );
-    socket.destroy();
-  });
+Future<ProbeError?> probeDns([List<String> hosts = dnsProbeHosts]) {
+  return probeAny(
+    hosts,
+    (host) => probe(() async {
+      final addresses = await InternetAddress.lookup(host);
+      if (addresses.isEmpty) {
+        throw const SocketException('no address');
+      }
+    }, stage: ProbeStage.lookup),
+  );
+}
+
+Future<ProbeError?> probeTcp(List<String> addresses, {int port = 443}) {
+  return probeAny(
+    addresses,
+    (address) => probe(() async {
+      final task = await Socket.startConnect(InternetAddress(address), port);
+      try {
+        final socket = await task.socket.timeout(_probeTimeout);
+        socket.destroy();
+      } on TimeoutException {
+        task.cancel();
+        rethrow;
+      }
+    }),
+  );
 }
 
 /// Returns the status the proxy answered with, or the error instead.
-Future<(int?, String?)> probeProxyRequest(int port, String url) async {
+Future<(int?, ProbeError?)> probeProxyRequest(int port, String url) async {
   final client = HttpClient()
     ..findProxy = ((_) => 'PROXY 127.0.0.1:$port')
     ..connectionTimeout = _probeTimeout;
@@ -279,10 +432,24 @@ Future<(int?, String?)> probeProxyRequest(int port, String url) async {
     await response.drain<void>();
     return (response.statusCode, null);
   } catch (error) {
-    return (null, _describe(error));
+    return (null, probeErrorOf(error, ProbeStage.connect));
   } finally {
     client.close(force: true);
   }
+}
+
+/// The first answer below 400 among [urls], otherwise the first url's result.
+Future<(int?, ProbeError?)> probeProxyRequests(
+  int port,
+  List<String> urls,
+) async {
+  final results = await Future.wait([
+    for (final url in urls.toSet()) probeProxyRequest(port, url),
+  ]);
+  return results.firstWhere(
+    (result) => result.$1 != null && result.$1! < 400,
+    orElse: () => results.first,
+  );
 }
 
 Future<bool> probePortListening(int port) async =>

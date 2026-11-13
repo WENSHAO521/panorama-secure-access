@@ -206,8 +206,7 @@ Future<void> _verifyWindows(
     '-Command',
     [
       "\$v = (Get-Item -LiteralPath '${release.path}').VersionInfo",
-      "'{0}.{1}.{2}.{3}' -f \$v.FileMajorPart, \$v.FileMinorPart, "
-          '\$v.FileBuildPart, \$v.FilePrivatePart',
+      r"'{0}.{1}.{2}.{3}' -f $v.FileMajorPart, $v.FileMinorPart, $v.FileBuildPart, $v.FilePrivatePart",
       '\$v.ProductVersion',
     ].join('; '),
   ]);

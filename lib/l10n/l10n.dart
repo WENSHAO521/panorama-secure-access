@@ -7963,6 +7963,91 @@ class AppLocalizations {
     return Intl.message('Stable', name: 'stableChannel', desc: '', args: []);
   }
 
+  /// `Join the beta program?`
+  String get betaJoinConfirmTitle {
+    return Intl.message(
+      'Join the beta program?',
+      name: 'betaJoinConfirmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Beta builds get new features first, but they can be less stable and may not work with every profile, rule set or system. You can leave at any time.`
+  String get betaJoinConfirmDesc {
+    return Intl.message(
+      'Beta builds get new features first, but they can be less stable and may not work with every profile, rule set or system. You can leave at any time.',
+      name: 'betaJoinConfirmDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Join`
+  String get betaJoinConfirm {
+    return Intl.message('Join', name: 'betaJoinConfirm', desc: '', args: []);
+  }
+
+  /// `Leave the beta program?`
+  String get betaLeaveConfirmTitle {
+    return Intl.message(
+      'Leave the beta program?',
+      name: 'betaLeaveConfirmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You will stop receiving beta updates. The installed beta is not removed or downgraded: you keep it until a stable release of the same or a newer version ships, then the app returns to stable.`
+  String get betaLeaveConfirmDesc {
+    return Intl.message(
+      'You will stop receiving beta updates. The installed beta is not removed or downgraded: you keep it until a stable release of the same or a newer version ships, then the app returns to stable.',
+      name: 'betaLeaveConfirmDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leave`
+  String get betaLeaveConfirm {
+    return Intl.message('Leave', name: 'betaLeaveConfirm', desc: '', args: []);
+  }
+
+  /// `Keep the beta`
+  String get betaStay {
+    return Intl.message('Keep the beta', name: 'betaStay', desc: '', args: []);
+  }
+
+  /// `Update channel`
+  String get updateChannel {
+    return Intl.message(
+      'Update channel',
+      name: 'updateChannel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Installed version`
+  String get installedVersion {
+    return Intl.message(
+      'Installed version',
+      name: 'installedVersion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The setting could not be saved, so the update channel is unchanged.`
+  String get betaChannelSaveFailed {
+    return Intl.message(
+      'The setting could not be saved, so the update channel is unchanged.',
+      name: 'betaChannelSaveFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `MITM`
   String get mitm {
     return Intl.message('MITM', name: 'mitm', desc: '', args: []);
@@ -9323,6 +9408,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Enter at most 1024 TB`
+  String get customTrafficTooLargeDesc {
+    return Intl.message(
+      'Enter at most 1024 TB',
+      name: 'customTrafficTooLargeDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Set up the TUN service`
   String get linuxHelperSetupTitle {
     return Intl.message(
@@ -9646,6 +9741,81 @@ class AppLocalizations {
       desc: '',
       args: [],
     );
+  }
+
+  /// `Not configured on this network`
+  String get diagnosisNotConfigured {
+    return Intl.message(
+      'Not configured on this network',
+      name: 'diagnosisNotConfigured',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No route`
+  String get diagnosisUnreachable {
+    return Intl.message(
+      'No route',
+      name: 'diagnosisUnreachable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connection refused`
+  String get diagnosisRefused {
+    return Intl.message(
+      'Connection refused',
+      name: 'diagnosisRefused',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Timed out`
+  String get diagnosisTimeout {
+    return Intl.message(
+      'Timed out',
+      name: 'diagnosisTimeout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TLS handshake failed`
+  String get diagnosisTls {
+    return Intl.message(
+      'TLS handshake failed',
+      name: 'diagnosisTls',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name lookup failed`
+  String get diagnosisHostLookup {
+    return Intl.message(
+      'Name lookup failed',
+      name: 'diagnosisHostLookup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The proxy answered with an error`
+  String get diagnosisProxyFault {
+    return Intl.message(
+      'The proxy answered with an error',
+      name: 'diagnosisProxyFault',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed`
+  String get diagnosisFailed {
+    return Intl.message('Failed', name: 'diagnosisFailed', desc: '', args: []);
   }
 
   /// `Restart core`

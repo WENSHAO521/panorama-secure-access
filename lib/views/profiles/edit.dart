@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/common/traffic_quota_input.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/features/form/form.dart';
 import 'package:fl_clash/l10n/l10n.dart';
@@ -18,26 +19,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum _ProfileField { label, url, autoUpdateInterval, customTraffic }
-
-enum _TrafficUnit {
-  mb('MB', 1 << 20),
-  gb('GB', 1 << 30),
-  tb('TB', 1 << 40);
-
-  const _TrafficUnit(this.label, this.bytes);
-
-  final String label;
-  final int bytes;
-
-  /// The largest unit [bytes] fills at least once.
-  static _TrafficUnit of(int bytes) =>
-      values.lastWhere((unit) => bytes >= unit.bytes, orElse: () => mb);
-
-  /// [bytes] as typed in this unit, trailing zeros dropped.
-  String format(int bytes) => (bytes / this.bytes)
-      .toStringAsFixed(2)
-      .replaceFirst(RegExp(r'\.?0+$'), '');
-}
 
 class EditProfileView extends ConsumerStatefulWidget {
   final Profile profile;
@@ -57,7 +38,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   late Map<String, String> _headers;
   late final TextEditingController _trafficController;
   late TrafficQuotaPeriod _trafficPeriod;
-  late _TrafficUnit _trafficUnit;
+  late QuotaUnit _trafficUnit;
   Uint8List? _editedData;
   bool _attempted = false;
   final _fileInfoNotifier = ValueNotifier<FileInfo?>(null);
@@ -75,9 +56,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     _autoUpdate = widget.profile.autoUpdate;
     _headers = widget.profile.headers;
     final quota = widget.profile.trafficQuota;
-    _trafficUnit = quota == null
-        ? _TrafficUnit.gb
-        : _TrafficUnit.of(quota.total);
+    _trafficUnit = quota == null ? QuotaUnit.none : QuotaUnit.of(quota.total);
     _trafficController = TextEditingController(
       text: quota == null ? '' : _trafficUnit.format(quota.total),
     );
@@ -108,11 +87,10 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     if (labelError != null) {
       return (field: _ProfileField.label, message: labelError);
     }
-    final traffic = _trafficController.text.trim();
-    if (traffic.isNotEmpty && (double.tryParse(traffic) ?? 0) <= 0) {
+    if (_trafficInput.error case final error?) {
       return (
         field: _ProfileField.customTraffic,
-        message: appLocalizations.customTrafficInvalidDesc,
+        message: error.label(context),
       );
     }
     if (widget.profile.type != ProfileType.url) {
@@ -151,16 +129,8 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     return null;
   }
 
-  TrafficQuota? get _trafficQuota {
-    final amount = double.tryParse(_trafficController.text.trim());
-    if (amount == null || amount <= 0) {
-      return null;
-    }
-    return TrafficQuota(
-      total: (amount * _trafficUnit.bytes).round(),
-      period: _trafficPeriod,
-    );
-  }
+  TrafficQuotaInput get _trafficInput =>
+      TrafficQuotaInput.parse(_trafficController.text, _trafficUnit);
 
   void _handleChanged(String _) {
     if (_attempted) {
@@ -183,7 +153,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
       url: _urlController.text,
       ageSecretKey: _ageSecretKeyController.text.trim(),
       headers: _headers,
-      trafficQuota: _trafficQuota,
+      trafficQuota: _trafficInput.quota(_trafficPeriod),
       label: _labelController.text,
       autoUpdate: _autoUpdate,
       autoUpdateDuration: interval != null && interval > 0
@@ -426,7 +396,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
       generateSection(
         footer: appLocalizations.customTrafficDesc,
         items: [
-          _CustomTrafficField(
+          TrafficQuotaField(
             controller: _trafficController,
             unit: _trafficUnit,
             onUnitChanged: (unit) => setState(() => _trafficUnit = unit),
@@ -436,7 +406,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
               _handleChanged(value);
             },
           ),
-          if (_trafficController.text.trim().isNotEmpty)
+          if (_trafficInput.bytes != null)
             FormRow(
               title: appLocalizations.trafficPeriod,
               trailing: SegmentedControl<TrafficQuotaPeriod>(
@@ -673,61 +643,6 @@ class _AutoUpdateIntervalField extends StatelessWidget {
           Text(
             appLocalizations.minutes,
             style: AppTextStyle.subheadline.of(context),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CustomTrafficField extends StatelessWidget {
-  const _CustomTrafficField({
-    required this.controller,
-    required this.unit,
-    required this.onUnitChanged,
-    required this.invalid,
-    required this.onChanged,
-  });
-
-  final TextEditingController controller;
-  final _TrafficUnit unit;
-  final ValueChanged<_TrafficUnit> onUnitChanged;
-  final bool invalid;
-  final ValueChanged<String> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final appLocalizations = context.appLocalizations;
-    return FormRow(
-      title: appLocalizations.customTraffic,
-      invalid: invalid,
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 8,
-        children: [
-          Flexible(
-            child: FormRowTextField(
-              controller: controller,
-              hintText: appLocalizations.none,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              textInputAction: TextInputAction.next,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-                LengthLimitingTextInputFormatter(TextInputLimits.number),
-              ],
-              onChanged: onChanged,
-            ),
-          ),
-          Flexible(
-            child: SegmentedControl<_TrafficUnit>(
-              segments: [
-                for (final unit in _TrafficUnit.values) (unit, unit.label),
-              ],
-              value: unit,
-              onChanged: onUnitChanged,
-            ),
           ),
         ],
       ),

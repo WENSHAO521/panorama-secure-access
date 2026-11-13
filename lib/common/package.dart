@@ -1,6 +1,5 @@
 import 'dart:io';
 
-
 import 'common.dart';
 
 /// The user agent of a request made as this app at [version].

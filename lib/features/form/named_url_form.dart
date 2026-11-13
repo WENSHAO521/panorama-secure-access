@@ -1,5 +1,8 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/common/traffic_quota_input.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/l10n/l10n.dart';
+import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/services.dart';
@@ -8,8 +11,15 @@ import 'package:flutter/widgets.dart';
 import 'batch_section.dart';
 import 'form_page.dart';
 import 'form_row.dart';
+import 'traffic_quota_field.dart';
 
-typedef NamedUrl = ({String label, String url, String ageSecretKey});
+/// [trafficQuota] is set only where the form offers it, and only when typed.
+typedef NamedUrl = ({
+  String label,
+  String url,
+  String ageSecretKey,
+  TrafficQuota? trafficQuota,
+});
 
 Future<NamedUrl?> showNamedUrlForm(
   BuildContext context, {
@@ -42,6 +52,7 @@ Future<List<NamedUrl>?> showNamedUrlsForm(
   FormFieldValidator<String>? urlValidator,
   Set<String> existingUrls = const {},
   bool withAgeSecretKey = false,
+  bool withTrafficQuota = false,
 }) {
   return showFormSheet<List<NamedUrl>>(
     context: context,
@@ -54,11 +65,12 @@ Future<List<NamedUrl>?> showNamedUrlsForm(
       batch: true,
       existingUrls: existingUrls,
       withAgeSecretKey: withAgeSecretKey,
+      withTrafficQuota: withTrafficQuota,
     ),
   );
 }
 
-enum _NamedUrlField { label, url }
+enum _NamedUrlField { label, url, trafficQuota }
 
 /// The url below the name holds the focus, as the one field that must be filled.
 /// Pops a list so a single url and a batch return through the same path.
@@ -73,6 +85,7 @@ class NamedUrlForm extends StatefulWidget {
   final bool batch;
   final Set<String> existingUrls;
   final bool withAgeSecretKey;
+  final bool withTrafficQuota;
 
   const NamedUrlForm({
     super.key,
@@ -86,6 +99,7 @@ class NamedUrlForm extends StatefulWidget {
     this.batch = false,
     this.existingUrls = const {},
     this.withAgeSecretKey = false,
+    this.withTrafficQuota = false,
   });
 
   @override
@@ -94,7 +108,10 @@ class NamedUrlForm extends StatefulWidget {
 
 class _NamedUrlFormState extends State<NamedUrlForm> {
   final _urlFocusNode = FocusNode();
+  final _trafficFocusNode = FocusNode();
   final _ageSecretKeyFocusNode = FocusNode();
+  final _trafficController = TextEditingController();
+  QuotaUnit _trafficUnit = QuotaUnit.none;
   late final TextEditingController _labelController;
   late final TextEditingController _urlController;
   final _ageSecretKeyController = TextEditingController();
@@ -129,7 +146,9 @@ class _NamedUrlFormState extends State<NamedUrlForm> {
   @override
   void dispose() {
     _urlFocusNode.dispose();
+    _trafficFocusNode.dispose();
     _ageSecretKeyFocusNode.dispose();
+    _trafficController.dispose();
     _labelController.dispose();
     _urlController.dispose();
     _ageSecretKeyController.dispose();
@@ -170,8 +189,18 @@ class _NamedUrlFormState extends State<NamedUrlForm> {
     if (urlError != null) {
       return (field: _NamedUrlField.url, message: urlError);
     }
+    if (_trafficInput?.error case final error?) {
+      return (
+        field: _NamedUrlField.trafficQuota,
+        message: error.label(context),
+      );
+    }
     return null;
   }
+
+  TrafficQuotaInput? get _trafficInput => widget.withTrafficQuota
+      ? TrafficQuotaInput.parse(_trafficController.text, _trafficUnit)
+      : null;
 
   void _toggleBatch() {
     setState(() {
@@ -209,7 +238,7 @@ class _NamedUrlFormState extends State<NamedUrlForm> {
       }
       Navigator.of(context).pop<List<NamedUrl>>([
         for (final url in parsed.entries)
-          (label: '', url: url, ageSecretKey: ''),
+          (label: '', url: url, ageSecretKey: '', trafficQuota: null),
       ]);
       return;
     }
@@ -224,6 +253,7 @@ class _NamedUrlFormState extends State<NamedUrlForm> {
         label: _labelController.text.trim(),
         url: _urlController.text.trim(),
         ageSecretKey: _ageSecretKeyController.text.trim(),
+        trafficQuota: _trafficInput?.quota(TrafficQuotaPeriod.monthly),
       ),
     ]);
   }
@@ -293,12 +323,34 @@ class _NamedUrlFormState extends State<NamedUrlForm> {
             autofocus: true,
             hintText: appLocalizations.required,
             keyboardType: TextInputType.url,
-            textInputAction: widget.withAgeSecretKey
+            textInputAction: widget.withAgeSecretKey || widget.withTrafficQuota
                 ? TextInputAction.next
                 : TextInputAction.done,
             autocorrect: false,
             inputFormatters: TextInputLimits.limit(TextInputLimits.url),
             onChanged: _handleChanged,
+            onFieldSubmitted: (_) {
+              if (widget.withTrafficQuota) {
+                _trafficFocusNode.requestFocus();
+              } else if (widget.withAgeSecretKey) {
+                _ageSecretKeyFocusNode.requestFocus();
+              } else {
+                _handleSubmit();
+              }
+            },
+          ),
+        ),
+        if (widget.withTrafficQuota)
+          TrafficQuotaField(
+            controller: _trafficController,
+            focusNode: _trafficFocusNode,
+            unit: _trafficUnit,
+            onUnitChanged: (unit) => setState(() => _trafficUnit = unit),
+            invalid: invalid == _NamedUrlField.trafficQuota,
+            onChanged: _handleChanged,
+            textInputAction: widget.withAgeSecretKey
+                ? TextInputAction.next
+                : TextInputAction.done,
             onFieldSubmitted: (_) {
               if (widget.withAgeSecretKey) {
                 _ageSecretKeyFocusNode.requestFocus();
@@ -307,7 +359,6 @@ class _NamedUrlFormState extends State<NamedUrlForm> {
               }
             },
           ),
-        ),
         if (widget.withAgeSecretKey)
           FormRow(
             title: appLocalizations.ageSecretKey,

@@ -150,6 +150,16 @@ class UpdateController extends _$UpdateController {
 
   void cancel() => _cancelToken?.cancel();
 
+  /// Leaving the beta drops a pre-release found or fetched while in it, so no
+  /// check from the old channel installs one afterwards.
+  void dropPreRelease() {
+    final current = state;
+    if (current == null || !current.tag.contains('-')) return;
+    _cancelToken?.cancel();
+    _assets = const [];
+    state = null;
+  }
+
   Future<void> install() async {
     final path = state?.filePath;
     if (path == null) return;

@@ -477,8 +477,25 @@ class MessageLookup extends MessageLookupByLibrary {
       "Una URL por línea",
     ),
     "betaChannel": MessageLookupByLibrary.simpleMessage("Beta"),
+    "betaChannelSaveFailed": MessageLookupByLibrary.simpleMessage(
+      "No se pudo guardar el ajuste, así que el canal de actualización no ha cambiado.",
+    ),
+    "betaJoinConfirm": MessageLookupByLibrary.simpleMessage("Unirse"),
+    "betaJoinConfirmDesc": MessageLookupByLibrary.simpleMessage(
+      "Las versiones beta reciben primero las novedades, pero pueden ser menos estables y no funcionar con todos los perfiles, reglas o sistemas. Puede salir en cualquier momento.",
+    ),
+    "betaJoinConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "¿Unirse al programa beta?",
+    ),
     "betaJoinedTip": MessageLookupByLibrary.simpleMessage(
       "Recibes actualizaciones beta",
+    ),
+    "betaLeaveConfirm": MessageLookupByLibrary.simpleMessage("Salir"),
+    "betaLeaveConfirmDesc": MessageLookupByLibrary.simpleMessage(
+      "Dejará de recibir actualizaciones beta. La beta instalada no se elimina ni se degrada: la conserva hasta que salga una versión estable del mismo número o posterior, y entonces la aplicación vuelve a la versión estable.",
+    ),
+    "betaLeaveConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "¿Salir del programa beta?",
     ),
     "betaNotJoinedTip": MessageLookupByLibrary.simpleMessage(
       "Solo recibes actualizaciones estables",
@@ -490,6 +507,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "betaProgramFooter": MessageLookupByLibrary.simpleMessage(
       "Cuando termine la beta y salga una versión estable igual o más reciente, la aplicación se actualizará a ella automáticamente. Puedes salir en cualquier momento: conservas la beta actual hasta que salga esa versión estable y luego vuelves a ella.",
     ),
+    "betaStay": MessageLookupByLibrary.simpleMessage("Seguir en la beta"),
     "betaUpdates": MessageLookupByLibrary.simpleMessage("Unirse a la beta"),
     "binaryData": MessageLookupByLibrary.simpleMessage("Datos binarios"),
     "bind": MessageLookupByLibrary.simpleMessage("Vincular"),
@@ -697,6 +715,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "customTrafficInvalidDesc": MessageLookupByLibrary.simpleMessage(
       "Introduce un tráfico mayor que 0",
     ),
+    "customTrafficTooLargeDesc": MessageLookupByLibrary.simpleMessage(
+      "Introduzca como máximo 1024 TB",
+    ),
     "cut": MessageLookupByLibrary.simpleMessage("Cortar"),
     "dark": MessageLookupByLibrary.simpleMessage("Oscuro"),
     "dashboard": MessageLookupByLibrary.simpleMessage("Panel"),
@@ -751,21 +772,39 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "diagnosisCore": MessageLookupByLibrary.simpleMessage("Núcleo"),
     "diagnosisDns": MessageLookupByLibrary.simpleMessage("Resolución DNS"),
+    "diagnosisFailed": MessageLookupByLibrary.simpleMessage("Error"),
+    "diagnosisHostLookup": MessageLookupByLibrary.simpleMessage(
+      "Falló la resolución del nombre",
+    ),
     "diagnosisIpv4": MessageLookupByLibrary.simpleMessage("Conectividad IPv4"),
     "diagnosisIpv6": MessageLookupByLibrary.simpleMessage("Conectividad IPv6"),
     "diagnosisMixedPort": MessageLookupByLibrary.simpleMessage(
       "Puerto del proxy",
     ),
+    "diagnosisNotConfigured": MessageLookupByLibrary.simpleMessage(
+      "No configurado en esta red",
+    ),
     "diagnosisOtherClients": MessageLookupByLibrary.simpleMessage(
       "Otros clientes proxy",
+    ),
+    "diagnosisProxyFault": MessageLookupByLibrary.simpleMessage(
+      "El proxy respondió con un error",
     ),
     "diagnosisProxyRequest": MessageLookupByLibrary.simpleMessage(
       "Solicitud a través del proxy",
     ),
+    "diagnosisRefused": MessageLookupByLibrary.simpleMessage(
+      "Conexión rechazada",
+    ),
     "diagnosisSystemProxy": MessageLookupByLibrary.simpleMessage(
       "Proxy del sistema",
     ),
+    "diagnosisTimeout": MessageLookupByLibrary.simpleMessage("Tiempo agotado"),
+    "diagnosisTls": MessageLookupByLibrary.simpleMessage(
+      "Falló el protocolo TLS",
+    ),
     "diagnosisTun": MessageLookupByLibrary.simpleMessage("Autorización de TUN"),
+    "diagnosisUnreachable": MessageLookupByLibrary.simpleMessage("Sin ruta"),
     "dialerProxy": MessageLookupByLibrary.simpleMessage("Proxy de marcación"),
     "dialerProxyLoopStopped": m26,
     "dialog": MessageLookupByLibrary.simpleMessage("Diálogo"),
@@ -1219,6 +1258,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "installedFonts": MessageLookupByLibrary.simpleMessage(
       "Fuentes instaladas",
+    ),
+    "installedVersion": MessageLookupByLibrary.simpleMessage(
+      "Versión instalada",
     ),
     "intelligentSelected": MessageLookupByLibrary.simpleMessage(
       "Selección inteligente",
@@ -2420,6 +2462,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("Sin nombre"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("Desfijar ventana"),
     "update": MessageLookupByLibrary.simpleMessage("Actualizar"),
+    "updateChannel": MessageLookupByLibrary.simpleMessage(
+      "Canal de actualización",
+    ),
     "updateDownloadFailed": MessageLookupByLibrary.simpleMessage(
       "No se pudo descargar la actualización.",
     ),
