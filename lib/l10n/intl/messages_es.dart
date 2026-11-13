@@ -570,6 +570,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "La app ya está actualizada",
     ),
     "cipher": MessageLookupByLibrary.simpleMessage("Cifrado"),
+    "classicLook": MessageLookupByLibrary.simpleMessage("Clásico"),
     "clearData": MessageLookupByLibrary.simpleMessage("Borrar datos"),
     "clearDataAndExitTip": MessageLookupByLibrary.simpleMessage(
       "Esto elimina todos los perfiles, ajustes y datos locales, y luego cierra la app. Ábrela de nuevo para empezar de cero.",
@@ -672,7 +673,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Smart App Control de Windows bloqueó panorama-secure-access-core.exe porque no está firmado. Abre Seguridad de Windows → Control de aplicaciones y navegador → Configuración de Smart App Control, elige Desactivado y vuelve a iniciar Panorama Secure Access. Smart App Control no se puede volver a activar sin reinstalar Windows.",
     ),
+    "coreStarting": MessageLookupByLibrary.simpleMessage("Iniciando…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("Estado del núcleo"),
+    "coreStopping": MessageLookupByLibrary.simpleMessage("Deteniendo…"),
     "country": MessageLookupByLibrary.simpleMessage("Región"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("Fallo detectado"),
     "crashDetectedTip": m7,
@@ -2345,7 +2348,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "Modo estándar: añade reglas sobre el perfil",
     ),
+    "starChart": MessageLookupByLibrary.simpleMessage("Carta celeste"),
     "start": MessageLookupByLibrary.simpleMessage("Iniciar"),
+    "startFailedRetry": MessageLookupByLibrary.simpleMessage(
+      "No se pudo iniciar. Toca para reintentar",
+    ),
     "startFromScratch": MessageLookupByLibrary.simpleMessage(
       "Empezar desde cero",
     ),

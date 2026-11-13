@@ -1169,5 +1169,10 @@
   "uninstallRebootTip": "Fedora Atomic(rpm-ostree)에서는 다음 재부팅 후 앱이 사라집니다.",
   "uninstallDeleteDataTip": "구독, 설정, 로그도 삭제할까요? 삭제하면 복구할 수 없습니다. 다시 설치할 계획이라면 유지하세요.",
   "uninstallFailed": "앱이 제거되지 않아 아무것도 삭제하지 않았습니다.",
-  "keep": "유지"
+  "keep": "유지",
+  "starChart": "성도",
+  "coreStarting": "시작 중…",
+  "coreStopping": "중지 중…",
+  "startFailedRetry": "시작하지 못했습니다. 탭하여 다시 시도",
+  "classicLook": "클래식"
 }

@@ -1169,5 +1169,10 @@
   "uninstallRebootTip": "Fedora Atomic（rpm-ostree）では、次回の再起動後にアプリが消えます。",
   "uninstallDeleteDataTip": "サブスクリプション、設定、ログも削除しますか？削除すると元に戻せません。再インストールする予定がある場合は残してください。",
   "uninstallFailed": "アプリが削除されなかったため、何も削除していません。",
-  "keep": "残す"
+  "keep": "残す",
+  "starChart": "星図",
+  "coreStarting": "起動中…",
+  "coreStopping": "停止中…",
+  "startFailedRetry": "起動に失敗しました。タップして再試行",
+  "classicLook": "クラシック"
 }

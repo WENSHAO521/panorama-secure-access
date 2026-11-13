@@ -452,6 +452,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "checkUpdate": MessageLookupByLibrary.simpleMessage("업데이트 확인"),
     "checkUpdateError": MessageLookupByLibrary.simpleMessage("이미 최신 버전입니다"),
     "cipher": MessageLookupByLibrary.simpleMessage("암호화 방식"),
+    "classicLook": MessageLookupByLibrary.simpleMessage("클래식"),
     "clearData": MessageLookupByLibrary.simpleMessage("데이터 지우기"),
     "clearDataAndExitTip": MessageLookupByLibrary.simpleMessage(
       "모든 프로필, 설정, 로컬 데이터를 삭제한 후 앱을 종료합니다. 앱을 다시 열면 처음부터 시작합니다.",
@@ -526,7 +527,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "서명되지 않아 Windows Smart App Control이 panorama-secure-access-core.exe를 차단했습니다. Windows 보안 → 앱 및 브라우저 컨트롤 → Smart App Control 설정에서 끔을 선택한 후 Panorama Secure Access를 다시 시작하세요. Smart App Control은 Windows를 다시 설치하지 않으면 다시 켤 수 없습니다.",
     ),
+    "coreStarting": MessageLookupByLibrary.simpleMessage("시작 중…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("코어 상태"),
+    "coreStopping": MessageLookupByLibrary.simpleMessage("중지 중…"),
     "country": MessageLookupByLibrary.simpleMessage("지역"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("비정상 종료 감지됨"),
     "crashDetectedTip": m7,
@@ -1822,7 +1825,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "표준 모드: 프로필 위에 규칙을 추가합니다",
     ),
+    "starChart": MessageLookupByLibrary.simpleMessage("성도"),
     "start": MessageLookupByLibrary.simpleMessage("시작"),
+    "startFailedRetry": MessageLookupByLibrary.simpleMessage(
+      "시작하지 못했습니다. 탭하여 다시 시도",
+    ),
     "startFromScratch": MessageLookupByLibrary.simpleMessage("처음부터 시작"),
     "startVpn": MessageLookupByLibrary.simpleMessage("VPN 시작 중…"),
     "startupAndBackground": MessageLookupByLibrary.simpleMessage("시작 및 백그라운드"),

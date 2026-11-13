@@ -3,10 +3,11 @@ import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/providers/state.dart';
 import 'package:fl_clash/views/dashboard/widgets/dipper_gauge.dart';
 import 'package:fl_clash/views/dashboard/widgets/pole_star.dart';
+import 'package:fl_clash/views/dashboard/widgets/star_backdrop.dart';
+import 'package:fl_clash/views/dashboard/widgets/star_plate.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:prism_ui/prism_ui.dart';
 
 class PreviewChoice<T> {
   const PreviewChoice({
@@ -183,6 +184,9 @@ class _ThemeLivePreviewState extends ConsumerState<ThemeLivePreview>
         (state) => state.liquidGlass != LiquidGlassMode.none,
       ),
     );
+    final starChart = ref.watch(
+      themeSettingProvider.select((state) => state.starChart),
+    );
     final corner = AppCorner.fit(_phoneWidth);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -204,7 +208,7 @@ class _ThemeLivePreviewState extends ConsumerState<ThemeLivePreview>
               builder: (_, colorScheme, _) => AnimatedSwitcher(
                 duration: _duration,
                 child: AnimatedBuilder(
-                  key: ValueKey((floatingBar, liquidGlass)),
+                  key: ValueKey((floatingBar, liquidGlass, starChart)),
                   animation: _slideCurve,
                   builder: (_, _) => MiniScreen(
                     colorScheme: colorScheme,
@@ -215,6 +219,7 @@ class _ThemeLivePreviewState extends ConsumerState<ThemeLivePreview>
                     progress: _previous == null ? 1 : _slideCurve.value,
                     tabAnimation: tabAnimation,
                     onSelect: _select,
+                    starChart: starChart,
                   ),
                 ),
               ),
@@ -243,9 +248,13 @@ class MiniScreen extends StatelessWidget {
     this.progress = 1,
     this.tabAnimation = TabAnimation.slide,
     this.onSelect,
+    this.starChart = false,
   });
 
   static const int destinationCount = 4;
+
+  /// Draws the dashboard in the star-chart look.
+  final bool starChart;
 
   final ColorScheme colorScheme;
   final bool floatingBar;
@@ -272,6 +281,8 @@ class MiniScreen extends StatelessWidget {
           previous: previous,
           progress: progress,
           tabAnimation: tabAnimation,
+          starChart: starChart,
+          glyphs: starChart ? starPlateGlyphs(context) : null,
         ),
       ),
     );
@@ -378,6 +389,8 @@ class _MiniScreenPainter extends CustomPainter {
     required this.previous,
     required this.progress,
     required this.tabAnimation,
+    required this.starChart,
+    required this.glyphs,
   });
 
   final ColorScheme colorScheme;
@@ -387,6 +400,8 @@ class _MiniScreenPainter extends CustomPainter {
   final int? previous;
   final double progress;
   final TabAnimation tabAnimation;
+  final bool starChart;
+  final TextStyle? glyphs;
 
   bool get _glass => floatingBar && liquidGlass;
 
@@ -562,6 +577,7 @@ class _MiniScreenPainter extends CustomPainter {
       geometry.unit,
       content,
       blur: blur,
+      glyphs: glyphs,
     ).paint(_pageOf(index));
     canvas.restore();
   }
@@ -624,7 +640,9 @@ class _MiniScreenPainter extends CustomPainter {
         oldDelegate.selected != selected ||
         oldDelegate.previous != previous ||
         oldDelegate.progress != progress ||
-        oldDelegate.tabAnimation != tabAnimation;
+        oldDelegate.tabAnimation != tabAnimation ||
+        oldDelegate.starChart != starChart ||
+        oldDelegate.glyphs != glyphs;
   }
 }
 
@@ -637,6 +655,7 @@ class _PageSketch {
     this.unit,
     this.content, {
     this.blur,
+    this.glyphs,
   }) : width = content.width / unit,
        card = SurfaceLevel.card.colorOf(colorScheme),
        inset = SurfaceLevel.inset.colorOf(colorScheme),
@@ -651,7 +670,12 @@ class _PageSketch {
   final double unit;
   final Rect content;
   final MaskFilter? blur;
+
+  /// The star plate's face; set when the sketch wears the star-chart look.
+  final TextStyle? glyphs;
   final double width;
+
+  bool get starChart => glyphs != null;
   final Color card;
   final Color inset;
   final Color text;
@@ -683,6 +707,26 @@ class _PageSketch {
 
   void _block(Rect rect, Color color, {double extent = 5}) {
     _MiniScreenPainter._fill(canvas, rect, color, _shape(extent), blur: blur);
+    if (starChart && color == card) {
+      final hairline = StarChartColors.hairlineOf(colorScheme.brightness);
+      final inset = unit * 0.25;
+      final stroke = Paint()
+        ..style = PaintingStyle.stroke
+        ..maskFilter = blur;
+      canvas
+        ..drawPath(
+          _shape(extent).getOuterPath(rect.deflate(0.4)),
+          stroke
+            ..strokeWidth = 0.8
+            ..color = hairline,
+        )
+        ..drawPath(
+          _shape(extent).getOuterPath(rect.deflate(inset)),
+          stroke
+            ..strokeWidth = 0.5
+            ..color = hairline.withValues(alpha: hairline.a * 0.7),
+        );
+    }
   }
 
   void _pill(double x, double y, double w, double h, Color color) {
@@ -717,28 +761,60 @@ class _PageSketch {
   }
 
   void _dashboard(double top) {
+    if (starChart) {
+      final sky = Rect.fromLTRB(
+        content.left - unit * 1.5,
+        content.top - unit * 1.5,
+        content.right + unit * 1.5,
+        content.bottom,
+      );
+      canvas
+        ..save()
+        ..translate(sky.left, sky.top);
+      StarChartBackdropPainter(
+        brightness: colorScheme.brightness,
+        lit: 1,
+        detail: unit / 20,
+      ).paint(canvas, sky.size);
+      canvas.restore();
+    }
     var y = top;
     final status = _rect(0, y, width, 6.2);
     final buttonX = width - 3;
     final buttonY = y + 3.1;
     _block(status, card);
-    canvas
-      ..save()
-      ..clipPath(_shape(5).getOuterPath(status));
-    // The pole star's halo, as behind the running dashboard's button.
-    paintPoleStar(
-      canvas,
-      _rect(buttonX, buttonY, 0, 0).topLeft,
-      unit * 4.6,
-      field: colorScheme.primary.withValues(alpha: 0.1),
-      lit: 1,
-      turn: 0,
-      dark: colorScheme.brightness == Brightness.dark,
-    );
-    canvas.restore();
-    _dot(buttonX, buttonY, 1.8, colorScheme.primary);
-    for (final dx in [-0.675, 0.325]) {
-      _pill(buttonX + dx, buttonY - 0.6, 0.35, 1.2, colorScheme.onPrimary);
+    if (starChart) {
+      final dark = colorScheme.brightness == Brightness.dark;
+      paintStarPlate(
+        canvas,
+        _rect(buttonX - 0.2, buttonY, 0, 0).topLeft,
+        unit * 2.8,
+        brightness: colorScheme.brightness,
+        lit: 1,
+        turn: 0,
+        disc: dark ? const Color(0xFF262335) : const Color(0xFFFFF9EA),
+        error: colorScheme.error,
+        glyphs: glyphs!,
+      );
+    } else {
+      canvas
+        ..save()
+        ..clipPath(_shape(5).getOuterPath(status));
+      // The pole star's halo, as behind the running dashboard's button.
+      paintPoleStar(
+        canvas,
+        _rect(buttonX, buttonY, 0, 0).topLeft,
+        unit * 4.6,
+        field: colorScheme.primary.withValues(alpha: 0.1),
+        lit: 1,
+        turn: 0,
+        dark: colorScheme.brightness == Brightness.dark,
+      );
+      canvas.restore();
+      _dot(buttonX, buttonY, 1.8, colorScheme.primary);
+      for (final dx in [-0.675, 0.325]) {
+        _pill(buttonX + dx, buttonY - 0.6, 0.35, 1.2, colorScheme.onPrimary);
+      }
     }
     _pill(1, y + 0.9, 3, 0.7, line);
     _dot(1.9, y + 3, 0.9, inset);
@@ -789,8 +865,21 @@ class _PageSketch {
     _block(_rect(0, y, width, 3), card);
     _dot(1.9, y + 1.5, 0.9, colorScheme.primary);
     _pill(3.4, y + 1.1, 2.4, 0.8, line);
-    _pill(width - 3.6, y + 0.8, 2.6, 1.4, colorScheme.primary);
-    _dot(width - 1.7, y + 1.5, 0.55, colorScheme.onPrimary);
+    if (starChart) {
+      final gilt = StarChartColors.giltOf(colorScheme.brightness);
+      _pill(
+        width - 3.6,
+        y + 0.8,
+        2.6,
+        1.4,
+        Color.alphaBlend(gilt.withValues(alpha: 0.22), inset),
+      );
+      _pill(width - 3.3, y + 1.45, 2, 0.1, gilt.withValues(alpha: 0.75));
+      _dot(width - 1.7, y + 1.5, 0.5, gilt);
+    } else {
+      _pill(width - 3.6, y + 0.8, 2.6, 1.4, colorScheme.primary);
+      _dot(width - 1.7, y + 1.5, 0.55, colorScheme.onPrimary);
+    }
     y += 3 + _gap;
 
     for (var i = 0; i < 3; i++) {

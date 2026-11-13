@@ -1169,5 +1169,10 @@
   "uninstallRebootTip": "在 Fedora Atomic（rpm-ostree）上，应用会在下次重启后消失。",
   "uninstallDeleteDataTip": "同时删除订阅、设置和日志吗？删除后无法恢复。如果之后还会重新安装，请选择保留。",
   "uninstallFailed": "应用未被移除，因此没有删除任何内容。",
-  "keep": "保留"
+  "keep": "保留",
+  "starChart": "星官笺",
+  "coreStarting": "正在启动…",
+  "coreStopping": "正在停止…",
+  "startFailedRetry": "启动失败，点击重试",
+  "classicLook": "经典"
 }

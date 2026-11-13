@@ -1169,5 +1169,10 @@
   "uninstallRebootTip": "En Fedora Atomic (rpm-ostree) la aplicación desaparece tras el próximo reinicio.",
   "uninstallDeleteDataTip": "¿Eliminar también tus suscripciones, ajustes y registros? No se podrán recuperar. Consérvalos si piensas volver a instalar.",
   "uninstallFailed": "La aplicación no se quitó, así que no se eliminó nada.",
-  "keep": "Conservar"
+  "keep": "Conservar",
+  "starChart": "Carta celeste",
+  "coreStarting": "Iniciando…",
+  "coreStopping": "Deteniendo…",
+  "startFailedRetry": "No se pudo iniciar. Toca para reintentar",
+  "classicLook": "Clásico"
 }

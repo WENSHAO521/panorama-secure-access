@@ -174,11 +174,14 @@ class ApplicationState extends ConsumerState<Application> {
             GlobalWidgetsLocalizations.delegate,
           ],
           builder: (context, child) {
-            return buildManagerStack(
-              isDesktop: system.isDesktop,
-              onConnectivityChanged: _handleConnectivityChanged,
-              terminateSignals: _terminateSignals,
-              child: child!,
+            return StarChartScope(
+              enabled: themeProps.starChart,
+              child: buildManagerStack(
+                isDesktop: system.isDesktop,
+                onConnectivityChanged: _handleConnectivityChanged,
+                terminateSignals: _terminateSignals,
+                child: child!,
+              ),
             );
           },
           title: appName,

@@ -9942,6 +9942,36 @@ class AppLocalizations {
   String get keep {
     return Intl.message('Keep', name: 'keep', desc: '', args: []);
   }
+
+  /// `Star chart`
+  String get starChart {
+    return Intl.message('Star chart', name: 'starChart', desc: '', args: []);
+  }
+
+  /// `Starting…`
+  String get coreStarting {
+    return Intl.message('Starting…', name: 'coreStarting', desc: '', args: []);
+  }
+
+  /// `Stopping…`
+  String get coreStopping {
+    return Intl.message('Stopping…', name: 'coreStopping', desc: '', args: []);
+  }
+
+  /// `Start failed. Tap to retry`
+  String get startFailedRetry {
+    return Intl.message(
+      'Start failed. Tap to retry',
+      name: 'startFailedRetry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Classic`
+  String get classicLook {
+    return Intl.message('Classic', name: 'classicLook', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {
