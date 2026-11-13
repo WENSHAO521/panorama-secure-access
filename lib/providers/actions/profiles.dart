@@ -194,7 +194,7 @@ class ProfilesAction extends _$ProfilesAction {
     final profile = await globalState.loadingRun(
       tag: LoadingTag.profiles,
       () => _withAgeSecretKey(
-        Profile.normal(label: platformFile.name),
+        withDefaultScript(Profile.normal(label: platformFile.name)),
         (profile) => profile.saveFile(
           bytes,
           validate: (path, key) => _core.validateProfile(path, key),
@@ -360,13 +360,19 @@ class ProfilesAction extends _$ProfilesAction {
       tag: LoadingTag.profiles,
       () => link.isShareLink
           ? _fromShareLinks(
-              Profile.normal(label: label).copyWith(trafficQuota: trafficQuota),
+              withDefaultScript(
+                Profile.normal(
+                  label: label,
+                ).copyWith(trafficQuota: trafficQuota),
+              ),
               [link],
             )
           : _withAgeSecretKey(
-              Profile.normal(label: label, url: link).copyWith(
-                ageSecretKey: ageSecretKey,
-                trafficQuota: trafficQuota,
+              withDefaultScript(
+                Profile.normal(label: label, url: link).copyWith(
+                  ageSecretKey: ageSecretKey,
+                  trafficQuota: trafficQuota,
+                ),
               ),
               _download,
             ),
@@ -389,9 +395,15 @@ class ProfilesAction extends _$ProfilesAction {
       [
         for (final link in links)
           if (!link.isShareLink)
-            (profile: Profile.normal(url: link), shareLinks: const <String>[])
+            (
+              profile: withDefaultScript(Profile.normal(url: link)),
+              shareLinks: const <String>[],
+            )
           else if (link == shareLinks.first)
-            (profile: Profile.normal(), shareLinks: shareLinks),
+            (
+              profile: withDefaultScript(Profile.normal()),
+              shareLinks: shareLinks,
+            ),
       ],
       (item) async => putProfile(
         await (item.shareLinks.isEmpty

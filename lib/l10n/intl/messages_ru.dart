@@ -716,6 +716,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "defaultNameserverDesc": MessageLookupByLibrary.simpleMessage(
       "Разрешает имена других DNS-серверов. Только IP-адреса.",
     ),
+    "defaultScript": MessageLookupByLibrary.simpleMessage(
+      "Скрипт по умолчанию",
+    ),
     "defaultSelected": MessageLookupByLibrary.simpleMessage(
       "Выбор по умолчанию",
     ),

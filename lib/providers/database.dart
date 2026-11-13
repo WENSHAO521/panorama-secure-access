@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/common/default_script.dart';
 import 'package:fl_clash/database/database.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
@@ -354,6 +355,7 @@ class Scripts extends _$Scripts with AsyncNotifierMixin, OptimisticMixin {
   }
 
   void del(int id) {
+    forgetDefaultScript(id);
     final next = List<Script>.from(value);
     final index = next.indexWhere((item) => item.id == id);
     if (index == -1) return;

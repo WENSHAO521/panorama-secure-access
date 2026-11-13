@@ -554,6 +554,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "defaultNameserverDesc": MessageLookupByLibrary.simpleMessage(
       "用于解析其他 DNS 服务器的域名，只能填写 IP 地址。",
     ),
+    "defaultScript": MessageLookupByLibrary.simpleMessage("默认脚本"),
     "defaultSelected": MessageLookupByLibrary.simpleMessage("默认选中"),
     "defaultText": MessageLookupByLibrary.simpleMessage("默认"),
     "definitionNotMap": MessageLookupByLibrary.simpleMessage(
