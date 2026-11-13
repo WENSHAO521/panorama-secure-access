@@ -1,5 +1,6 @@
 import 'package:fl_clash/common/constant.dart';
 import 'package:fl_clash/providers/providers.dart';
+import 'package:fl_clash/ui/star_chart.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -35,7 +36,9 @@ void main() {
     final style = container.read(themeSettingProvider).colorStyle;
 
     expect(
-      container.read(genColorSchemeProvider(Brightness.light)),
+      container.read(
+        genColorSchemeProvider(Brightness.light, starChart: false),
+      ),
       seededColorScheme(
         seedColor: lightSeed,
         brightness: Brightness.light,
@@ -43,7 +46,7 @@ void main() {
       ),
     );
     expect(
-      container.read(genColorSchemeProvider(Brightness.dark)),
+      container.read(genColorSchemeProvider(Brightness.dark, starChart: false)),
       seededColorScheme(
         seedColor: darkSeed,
         brightness: Brightness.dark,
@@ -87,12 +90,30 @@ void main() {
         .seed(lightSeed: null, darkSeed: null, accentColor: accent);
 
     expect(
-      container.read(genColorSchemeProvider(Brightness.light)),
+      container.read(
+        genColorSchemeProvider(Brightness.light, starChart: false),
+      ),
       seededColorScheme(
         seedColor: accent,
         brightness: Brightness.light,
         style: container.read(themeSettingProvider).colorStyle,
       ),
     );
+  });
+
+  test('the star chart look replaces the seeded scheme by default', () {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    expect(container.read(themeSettingProvider).starChart, isTrue);
+    for (final brightness in Brightness.values) {
+      final seeded = container.read(
+        genColorSchemeProvider(brightness, starChart: false),
+      );
+      expect(
+        container.read(genColorSchemeProvider(brightness)),
+        seeded.toStarChart(),
+      );
+    }
   });
 }
