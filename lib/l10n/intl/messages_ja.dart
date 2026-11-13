@@ -1044,6 +1044,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "itemsCount": m49,
     "ja": MessageLookupByLibrary.simpleMessage("日本語"),
     "justNow": MessageLookupByLibrary.simpleMessage("たった今"),
+    "keep": MessageLookupByLibrary.simpleMessage("残す"),
     "keepAliveIdle": MessageLookupByLibrary.simpleMessage("TCP キープアライブ待機時間"),
     "keepAliveIntervalDesc": MessageLookupByLibrary.simpleMessage(
       "TCPキープアライブ間隔",
@@ -1883,6 +1884,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "ultra": MessageLookupByLibrary.simpleMessage("最高"),
     "undo": MessageLookupByLibrary.simpleMessage("元に戻す"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("統一遅延"),
+    "uninstallApp": MessageLookupByLibrary.simpleMessage("アンインストール"),
+    "uninstallAppDesc": MessageLookupByLibrary.simpleMessage(
+      "このコンピューターからアプリ、バックグラウンドサービス、キャッシュを削除します",
+    ),
+    "uninstallConfirm": MessageLookupByLibrary.simpleMessage(
+      "このコンピューターから Panorama Secure Access を削除しますか？バックグラウンドサービス、ログイン時の起動、リンクの関連付け、キャッシュも削除され、アプリは終了します。",
+    ),
+    "uninstallDeleteDataTip": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプション、設定、ログも削除しますか？削除すると元に戻せません。再インストールする予定がある場合は残してください。",
+    ),
+    "uninstallFailed": MessageLookupByLibrary.simpleMessage(
+      "アプリが削除されなかったため、何も削除していません。",
+    ),
+    "uninstallRebootTip": MessageLookupByLibrary.simpleMessage(
+      "Fedora Atomic（rpm-ostree）では、次回の再起動後にアプリが消えます。",
+    ),
     "unknown": MessageLookupByLibrary.simpleMessage("不明"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage("不明なネットワークエラー"),
     "unmaximize": MessageLookupByLibrary.simpleMessage("元に戻す"),

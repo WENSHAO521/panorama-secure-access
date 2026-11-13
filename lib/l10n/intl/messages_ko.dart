@@ -1020,6 +1020,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "itemsCount": m49,
     "ja": MessageLookupByLibrary.simpleMessage("일본어"),
     "justNow": MessageLookupByLibrary.simpleMessage("방금"),
+    "keep": MessageLookupByLibrary.simpleMessage("유지"),
     "keepAliveIdle": MessageLookupByLibrary.simpleMessage("TCP 킵얼라이브 유휴 시간"),
     "keepAliveIntervalDesc": MessageLookupByLibrary.simpleMessage(
       "TCP 킵얼라이브 간격",
@@ -1845,6 +1846,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "ultra": MessageLookupByLibrary.simpleMessage("최고"),
     "undo": MessageLookupByLibrary.simpleMessage("실행 취소"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("통합 지연"),
+    "uninstallApp": MessageLookupByLibrary.simpleMessage("제거"),
+    "uninstallAppDesc": MessageLookupByLibrary.simpleMessage(
+      "이 컴퓨터에서 앱, 백그라운드 서비스, 캐시를 제거합니다",
+    ),
+    "uninstallConfirm": MessageLookupByLibrary.simpleMessage(
+      "이 컴퓨터에서 Panorama Secure Access를 제거할까요? 백그라운드 서비스, 로그인 시 자동 실행, 링크 연결, 캐시도 함께 제거되고 앱이 종료됩니다.",
+    ),
+    "uninstallDeleteDataTip": MessageLookupByLibrary.simpleMessage(
+      "구독, 설정, 로그도 삭제할까요? 삭제하면 복구할 수 없습니다. 다시 설치할 계획이라면 유지하세요.",
+    ),
+    "uninstallFailed": MessageLookupByLibrary.simpleMessage(
+      "앱이 제거되지 않아 아무것도 삭제하지 않았습니다.",
+    ),
+    "uninstallRebootTip": MessageLookupByLibrary.simpleMessage(
+      "Fedora Atomic(rpm-ostree)에서는 다음 재부팅 후 앱이 사라집니다.",
+    ),
     "unknown": MessageLookupByLibrary.simpleMessage("알 수 없음"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "알 수 없는 네트워크 오류",

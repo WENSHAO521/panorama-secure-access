@@ -1121,5 +1121,12 @@
   "portInUseTip": "Un autre programme écoute sur le port {port} : le port proxy ne peut pas y démarrer et le proxy système enverrait votre trafic à ce programme. Passer le port mixte sur le port libre {free} ?",
   "portInUseSwitch": "Changer de port",
   "portInUseBanner": "Le port {port} est utilisé par un autre programme, le port proxy n’a pas pu démarrer. Modifiez le port mixte dans Ports.",
-  "conflictingClientsTip": "D’autres clients proxy sont en cours d’exécution : {names}. Deux modes TUN ou proxys système s’écrasent mutuellement ; quittez-les avant d’activer le TUN ou le proxy système."
+  "conflictingClientsTip": "D’autres clients proxy sont en cours d’exécution : {names}. Deux modes TUN ou proxys système s’écrasent mutuellement ; quittez-les avant d’activer le TUN ou le proxy système.",
+  "uninstallApp": "Désinstaller",
+  "uninstallAppDesc": "Supprimer l'application, son service en arrière-plan et son cache de cet ordinateur",
+  "uninstallConfirm": "Supprimer Panorama Secure Access de cet ordinateur ? Le service en arrière-plan, le lancement à l'ouverture de session, le gestionnaire de liens et le cache sont aussi supprimés, puis l'application se ferme.",
+  "uninstallRebootTip": "Sur Fedora Atomic (rpm-ostree), l'application disparaît après le prochain redémarrage.",
+  "uninstallDeleteDataTip": "Supprimer aussi vos abonnements, réglages et journaux ? Ils ne pourront pas être récupérés. Conservez-les si vous comptez réinstaller.",
+  "uninstallFailed": "L'application n'a pas été supprimée, donc rien n'a été effacé.",
+  "keep": "Conserver"
 }

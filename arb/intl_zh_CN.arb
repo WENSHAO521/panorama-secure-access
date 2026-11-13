@@ -1121,5 +1121,12 @@
   "portInUseTip": "其他程序正在监听端口 {port}，代理端口无法在此启动，系统代理也会把流量交给那个程序。是否把混合端口切换到空闲的 {free}？",
   "portInUseSwitch": "切换端口",
   "portInUseBanner": "端口 {port} 被其他程序占用，代理端口未能启动。请在「端口」中修改混合端口。",
-  "conflictingClientsTip": "检测到其他代理客户端正在运行：{names}。两个 TUN 或系统代理会互相覆盖，开启 TUN 或系统代理前请先退出它们。"
+  "conflictingClientsTip": "检测到其他代理客户端正在运行：{names}。两个 TUN 或系统代理会互相覆盖，开启 TUN 或系统代理前请先退出它们。",
+  "uninstallApp": "卸载",
+  "uninstallAppDesc": "从这台电脑移除应用、后台服务和缓存",
+  "uninstallConfirm": "要从这台电脑移除 Panorama Secure Access 吗？后台服务、开机自启、链接关联和缓存会一起移除，随后应用退出。",
+  "uninstallRebootTip": "在 Fedora Atomic（rpm-ostree）上，应用会在下次重启后消失。",
+  "uninstallDeleteDataTip": "同时删除订阅、设置和日志吗？删除后无法恢复。如果之后还会重新安装，请选择保留。",
+  "uninstallFailed": "应用未被移除，因此没有删除任何内容。",
+  "keep": "保留"
 }

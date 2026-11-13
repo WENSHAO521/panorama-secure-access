@@ -1109,9 +1109,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Certificate installed",
     ),
     "installNow": MessageLookupByLibrary.simpleMessage("Install now"),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "This system hides the installed app list until the permission is granted. Authorize it to configure the per-app proxy.",
     ),
@@ -1212,6 +1213,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "itemsCount": m49,
     "ja": MessageLookupByLibrary.simpleMessage("Japanese"),
     "justNow": MessageLookupByLibrary.simpleMessage("Just now"),
+    "keep": MessageLookupByLibrary.simpleMessage("Keep"),
     "keepAliveIdle": MessageLookupByLibrary.simpleMessage(
       "TCP keep-alive idle",
     ),
@@ -2191,6 +2193,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "ultra": MessageLookupByLibrary.simpleMessage("Ultra"),
     "undo": MessageLookupByLibrary.simpleMessage("Undo"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("Unified delay"),
+    "uninstallApp": MessageLookupByLibrary.simpleMessage("Uninstall"),
+    "uninstallAppDesc": MessageLookupByLibrary.simpleMessage(
+      "Remove the app, its background service and cache from this computer",
+    ),
+    "uninstallConfirm": MessageLookupByLibrary.simpleMessage(
+      "Remove Panorama Secure Access from this computer? Its background service, launch at login, link handler and cache go too, and the app quits.",
+    ),
+    "uninstallDeleteDataTip": MessageLookupByLibrary.simpleMessage(
+      "Also delete your subscriptions, settings and logs? They cannot be recovered. Keep them if you plan to install again.",
+    ),
+    "uninstallFailed": MessageLookupByLibrary.simpleMessage(
+      "The app was not removed, so nothing was deleted.",
+    ),
+    "uninstallRebootTip": MessageLookupByLibrary.simpleMessage(
+      "On Fedora Atomic (rpm-ostree) the app disappears after the next reboot.",
+    ),
     "unknown": MessageLookupByLibrary.simpleMessage("Unknown"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "Unknown network error",

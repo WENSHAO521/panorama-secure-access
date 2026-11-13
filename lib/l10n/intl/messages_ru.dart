@@ -1156,9 +1156,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Сертификат установлен",
     ),
     "installNow": MessageLookupByLibrary.simpleMessage("Установить"),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -1261,6 +1262,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "itemsCount": m49,
     "ja": MessageLookupByLibrary.simpleMessage("Японский"),
     "justNow": MessageLookupByLibrary.simpleMessage("Только что"),
+    "keep": MessageLookupByLibrary.simpleMessage("Оставить"),
     "keepAliveIdle": MessageLookupByLibrary.simpleMessage(
       "Простой TCP keep-alive",
     ),
@@ -2302,6 +2304,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "ultra": MessageLookupByLibrary.simpleMessage("Максимум"),
     "undo": MessageLookupByLibrary.simpleMessage("Отменить"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("Единая задержка"),
+    "uninstallApp": MessageLookupByLibrary.simpleMessage("Удалить"),
+    "uninstallAppDesc": MessageLookupByLibrary.simpleMessage(
+      "Удалить приложение, фоновую службу и кэш с этого компьютера",
+    ),
+    "uninstallConfirm": MessageLookupByLibrary.simpleMessage(
+      "Удалить Panorama Secure Access с этого компьютера? Фоновая служба, автозапуск, обработчик ссылок и кэш тоже будут удалены, а приложение закроется.",
+    ),
+    "uninstallDeleteDataTip": MessageLookupByLibrary.simpleMessage(
+      "Также удалить подписки, настройки и журналы? Восстановить их будет нельзя. Оставьте их, если планируете установить приложение снова.",
+    ),
+    "uninstallFailed": MessageLookupByLibrary.simpleMessage(
+      "Приложение не было удалено, поэтому ничего не стёрто.",
+    ),
+    "uninstallRebootTip": MessageLookupByLibrary.simpleMessage(
+      "В Fedora Atomic (rpm-ostree) приложение исчезнет после следующей перезагрузки.",
+    ),
     "unknown": MessageLookupByLibrary.simpleMessage("Неизвестно"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "Неизвестная сетевая ошибка",

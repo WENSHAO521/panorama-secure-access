@@ -1189,9 +1189,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Certificat installé",
     ),
     "installNow": MessageLookupByLibrary.simpleMessage("Installer"),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "L’autorisation de la liste des apps a été refusée ; les apps installées ne peuvent donc pas être listées. Veuillez l’accorder manuellement dans les réglages du système.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "L’autorisation de la liste des apps a été refusée ; les apps installées ne peuvent donc pas être listées. Veuillez l’accorder manuellement dans les réglages du système.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Ce système masque la liste des apps installées tant que l’autorisation n’est pas accordée. Accordez-la pour configurer le proxy par app.",
     ),
@@ -1302,6 +1303,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "itemsCount": m49,
     "ja": MessageLookupByLibrary.simpleMessage("Japonais"),
     "justNow": MessageLookupByLibrary.simpleMessage("À l’instant"),
+    "keep": MessageLookupByLibrary.simpleMessage("Conserver"),
     "keepAliveIdle": MessageLookupByLibrary.simpleMessage(
       "Inactivité keep-alive TCP",
     ),
@@ -2363,6 +2365,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "ultra": MessageLookupByLibrary.simpleMessage("Ultra"),
     "undo": MessageLookupByLibrary.simpleMessage("Annuler"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("Délai unifié"),
+    "uninstallApp": MessageLookupByLibrary.simpleMessage("Désinstaller"),
+    "uninstallAppDesc": MessageLookupByLibrary.simpleMessage(
+      "Supprimer l\'application, son service en arrière-plan et son cache de cet ordinateur",
+    ),
+    "uninstallConfirm": MessageLookupByLibrary.simpleMessage(
+      "Supprimer Panorama Secure Access de cet ordinateur ? Le service en arrière-plan, le lancement à l\'ouverture de session, le gestionnaire de liens et le cache sont aussi supprimés, puis l\'application se ferme.",
+    ),
+    "uninstallDeleteDataTip": MessageLookupByLibrary.simpleMessage(
+      "Supprimer aussi vos abonnements, réglages et journaux ? Ils ne pourront pas être récupérés. Conservez-les si vous comptez réinstaller.",
+    ),
+    "uninstallFailed": MessageLookupByLibrary.simpleMessage(
+      "L\'application n\'a pas été supprimée, donc rien n\'a été effacé.",
+    ),
+    "uninstallRebootTip": MessageLookupByLibrary.simpleMessage(
+      "Sur Fedora Atomic (rpm-ostree), l\'application disparaît après le prochain redémarrage.",
+    ),
     "unknown": MessageLookupByLibrary.simpleMessage("Inconnu"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "Erreur réseau inconnue",

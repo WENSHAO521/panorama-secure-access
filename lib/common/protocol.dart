@@ -33,6 +33,8 @@ class ProtocolRegistrationPlan {
 /// A user-level desktop entry that claims the schemes for the running binary,
 /// so an AppImage or a development build is reachable without a packaged
 /// .desktop file. Rewritten on every launch, like the Windows registry keys.
+const linuxUrlHandlerDesktopId = 'panorama-secure-access-url-handler.desktop';
+
 class LinuxProtocolRegistrationPlan {
   final List<String> schemes;
   final String executable;
@@ -44,7 +46,7 @@ class LinuxProtocolRegistrationPlan {
     required this.applicationsDir,
   });
 
-  String get desktopId => 'panorama-secure-access-url-handler.desktop';
+  String get desktopId => linuxUrlHandlerDesktopId;
 
   String get desktopPath => '$applicationsDir/$desktopId';
 

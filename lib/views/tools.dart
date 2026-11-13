@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/common/launch.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
@@ -44,6 +45,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
         if (enableDeveloperMode) const _DeveloperItem(),
         const _BetaProgramItem(),
         const _InfoItem(),
+        if (appUninstall?.kind != null) const _UninstallItem(),
       ],
     );
   }
@@ -266,6 +268,67 @@ class _DeveloperItem extends StatelessWidget {
       leading: const GlyphIcon(AppGlyphs.cpu),
       title: Text(context.appLocalizations.developerMode),
       widget: const DeveloperView(),
+    );
+  }
+}
+
+class _UninstallItem extends ConsumerWidget {
+  const _UninstallItem();
+
+  Future<void> _uninstall(WidgetRef ref) async {
+    final appLocalizations = currentAppLocalizations;
+    final uninstall = appUninstall!;
+    final confirmed = await dialogs.showMessage(
+      title: appLocalizations.uninstallApp,
+      message: TextSpan(
+        text: uninstall.kind == AppInstallKind.ostree
+            ? '${appLocalizations.uninstallConfirm}\n\n'
+                  '${appLocalizations.uninstallRebootTip}'
+            : appLocalizations.uninstallConfirm,
+      ),
+      confirmText: appLocalizations.uninstallApp,
+      destructive: true,
+    );
+    if (confirmed != true) {
+      return;
+    }
+    final deleteData = await dialogs.showMessage(
+      title: appLocalizations.uninstallApp,
+      message: TextSpan(text: appLocalizations.uninstallDeleteDataTip),
+      confirmText: appLocalizations.delete,
+      cancelText: appLocalizations.keep,
+      destructive: true,
+    );
+    if (deleteData == null) {
+      return;
+    }
+    // A macOS login item outlives the bundle and only the app can remove it.
+    final launcher = autoLaunch;
+    final launchedAtLogin = await launcher?.isEnable ?? false;
+    if (launchedAtLogin) {
+      await launcher!.disable();
+    }
+    final done = await uninstall.uninstall(deleteData: deleteData);
+    if (!done) {
+      if (launchedAtLogin) {
+        await launcher!.enable();
+      }
+      await dialogs.showAlert(
+        message: TextSpan(text: appLocalizations.uninstallFailed),
+      );
+      return;
+    }
+    await ref.read(systemActionProvider.notifier).handleExit(false);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appLocalizations = context.appLocalizations;
+    return ListItem(
+      leading: const GlyphIcon(AppGlyphs.delete),
+      title: Text(appLocalizations.uninstallApp),
+      subtitle: Text(appLocalizations.uninstallAppDesc),
+      onTap: () => _uninstall(ref),
     );
   }
 }
