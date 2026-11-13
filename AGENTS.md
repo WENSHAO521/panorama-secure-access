@@ -24,6 +24,8 @@ Read these only when the task touches their area:
 - [.agents/worktrees.md](.agents/worktrees.md): worktree hygiene across Claude Code, Codex, and Gemini.
 - [.agents/flutter-upgrade.md](.agents/flutter-upgrade.md): SDK-pinned workarounds to recheck before changing the
   Flutter version.
+- [.agents/rust-migration.md](.agents/rust-migration.md): order and procedure for moving app logic into
+  `plugins/rust_api`.
 - [.agents/skills.md](.agents/skills.md): index of repo-scoped skills in `.agents/skills/`.
 
 ## Highest Priority Rules
