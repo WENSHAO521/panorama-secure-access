@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <functional>
 #include <map>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -143,8 +144,115 @@ bool NotifySettingsChanged()
   return changed && refreshed;
 }
 
+std::optional<int> ProxyPort(const std::wstring& server);
+
+struct ConnectionProxy
+{
+  DWORD flags = PROXY_TYPE_DIRECT;
+  std::wstring server;
+  std::wstring bypass;
+  std::wstring autoConfigUrl;
+};
+
+// What each connection used before the first start, keyed by RAS entry name
+// ("" for the LAN settings); restored on stop instead of switching to direct.
+std::optional<std::map<std::wstring, ConnectionProxy>> g_snapshot;
+
+std::wstring TakeString(INTERNET_PER_CONN_OPTION& option)
+{
+  std::wstring value;
+  if (option.Value.pszValue != nullptr)
+  {
+    value = option.Value.pszValue;
+    GlobalFree(option.Value.pszValue);
+  }
+  return value;
+}
+
+std::optional<ConnectionProxy> ReadConnection(LPTSTR connection)
+{
+  std::vector<INTERNET_PER_CONN_OPTION> options(4);
+  options[0].dwOption = INTERNET_PER_CONN_FLAGS_UI;
+  options[1].dwOption = INTERNET_PER_CONN_PROXY_SERVER;
+  options[2].dwOption = INTERNET_PER_CONN_PROXY_BYPASS;
+  options[3].dwOption = INTERNET_PER_CONN_AUTOCONFIG_URL;
+
+  INTERNET_PER_CONN_OPTION_LIST list = {};
+  list.dwSize = sizeof(list);
+  list.pszConnection = connection;
+  list.dwOptionCount = static_cast<DWORD>(options.size());
+  list.pOptions = options.data();
+
+  DWORD size = sizeof(list);
+  if (InternetQueryOption(
+          nullptr, INTERNET_OPTION_PER_CONNECTION_OPTION, &list, &size) ==
+      FALSE)
+  {
+    // Before Windows 7 only INTERNET_PER_CONN_FLAGS exists.
+    options[0].dwOption = INTERNET_PER_CONN_FLAGS;
+    size = sizeof(list);
+    if (InternetQueryOption(
+            nullptr, INTERNET_OPTION_PER_CONNECTION_OPTION, &list, &size) ==
+        FALSE)
+    {
+      return std::nullopt;
+    }
+  }
+  ConnectionProxy proxy;
+  proxy.flags = options[0].Value.dwValue;
+  proxy.server = TakeString(options[1]);
+  proxy.bypass = TakeString(options[2]);
+  proxy.autoConfigUrl = TakeString(options[3]);
+  // A proxy a killed run left on a loopback port is not the user's own.
+  if ((proxy.flags & PROXY_TYPE_PROXY) != 0 && ProxyPort(proxy.server))
+  {
+    proxy.flags = (proxy.flags & ~PROXY_TYPE_PROXY) | PROXY_TYPE_DIRECT;
+    proxy.server.clear();
+    proxy.bypass.clear();
+  }
+  return proxy;
+}
+
+void TakeSnapshot()
+{
+  if (g_snapshot)
+  {
+    return;
+  }
+  std::map<std::wstring, ConnectionProxy> snapshot;
+  ForEachConnection([&snapshot](LPTSTR connection)
+  {
+    if (auto proxy = ReadConnection(connection))
+    {
+      snapshot.emplace(connection ? connection : L"", *proxy);
+    }
+    return true;
+  });
+  g_snapshot = std::move(snapshot);
+}
+
+bool RestoreConnection(LPTSTR connection, ConnectionProxy proxy)
+{
+  std::vector<INTERNET_PER_CONN_OPTION> options(4);
+  options[0].dwOption = INTERNET_PER_CONN_FLAGS;
+  options[0].Value.dwValue = proxy.flags;
+  options[1].dwOption = INTERNET_PER_CONN_PROXY_SERVER;
+  options[1].Value.pszValue = proxy.server.data();
+  options[2].dwOption = INTERNET_PER_CONN_PROXY_BYPASS;
+  options[2].Value.pszValue = proxy.bypass.data();
+  options[3].dwOption = INTERNET_PER_CONN_AUTOCONFIG_URL;
+  options[3].Value.pszValue = proxy.autoConfigUrl.data();
+
+  INTERNET_PER_CONN_OPTION_LIST list = {};
+  list.dwSize = sizeof(list);
+  list.dwOptionCount = static_cast<DWORD>(options.size());
+  list.pOptions = options.data();
+  return SetOptionsForConnection(list, connection);
+}
+
 bool startProxy(const int port, const flutter::EncodableList& bypassDomain)
 {
+  TakeSnapshot();
   auto url = kProxyServerPrefix + std::to_wstring(port);
   auto bypassList = BuildBypassList(bypassDomain);
   std::vector<INTERNET_PER_CONN_OPTION> options(3);
@@ -170,6 +278,22 @@ bool startProxy(const int port, const flutter::EncodableList& bypassDomain)
 
 bool stopProxy()
 {
+  if (g_snapshot)
+  {
+    const auto snapshot = *g_snapshot;
+    const bool restored = ForEachConnection([&snapshot](LPTSTR connection)
+    {
+      const auto it = snapshot.find(connection ? connection : L"");
+      return RestoreConnection(
+          connection, it == snapshot.end() ? ConnectionProxy{} : it->second);
+    });
+    const bool settingsNotified = NotifySettingsChanged();
+    if (restored)
+    {
+      g_snapshot.reset();
+    }
+    return restored && settingsNotified;
+  }
   std::vector<INTERNET_PER_CONN_OPTION> options(1);
 
   INTERNET_PER_CONN_OPTION_LIST list = {};
