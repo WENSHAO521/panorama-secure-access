@@ -21,7 +21,6 @@ import '../helpers/context_menu.dart';
 import '../helpers/glyph_finders.dart';
 import '../helpers/test_app.dart';
 import '../helpers/test_database_providers.dart';
-import 'package:prism_ui/prism_ui.dart';
 
 void main() {
   setUp(() {

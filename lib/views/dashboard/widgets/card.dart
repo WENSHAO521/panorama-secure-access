@@ -72,8 +72,8 @@ class DashboardCard extends StatelessWidget {
       foregroundDecoration: side != BorderSide.none
           ? ShapeDecoration(shape: shape.copyWith(side: side))
           : starChart
-          ? _DoubleFrameDecoration(
-              radius: dashboardCardRadius(density),
+          ? StarFrameDecoration(
+              radius: AppRadius.all(dashboardCardRadius(density)),
               color: StarChartColors.hairlineOf(context.colorScheme.brightness),
             )
           : null,
@@ -91,65 +91,6 @@ class DashboardCard extends StatelessWidget {
       return card;
     }
     return Semantics(container: true, label: semanticLabel, child: card);
-  }
-}
-
-/// The star-chart card's frame (文武邊): a firm line at the edge and a fine
-/// one inside it.
-class _DoubleFrameDecoration extends Decoration {
-  const _DoubleFrameDecoration({required this.radius, required this.color});
-
-  static const _inset = 4.0;
-
-  final double radius;
-  final Color color;
-
-  @override
-  BoxPainter createBoxPainter([VoidCallback? onChanged]) =>
-      _DoubleFramePainter(this);
-
-  @override
-  bool operator ==(Object other) =>
-      other is _DoubleFrameDecoration &&
-      other.radius == radius &&
-      other.color == color;
-
-  @override
-  int get hashCode => Object.hash(radius, color);
-}
-
-class _DoubleFramePainter extends BoxPainter {
-  _DoubleFramePainter(this.decoration);
-
-  final _DoubleFrameDecoration decoration;
-
-  @override
-  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
-    final size = configuration.size;
-    if (size == null || size.isEmpty) {
-      return;
-    }
-    const inset = _DoubleFrameDecoration._inset;
-    final rect = offset & size;
-    final radius = decoration.radius;
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..color = decoration.color;
-    canvas
-      ..drawPath(
-        AppShape.all(radius).getOuterPath(rect.deflate(0.6)),
-        paint..strokeWidth = 1.2,
-      )
-      ..drawPath(
-        AppShape.all(
-          math.max(radius - inset, 0),
-        ).getOuterPath(rect.deflate(inset)),
-        paint
-          ..strokeWidth = 0.7
-          ..color = decoration.color.withValues(
-            alpha: decoration.color.a * 0.7,
-          ),
-      );
   }
 }
 
@@ -704,7 +645,7 @@ class DashboardSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (StarChartScope.of(context)) {
-      return _YaoSwitch(
+      return YaoSwitch(
         value: value,
         onChanged: onChanged,
         semanticLabel: semanticLabel,
@@ -724,132 +665,6 @@ class DashboardSwitch extends StatelessWidget {
       ),
     );
   }
-}
-
-/// The star-chart switch: off shows a broken line (陰爻) across its track, on
-/// a whole one (陽爻), with a gilt bead at the on end.
-class _YaoSwitch extends StatelessWidget {
-  const _YaoSwitch({
-    required this.value,
-    required this.onChanged,
-    this.semanticLabel,
-  });
-
-  final bool value;
-  final ValueChanged<bool>? onChanged;
-  final String? semanticLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    final onChanged = this.onChanged;
-    final colorScheme = context.colorScheme;
-    return Semantics(
-      toggled: value,
-      enabled: onChanged != null,
-      label: semanticLabel,
-      child: PressRegion(
-        onTap: onChanged == null ? null : () => onChanged(!value),
-        shape: AppShape.full,
-        overlay: PressRegion.focusOverlay,
-        excludeFromSemantics: true,
-        child: TweenAnimationBuilder<double>(
-          tween: Tween(end: value ? 1 : 0),
-          duration: context.motionDuration(commonDuration),
-          curve: Curves.easeOutCubic,
-          builder: (_, on, _) => CustomPaint(
-            size: const Size(Switch.trackWidth, Switch.trackHeight),
-            painter: _YaoPainter(
-              on: on,
-              enabled: onChanged != null,
-              colorScheme: colorScheme,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _YaoPainter extends CustomPainter {
-  const _YaoPainter({
-    required this.on,
-    required this.enabled,
-    required this.colorScheme,
-  });
-
-  final double on;
-  final bool enabled;
-  final ColorScheme colorScheme;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final dark = colorScheme.brightness == Brightness.dark;
-    final gilt = StarChartColors.giltOf(colorScheme.brightness);
-    final rect = Offset.zero & size;
-    final track = Color.lerp(
-      colorScheme.surfaceContainerHighest,
-      Color.alphaBlend(
-        gilt.withValues(alpha: dark ? 0.22 : 0.2),
-        colorScheme.surfaceContainerHigh,
-      ),
-      on,
-    )!;
-    AppShape.full.paintInterior(canvas, rect, Paint()..color = track);
-    canvas.drawPath(
-      AppShape.full.getOuterPath(rect.deflate(0.5)),
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1
-        ..color = Color.lerp(
-          StarChartColors.hairlineOf(colorScheme.brightness),
-          gilt,
-          on,
-        )!,
-    );
-    final thumbRadius = size.height / 2 - 4;
-    final left = size.height / 2;
-    final right = size.width - size.height / 2;
-    final thumbX = left + (right - left) * on;
-    final y = size.height / 2;
-    final lineStart = size.height * 0.36;
-    final lineEnd = size.width - size.height * 0.36;
-    final gap = size.width * 0.16 * (1 - on);
-    final mid = size.width / 2;
-    final line = Paint()
-      ..strokeWidth = 2
-      ..strokeCap = StrokeCap.round
-      ..color = Color.lerp(
-        colorScheme.outline,
-        gilt.withValues(alpha: 0.75),
-        on,
-      )!;
-    canvas
-      ..drawLine(Offset(lineStart, y), Offset(mid - gap / 2, y), line)
-      ..drawLine(Offset(mid + gap / 2, y), Offset(lineEnd, y), line)
-      ..drawCircle(
-        Offset(thumbX, y + 1),
-        thumbRadius,
-        Paint()
-          ..color = const Color(0x40000000)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.5),
-      )
-      ..drawCircle(
-        Offset(thumbX, y),
-        thumbRadius,
-        Paint()
-          ..color = Color.lerp(
-            dark ? const Color(0xFF4A4B55) : const Color(0xFFFFFFFF),
-            dark ? StarChartColors.goldBright : StarChartColors.goldInk,
-            on,
-          )!.withValues(alpha: enabled ? 1 : 0.5),
-      );
-  }
-
-  @override
-  bool shouldRepaint(_YaoPainter oldDelegate) =>
-      oldDelegate.on != on ||
-      oldDelegate.enabled != enabled ||
-      oldDelegate.colorScheme != colorScheme;
 }
 
 /// A row holding one setting behind a switch: a cookie-6 icon container while

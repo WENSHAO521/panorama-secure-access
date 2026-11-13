@@ -1,7 +1,10 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:prism_ui/icons/icons.dart';
-import 'package:prism_ui/prism_ui.dart';
+import 'package:prism_ui/prism_ui.dart' hide Switch;
+
+import 'star_chart.dart';
+import 'star_switch.dart';
 
 sealed class _ListItemAction {
   const _ListItemAction();
@@ -220,7 +223,7 @@ class ListItem<T> extends StatelessWidget {
       return ItemPositionProvider(
         position: position,
         child: DecorationListItem(
-          leading: leading ?? this.leading,
+          leading: _starLeading(context, leading ?? this.leading),
           title: title,
           subtitle: subtitle,
           trailing: trailing ?? this.trailing,
@@ -231,7 +234,7 @@ class ListItem<T> extends StatelessWidget {
       );
     }
     final row = ListRow(
-      leading: leading ?? this.leading,
+      leading: _starLeading(context, leading ?? this.leading),
       title: title,
       subtitle: subtitle,
       trailing: trailing ?? this.trailing,
@@ -249,6 +252,19 @@ class ListItem<T> extends StatelessWidget {
       shape: AppShape.all(AppCorner.none),
       onPressed: onTap,
       child: row,
+    );
+  }
+
+  /// Gilt leading icons under the star-chart look, as on its dashboard cards.
+  static Widget? _starLeading(BuildContext context, Widget? leading) {
+    if (leading == null || !StarChartScope.of(context)) {
+      return leading;
+    }
+    return IconTheme.merge(
+      data: IconThemeData(
+        color: StarChartColors.giltOf(context.colorScheme.brightness),
+      ),
+      child: leading,
     );
   }
 

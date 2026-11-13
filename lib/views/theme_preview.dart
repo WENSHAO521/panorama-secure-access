@@ -3,7 +3,6 @@ import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/providers/state.dart';
 import 'package:fl_clash/views/dashboard/widgets/dipper_gauge.dart';
 import 'package:fl_clash/views/dashboard/widgets/pole_star.dart';
-import 'package:fl_clash/views/dashboard/widgets/star_backdrop.dart';
 import 'package:fl_clash/views/dashboard/widgets/star_plate.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/widgets.dart';
