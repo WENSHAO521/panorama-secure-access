@@ -3,8 +3,8 @@ import 'package:fl_clash/models/models.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('cuts a block out of a range as the fewest covering blocks', () {
-    expect(subtractCidrs(['0.0.0.0/0'], ['10.0.0.0/8']), [
+  test('cuts a block out of a range as the fewest covering blocks', () async {
+    expect(await subtractCidrs(['0.0.0.0/0'], ['10.0.0.0/8']), [
       '0.0.0.0/5',
       '8.0.0.0/7',
       '11.0.0.0/8',
@@ -16,16 +16,19 @@ void main() {
     ]);
   });
 
-  test('a family without an included block counts as whole on request', () {
-    expect(
-      subtractCidrs(['10.0.0.0/8'], ['10.1.0.0/16']),
-      isNot(contains('::/0')),
-    );
-    expect(subtractCidrs(['10.0.0.0/8'], const [], wholeWhenEmpty: true), [
-      '10.0.0.0/8',
-      '::/0',
-    ]);
-  });
+  test(
+    'a family without an included block counts as whole on request',
+    () async {
+      expect(
+        await subtractCidrs(['10.0.0.0/8'], ['10.1.0.0/16']),
+        isNot(contains('::/0')),
+      );
+      expect(
+        await subtractCidrs(['10.0.0.0/8'], const [], wholeWhenEmpty: true),
+        ['10.0.0.0/8', '::/0'],
+      );
+    },
+  );
 
   test('a CIDR is read as strictly as the core reads a prefix', () {
     for (final value in [
@@ -51,29 +54,36 @@ void main() {
     }
   });
 
-  test('merges overlapping blocks and ignores what does not parse', () {
-    expect(subtractCidrs(['10.0.0.0/8', 'bad', '10.1.0.0/16'], const []), [
-      '10.0.0.0/8',
-    ]);
-  });
-
-  test('bypassing private ranges covers exactly the rest of both families', () {
-    final routes = subtractCidrs(
-      const [],
-      privateRouteAddress,
-      wholeWhenEmpty: true,
-    );
-
-    expect(routes, hasLength(82));
-    expect(subtractCidrs(privateRouteAddress, routes), privateRouteAddress);
+  test('merges overlapping blocks and ignores what does not parse', () async {
     expect(
-      subtractCidrs(
-        const ['0.0.0.0/0', '::/0'],
-        [...routes, ...privateRouteAddress],
-      ),
-      isEmpty,
+      await subtractCidrs(['10.0.0.0/8', 'bad', '10.1.0.0/16'], const []),
+      ['10.0.0.0/8'],
     );
   });
+
+  test(
+    'bypassing private ranges covers exactly the rest of both families',
+    () async {
+      final routes = await subtractCidrs(
+        const [],
+        privateRouteAddress,
+        wholeWhenEmpty: true,
+      );
+
+      expect(routes, hasLength(82));
+      expect(
+        await subtractCidrs(privateRouteAddress, routes),
+        privateRouteAddress,
+      );
+      expect(
+        await subtractCidrs(
+          const ['0.0.0.0/0', '::/0'],
+          [...routes, ...privateRouteAddress],
+        ),
+        isEmpty,
+      );
+    },
+  );
 
   test('an include list wholly excluded leaves that family unrouted', () async {
     final routes = await const Tun(
@@ -85,16 +95,6 @@ void main() {
     expect(
       await const Tun().vpnRouteAddress(bypassPrivateRoute: false),
       isEmpty,
-    );
-  });
-
-  test('the task subtracts as the function does', () async {
-    const include = ['10.0.0.0/8', '2001:db8::/32'];
-    const exclude = ['10.1.0.0/16', '2001:db8:1::/48'];
-
-    expect(
-      await subtractCidrsTask(include, exclude, wholeWhenEmpty: true),
-      subtractCidrs(include, exclude, wholeWhenEmpty: true),
     );
   });
 }

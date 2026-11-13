@@ -1957,25 +1957,22 @@ UTF-8 bytes rather than a `String` so that decoding them stays off the UI isolat
   stays in Dart. Only the editor imports this module, through `lib/editor.dart`, so `lib/rust_api.dart` keeps its
   generic names such as `GuideBlock` out of app code.
 - `netcfg/` checks network settings the way the core reads them (`is_cidr` as strictly as Go's `netip.ParsePrefix`,
-  hosts, listen addresses, port ranges) and subtracts route lists for TUN. App code reaches it through
-  `lib/common/cidr.dart` and `lib/common/netcfg.dart`, which fall back to their Dart reference functions where
-  `RustLib` is not initialized (a background isolate, or a test that never loads the library);
-  `test/common/netcfg_parity_test.dart` holds the two to the same answers. Dart prints an IPv4-compatible IPv6 block
-  dotted (`::1.2.3.4`) where Rust and Go print hex; the core and the Android VPN builder read both.
+  hosts, listen addresses, port ranges) and subtracts route lists for TUN, through `lib/common/cidr.dart` and
+  `lib/common/netcfg.dart`. IPv4-compatible IPv6 blocks print in hex, as Go prints them.
 - `lifecycle/` holds the decisions of the desktop Core lifecycle: which pending commands a settled intent answers and
   how, what reconciling an intent stops, starts or closes, when the transport is replaced, and which transport events
   fail a running session. `lib/core/desktop/lifecycle.dart` keeps the waiting, the processes and the socket, and asks
-  `lifecyclePolicy` (`lib/core/desktop/lifecycle_policy.dart`), which is Rust once `RustLib` is loaded and
-  `DartLifecyclePolicy` otherwise. `lifecycle_policy_test.dart` compares the two on every input, and
-  `lifecycle_rust_test.dart` runs the lifecycle suite again with Rust deciding.
+  `lifecyclePolicy` (`lib/core/desktop/lifecycle_policy.dart`).
 - `netdiag/` decides how the system DNS patch moves between services (`lib/common/system_dns.dart`), how a failed
   request is classified (`network_error.dart`), which local address the app shows (`network.dart`), and what a
-  connectivity change asks of the Core (`application.dart`). `install/` holds the install and migration decisions:
-  legacy data directories and the import source (`legacy_data.dart`), legacy package recognition and the root removal
-  script (`legacy_install.dart`), which accepts only the package names earlier releases used. Both are reached through
-  `lib/common/netdiag.dart` and `lib/common/install_policy.dart` with the same Dart fallback as `netcfg`;
-  `importLegacyData` runs before `RustLib.init`, so the data import itself always takes the Dart path.
-  `test/common/rust_policies_test.dart` runs the suites of those files again with Rust deciding.
+  connectivity change asks of the Core (`application.dart`), through `lib/common/netdiag.dart`.
+- `install/` holds the install and migration decisions, through `lib/common/install_policy.dart`: legacy data
+  directories and the import source (`legacy_data.dart`), legacy package recognition and the root removal script
+  (`legacy_install.dart`), which accepts only the package names earlier releases used.
+
+These decisions have no Dart copy, so the app cannot run without the library: `main` initializes `RustLib` before the
+legacy data import, and `test/flutter_test_config.dart` (which `tool/test.dart` also wraps its bundles in) loads it for
+every test.
 - `hotkey/` registers desktop global shortcuts through `global-hotkey`: `keys` maps Flutter USB HID usages to key
   codes, `owner` runs every registration on the thread the platform binds it to (a dedicated message-loop thread on
   Windows, the main dispatch queue on macOS, in place on Linux), and `service` owns the registry and forwards presses
