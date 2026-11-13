@@ -193,8 +193,8 @@ class ProfilesAction extends _$ProfilesAction {
     ref.read(currentPageLabelProvider.notifier).toProfiles();
     final profile = await globalState.loadingRun(
       tag: LoadingTag.profiles,
-      () async => _withAgeSecretKey(
-        await withDefaultScript(Profile.normal(label: platformFile.name)),
+      () => _withAgeSecretKey(
+        withDefaultScript(Profile.normal(label: platformFile.name)),
         (profile) => profile.saveFile(
           bytes,
           validate: (path, key) => _core.validateProfile(path, key),
@@ -358,9 +358,9 @@ class ProfilesAction extends _$ProfilesAction {
     _showProfiles();
     final profile = await globalState.loadingRun(
       tag: LoadingTag.profiles,
-      () async => link.isShareLink
+      () => link.isShareLink
           ? _fromShareLinks(
-              await withDefaultScript(
+              withDefaultScript(
                 Profile.normal(
                   label: label,
                 ).copyWith(trafficQuota: trafficQuota),
@@ -368,7 +368,7 @@ class ProfilesAction extends _$ProfilesAction {
               [link],
             )
           : _withAgeSecretKey(
-              await withDefaultScript(
+              withDefaultScript(
                 Profile.normal(label: label, url: link).copyWith(
                   ageSecretKey: ageSecretKey,
                   trafficQuota: trafficQuota,
@@ -395,18 +395,21 @@ class ProfilesAction extends _$ProfilesAction {
       [
         for (final link in links)
           if (!link.isShareLink)
-            (profile: Profile.normal(url: link), shareLinks: const <String>[])
+            (
+              profile: withDefaultScript(Profile.normal(url: link)),
+              shareLinks: const <String>[],
+            )
           else if (link == shareLinks.first)
-            (profile: Profile.normal(), shareLinks: shareLinks),
+            (
+              profile: withDefaultScript(Profile.normal()),
+              shareLinks: shareLinks,
+            ),
       ],
-      (item) async {
-        final profile = await withDefaultScript(item.profile);
-        putProfile(
-          await (item.shareLinks.isEmpty
-              ? _download(profile)
-              : _fromShareLinks(profile, item.shareLinks)),
-        );
-      },
+      (item) async => putProfile(
+        await (item.shareLinks.isEmpty
+            ? _download(item.profile)
+            : _fromShareLinks(item.profile, item.shareLinks)),
+      ),
       label: (item) => item.shareLinks.firstOrNull ?? item.profile.url,
       concurrency: maxConcurrentImports,
       tag: LoadingTag.profiles,
