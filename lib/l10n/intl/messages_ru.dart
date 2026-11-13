@@ -1868,6 +1868,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "publicKey": MessageLookupByLibrary.simpleMessage("Открытый ключ"),
     "pureBlack": MessageLookupByLibrary.simpleMessage("Чисто чёрный"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("Чисто чёрный режим"),
+    "qingLuStyle": MessageLookupByLibrary.simpleMessage("Сине-зелёный"),
     "qrcode": MessageLookupByLibrary.simpleMessage("QR-код"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage(
       "Сканируйте QR-код, чтобы получить профиль",
@@ -2233,6 +2234,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Кнопка остановки в уведомлении",
     ),
     "showPassword": MessageLookupByLibrary.simpleMessage("Показать пароль"),
+    "shuiMoStyle": MessageLookupByLibrary.simpleMessage("Тушь"),
     "sidebar": MessageLookupByLibrary.simpleMessage("Боковая панель"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("Тихий запуск"),
     "singleImport": MessageLookupByLibrary.simpleMessage("По одному"),
@@ -2498,9 +2500,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "«Записывать в систему» также устанавливает системные часы; Android это игнорирует.",
     ),
+    "xingGuanStyle": MessageLookupByLibrary.simpleMessage("Звёздная карта"),
     "yearsAgo": m111,
     "yearsAgoShort": m112,
     "yes": MessageLookupByLibrary.simpleMessage("Да"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Упрощённый китайский"),
+    "ziFuStyle": MessageLookupByLibrary.simpleMessage("Пурпурный дворец"),
   };
 }

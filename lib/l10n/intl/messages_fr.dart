@@ -1917,6 +1917,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "publicKey": MessageLookupByLibrary.simpleMessage("Clé publique"),
     "pureBlack": MessageLookupByLibrary.simpleMessage("Noir pur"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("Mode noir pur"),
+    "qingLuStyle": MessageLookupByLibrary.simpleMessage("Bleu-vert"),
     "qrcode": MessageLookupByLibrary.simpleMessage("Code QR"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage(
       "Scannez un code QR pour obtenir un profil",
@@ -2296,6 +2297,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "showPassword": MessageLookupByLibrary.simpleMessage(
       "Afficher le mot de passe",
     ),
+    "shuiMoStyle": MessageLookupByLibrary.simpleMessage("Lavis"),
     "sidebar": MessageLookupByLibrary.simpleMessage("Barre latérale"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage(
       "Lancement silencieux",
@@ -2561,9 +2563,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "Écrire dans le système règle aussi l’horloge système ; Android l’ignore.",
     ),
+    "xingGuanStyle": MessageLookupByLibrary.simpleMessage("Carte céleste"),
     "yearsAgo": m111,
     "yearsAgoShort": m112,
     "yes": MessageLookupByLibrary.simpleMessage("Oui"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Chinois simplifié"),
+    "ziFuStyle": MessageLookupByLibrary.simpleMessage("Palais pourpre"),
   };
 }

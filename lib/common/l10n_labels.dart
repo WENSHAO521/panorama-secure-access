@@ -1,6 +1,6 @@
 import 'package:fl_clash/enum/enum.dart';
 import 'package:flutter/widgets.dart';
-import 'package:prism_ui/color.dart';
+import 'package:fl_clash/ui/color_style.dart';
 
 import 'app_localizations.dart';
 
@@ -109,14 +109,18 @@ extension RestoreStrategyL10n on RestoreStrategy {
   }
 }
 
-extension ColorStyleL10n on ColorStyle {
+extension ColorStyleL10n on AppColorStyle {
   String get label {
     final appLocalizations = currentAppLocalizations;
     return switch (this) {
-      ColorStyle.vivid => appLocalizations.vividStyle,
-      ColorStyle.tinted => appLocalizations.tintedStyle,
-      ColorStyle.soft => appLocalizations.softStyle,
-      ColorStyle.monochrome => appLocalizations.monochromeScheme,
+      AppColorStyle.vivid => appLocalizations.vividStyle,
+      AppColorStyle.tinted => appLocalizations.tintedStyle,
+      AppColorStyle.soft => appLocalizations.softStyle,
+      AppColorStyle.monochrome => appLocalizations.monochromeScheme,
+      AppColorStyle.xingGuan => appLocalizations.xingGuanStyle,
+      AppColorStyle.ziFu => appLocalizations.ziFuStyle,
+      AppColorStyle.qingLu => appLocalizations.qingLuStyle,
+      AppColorStyle.shuiMo => appLocalizations.shuiMoStyle,
     };
   }
 }

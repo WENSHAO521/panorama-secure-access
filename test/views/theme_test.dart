@@ -82,13 +82,15 @@ void main() {
           widget is Semantics && widget.properties.label == Color(color).hex,
     );
 
-    testWidgets('starts on blue among the system colors', (tester) async {
+    testWidgets('starts on 泥金 among the Taoist and system colors', (
+      tester,
+    ) async {
       container
           .read(themeSettingProvider.notifier)
           .update((_) => defaultThemeProps);
       await pumpThemeView(tester);
 
-      expect(readTheme().primaryColor, 0xFF007AFF);
+      expect(readTheme().primaryColor, defaultPrimaryColor);
       for (final color in defaultPrimaryColors) {
         expect(swatch(color), findsOneWidget);
       }
@@ -115,7 +117,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Soft').last);
       await tester.pumpAndSettle();
-      expect(readTheme().colorStyle, ColorStyle.soft);
+      expect(readTheme().colorStyle, AppColorStyle.soft);
     });
 
     testWidgets('deletes a color from its context menu', (tester) async {
@@ -231,6 +233,8 @@ void main() {
         200,
         scrollable: find.byType(Scrollable).first,
       );
+      await tester.ensureVisible(find.byTooltip('Add'));
+      await tester.pumpAndSettle();
       await tester.tap(find.byTooltip('Add'));
       await tester.pumpAndSettle();
 

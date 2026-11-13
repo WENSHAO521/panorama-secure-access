@@ -1527,6 +1527,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "publicKey": MessageLookupByLibrary.simpleMessage("公開鍵"),
     "pureBlack": MessageLookupByLibrary.simpleMessage("ピュアブラック"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("ピュアブラックモード"),
+    "qingLuStyle": MessageLookupByLibrary.simpleMessage("青緑"),
     "qrcode": MessageLookupByLibrary.simpleMessage("QRコード"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage(
       "QRコードをスキャンしてプロファイルを取得します",
@@ -1828,6 +1829,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "通知に停止ボタンを表示",
     ),
     "showPassword": MessageLookupByLibrary.simpleMessage("パスワードを表示"),
+    "shuiMoStyle": MessageLookupByLibrary.simpleMessage("水墨"),
     "sidebar": MessageLookupByLibrary.simpleMessage("サイドバー"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("サイレント起動"),
     "singleImport": MessageLookupByLibrary.simpleMessage("個別インポート"),
@@ -2039,9 +2041,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "システムに書き込むを有効にするとシステムクロックも設定します。Android では無視されます。",
     ),
+    "xingGuanStyle": MessageLookupByLibrary.simpleMessage("星官箋"),
     "yearsAgo": m111,
     "yearsAgoShort": m112,
     "yes": MessageLookupByLibrary.simpleMessage("はい"),
     "zhCN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
+    "ziFuStyle": MessageLookupByLibrary.simpleMessage("紫府"),
   };
 }

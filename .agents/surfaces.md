@@ -63,6 +63,11 @@ tertiary, which the app barely shows, so most of them looked alike once surfaces
 | `soft`       | tonal spot       | Material's, muted | near gray                       |
 | `monochrome` | monochrome       | black or white    | gray                            |
 
+The app adds four Taoist styles in `lib/ui/color_style.dart` (`AppColorStyle`), built on `vivid`: 星官箋 (default),
+紫府, 青綠, 水墨. Each keeps prism's light tones but gives every surface one fixed hue and chroma (宣紙 paper by day,
+玄青 night by night for 星官箋), deepens the dark levels to tones 5/10/14/19 as the approved 星官箋 mockup does, and lifts
+a dark accent to tone 72 so it reads as starlight on 玄. 水墨 caps the accent's chroma at 30, a wash.
+
 
 - **Surfaces stay near gray.** Each `surface*` role keeps Material's tone but its chroma is capped at 3, the light
   `surface` and `surfaceBright` at 1.5, and `outlineVariant` at 4. Material tints neutrals by the seed (content

@@ -3357,7 +3357,7 @@ as int,
 /// @nodoc
 mixin _$ThemeColorsSelectorState {
 
- int? get primaryColor; List<int> get primaryColors; ColorStyle get colorStyle; bool get isDefault;
+ int? get primaryColor; List<int> get primaryColors; AppColorStyle get colorStyle; bool get isDefault;
 /// Create a copy of ThemeColorsSelectorState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -3393,7 +3393,7 @@ abstract mixin class $ThemeColorsSelectorStateCopyWith<$Res>  {
   factory $ThemeColorsSelectorStateCopyWith(ThemeColorsSelectorState value, $Res Function(ThemeColorsSelectorState) _then) = _$ThemeColorsSelectorStateCopyWithImpl;
 @useResult
 $Res call({
- int? primaryColor, List<int> primaryColors, ColorStyle colorStyle, bool isDefault
+ int? primaryColor, List<int> primaryColors, AppColorStyle colorStyle, bool isDefault
 });
 
 
@@ -3415,7 +3415,7 @@ class _$ThemeColorsSelectorStateCopyWithImpl<$Res>
 primaryColor: freezed == primaryColor ? _self.primaryColor : primaryColor // ignore: cast_nullable_to_non_nullable
 as int?,primaryColors: null == primaryColors ? _self.primaryColors : primaryColors // ignore: cast_nullable_to_non_nullable
 as List<int>,colorStyle: null == colorStyle ? _self.colorStyle : colorStyle // ignore: cast_nullable_to_non_nullable
-as ColorStyle,isDefault: null == isDefault ? _self.isDefault : isDefault // ignore: cast_nullable_to_non_nullable
+as AppColorStyle,isDefault: null == isDefault ? _self.isDefault : isDefault // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -3501,7 +3501,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? primaryColor,  List<int> primaryColors,  ColorStyle colorStyle,  bool isDefault)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? primaryColor,  List<int> primaryColors,  AppColorStyle colorStyle,  bool isDefault)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ThemeColorsSelectorState() when $default != null:
 return $default(_that.primaryColor,_that.primaryColors,_that.colorStyle,_that.isDefault);case _:
@@ -3522,7 +3522,7 @@ return $default(_that.primaryColor,_that.primaryColors,_that.colorStyle,_that.is
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? primaryColor,  List<int> primaryColors,  ColorStyle colorStyle,  bool isDefault)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? primaryColor,  List<int> primaryColors,  AppColorStyle colorStyle,  bool isDefault)  $default,) {final _that = this;
 switch (_that) {
 case _ThemeColorsSelectorState():
 return $default(_that.primaryColor,_that.primaryColors,_that.colorStyle,_that.isDefault);case _:
@@ -3542,7 +3542,7 @@ return $default(_that.primaryColor,_that.primaryColors,_that.colorStyle,_that.is
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? primaryColor,  List<int> primaryColors,  ColorStyle colorStyle,  bool isDefault)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? primaryColor,  List<int> primaryColors,  AppColorStyle colorStyle,  bool isDefault)?  $default,) {final _that = this;
 switch (_that) {
 case _ThemeColorsSelectorState() when $default != null:
 return $default(_that.primaryColor,_that.primaryColors,_that.colorStyle,_that.isDefault);case _:
@@ -3568,7 +3568,7 @@ class _ThemeColorsSelectorState implements ThemeColorsSelectorState {
   return EqualUnmodifiableListView(_primaryColors);
 }
 
-@override final  ColorStyle colorStyle;
+@override final  AppColorStyle colorStyle;
 @override final  bool isDefault;
 
 /// Create a copy of ThemeColorsSelectorState
@@ -3603,7 +3603,7 @@ abstract mixin class _$ThemeColorsSelectorStateCopyWith<$Res> implements $ThemeC
   factory _$ThemeColorsSelectorStateCopyWith(_ThemeColorsSelectorState value, $Res Function(_ThemeColorsSelectorState) _then) = __$ThemeColorsSelectorStateCopyWithImpl;
 @override @useResult
 $Res call({
- int? primaryColor, List<int> primaryColors, ColorStyle colorStyle, bool isDefault
+ int? primaryColor, List<int> primaryColors, AppColorStyle colorStyle, bool isDefault
 });
 
 
@@ -3625,7 +3625,7 @@ class __$ThemeColorsSelectorStateCopyWithImpl<$Res>
 primaryColor: freezed == primaryColor ? _self.primaryColor : primaryColor // ignore: cast_nullable_to_non_nullable
 as int?,primaryColors: null == primaryColors ? _self._primaryColors : primaryColors // ignore: cast_nullable_to_non_nullable
 as List<int>,colorStyle: null == colorStyle ? _self.colorStyle : colorStyle // ignore: cast_nullable_to_non_nullable
-as ColorStyle,isDefault: null == isDefault ? _self.isDefault : isDefault // ignore: cast_nullable_to_non_nullable
+as AppColorStyle,isDefault: null == isDefault ? _self.isDefault : isDefault // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

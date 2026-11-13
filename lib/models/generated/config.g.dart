@@ -375,10 +375,10 @@ _ThemeProps _$ThemePropsFromJson(Map<String, dynamic> json) => _ThemeProps(
       ThemeMode.system,
   colorStyle:
       $enumDecodeNullable(
-        _$ColorStyleEnumMap,
+        _$AppColorStyleEnumMap,
         _readColorStyle(json, 'colorStyle'),
       ) ??
-      ColorStyle.vivid,
+      AppColorStyle.xingGuan,
   pureBlack: json['pureBlack'] as bool? ?? false,
   starChart: json['starChart'] as bool? ?? true,
   sidebarBlur: json['sidebarBlur'] as bool? ?? false,
@@ -399,7 +399,7 @@ Map<String, dynamic> _$ThemePropsToJson(_ThemeProps instance) =>
       'primaryColor': instance.primaryColor,
       'primaryColors': instance.primaryColors,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
-      'colorStyle': _$ColorStyleEnumMap[instance.colorStyle]!,
+      'colorStyle': _$AppColorStyleEnumMap[instance.colorStyle]!,
       'pureBlack': instance.pureBlack,
       'starChart': instance.starChart,
       'sidebarBlur': instance.sidebarBlur,
@@ -414,11 +414,15 @@ const _$ThemeModeEnumMap = {
   ThemeMode.dark: 'dark',
 };
 
-const _$ColorStyleEnumMap = {
-  ColorStyle.vivid: 'vivid',
-  ColorStyle.tinted: 'tinted',
-  ColorStyle.soft: 'soft',
-  ColorStyle.monochrome: 'monochrome',
+const _$AppColorStyleEnumMap = {
+  AppColorStyle.vivid: 'vivid',
+  AppColorStyle.tinted: 'tinted',
+  AppColorStyle.soft: 'soft',
+  AppColorStyle.monochrome: 'monochrome',
+  AppColorStyle.xingGuan: 'xingGuan',
+  AppColorStyle.ziFu: 'ziFu',
+  AppColorStyle.qingLu: 'qingLu',
+  AppColorStyle.shuiMo: 'shuiMo',
 };
 
 const _$LiquidGlassModeEnumMap = {

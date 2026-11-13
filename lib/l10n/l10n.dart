@@ -3366,6 +3366,31 @@ class AppLocalizations {
     return Intl.message('Soft', name: 'softStyle', desc: '', args: []);
   }
 
+  /// `Star Chart`
+  String get xingGuanStyle {
+    return Intl.message(
+      'Star Chart',
+      name: 'xingGuanStyle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Purple Palace`
+  String get ziFuStyle {
+    return Intl.message('Purple Palace', name: 'ziFuStyle', desc: '', args: []);
+  }
+
+  /// `Blue-Green`
+  String get qingLuStyle {
+    return Intl.message('Blue-Green', name: 'qingLuStyle', desc: '', args: []);
+  }
+
+  /// `Ink Wash`
+  String get shuiMoStyle {
+    return Intl.message('Ink Wash', name: 'shuiMoStyle', desc: '', args: []);
+  }
+
   /// `Developer mode`
   String get developerMode {
     return Intl.message(

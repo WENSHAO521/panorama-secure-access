@@ -124,7 +124,7 @@ class _PrimaryColorItem extends ConsumerWidget {
       return state.copyWith(
         primaryColors: defaultPrimaryColors,
         primaryColor: defaultPrimaryColor,
-        colorStyle: ColorStyle.vivid,
+        colorStyle: AppColorStyle.xingGuan,
       );
     });
   }
@@ -242,7 +242,7 @@ class _PrimaryColorItem extends ConsumerWidget {
                 state.primaryColors,
                 defaultPrimaryColors,
               ) &&
-              state.colorStyle == ColorStyle.vivid,
+              state.colorStyle == AppColorStyle.xingGuan,
         ),
       ),
     );
@@ -277,9 +277,12 @@ class _PrimaryColorItem extends ConsumerWidget {
                 onAdd: () => _handleAdd(context, ref),
               ),
               generateGroup([
-                ListItem<ColorStyle>.options(
+                ListItem<AppColorStyle>.options(
                   title: Text(appLocalizations.colorStyle),
-                  options: ColorStyle.values,
+                  options: const [
+                    ...AppColorStyle.taoist,
+                    ...AppColorStyle.classic,
+                  ],
                   value: themeColors.colorStyle,
                   textBuilder: (style) => style.label,
                   onChanged: (style) => _update(
@@ -576,9 +579,7 @@ class _StarChartItem extends ConsumerWidget {
     final liquidGlass = ref.watch(_liquidGlassProvider);
     Widget preview(bool starChart) => MiniScreenThumb(
       screen: MiniScreen(
-        colorScheme: ref.watch(
-          genColorSchemeProvider(brightness, starChart: starChart),
-        ),
+        colorScheme: ref.watch(genColorSchemeProvider(brightness)),
         floatingBar: floatingBar,
         liquidGlass: liquidGlass,
         starChart: starChart,

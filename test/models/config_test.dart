@@ -1,3 +1,4 @@
+import 'package:fl_clash/ui/color_style.dart';
 import 'dart:convert';
 import 'dart:io';
 
@@ -930,21 +931,21 @@ void main() {
     });
 
     test('reads an old scheme variant as the nearest color style', () {
-      ColorStyle styleOf(String variant) =>
+      AppColorStyle styleOf(String variant) =>
           ThemeProps.fromJson({'schemeVariant': variant}).colorStyle;
 
-      expect(styleOf('content'), ColorStyle.vivid);
-      expect(styleOf('fidelity'), ColorStyle.vivid);
-      expect(styleOf('vibrant'), ColorStyle.vivid);
-      expect(styleOf('tonalSpot'), ColorStyle.soft);
-      expect(styleOf('neutral'), ColorStyle.soft);
-      expect(styleOf('monochrome'), ColorStyle.monochrome);
+      expect(styleOf('content'), AppColorStyle.vivid);
+      expect(styleOf('fidelity'), AppColorStyle.vivid);
+      expect(styleOf('vibrant'), AppColorStyle.vivid);
+      expect(styleOf('tonalSpot'), AppColorStyle.soft);
+      expect(styleOf('neutral'), AppColorStyle.soft);
+      expect(styleOf('monochrome'), AppColorStyle.monochrome);
       expect(
         ThemeProps.fromJson({
           'schemeVariant': 'monochrome',
           'colorStyle': 'tinted',
         }).colorStyle,
-        ColorStyle.tinted,
+        AppColorStyle.tinted,
       );
       expect(const ThemeProps().toJson(), isNot(contains('schemeVariant')));
     });

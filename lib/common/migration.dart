@@ -2,7 +2,7 @@ import 'package:fl_clash/common/constant.dart';
 import 'package:fl_clash/database/database.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
-import 'package:prism_ui/color.dart';
+import 'package:fl_clash/ui/color_style.dart';
 
 import 'preferences.dart';
 import 'task.dart';
@@ -91,7 +91,7 @@ class Migration {
 
   /// One-off setting changes for upgrades, apart from [currentVersion], which
   /// backups carry and an older app refuses when it is newer than its own.
-  static const upgradeVersion = 7;
+  static const upgradeVersion = 8;
 
   static const Map<int, Config Function(Config config)> _upgrades = {
     1: _resetThemeColors,
@@ -101,6 +101,7 @@ class Migration {
     5: _dropFormerTunMtu,
     6: _moveToMipstack,
     7: _dropFormerTestUrl,
+    8: _adoptTaoistColors,
   };
 
   Future<Config> run() async {
@@ -200,9 +201,27 @@ Config _resetThemeColors(Config config) => config.copyWith(
   themeProps: config.themeProps.copyWith(
     primaryColor: defaultPrimaryColor,
     primaryColors: defaultPrimaryColors,
-    colorStyle: ColorStyle.vivid,
+    colorStyle: AppColorStyle.xingGuan,
   ),
 );
+
+// The Taoist pigments join every palette ahead of the colors already there; a
+// theme still on the former default, blue and vivid, moves to 星官箋 and 泥金.
+Config _adoptTaoistColors(Config config) {
+  final theme = config.themeProps;
+  final onFormerDefault =
+      theme.primaryColor == formerDefaultPrimaryColor &&
+      theme.colorStyle == AppColorStyle.vivid;
+  return config.copyWith(
+    themeProps: theme.copyWith(
+      primaryColors: [
+        ...{...taoistPrimaryColors, ...theme.primaryColors},
+      ],
+      primaryColor: onFormerDefault ? defaultPrimaryColor : theme.primaryColor,
+      colorStyle: onFormerDefault ? AppColorStyle.xingGuan : theme.colorStyle,
+    ),
+  );
+}
 
 // The standard glass became the ultra tier when a lighter standard joined it.
 Config _keepGlassLook(Config config) =>
