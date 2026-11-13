@@ -381,7 +381,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "batchPreviewTip": m3,
     "batchUrlInputTip": MessageLookupByLibrary.simpleMessage("한 줄에 URL 하나씩"),
     "betaChannel": MessageLookupByLibrary.simpleMessage("베타"),
+    "betaChannelSaveFailed": MessageLookupByLibrary.simpleMessage(
+      "설정을 저장하지 못해 업데이트 채널이 바뀌지 않았습니다.",
+    ),
+    "betaJoinConfirm": MessageLookupByLibrary.simpleMessage("참여"),
+    "betaJoinConfirmDesc": MessageLookupByLibrary.simpleMessage(
+      "베타 버전은 새 기능을 먼저 받지만 안정성이 낮거나 일부 프로필, 규칙, 시스템과 호환되지 않을 수 있습니다. 언제든지 나갈 수 있습니다.",
+    ),
+    "betaJoinConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "베타 프로그램에 참여할까요?",
+    ),
     "betaJoinedTip": MessageLookupByLibrary.simpleMessage("베타 업데이트를 받습니다"),
+    "betaLeaveConfirm": MessageLookupByLibrary.simpleMessage("나가기"),
+    "betaLeaveConfirmDesc": MessageLookupByLibrary.simpleMessage(
+      "베타 업데이트를 더 이상 받지 않습니다. 설치된 베타는 제거되거나 다운그레이드되지 않으며, 같은 버전 이상의 정식 버전이 출시되면 정식 버전으로 돌아갑니다.",
+    ),
+    "betaLeaveConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "베타 프로그램에서 나갈까요?",
+    ),
     "betaNotJoinedTip": MessageLookupByLibrary.simpleMessage("정식 업데이트만 받습니다"),
     "betaProgram": MessageLookupByLibrary.simpleMessage("베타 프로그램"),
     "betaProgramDesc": MessageLookupByLibrary.simpleMessage(
@@ -390,6 +407,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "betaProgramFooter": MessageLookupByLibrary.simpleMessage(
       "베타가 끝나고 같은 버전 이상의 정식 버전이 출시되면 앱이 자동으로 정식 버전으로 업데이트됩니다. 언제든지 나갈 수 있으며, 나간 뒤에도 해당 정식 버전이 나올 때까지 현재 베타 버전을 계속 사용합니다.",
     ),
+    "betaStay": MessageLookupByLibrary.simpleMessage("베타 계속 사용"),
     "betaUpdates": MessageLookupByLibrary.simpleMessage("베타 참여"),
     "binaryData": MessageLookupByLibrary.simpleMessage("바이너리 데이터"),
     "bind": MessageLookupByLibrary.simpleMessage("연결"),
@@ -547,6 +565,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "customTrafficInvalidDesc": MessageLookupByLibrary.simpleMessage(
       "0보다 큰 트래픽을 입력하세요",
     ),
+    "customTrafficTooLargeDesc": MessageLookupByLibrary.simpleMessage(
+      "최대 1024 TB까지 입력하세요",
+    ),
     "cut": MessageLookupByLibrary.simpleMessage("잘라내기"),
     "dark": MessageLookupByLibrary.simpleMessage("다크"),
     "dashboard": MessageLookupByLibrary.simpleMessage("대시보드"),
@@ -589,15 +610,25 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "diagnosisCore": MessageLookupByLibrary.simpleMessage("코어"),
     "diagnosisDns": MessageLookupByLibrary.simpleMessage("DNS 확인"),
+    "diagnosisFailed": MessageLookupByLibrary.simpleMessage("실패"),
+    "diagnosisHostLookup": MessageLookupByLibrary.simpleMessage("이름 확인 실패"),
     "diagnosisIpv4": MessageLookupByLibrary.simpleMessage("IPv4 연결"),
     "diagnosisIpv6": MessageLookupByLibrary.simpleMessage("IPv6 연결"),
     "diagnosisMixedPort": MessageLookupByLibrary.simpleMessage("프록시 포트"),
+    "diagnosisNotConfigured": MessageLookupByLibrary.simpleMessage(
+      "이 네트워크에 구성되지 않음",
+    ),
     "diagnosisOtherClients": MessageLookupByLibrary.simpleMessage(
       "다른 프록시 클라이언트",
     ),
+    "diagnosisProxyFault": MessageLookupByLibrary.simpleMessage("프록시가 오류를 반환함"),
     "diagnosisProxyRequest": MessageLookupByLibrary.simpleMessage("프록시를 통한 요청"),
+    "diagnosisRefused": MessageLookupByLibrary.simpleMessage("연결 거부됨"),
     "diagnosisSystemProxy": MessageLookupByLibrary.simpleMessage("시스템 프록시"),
+    "diagnosisTimeout": MessageLookupByLibrary.simpleMessage("시간 초과"),
+    "diagnosisTls": MessageLookupByLibrary.simpleMessage("TLS 핸드셰이크 실패"),
     "diagnosisTun": MessageLookupByLibrary.simpleMessage("TUN 권한"),
+    "diagnosisUnreachable": MessageLookupByLibrary.simpleMessage("경로 없음"),
     "dialerProxy": MessageLookupByLibrary.simpleMessage("다이얼러 프록시"),
     "dialerProxyLoopStopped": m26,
     "dialog": MessageLookupByLibrary.simpleMessage("대화상자"),
@@ -955,6 +986,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "앱 목록 권한 필요",
     ),
     "installedFonts": MessageLookupByLibrary.simpleMessage("설치된 글꼴"),
+    "installedVersion": MessageLookupByLibrary.simpleMessage("설치된 버전"),
     "intelligentSelected": MessageLookupByLibrary.simpleMessage("스마트 선택"),
     "interfaceName": MessageLookupByLibrary.simpleMessage("인터페이스 이름"),
     "interfaceNameMode": MessageLookupByLibrary.simpleMessage("아웃바운드 인터페이스"),
@@ -1902,6 +1934,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("이름 없음"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("창 고정 해제"),
     "update": MessageLookupByLibrary.simpleMessage("업데이트"),
+    "updateChannel": MessageLookupByLibrary.simpleMessage("업데이트 채널"),
     "updateDownloadFailed": MessageLookupByLibrary.simpleMessage(
       "업데이트를 다운로드할 수 없습니다.",
     ),

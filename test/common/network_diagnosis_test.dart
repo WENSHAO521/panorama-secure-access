@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:fl_clash/common/netdiag.dart' show ProbeStage;
 import 'package:fl_clash/common/network_diagnosis.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,11 +15,11 @@ NetworkObservations _healthy({
   bool? systemProxyPortListening = true,
   bool tunEnabled = false,
   bool? tunAuthorized,
-  String? dnsError,
-  String? ipv6Error,
+  ProbeError? dnsError,
+  ProbeError? ipv6Error,
   bool ipv6Enabled = false,
   int? proxyStatus = 204,
-  String? proxyError,
+  ProbeError? proxyError,
 }) => NetworkObservations(
   desktop: true,
   running: running,
@@ -156,7 +157,9 @@ void main() {
 
   test('failed DNS can be flushed', () {
     final result = _of(
-      gradeNetworkDiagnosis(_healthy(dnsError: 'timeout')),
+      gradeNetworkDiagnosis(
+        _healthy(dnsError: const ProbeError(ProbeFailure.timeout, 'timeout')),
+      ),
       DiagnosisCheck.dns,
     );
 
@@ -167,17 +170,31 @@ void main() {
   test('missing IPv6 matters only while IPv6 is on', () {
     final on = _of(
       gradeNetworkDiagnosis(
-        _healthy(ipv6Error: 'unreachable', ipv6Enabled: true),
+        _healthy(
+          ipv6Error: const ProbeError(
+            ProbeFailure.notConfigured,
+            'unreachable',
+          ),
+          ipv6Enabled: true,
+        ),
       ),
       DiagnosisCheck.ipv6,
     );
     final off = _of(
-      gradeNetworkDiagnosis(_healthy(ipv6Error: 'unreachable')),
+      gradeNetworkDiagnosis(
+        _healthy(
+          ipv6Error: const ProbeError(
+            ProbeFailure.notConfigured,
+            'unreachable',
+          ),
+        ),
+      ),
       DiagnosisCheck.ipv6,
     );
 
     expect(on.repair, DiagnosisRepair.disableIpv6);
     expect(off.level, DiagnosisLevel.skipped);
+    expect(off.cause, DiagnosisCause.notConfigured);
   });
 
   test('a refused or failed request through the proxy fails', () {
@@ -191,11 +208,26 @@ void main() {
     expect(
       _of(
         gradeNetworkDiagnosis(
-          _healthy(proxyStatus: null, proxyError: 'timeout'),
+          _healthy(
+            proxyStatus: null,
+            proxyError: const ProbeError(ProbeFailure.timeout, 'timeout'),
+          ),
         ),
         DiagnosisCheck.proxyRequest,
-      ).detail,
-      'timeout',
+      ),
+      const DiagnosisResult(
+        DiagnosisCheck.proxyRequest,
+        DiagnosisLevel.failure,
+        detail: 'timeout',
+        cause: DiagnosisCause.timeout,
+      ),
+    );
+    expect(
+      _of(
+        gradeNetworkDiagnosis(_healthy(proxyStatus: 502)),
+        DiagnosisCheck.proxyRequest,
+      ).cause,
+      DiagnosisCause.proxy,
     );
   });
 
@@ -233,11 +265,80 @@ void main() {
   });
 
   group('probes', () {
-    test('report success as null and failure as text', () async {
+    test('report success as null and classify failures', () async {
       expect(await probe(() async {}), isNull);
       expect(
         await probe(() async => throw const SocketException('refused')),
-        'refused',
+        const ProbeError(ProbeFailure.unknown, 'refused'),
+      );
+      if (Platform.isLinux) {
+        expect(
+          await probe(
+            () async => throw const SocketException(
+              'Connection failed',
+              osError: OSError('Network is unreachable', 101),
+            ),
+          ),
+          const ProbeError(
+            ProbeFailure.notConfigured,
+            'Network is unreachable',
+          ),
+        );
+      }
+      expect(
+        (await probe(
+          () async => throw const SocketException('Connection timed out'),
+        ))?.failure,
+        ProbeFailure.timeout,
+      );
+      expect(
+        (await probe(
+          () async => throw const HandshakeException('bad certificate'),
+        ))?.failure,
+        ProbeFailure.tls,
+      );
+      expect(
+        (await probe(
+          () async => throw const SocketException('Failed host lookup'),
+          stage: ProbeStage.lookup,
+        ))?.failure,
+        ProbeFailure.hostLookup,
+      );
+    });
+
+    test('one answering target is enough', () async {
+      final calls = <String>[];
+      final result = await probeAny(['a', 'b', 'c'], (target) async {
+        calls.add(target);
+        if (target == 'b') return null;
+        await Future<void>.delayed(const Duration(milliseconds: 20));
+        return const ProbeError(ProbeFailure.timeout, 'timeout');
+      });
+
+      expect(result, isNull);
+      expect(calls, ['a', 'b', 'c']);
+    });
+
+    test('reports the failure the targets agree on', () async {
+      final failures = {
+        'a': const ProbeError(ProbeFailure.notConfigured, 'no route'),
+        'b': const ProbeError(ProbeFailure.timeout, 'timeout'),
+      };
+
+      expect(
+        await probeAny(failures.keys, (target) async => failures[target]),
+        failures['b'],
+      );
+    });
+
+    test('a refused loopback port is not a timeout', () async {
+      final server = await ServerSocket.bind(InternetAddress.loopbackIPv4, 0);
+      final port = server.port;
+      await server.close();
+
+      expect(
+        (await probeTcp(['127.0.0.1'], port: port))?.failure,
+        ProbeFailure.refused,
       );
     });
 
@@ -257,10 +358,18 @@ void main() {
           ..close();
       });
 
-      expect(await probeProxyRequest(server.port, 'http://example.invalid/'), (
-        204,
-        null,
-      ));
+      // A widget test in the same bundle installs a client that answers 400.
+      final result = await HttpOverrides.runWithHttpOverrides(
+        () => probeProxyRequests(server.port, [
+          'http://example.invalid/',
+          'http://example.invalid/fallback',
+        ]),
+        _RealHttp(),
+      );
+
+      expect(result, (204, null));
     });
   });
 }
+
+class _RealHttp extends HttpOverrides {}

@@ -3,7 +3,7 @@ use flutter_rust_bridge::frb;
 use crate::netdiag;
 pub use crate::netdiag::{
     DnsApplyRoute, FailureKind, HttpStatusClass, LocalAddress, LocalInterface,
-    NetworkChangeReaction,
+    NetworkChangeReaction, ProbeFailure, ProbeStage,
 };
 
 #[frb(mirror(DnsApplyRoute))]
@@ -83,4 +83,32 @@ pub fn network_change_reaction(
     desktop: bool,
 ) -> NetworkChangeReaction {
     netdiag::network_change_reaction(had_vpn, has_vpn, desktop)
+}
+
+#[frb(mirror(ProbeFailure))]
+pub enum _ProbeFailure {
+    NotConfigured,
+    Unreachable,
+    Refused,
+    Timeout,
+    Tls,
+    HostLookup,
+    Unknown,
+}
+
+#[frb(mirror(ProbeStage))]
+pub enum _ProbeStage {
+    Lookup,
+    Connect,
+    Handshake,
+}
+
+#[frb(sync)]
+pub fn probe_failure(stage: ProbeStage, errno: Option<i32>, timed_out: bool) -> ProbeFailure {
+    netdiag::probe_failure(stage, errno, timed_out)
+}
+
+#[frb(sync)]
+pub fn summarize_probes(results: Vec<Option<ProbeFailure>>) -> Option<ProbeFailure> {
+    netdiag::summarize_probes(&results)
 }

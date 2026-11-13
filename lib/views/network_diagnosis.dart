@@ -40,10 +40,13 @@ class _NetworkDiagnosisViewState extends ConsumerState<NetworkDiagnosisView> {
     final connected = running && coreStatus == CoreStatus.connected;
     final (dnsError, ipv4Error, ipv6Error, request) = await (
       probeDns(),
-      probeTcp('1.1.1.1'),
-      probeTcp('2606:4700:4700::1111'),
+      probeTcp(ipv4ProbeAddresses),
+      probeTcp(ipv6ProbeAddresses),
       connected
-          ? probeProxyRequest(port, ref.read(realTestUrlProvider()))
+          ? probeProxyRequests(port, [
+              ref.read(realTestUrlProvider()),
+              ...proxyProbeFallbackUrls,
+            ])
           : Future.value((null, null)),
     ).wait;
     return NetworkObservations(
@@ -115,30 +118,64 @@ class _NetworkDiagnosisViewState extends ConsumerState<NetworkDiagnosisView> {
 
   @override
   Widget build(BuildContext context) {
+    return NetworkDiagnosisPage(
+      results: _results,
+      running: _running,
+      onRun: _run,
+      onRepair: _repair,
+    );
+  }
+}
+
+/// The diagnosis page for given results, apart from running the probes.
+class NetworkDiagnosisPage extends StatelessWidget {
+  final List<DiagnosisResult>? results;
+  final bool running;
+  final VoidCallback onRun;
+  final void Function(DiagnosisRepair repair) onRepair;
+
+  const NetworkDiagnosisPage({
+    super.key,
+    required this.results,
+    required this.running,
+    required this.onRun,
+    required this.onRepair,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
-    final results = _results;
+    final results = this.results;
     final problems = results
         ?.where((item) => item.level == DiagnosisLevel.failure)
         .length;
     return Scaffold(
       title: appLocalizations.networkDiagnosis,
-      isLoading: _running,
+      isLoading: running,
       primaryAction: IconButtonData(
         glyph: AppGlyphs.refresh,
-        onPressed: _run,
+        onPressed: onRun,
         tooltip: appLocalizations.networkDiagnosisRun,
-        isLoading: _running,
+        isLoading: running,
       ),
+      // The bar floats over the page, so the list starts below it as on every
+      // other page instead of under the title and buttons.
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
+          top: context.contentTopPadding,
+          bottom: 32 + context.bottomInset,
+        ),
         children: [
           if (problems != null)
             Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
               child: Text(
                 problems == 0
                     ? appLocalizations.networkDiagnosisAllPassed
                     : appLocalizations.networkDiagnosisProblems(problems),
+                style: AppTextStyle.subheadline
+                    .of(context)
+                    .copyWith(color: context.colorScheme.onSurfaceVariant),
               ),
             ),
           if (results != null)
@@ -147,7 +184,7 @@ class _NetworkDiagnosisViewState extends ConsumerState<NetworkDiagnosisView> {
                 for (final result in results)
                   _DiagnosisItem(
                     result: result,
-                    onRepair: _running ? null : _repair,
+                    onRepair: running ? null : onRepair,
                   ),
               ],
             ),
@@ -174,11 +211,14 @@ class _DiagnosisItem extends StatelessWidget {
       DiagnosisLevel.skipped => (AppGlyphs.removeCircle, colorScheme.outline),
     };
     final repair = result.repair;
-    final detail = result.detail;
+    final detail = [
+      ?result.cause?.label(appLocalizations),
+      ?result.detail,
+    ].join(' · ');
     return ListItem(
       leading: GlyphIcon(glyph, color: color),
       title: Text(result.check.label(appLocalizations)),
-      subtitle: detail == null ? null : Text(detail),
+      subtitle: detail.isEmpty ? null : Text(detail),
       trailing: repair == null || onRepair == null
           ? null
           : TextButton(
@@ -200,6 +240,19 @@ extension on DiagnosisCheck {
     DiagnosisCheck.ipv4 => l.diagnosisIpv4,
     DiagnosisCheck.ipv6 => l.diagnosisIpv6,
     DiagnosisCheck.proxyRequest => l.diagnosisProxyRequest,
+  };
+}
+
+extension on DiagnosisCause {
+  String label(AppLocalizations l) => switch (this) {
+    DiagnosisCause.notConfigured => l.diagnosisNotConfigured,
+    DiagnosisCause.unreachable => l.diagnosisUnreachable,
+    DiagnosisCause.refused => l.diagnosisRefused,
+    DiagnosisCause.timeout => l.diagnosisTimeout,
+    DiagnosisCause.tls => l.diagnosisTls,
+    DiagnosisCause.hostLookup => l.diagnosisHostLookup,
+    DiagnosisCause.proxy => l.diagnosisProxyFault,
+    DiagnosisCause.unknown => l.diagnosisFailed,
   };
 }
 

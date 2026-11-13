@@ -148,4 +148,40 @@ void main() {
       expect(script, contains("LegacyDisplayName = 'Panorama Secure Access'"));
     });
   });
+
+  group('Windows installer metadata', () {
+    test('names the app icon for the installed apps list', () {
+      final script = File(
+        'windows/packaging/exe/inno_setup.iss',
+      ).readAsStringSync();
+
+      expect(
+        script,
+        contains(r'UninstallDisplayIcon={app}\\{{EXECUTABLE_NAME}},0'),
+      );
+      expect(script, contains('UninstallDisplayName={{DISPLAY_NAME}}'));
+      expect(script, contains('SetupIconFile={{SETUP_ICON_FILE}}'));
+    });
+
+    test('builds the setup icon from the branded runner icon', () {
+      final config =
+          loadYaml(
+                File(
+                  'windows/packaging/exe/make_config.yaml',
+                ).readAsStringSync(),
+              )
+              as YamlMap;
+
+      expect(
+        config['setup_icon_file'],
+        r'windows\runner\resources\app_icon.ico',
+      );
+      expect(
+        File('windows/runner/resources/app_icon.ico').readAsBytesSync(),
+        File('assets/images/icon.ico').readAsBytesSync(),
+      );
+      expect(config['publisher_name'], 'Panorama Scholarly Group');
+      expect(config['display_name'], 'Panorama Secure Access');
+    });
+  });
 }

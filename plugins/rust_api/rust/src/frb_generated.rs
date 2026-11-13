@@ -41,7 +41,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -134665022;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1173586028;
 
 // Section: executor
 
@@ -1257,6 +1257,43 @@ fn wire__crate__api__script__evaluate_script_impl(
         },
     )
 }
+fn wire__crate__api__backup__extract_backup_archive_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "extract_backup_archive",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_archive_path = <String>::sse_decode(&mut deserializer);
+            let api_staging_dir = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::backup::ArchiveError>((move || {
+                    let output_ok = crate::api::backup::extract_backup_archive(
+                        api_archive_path,
+                        api_staging_dir,
+                    )?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 fn wire__crate__api__editor__folds_compute_all_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -2219,6 +2256,42 @@ fn wire__crate__api__netdiag__pick_local_address_impl(
         },
     )
 }
+fn wire__crate__api__netdiag__probe_failure_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "probe_failure",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_stage = <crate::api::netdiag::ProbeStage>::sse_decode(&mut deserializer);
+            let api_errno = <Option<i32>>::sse_decode(&mut deserializer);
+            let api_timed_out = <bool>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let output_ok = Ok::<_, ()>(crate::api::netdiag::probe_failure(
+                    api_stage,
+                    api_errno,
+                    api_timed_out,
+                ))?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
 fn wire__crate__api__hotkey__set_hot_keys_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -2288,6 +2361,37 @@ fn wire__crate__api__netcfg__subtract_cidrs_impl(
                     std::result::Result::Ok(output_ok)
                 })())
             }
+        },
+    )
+}
+fn wire__crate__api__netdiag__summarize_probes_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "summarize_probes",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_results =
+                <Vec<Option<crate::api::netdiag::ProbeFailure>>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let output_ok = Ok::<_, ()>(crate::api::netdiag::summarize_probes(api_results))?;
+                std::result::Result::Ok(output_ok)
+            })())
         },
     )
 }
@@ -2528,6 +2632,19 @@ impl SseDecode for String {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <Vec<u8>>::sse_decode(deserializer);
         return String::from_utf8(inner).unwrap();
+    }
+}
+
+impl SseDecode for crate::api::backup::ArchiveError {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::backup::ArchiveError::Invalid,
+            1 => crate::api::backup::ArchiveError::TooLarge,
+            2 => crate::api::backup::ArchiveError::Io,
+            _ => unreachable!("Invalid variant for ArchiveError: {}", inner),
+        };
     }
 }
 
@@ -2893,6 +3010,20 @@ impl SseDecode for Vec<crate::api::netdiag::LocalInterface> {
     }
 }
 
+impl SseDecode for Vec<Option<crate::api::netdiag::ProbeFailure>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<Option<crate::api::netdiag::ProbeFailure>>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<u8> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2982,11 +3113,35 @@ impl SseDecode for Option<String> {
     }
 }
 
+impl SseDecode for Option<i32> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<i32>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<crate::api::lifecycle::LifecycleOutcome> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<crate::api::lifecycle::LifecycleOutcome>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<crate::api::netdiag::ProbeFailure> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::api::netdiag::ProbeFailure>::sse_decode(
                 deserializer,
             ));
         } else {
@@ -3036,6 +3191,36 @@ impl SseDecode for Option<Vec<u8>> {
         } else {
             return None;
         }
+    }
+}
+
+impl SseDecode for crate::api::netdiag::ProbeFailure {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::netdiag::ProbeFailure::NotConfigured,
+            1 => crate::api::netdiag::ProbeFailure::Unreachable,
+            2 => crate::api::netdiag::ProbeFailure::Refused,
+            3 => crate::api::netdiag::ProbeFailure::Timeout,
+            4 => crate::api::netdiag::ProbeFailure::Tls,
+            5 => crate::api::netdiag::ProbeFailure::HostLookup,
+            6 => crate::api::netdiag::ProbeFailure::Unknown,
+            _ => unreachable!("Invalid variant for ProbeFailure: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::api::netdiag::ProbeStage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::netdiag::ProbeStage::Lookup,
+            1 => crate::api::netdiag::ProbeStage::Connect,
+            2 => crate::api::netdiag::ProbeStage::Handshake,
+            _ => unreachable!("Invalid variant for ProbeStage: {}", inner),
+        };
     }
 }
 
@@ -3156,13 +3341,16 @@ fn pde_ffi_dispatcher_primary_impl(
         21 => wire__crate__api__editor__RopeUpload_finish_impl(port, ptr, rust_vec_len, data_len),
         23 => wire__crate__api__editor__RopeUpload_push_impl(port, ptr, rust_vec_len, data_len),
         27 => wire__crate__api__script__evaluate_script_impl(port, ptr, rust_vec_len, data_len),
-        28 => wire__crate__api__editor__folds_compute_all_impl(port, ptr, rust_vec_len, data_len),
-        31 => wire__crate__api__hotkey__hot_key_events_impl(port, ptr, rust_vec_len, data_len),
-        33 => wire__crate__api__init__init_app_impl(port, ptr, rust_vec_len, data_len),
-        55 => wire__crate__api__hotkey__set_hot_keys_impl(port, ptr, rust_vec_len, data_len),
-        56 => wire__crate__api__netcfg__subtract_cidrs_impl(port, ptr, rust_vec_len, data_len),
-        57 => wire__crate__api__charset__transcode_charset_impl(port, ptr, rust_vec_len, data_len),
-        58 => wire__crate__api__editor__words_extract_impl(port, ptr, rust_vec_len, data_len),
+        28 => {
+            wire__crate__api__backup__extract_backup_archive_impl(port, ptr, rust_vec_len, data_len)
+        }
+        29 => wire__crate__api__editor__folds_compute_all_impl(port, ptr, rust_vec_len, data_len),
+        32 => wire__crate__api__hotkey__hot_key_events_impl(port, ptr, rust_vec_len, data_len),
+        34 => wire__crate__api__init__init_app_impl(port, ptr, rust_vec_len, data_len),
+        57 => wire__crate__api__hotkey__set_hot_keys_impl(port, ptr, rust_vec_len, data_len),
+        58 => wire__crate__api__netcfg__subtract_cidrs_impl(port, ptr, rust_vec_len, data_len),
+        60 => wire__crate__api__charset__transcode_charset_impl(port, ptr, rust_vec_len, data_len),
+        61 => wire__crate__api__editor__words_extract_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -3197,52 +3385,54 @@ fn pde_ffi_dispatcher_sync_impl(
         24 => wire__crate__api__netdiag__core_failure_kind_impl(ptr, rust_vec_len, data_len),
         25 => wire__crate__api__netdiag__dns_apply_route_impl(ptr, rust_vec_len, data_len),
         26 => wire__crate__api__netdiag__dns_patched_servers_impl(ptr, rust_vec_len, data_len),
-        29 => {
+        30 => {
             wire__crate__api__editor__folds_find_matching_bracket_impl(ptr, rust_vec_len, data_len)
         }
-        30 => wire__crate__api__editor__guides_compute_viewport_impl(ptr, rust_vec_len, data_len),
-        32 => wire__crate__api__netdiag__http_status_class_impl(ptr, rust_vec_len, data_len),
-        34 => wire__crate__api__netcfg__is_cidr_impl(ptr, rust_vec_len, data_len),
-        35 => wire__crate__api__netcfg__is_host_impl(ptr, rust_vec_len, data_len),
-        36 => wire__crate__api__netcfg__is_ip_matcher_impl(ptr, rust_vec_len, data_len),
-        37 => wire__crate__api__install__is_legacy_deb_status_impl(ptr, rust_vec_len, data_len),
-        38 => wire__crate__api__install__is_legacy_mac_bundle_impl(ptr, rust_vec_len, data_len),
-        39 => wire__crate__api__install__is_legacy_rpm_packager_impl(ptr, rust_vec_len, data_len),
-        40 => wire__crate__api__netcfg__is_listen_address_impl(ptr, rust_vec_len, data_len),
-        41 => wire__crate__api__netcfg__is_port_range_impl(ptr, rust_vec_len, data_len),
-        42 => wire__crate__api__install__is_transient_entry_impl(ptr, rust_vec_len, data_len),
-        43 => wire__crate__api__install__legacy_data_directories_impl(ptr, rust_vec_len, data_len),
-        44 => {
+        31 => wire__crate__api__editor__guides_compute_viewport_impl(ptr, rust_vec_len, data_len),
+        33 => wire__crate__api__netdiag__http_status_class_impl(ptr, rust_vec_len, data_len),
+        35 => wire__crate__api__netcfg__is_cidr_impl(ptr, rust_vec_len, data_len),
+        36 => wire__crate__api__netcfg__is_host_impl(ptr, rust_vec_len, data_len),
+        37 => wire__crate__api__netcfg__is_ip_matcher_impl(ptr, rust_vec_len, data_len),
+        38 => wire__crate__api__install__is_legacy_deb_status_impl(ptr, rust_vec_len, data_len),
+        39 => wire__crate__api__install__is_legacy_mac_bundle_impl(ptr, rust_vec_len, data_len),
+        40 => wire__crate__api__install__is_legacy_rpm_packager_impl(ptr, rust_vec_len, data_len),
+        41 => wire__crate__api__netcfg__is_listen_address_impl(ptr, rust_vec_len, data_len),
+        42 => wire__crate__api__netcfg__is_port_range_impl(ptr, rust_vec_len, data_len),
+        43 => wire__crate__api__install__is_transient_entry_impl(ptr, rust_vec_len, data_len),
+        44 => wire__crate__api__install__legacy_data_directories_impl(ptr, rust_vec_len, data_len),
+        45 => {
             wire__crate__api__lifecycle__lifecycle_command_outcome_impl(ptr, rust_vec_len, data_len)
         }
-        45 => wire__crate__api__lifecycle__lifecycle_disconnect_reaction_impl(
+        46 => wire__crate__api__lifecycle__lifecycle_disconnect_reaction_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        46 => {
+        47 => {
             wire__crate__api__lifecycle__lifecycle_plan_reconcile_impl(ptr, rust_vec_len, data_len)
         }
-        47 => wire__crate__api__lifecycle__lifecycle_satisfies_impl(ptr, rust_vec_len, data_len),
-        48 => wire__crate__api__lifecycle__lifecycle_transport_needs_replacement_impl(
+        48 => wire__crate__api__lifecycle__lifecycle_satisfies_impl(ptr, rust_vec_len, data_len),
+        49 => wire__crate__api__lifecycle__lifecycle_transport_needs_replacement_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        49 => wire__crate__api__lifecycle__lifecycle_transport_usable_impl(
+        50 => wire__crate__api__lifecycle__lifecycle_transport_usable_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        50 => wire__crate__api__lifecycle__lifecycle_unconfirmed_lease_may_fail_impl(
+        51 => wire__crate__api__lifecycle__lifecycle_unconfirmed_lease_may_fail_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        51 => wire__crate__api__install__linux_removal_script_impl(ptr, rust_vec_len, data_len),
-        52 => wire__crate__api__netdiag__network_change_reaction_impl(ptr, rust_vec_len, data_len),
-        53 => wire__crate__api__install__pick_import_source_impl(ptr, rust_vec_len, data_len),
-        54 => wire__crate__api__netdiag__pick_local_address_impl(ptr, rust_vec_len, data_len),
+        52 => wire__crate__api__install__linux_removal_script_impl(ptr, rust_vec_len, data_len),
+        53 => wire__crate__api__netdiag__network_change_reaction_impl(ptr, rust_vec_len, data_len),
+        54 => wire__crate__api__install__pick_import_source_impl(ptr, rust_vec_len, data_len),
+        55 => wire__crate__api__netdiag__pick_local_address_impl(ptr, rust_vec_len, data_len),
+        56 => wire__crate__api__netdiag__probe_failure_impl(ptr, rust_vec_len, data_len),
+        59 => wire__crate__api__netdiag__summarize_probes_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -3294,6 +3484,28 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<RopeUpload>> for RopeUpload {
     }
 }
 
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<crate::api::backup::ArchiveError> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            crate::api::backup::ArchiveError::Invalid => 0.into_dart(),
+            crate::api::backup::ArchiveError::TooLarge => 1.into_dart(),
+            crate::api::backup::ArchiveError::Io => 2.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<crate::api::backup::ArchiveError>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<crate::api::backup::ArchiveError>>
+    for crate::api::backup::ArchiveError
+{
+    fn into_into_dart(self) -> FrbWrapper<crate::api::backup::ArchiveError> {
+        self.into()
+    }
+}
 // Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for FrbWrapper<crate::api::install::DataCandidate> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
@@ -3735,6 +3947,54 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<crate::api::netdiag::NetworkCh
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<crate::api::netdiag::ProbeFailure> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            crate::api::netdiag::ProbeFailure::NotConfigured => 0.into_dart(),
+            crate::api::netdiag::ProbeFailure::Unreachable => 1.into_dart(),
+            crate::api::netdiag::ProbeFailure::Refused => 2.into_dart(),
+            crate::api::netdiag::ProbeFailure::Timeout => 3.into_dart(),
+            crate::api::netdiag::ProbeFailure::Tls => 4.into_dart(),
+            crate::api::netdiag::ProbeFailure::HostLookup => 5.into_dart(),
+            crate::api::netdiag::ProbeFailure::Unknown => 6.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<crate::api::netdiag::ProbeFailure>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<crate::api::netdiag::ProbeFailure>>
+    for crate::api::netdiag::ProbeFailure
+{
+    fn into_into_dart(self) -> FrbWrapper<crate::api::netdiag::ProbeFailure> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<crate::api::netdiag::ProbeStage> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            crate::api::netdiag::ProbeStage::Lookup => 0.into_dart(),
+            crate::api::netdiag::ProbeStage::Connect => 1.into_dart(),
+            crate::api::netdiag::ProbeStage::Handshake => 2.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<crate::api::netdiag::ProbeStage>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<crate::api::netdiag::ProbeStage>>
+    for crate::api::netdiag::ProbeStage
+{
+    fn into_into_dart(self) -> FrbWrapper<crate::api::netdiag::ProbeStage> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for FrbWrapper<crate::api::lifecycle::ReconcilePlan> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -3916,6 +4176,23 @@ impl SseEncode for String {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Vec<u8>>::sse_encode(self.into_bytes(), serializer);
+    }
+}
+
+impl SseEncode for crate::api::backup::ArchiveError {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::backup::ArchiveError::Invalid => 0,
+                crate::api::backup::ArchiveError::TooLarge => 1,
+                crate::api::backup::ArchiveError::Io => 2,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
     }
 }
 
@@ -4270,6 +4547,16 @@ impl SseEncode for Vec<crate::api::netdiag::LocalInterface> {
     }
 }
 
+impl SseEncode for Vec<Option<crate::api::netdiag::ProbeFailure>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <Option<crate::api::netdiag::ProbeFailure>>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<u8> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -4336,12 +4623,32 @@ impl SseEncode for Option<String> {
     }
 }
 
+impl SseEncode for Option<i32> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <i32>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<crate::api::lifecycle::LifecycleOutcome> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <crate::api::lifecycle::LifecycleOutcome>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<crate::api::netdiag::ProbeFailure> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::netdiag::ProbeFailure>::sse_encode(value, serializer);
         }
     }
 }
@@ -4383,6 +4690,44 @@ impl SseEncode for Option<Vec<u8>> {
         if let Some(value) = self {
             <Vec<u8>>::sse_encode(value, serializer);
         }
+    }
+}
+
+impl SseEncode for crate::api::netdiag::ProbeFailure {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::netdiag::ProbeFailure::NotConfigured => 0,
+                crate::api::netdiag::ProbeFailure::Unreachable => 1,
+                crate::api::netdiag::ProbeFailure::Refused => 2,
+                crate::api::netdiag::ProbeFailure::Timeout => 3,
+                crate::api::netdiag::ProbeFailure::Tls => 4,
+                crate::api::netdiag::ProbeFailure::HostLookup => 5,
+                crate::api::netdiag::ProbeFailure::Unknown => 6,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::api::netdiag::ProbeStage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::netdiag::ProbeStage::Lookup => 0,
+                crate::api::netdiag::ProbeStage::Connect => 1,
+                crate::api::netdiag::ProbeStage::Handshake => 2,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
     }
 }
 

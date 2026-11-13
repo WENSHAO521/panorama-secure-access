@@ -6,6 +6,7 @@
 // Static analysis wrongly picks the IO variant, thus ignore this
 // ignore_for_file: argument_type_not_assignable
 
+import 'api/backup.dart';
 import 'api/charset.dart';
 import 'api/editor.dart';
 import 'api/hotkey.dart';
@@ -110,10 +111,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
+  ArchiveError dco_decode_archive_error(dynamic raw);
+
+  @protected
   bool dco_decode_bool(dynamic raw);
 
   @protected
+  int dco_decode_box_autoadd_i_32(dynamic raw);
+
+  @protected
   LifecycleOutcome dco_decode_box_autoadd_lifecycle_outcome(dynamic raw);
+
+  @protected
+  ProbeFailure dco_decode_box_autoadd_probe_failure(dynamic raw);
 
   @protected
   int dco_decode_box_autoadd_u_32(dynamic raw);
@@ -203,6 +213,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<LocalInterface> dco_decode_list_local_interface(dynamic raw);
 
   @protected
+  List<ProbeFailure?> dco_decode_list_opt_box_autoadd_probe_failure(
+    dynamic raw,
+  );
+
+  @protected
   List<int> dco_decode_list_prim_u_8_loose(dynamic raw);
 
   @protected
@@ -227,7 +242,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String? dco_decode_opt_String(dynamic raw);
 
   @protected
+  int? dco_decode_opt_box_autoadd_i_32(dynamic raw);
+
+  @protected
   LifecycleOutcome? dco_decode_opt_box_autoadd_lifecycle_outcome(dynamic raw);
+
+  @protected
+  ProbeFailure? dco_decode_opt_box_autoadd_probe_failure(dynamic raw);
 
   @protected
   int? dco_decode_opt_box_autoadd_u_32(dynamic raw);
@@ -240,6 +261,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Uint8List? dco_decode_opt_list_prim_u_8_strict(dynamic raw);
+
+  @protected
+  ProbeFailure dco_decode_probe_failure(dynamic raw);
+
+  @protected
+  ProbeStage dco_decode_probe_stage(dynamic raw);
 
   @protected
   ReconcilePlan dco_decode_reconcile_plan(dynamic raw);
@@ -344,10 +371,21 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
+  ArchiveError sse_decode_archive_error(SseDeserializer deserializer);
+
+  @protected
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
+  int sse_decode_box_autoadd_i_32(SseDeserializer deserializer);
+
+  @protected
   LifecycleOutcome sse_decode_box_autoadd_lifecycle_outcome(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  ProbeFailure sse_decode_box_autoadd_probe_failure(
     SseDeserializer deserializer,
   );
 
@@ -457,6 +495,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  List<ProbeFailure?> sse_decode_list_opt_box_autoadd_probe_failure(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer);
 
   @protected
@@ -487,7 +530,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String? sse_decode_opt_String(SseDeserializer deserializer);
 
   @protected
+  int? sse_decode_opt_box_autoadd_i_32(SseDeserializer deserializer);
+
+  @protected
   LifecycleOutcome? sse_decode_opt_box_autoadd_lifecycle_outcome(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  ProbeFailure? sse_decode_opt_box_autoadd_probe_failure(
     SseDeserializer deserializer,
   );
 
@@ -502,6 +553,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Uint8List? sse_decode_opt_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  ProbeFailure sse_decode_probe_failure(SseDeserializer deserializer);
+
+  @protected
+  ProbeStage sse_decode_probe_stage(SseDeserializer deserializer);
 
   @protected
   ReconcilePlan sse_decode_reconcile_plan(SseDeserializer deserializer);
@@ -625,11 +682,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
+  void sse_encode_archive_error(ArchiveError self, SseSerializer serializer);
+
+  @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_i_32(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_lifecycle_outcome(
     LifecycleOutcome self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_probe_failure(
+    ProbeFailure self,
     SseSerializer serializer,
   );
 
@@ -769,6 +838,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_list_opt_box_autoadd_probe_failure(
+    List<ProbeFailure?> self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_list_prim_u_8_loose(List<int> self, SseSerializer serializer);
 
   @protected
@@ -808,8 +883,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_opt_String(String? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_box_autoadd_i_32(int? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_box_autoadd_lifecycle_outcome(
     LifecycleOutcome? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_probe_failure(
+    ProbeFailure? self,
     SseSerializer serializer,
   );
 
@@ -827,6 +911,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     Uint8List? self,
     SseSerializer serializer,
   );
+
+  @protected
+  void sse_encode_probe_failure(ProbeFailure self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_probe_stage(ProbeStage self, SseSerializer serializer);
 
   @protected
   void sse_encode_reconcile_plan(ReconcilePlan self, SseSerializer serializer);

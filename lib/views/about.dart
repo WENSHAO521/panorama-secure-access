@@ -25,16 +25,15 @@ Future<void> checkUpdateByUser(BuildContext context, WidgetRef ref) async {
     return;
   }
   final commonAction = ref.read(commonActionProvider.notifier);
+  final beta = ref.read(appSettingProvider).betaUpdates;
   final result = await globalState.loadingRun(
-    () async => (
-      release: await request.checkForUpdate(
-        beta: ref.read(appSettingProvider).betaUpdates,
-      ),
-    ),
+    () async => (release: await request.checkForUpdate(beta: beta)),
     title: context.appLocalizations.checkUpdate,
     tag: LoadingTag.checkUpdate,
   );
-  if (result == null) return;
+  if (result == null || ref.read(appSettingProvider).betaUpdates != beta) {
+    return;
+  }
   unawaited(
     commonAction.checkUpdateResultHandle(data: result.release, isUser: true),
   );

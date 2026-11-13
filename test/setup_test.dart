@@ -1,6 +1,7 @@
 import 'package:test/test.dart';
 
 import '../setup.dart' as setup;
+import '../tool/release_version.dart';
 
 void main() {
   group('setup.dart', () {
@@ -41,21 +42,32 @@ void main() {
       expect(args, ['dart-define-from-file=env.json', 'split-per-abi']);
     });
 
-    test('names an Android beta after its tag', () {
+    test('passes every platform the build name and number of the tag', () {
+      final release = ReleaseVersion.parse(
+        'v3.5.9-beta.300',
+        buildTime: DateTime.utc(2026, 11, 13, 5, 20),
+        runNumber: 300,
+      );
+      List<String> argsFor(String platform) => setup.createFlutterBuildArgs(
+        platform: platform,
+        verbose: false,
+        release: release,
+      );
+
       expect(
-        setup.createFlutterBuildArgs(
-          platform: 'android',
-          verbose: false,
-          releaseTag: 'v3.5.9-beta.300',
-        ),
-        contains('build-name=3.5.9-beta.300'),
+        argsFor('android'),
+        containsAll(['build-name=3.5.9-beta.300', 'build-number=2026111321']),
       );
       expect(
-        setup.createFlutterBuildArgs(
-          platform: 'android',
-          verbose: false,
-          releaseTag: 'v3.5.9',
-        ),
+        argsFor('windows'),
+        containsAll(['build-name=3.5.9-beta.300', 'build-number=300']),
+      );
+      expect(
+        argsFor('macos'),
+        containsAll(['build-name=3.5.9', 'build-number=2026111321']),
+      );
+      expect(
+        setup.createFlutterBuildArgs(platform: 'linux', verbose: false),
         isNot(contains(startsWith('build-name='))),
       );
     });

@@ -384,7 +384,24 @@ class MessageLookup extends MessageLookupByLibrary {
       "1行に1つのURLを入力してください",
     ),
     "betaChannel": MessageLookupByLibrary.simpleMessage("ベータ版"),
+    "betaChannelSaveFailed": MessageLookupByLibrary.simpleMessage(
+      "設定を保存できなかったため、更新チャネルは変更されていません。",
+    ),
+    "betaJoinConfirm": MessageLookupByLibrary.simpleMessage("参加する"),
+    "betaJoinConfirmDesc": MessageLookupByLibrary.simpleMessage(
+      "ベータ版では新機能をいち早く利用できますが、安定性が低かったり、一部のプロファイル、ルール、システムで動作しなかったりすることがあります。いつでも退出できます。",
+    ),
+    "betaJoinConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "ベータプログラムに参加しますか？",
+    ),
     "betaJoinedTip": MessageLookupByLibrary.simpleMessage("ベータ版のアップデートを受け取ります"),
+    "betaLeaveConfirm": MessageLookupByLibrary.simpleMessage("退出する"),
+    "betaLeaveConfirmDesc": MessageLookupByLibrary.simpleMessage(
+      "ベータ版の更新は届かなくなります。インストール済みのベータ版は削除もダウングレードもされず、同じかより新しい正式版が公開されると正式版に戻ります。",
+    ),
+    "betaLeaveConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "ベータプログラムを退出しますか？",
+    ),
     "betaNotJoinedTip": MessageLookupByLibrary.simpleMessage(
       "正式版のアップデートのみ受け取ります",
     ),
@@ -395,6 +412,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "betaProgramFooter": MessageLookupByLibrary.simpleMessage(
       "ベータが終了し、同じかそれ以降のバージョンの正式版がリリースされると、アプリは自動的に正式版へ更新されます。いつでも退出でき、退出後はその正式版が出るまで現在のベータ版を使い続けます。",
     ),
+    "betaStay": MessageLookupByLibrary.simpleMessage("ベータ版を続ける"),
     "betaUpdates": MessageLookupByLibrary.simpleMessage("ベータ版に参加"),
     "binaryData": MessageLookupByLibrary.simpleMessage("バイナリデータ"),
     "bind": MessageLookupByLibrary.simpleMessage("連携"),
@@ -558,6 +576,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "customTrafficInvalidDesc": MessageLookupByLibrary.simpleMessage(
       "0 より大きい通信量を入力してください",
     ),
+    "customTrafficTooLargeDesc": MessageLookupByLibrary.simpleMessage(
+      "1024 TB 以下で入力してください",
+    ),
     "cut": MessageLookupByLibrary.simpleMessage("切り取り"),
     "dark": MessageLookupByLibrary.simpleMessage("ダーク"),
     "dashboard": MessageLookupByLibrary.simpleMessage("ダッシュボード"),
@@ -602,17 +623,29 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "diagnosisCore": MessageLookupByLibrary.simpleMessage("コア"),
     "diagnosisDns": MessageLookupByLibrary.simpleMessage("DNS 解決"),
+    "diagnosisFailed": MessageLookupByLibrary.simpleMessage("失敗"),
+    "diagnosisHostLookup": MessageLookupByLibrary.simpleMessage("名前解決に失敗"),
     "diagnosisIpv4": MessageLookupByLibrary.simpleMessage("IPv4 接続"),
     "diagnosisIpv6": MessageLookupByLibrary.simpleMessage("IPv6 接続"),
     "diagnosisMixedPort": MessageLookupByLibrary.simpleMessage("プロキシポート"),
+    "diagnosisNotConfigured": MessageLookupByLibrary.simpleMessage(
+      "このネットワークでは未設定",
+    ),
     "diagnosisOtherClients": MessageLookupByLibrary.simpleMessage(
       "他のプロキシクライアント",
+    ),
+    "diagnosisProxyFault": MessageLookupByLibrary.simpleMessage(
+      "プロキシがエラーを返しました",
     ),
     "diagnosisProxyRequest": MessageLookupByLibrary.simpleMessage(
       "プロキシ経由のアクセス",
     ),
+    "diagnosisRefused": MessageLookupByLibrary.simpleMessage("接続が拒否されました"),
     "diagnosisSystemProxy": MessageLookupByLibrary.simpleMessage("システムプロキシ"),
+    "diagnosisTimeout": MessageLookupByLibrary.simpleMessage("タイムアウト"),
+    "diagnosisTls": MessageLookupByLibrary.simpleMessage("TLS ハンドシェイクに失敗"),
     "diagnosisTun": MessageLookupByLibrary.simpleMessage("TUN の権限"),
+    "diagnosisUnreachable": MessageLookupByLibrary.simpleMessage("経路なし"),
     "dialerProxy": MessageLookupByLibrary.simpleMessage("ダイヤラープロキシ"),
     "dialerProxyLoopStopped": m26,
     "dialog": MessageLookupByLibrary.simpleMessage("ダイアログ"),
@@ -976,6 +1009,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "アプリ一覧の権限が必要です",
     ),
     "installedFonts": MessageLookupByLibrary.simpleMessage("インストール済みのフォント"),
+    "installedVersion": MessageLookupByLibrary.simpleMessage("インストール済みのバージョン"),
     "intelligentSelected": MessageLookupByLibrary.simpleMessage("スマート選択"),
     "interfaceName": MessageLookupByLibrary.simpleMessage("インターフェース名"),
     "interfaceNameMode": MessageLookupByLibrary.simpleMessage(
@@ -1939,6 +1973,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("名称未設定"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("固定を解除"),
     "update": MessageLookupByLibrary.simpleMessage("更新"),
+    "updateChannel": MessageLookupByLibrary.simpleMessage("更新チャネル"),
     "updateDownloadFailed": MessageLookupByLibrary.simpleMessage(
       "更新をダウンロードできませんでした。",
     ),

@@ -462,8 +462,25 @@ class MessageLookup extends MessageLookupByLibrary {
       "По одному URL на строку",
     ),
     "betaChannel": MessageLookupByLibrary.simpleMessage("Бета"),
+    "betaChannelSaveFailed": MessageLookupByLibrary.simpleMessage(
+      "Не удалось сохранить настройку, канал обновлений не изменён.",
+    ),
+    "betaJoinConfirm": MessageLookupByLibrary.simpleMessage("Присоединиться"),
+    "betaJoinConfirmDesc": MessageLookupByLibrary.simpleMessage(
+      "Бета-версии первыми получают новые функции, но могут быть менее стабильны и работать не со всеми профилями, правилами и системами. Выйти можно в любой момент.",
+    ),
+    "betaJoinConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "Присоединиться к бета-программе?",
+    ),
     "betaJoinedTip": MessageLookupByLibrary.simpleMessage(
       "Вы получаете бета-обновления",
+    ),
+    "betaLeaveConfirm": MessageLookupByLibrary.simpleMessage("Выйти"),
+    "betaLeaveConfirmDesc": MessageLookupByLibrary.simpleMessage(
+      "Бета-обновления перестанут приходить. Установленная бета-версия не удаляется и не откатывается: она остаётся до выхода стабильной версии того же или более нового номера, после чего приложение вернётся на стабильный канал.",
+    ),
+    "betaLeaveConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "Выйти из бета-программы?",
     ),
     "betaNotJoinedTip": MessageLookupByLibrary.simpleMessage(
       "Вы получаете только стабильные обновления",
@@ -475,6 +492,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "betaProgramFooter": MessageLookupByLibrary.simpleMessage(
       "Когда бета закончится и выйдет стабильный релиз той же или более новой версии, приложение обновится до него автоматически. Выйти можно в любой момент: текущая бета останется до выхода этого стабильного релиза, затем приложение вернётся на него.",
     ),
+    "betaStay": MessageLookupByLibrary.simpleMessage("Остаться в бете"),
     "betaUpdates": MessageLookupByLibrary.simpleMessage(
       "Участвовать в бета-тестировании",
     ),
@@ -678,6 +696,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "customTrafficInvalidDesc": MessageLookupByLibrary.simpleMessage(
       "Введите объём трафика больше 0",
     ),
+    "customTrafficTooLargeDesc": MessageLookupByLibrary.simpleMessage(
+      "Введите не более 1024 ТБ",
+    ),
     "cut": MessageLookupByLibrary.simpleMessage("Вырезать"),
     "dark": MessageLookupByLibrary.simpleMessage("Тёмная"),
     "dashboard": MessageLookupByLibrary.simpleMessage("Панель"),
@@ -732,19 +753,39 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "diagnosisCore": MessageLookupByLibrary.simpleMessage("Ядро"),
     "diagnosisDns": MessageLookupByLibrary.simpleMessage("Разрешение DNS"),
+    "diagnosisFailed": MessageLookupByLibrary.simpleMessage("Ошибка"),
+    "diagnosisHostLookup": MessageLookupByLibrary.simpleMessage(
+      "Не удалось разрешить имя",
+    ),
     "diagnosisIpv4": MessageLookupByLibrary.simpleMessage("Связь по IPv4"),
     "diagnosisIpv6": MessageLookupByLibrary.simpleMessage("Связь по IPv6"),
     "diagnosisMixedPort": MessageLookupByLibrary.simpleMessage("Порт прокси"),
+    "diagnosisNotConfigured": MessageLookupByLibrary.simpleMessage(
+      "Не настроено в этой сети",
+    ),
     "diagnosisOtherClients": MessageLookupByLibrary.simpleMessage(
       "Другие прокси-клиенты",
+    ),
+    "diagnosisProxyFault": MessageLookupByLibrary.simpleMessage(
+      "Прокси вернул ошибку",
     ),
     "diagnosisProxyRequest": MessageLookupByLibrary.simpleMessage(
       "Запрос через прокси",
     ),
+    "diagnosisRefused": MessageLookupByLibrary.simpleMessage(
+      "Соединение отклонено",
+    ),
     "diagnosisSystemProxy": MessageLookupByLibrary.simpleMessage(
       "Системный прокси",
     ),
+    "diagnosisTimeout": MessageLookupByLibrary.simpleMessage("Тайм-аут"),
+    "diagnosisTls": MessageLookupByLibrary.simpleMessage(
+      "Ошибка TLS-рукопожатия",
+    ),
     "diagnosisTun": MessageLookupByLibrary.simpleMessage("Разрешение TUN"),
+    "diagnosisUnreachable": MessageLookupByLibrary.simpleMessage(
+      "Нет маршрута",
+    ),
     "dialerProxy": MessageLookupByLibrary.simpleMessage(
       "Прокси для подключения",
     ),
@@ -1188,6 +1229,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "installedFonts": MessageLookupByLibrary.simpleMessage(
       "Установленные шрифты",
+    ),
+    "installedVersion": MessageLookupByLibrary.simpleMessage(
+      "Установленная версия",
     ),
     "intelligentSelected": MessageLookupByLibrary.simpleMessage("Умный выбор"),
     "interfaceName": MessageLookupByLibrary.simpleMessage("Имя интерфейса"),
@@ -2370,6 +2414,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("Без названия"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("Открепить окно"),
     "update": MessageLookupByLibrary.simpleMessage("Обновить"),
+    "updateChannel": MessageLookupByLibrary.simpleMessage("Канал обновлений"),
     "updateDownloadFailed": MessageLookupByLibrary.simpleMessage(
       "Не удалось загрузить обновление.",
     ),

@@ -52,7 +52,9 @@ class GlobalState {
 
   String get ua => container
       .read(patchClashConfigProvider.select((state) => state.globalUa))
-      .takeFirstValid([packageInfo.ua]);
+      .takeFirstValid([defaultUa]);
+
+  String get defaultUa => appUserAgent(appVersion);
 
   Future<T?> loadingRun<T>(
     FutureOr<T> Function() futureFunction, {

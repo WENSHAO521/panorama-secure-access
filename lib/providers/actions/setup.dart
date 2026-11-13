@@ -519,7 +519,7 @@ class SetupAction extends _$SetupAction {
         pinnedGeoXUrl: const <String, String>{},
       );
     }
-    final defaultUA = globalState.packageInfo.ua;
+    final defaultUA = globalState.defaultUa;
     final networkSetting = ref.read(
       networkSettingProvider.select(
         (state) => (

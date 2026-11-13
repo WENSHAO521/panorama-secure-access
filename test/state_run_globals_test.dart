@@ -43,8 +43,16 @@ void main() {
     test('falls back to the package user agent when none is configured', () {
       setGlobalUa('');
 
-      expect(globalState.ua, _packageInfo.ua);
+      expect(globalState.ua, appUserAgent('1.2.3'));
       expect(globalState.ua, contains('$appName/v1.2.3'));
+    });
+
+    test('names the beta a release build was tagged with', () {
+      setGlobalUa('');
+      globalState.releaseTag = 'v1.2.4-beta.7';
+      addTearDown(() => globalState.releaseTag = '');
+
+      expect(globalState.ua, contains('$appName/v1.2.4-beta.7'));
     });
 
     test('prefers the configured global user agent', () {
@@ -56,7 +64,7 @@ void main() {
     test('treats a blank configured user agent as unset', () {
       setGlobalUa('   ');
 
-      expect(globalState.ua, _packageInfo.ua);
+      expect(globalState.ua, appUserAgent('1.2.3'));
     });
   });
 

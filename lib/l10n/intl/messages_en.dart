@@ -447,8 +447,25 @@ class MessageLookup extends MessageLookupByLibrary {
       "One URL per line",
     ),
     "betaChannel": MessageLookupByLibrary.simpleMessage("Beta"),
+    "betaChannelSaveFailed": MessageLookupByLibrary.simpleMessage(
+      "The setting could not be saved, so the update channel is unchanged.",
+    ),
+    "betaJoinConfirm": MessageLookupByLibrary.simpleMessage("Join"),
+    "betaJoinConfirmDesc": MessageLookupByLibrary.simpleMessage(
+      "Beta builds get new features first, but they can be less stable and may not work with every profile, rule set or system. You can leave at any time.",
+    ),
+    "betaJoinConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "Join the beta program?",
+    ),
     "betaJoinedTip": MessageLookupByLibrary.simpleMessage(
       "You receive beta updates",
+    ),
+    "betaLeaveConfirm": MessageLookupByLibrary.simpleMessage("Leave"),
+    "betaLeaveConfirmDesc": MessageLookupByLibrary.simpleMessage(
+      "You will stop receiving beta updates. The installed beta is not removed or downgraded: you keep it until a stable release of the same or a newer version ships, then the app returns to stable.",
+    ),
+    "betaLeaveConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "Leave the beta program?",
     ),
     "betaNotJoinedTip": MessageLookupByLibrary.simpleMessage(
       "You receive stable updates only",
@@ -460,6 +477,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "betaProgramFooter": MessageLookupByLibrary.simpleMessage(
       "When the beta ends and a stable release of the same or a newer version ships, the app updates to it automatically. You can leave at any time: you keep the current beta until that stable release is out, then return to it.",
     ),
+    "betaStay": MessageLookupByLibrary.simpleMessage("Keep the beta"),
     "betaUpdates": MessageLookupByLibrary.simpleMessage("Join the beta"),
     "binaryData": MessageLookupByLibrary.simpleMessage("Binary data"),
     "bind": MessageLookupByLibrary.simpleMessage("Bind"),
@@ -649,6 +667,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "customTrafficInvalidDesc": MessageLookupByLibrary.simpleMessage(
       "Enter a traffic amount above 0",
     ),
+    "customTrafficTooLargeDesc": MessageLookupByLibrary.simpleMessage(
+      "Enter at most 1024 TB",
+    ),
     "cut": MessageLookupByLibrary.simpleMessage("Cut"),
     "dark": MessageLookupByLibrary.simpleMessage("Dark"),
     "dashboard": MessageLookupByLibrary.simpleMessage("Dashboard"),
@@ -703,19 +724,37 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "diagnosisCore": MessageLookupByLibrary.simpleMessage("Core"),
     "diagnosisDns": MessageLookupByLibrary.simpleMessage("DNS resolution"),
+    "diagnosisFailed": MessageLookupByLibrary.simpleMessage("Failed"),
+    "diagnosisHostLookup": MessageLookupByLibrary.simpleMessage(
+      "Name lookup failed",
+    ),
     "diagnosisIpv4": MessageLookupByLibrary.simpleMessage("IPv4 connectivity"),
     "diagnosisIpv6": MessageLookupByLibrary.simpleMessage("IPv6 connectivity"),
     "diagnosisMixedPort": MessageLookupByLibrary.simpleMessage("Proxy port"),
+    "diagnosisNotConfigured": MessageLookupByLibrary.simpleMessage(
+      "Not configured on this network",
+    ),
     "diagnosisOtherClients": MessageLookupByLibrary.simpleMessage(
       "Other proxy clients",
+    ),
+    "diagnosisProxyFault": MessageLookupByLibrary.simpleMessage(
+      "The proxy answered with an error",
     ),
     "diagnosisProxyRequest": MessageLookupByLibrary.simpleMessage(
       "Request through the proxy",
     ),
+    "diagnosisRefused": MessageLookupByLibrary.simpleMessage(
+      "Connection refused",
+    ),
     "diagnosisSystemProxy": MessageLookupByLibrary.simpleMessage(
       "System proxy",
     ),
+    "diagnosisTimeout": MessageLookupByLibrary.simpleMessage("Timed out"),
+    "diagnosisTls": MessageLookupByLibrary.simpleMessage(
+      "TLS handshake failed",
+    ),
     "diagnosisTun": MessageLookupByLibrary.simpleMessage("TUN authorization"),
+    "diagnosisUnreachable": MessageLookupByLibrary.simpleMessage("No route"),
     "dialerProxy": MessageLookupByLibrary.simpleMessage("Dialer proxy"),
     "dialerProxyLoopStopped": m26,
     "dialog": MessageLookupByLibrary.simpleMessage("Dialog"),
@@ -1140,6 +1179,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "App list permission required",
     ),
     "installedFonts": MessageLookupByLibrary.simpleMessage("Installed fonts"),
+    "installedVersion": MessageLookupByLibrary.simpleMessage(
+      "Installed version",
+    ),
     "intelligentSelected": MessageLookupByLibrary.simpleMessage(
       "Smart selection",
     ),
@@ -2255,6 +2297,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("Unnamed"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("Unpin window"),
     "update": MessageLookupByLibrary.simpleMessage("Update"),
+    "updateChannel": MessageLookupByLibrary.simpleMessage("Update channel"),
     "updateDownloadFailed": MessageLookupByLibrary.simpleMessage(
       "The update could not be downloaded.",
     ),

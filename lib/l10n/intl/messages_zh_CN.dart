@@ -368,7 +368,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "batchPreviewTip": m3,
     "batchUrlInputTip": MessageLookupByLibrary.simpleMessage("每行一个URL"),
     "betaChannel": MessageLookupByLibrary.simpleMessage("测试版"),
+    "betaChannelSaveFailed": MessageLookupByLibrary.simpleMessage(
+      "设置保存失败，更新通道保持不变。",
+    ),
+    "betaJoinConfirm": MessageLookupByLibrary.simpleMessage("确认加入"),
+    "betaJoinConfirmDesc": MessageLookupByLibrary.simpleMessage(
+      "测试版会率先获得新功能，但稳定性可能较低，也可能与部分订阅、规则或系统不兼容。你可以随时退出。",
+    ),
+    "betaJoinConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "加入 BETA 测试计划？",
+    ),
     "betaJoinedTip": MessageLookupByLibrary.simpleMessage("你会收到测试版更新"),
+    "betaLeaveConfirm": MessageLookupByLibrary.simpleMessage("确认退出"),
+    "betaLeaveConfirmDesc": MessageLookupByLibrary.simpleMessage(
+      "退出后将停止接收测试版更新。已安装的测试版不会被卸载或降级：你会继续使用它，直到同版本或更新的正式版发布，应用再回到正式版。",
+    ),
+    "betaLeaveConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "确定退出 BETA 测试计划？",
+    ),
     "betaNotJoinedTip": MessageLookupByLibrary.simpleMessage("你只会收到正式版更新"),
     "betaProgram": MessageLookupByLibrary.simpleMessage("测试版计划"),
     "betaProgramDesc": MessageLookupByLibrary.simpleMessage(
@@ -377,6 +394,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "betaProgramFooter": MessageLookupByLibrary.simpleMessage(
       "测试版结束、同版本或更新的正式版发布后，应用会自动更新到正式版。你可以随时退出：退出后会继续使用当前测试版，直到该正式版发布再更新回正式版。",
     ),
+    "betaStay": MessageLookupByLibrary.simpleMessage("继续使用 BETA"),
     "betaUpdates": MessageLookupByLibrary.simpleMessage("加入测试版"),
     "binaryData": MessageLookupByLibrary.simpleMessage("二进制数据"),
     "bind": MessageLookupByLibrary.simpleMessage("绑定"),
@@ -520,6 +538,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "customTrafficInvalidDesc": MessageLookupByLibrary.simpleMessage(
       "请输入大于 0 的流量",
     ),
+    "customTrafficTooLargeDesc": MessageLookupByLibrary.simpleMessage(
+      "最多输入 1024 TB",
+    ),
     "cut": MessageLookupByLibrary.simpleMessage("剪切"),
     "dark": MessageLookupByLibrary.simpleMessage("深色"),
     "dashboard": MessageLookupByLibrary.simpleMessage("仪表盘"),
@@ -558,13 +579,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "developerModeEnableTip": MessageLookupByLibrary.simpleMessage("开发者模式已启用。"),
     "diagnosisCore": MessageLookupByLibrary.simpleMessage("核心"),
     "diagnosisDns": MessageLookupByLibrary.simpleMessage("DNS 解析"),
+    "diagnosisFailed": MessageLookupByLibrary.simpleMessage("失败"),
+    "diagnosisHostLookup": MessageLookupByLibrary.simpleMessage("域名解析失败"),
     "diagnosisIpv4": MessageLookupByLibrary.simpleMessage("IPv4 连通性"),
     "diagnosisIpv6": MessageLookupByLibrary.simpleMessage("IPv6 连通性"),
     "diagnosisMixedPort": MessageLookupByLibrary.simpleMessage("代理端口"),
+    "diagnosisNotConfigured": MessageLookupByLibrary.simpleMessage("当前网络未配置"),
     "diagnosisOtherClients": MessageLookupByLibrary.simpleMessage("其他代理客户端"),
+    "diagnosisProxyFault": MessageLookupByLibrary.simpleMessage("代理返回错误"),
     "diagnosisProxyRequest": MessageLookupByLibrary.simpleMessage("经代理访问"),
+    "diagnosisRefused": MessageLookupByLibrary.simpleMessage("连接被拒绝"),
     "diagnosisSystemProxy": MessageLookupByLibrary.simpleMessage("系统代理"),
+    "diagnosisTimeout": MessageLookupByLibrary.simpleMessage("超时"),
+    "diagnosisTls": MessageLookupByLibrary.simpleMessage("TLS 握手失败"),
     "diagnosisTun": MessageLookupByLibrary.simpleMessage("TUN 授权"),
+    "diagnosisUnreachable": MessageLookupByLibrary.simpleMessage("无路由"),
     "dialerProxy": MessageLookupByLibrary.simpleMessage("拨号代理"),
     "dialerProxyLoopStopped": m26,
     "dialog": MessageLookupByLibrary.simpleMessage("对话框"),
@@ -888,6 +917,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "需要读取应用列表权限",
     ),
     "installedFonts": MessageLookupByLibrary.simpleMessage("已安装字体"),
+    "installedVersion": MessageLookupByLibrary.simpleMessage("当前安装版本"),
     "intelligentSelected": MessageLookupByLibrary.simpleMessage("智能选择"),
     "interfaceName": MessageLookupByLibrary.simpleMessage("网卡名称"),
     "interfaceNameMode": MessageLookupByLibrary.simpleMessage("出站网卡"),
@@ -1751,6 +1781,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("未命名"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("取消置顶"),
     "update": MessageLookupByLibrary.simpleMessage("更新"),
+    "updateChannel": MessageLookupByLibrary.simpleMessage("当前更新通道"),
     "updateDownloadFailed": MessageLookupByLibrary.simpleMessage("无法下载更新。"),
     "updateDownloadStarted": MessageLookupByLibrary.simpleMessage(
       "已开始下载更新，可在首页查看进度",
