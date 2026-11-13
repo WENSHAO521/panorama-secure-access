@@ -34,9 +34,9 @@ const _dipper = [
 /// How far a star grows while it lights up during a check.
 const _lightGrowth = 0.7;
 
-/// The colors of one brightness.
-class _Palette {
-  const _Palette({
+/// The colors of one brightness, shared by every star motif on the dashboard.
+class StarPalette {
+  const StarPalette({
     required this.ringDeep,
     required this.ringLight,
     required this.gold,
@@ -59,30 +59,30 @@ class _Palette {
 
   /// Edges the flag's disc.
   final Color rim;
+
+  static const light = StarPalette(
+    ringDeep: Color(0xFF2E1F6B),
+    ringLight: Color(0xFF5B3FB8),
+    gold: Color(0xFFB8902F),
+    line: Color(0xCCB8902F),
+    field: Color(0x0F5B3FB8),
+    shadow: Color(0x402E1F6B),
+    rim: Color(0x1F000000),
+  );
+
+  static const dark = StarPalette(
+    ringDeep: Color(0xFFB9A4F0),
+    ringLight: Color(0xFF8A6BE0),
+    gold: Color(0xFFE8C97A),
+    line: Color(0xCCE8C97A),
+    field: Color(0x1FB9A4F0),
+    shadow: Color(0x99000000),
+    rim: Color(0x33FFFFFF),
+  );
 }
 
-const _light = _Palette(
-  ringDeep: Color(0xFF2E1F6B),
-  ringLight: Color(0xFF5B3FB8),
-  gold: Color(0xFFB8902F),
-  line: Color(0xCCB8902F),
-  field: Color(0x0F5B3FB8),
-  shadow: Color(0x402E1F6B),
-  rim: Color(0x1F000000),
-);
-
-const _dark = _Palette(
-  ringDeep: Color(0xFFB9A4F0),
-  ringLight: Color(0xFF8A6BE0),
-  gold: Color(0xFFE8C97A),
-  line: Color(0xCCE8C97A),
-  field: Color(0x1FB9A4F0),
-  shadow: Color(0x99000000),
-  rim: Color(0x33FFFFFF),
-);
-
 /// A four-pointed star with concave sides, reaching one unit from its heart.
-final Path _star = Path()
+final Path starPath = Path()
   ..moveTo(0, -1)
   ..quadraticBezierTo(0.16, -0.16, 1, 0)
   ..quadraticBezierTo(0.16, 0.16, 0, 1)
@@ -137,7 +137,7 @@ class StarBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = dark ? _dark : _light;
+    final palette = dark ? StarPalette.dark : StarPalette.light;
     final child = this.child;
     return CustomPaint(
       painter: ShapePainter(
@@ -176,7 +176,7 @@ class StarBadge extends StatelessWidget {
 class _RingPainter extends CustomPainter {
   _RingPainter({required this.palette, required this.flag});
 
-  final _Palette palette;
+  final StarPalette palette;
   final bool flag;
 
   @override
@@ -227,7 +227,7 @@ class _StarPainter extends CustomPainter {
     required this.flag,
   });
 
-  final _Palette palette;
+  final StarPalette palette;
   final double rotation;
   final bool flag;
 
@@ -288,7 +288,7 @@ class _StarPainter extends CustomPainter {
         );
       }
       canvas
-        ..drawPath(_star, gold)
+        ..drawPath(starPath, gold)
         ..drawCircle(Offset.zero, 0.14, _heart)
         ..restore();
     }
