@@ -21,6 +21,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:prism_ui/shapes/shapes.dart';
 
 import 'card.dart';
+import 'pole_star.dart';
 import 'star_badge.dart';
 
 const _builtinOutbounds = {'DIRECT', 'REJECT', 'REJECT-DROP', 'PASS'};
@@ -30,8 +31,6 @@ bool isBuiltinOutbound(String name) => _builtinOutbounds.contains(name);
 const _ipMask = '*****';
 
 const _decorationGrowth = 0.12;
-
-const _decorationTurn = 2 * math.pi / 12;
 
 /// The address the proxied traffic leaves by, next to the start button.
 class CurrentOutboundCard extends ConsumerStatefulWidget {
@@ -124,28 +123,44 @@ class _CurrentOutboundCardState extends ConsumerState<CurrentOutboundCard>
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
+                  // The halo is centered on the button, the pole star the
+                  // dipper turns round.
                   PositionedDirectional(
-                    end: metrics.decorationEnd,
-                    top: metrics.decorationTop,
-                    child: TweenAnimationBuilder<double>(
-                      tween: Tween(end: isStart ? 1 : 0),
-                      duration: context.motionDuration(_morphDuration),
-                      curve: Curves.easeOutBack,
-                      builder: (_, progress, _) => Transform.rotate(
-                        angle: _decorationTurn * progress,
-                        child: Transform.scale(
+                    end:
+                        metrics.paddingEndOf(context) +
+                        (metrics.buttonSlot - metrics.decorationSize) / 2,
+                    top: metrics.paddingOf(context).top,
+                    bottom: metrics.paddingOf(context).bottom,
+                    width: metrics.decorationSize,
+                    child: OverflowBox(
+                      minWidth: metrics.decorationSize,
+                      maxWidth: metrics.decorationSize,
+                      minHeight: metrics.decorationSize,
+                      maxHeight: metrics.decorationSize,
+                      child: TweenAnimationBuilder<double>(
+                        tween: Tween(end: isStart ? 1 : 0),
+                        duration: context.motionDuration(_morphDuration),
+                        curve: Curves.easeOutBack,
+                        builder: (_, progress, _) => Transform.scale(
                           scale: 1 + _decorationGrowth * progress,
-                          child: ShapeBadge(
-                            shape: MaterialShapes.cookie12Sided,
-                            color: Color.lerp(
-                              colors.tone,
-                              Color.alphaBlend(
-                                colorScheme.primary.withValues(alpha: 0.1),
-                                colors.card,
-                              ),
-                              progress.clamp(0, 1),
-                            )!,
-                            size: metrics.decorationSize,
+                          // Only the halo follows the run time's ticks.
+                          child: Consumer(
+                            builder: (_, ref, _) => PoleStarHalo(
+                              size: metrics.decorationSize,
+                              runTime: isStart
+                                  ? ref.watch(runTimeProvider)
+                                  : null,
+                              lit: suspended ? progress * 0.4 : progress,
+                              dark: colorScheme.brightness == Brightness.dark,
+                              field: Color.lerp(
+                                colors.tone,
+                                Color.alphaBlend(
+                                  colorScheme.primary.withValues(alpha: 0.1),
+                                  colors.card,
+                                ),
+                                progress.clamp(0, 1),
+                              )!,
+                            ),
                           ),
                         ),
                       ),
@@ -231,8 +246,6 @@ class _OutboundMetrics {
     required this.buttonSize,
     required this.buttonSlot,
     required this.decorationSize,
-    required this.decorationEnd,
-    required this.decorationTop,
   });
 
   factory _OutboundMetrics.of(DashboardDensity density) => switch (density) {
@@ -246,8 +259,6 @@ class _OutboundMetrics {
       buttonSize: 104,
       buttonSlot: 120,
       decorationSize: 290,
-      decorationEnd: -64,
-      decorationTop: -87,
     ),
     DashboardDensity.compact => _OutboundMetrics(
       padding: dashboardCardPadding(density),
@@ -259,8 +270,6 @@ class _OutboundMetrics {
       buttonSize: 84,
       buttonSlot: 100,
       decorationSize: 250,
-      decorationEnd: -64,
-      decorationTop: -75,
     ),
     DashboardDensity.mobile => const _OutboundMetrics(
       padding: EdgeInsetsDirectional.fromSTEB(20, 18, 16, 18),
@@ -271,9 +280,7 @@ class _OutboundMetrics {
       ip: AppTextStyle.title2,
       buttonSize: 88,
       buttonSlot: 88,
-      decorationSize: 240,
-      decorationEnd: -60,
-      decorationTop: -66,
+      decorationSize: 204,
     ),
   };
 
@@ -286,8 +293,15 @@ class _OutboundMetrics {
   final double buttonSize;
   final double buttonSlot;
   final double decorationSize;
-  final double decorationEnd;
-  final double decorationTop;
+
+  EdgeInsets paddingOf(BuildContext context) =>
+      padding.resolve(Directionality.of(context));
+
+  /// The padding on the button's side, the end of the row.
+  double paddingEndOf(BuildContext context) =>
+      Directionality.of(context) == TextDirection.ltr
+      ? paddingOf(context).right
+      : paddingOf(context).left;
 }
 
 class _ExitRow extends StatelessWidget {
