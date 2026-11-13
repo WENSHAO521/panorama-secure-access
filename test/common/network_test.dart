@@ -46,24 +46,26 @@ void main() {
         interfaces;
   }
 
-  group('isWifi', () {
-    test('recognises the usual wireless interface names', () {
+  group('wireless interface names', () {
+    test('win over a wired interface', () async {
       for (final name in ['wlan0', 'Wi-Fi', 'WLAN1', 'en0', 'eth0', 'ETH0']) {
-        expect(_FakeInterface(name, const []).isWifi, isTrue, reason: name);
+        listing([
+          _FakeInterface('en9', [_v4('10.0.0.9')]),
+          _FakeInterface(name, [_v4('192.168.1.20')]),
+        ]);
+        expect(await getLocalIpAddress(), '192.168.1.20', reason: name);
       }
     });
 
-    test('does not match an unrelated or suffixed interface', () {
+    test('do not include unrelated or suffixed names', () async {
       for (final name in ['en1', 'eth1', 'utun3', 'lo0', '']) {
-        expect(_FakeInterface(name, const []).isWifi, isFalse, reason: name);
+        listing([
+          _FakeInterface(name, [_v6('fe80::1')]),
+          _FakeInterface('en9', [_v4('10.0.0.9')]),
+        ]);
+        expect(await getLocalIpAddress(), '10.0.0.9', reason: name);
       }
     });
-  });
-
-  test('includesIPv4 only counts IPv4 addresses', () {
-    expect(_FakeInterface('en1', [_v4('10.0.0.2')]).includesIPv4, isTrue);
-    expect(_FakeInterface('en1', [_v6('fe80::1')]).includesIPv4, isFalse);
-    expect(_FakeInterface('en1', const []).includesIPv4, isFalse);
   });
 
   test('isIPv4 reads the address type', () {

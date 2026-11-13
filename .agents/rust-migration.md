@@ -23,9 +23,9 @@ One module per pull request, into `beta`; `main` only with the user's authorizat
 |---|---|---|
 | 1 | Config validation: CIDR, host, listen address, port range, TUN route subtraction (`netcfg`) | Rust primary, Dart fallback |
 | 2 | Core lifecycle decisions (`lifecycle`; the waiting, processes and socket stay in `lib/core/desktop/`) | Rust primary, Dart fallback |
-| 3 | DNS and IPv4/IPv6 diagnosis | Waits on the network diagnosis page in Dart |
-| 4 | Network recovery after TUN or interface changes | Waits on stage 3 |
-| 5 | System service install and legacy install migration (`legacy_install.dart`, `legacy_data.dart`) | Waits on device tests of the brand migration |
+| 3 | DNS and network diagnosis decisions (`netdiag`: system DNS patch, failure classification, local address) | Rust primary, Dart fallback |
+| 4 | Network change reaction (`netdiag::network_change_reaction`) | Rust primary, Dart fallback |
+| 5 | Legacy data and install migration decisions (`install`) | Rust primary, Dart fallback (data import runs before `RustLib.init`, so Dart) |
 
-Stages 3 to 5 overlap code that is still changing in Dart; start one only once its Dart version has been tested on
-devices, so the Rust port is not chasing a moving reference.
+The one-click network diagnosis page, update rollback and the Windows and Linux proxy snapshot are still being built in
+Dart; port their decisions the same way once they have been tested on devices.

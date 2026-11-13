@@ -130,24 +130,29 @@ class ApplicationState extends ConsumerState<Application> {
     List<ConnectivityResult> results,
   ) async {
     commonPrint.log('connectivityChanged ${results.toString()}');
-    unawaited(systemDnsCoordinator?.resync() ?? Future.value());
-    unawaited(ref.read(systemActionProvider.notifier).updateLocalIp());
     final hasVpn = results.contains(ConnectivityResult.vpn);
-    if (_preHasVpn == hasVpn) {
-      // Android's NetworkObserver tells the Core about a new network itself.
-      // On desktop the Core moves the route epoch only for a new physical
-      // network: the TUN adapter coming up reports one as well.
-      if (system.isDesktop) {
-        debouncer.call(
-          FunctionTag.networkChange,
-          ref.read(coreActionProvider.notifier).reportNetworkChange,
-          duration: const Duration(milliseconds: 200),
-        );
-      } else {
-        ref.read(routeTrackerProvider.notifier).bumpHostEpoch();
-      }
-    }
+    final reaction = networkChangeReaction(
+      hadVpn: _preHasVpn,
+      hasVpn: hasVpn,
+      desktop: system.isDesktop,
+    );
     _preHasVpn = hasVpn;
+    if (reaction.resyncSystemDns) {
+      unawaited(systemDnsCoordinator?.resync() ?? Future.value());
+    }
+    if (reaction.refreshLocalIp) {
+      unawaited(ref.read(systemActionProvider.notifier).updateLocalIp());
+    }
+    if (reaction.reportToCore) {
+      debouncer.call(
+        FunctionTag.networkChange,
+        ref.read(coreActionProvider.notifier).reportNetworkChange,
+        duration: const Duration(milliseconds: 200),
+      );
+    }
+    if (reaction.bumpHostEpoch) {
+      ref.read(routeTrackerProvider.notifier).bumpHostEpoch();
+    }
   }
 
   @override

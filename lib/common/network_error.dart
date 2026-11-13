@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:fl_clash/common/netdiag.dart';
 import 'package:fl_clash/common/webdav.dart';
 import 'package:fl_clash/core/method.dart';
 import 'package:fl_clash/l10n/l10n.dart';
@@ -104,13 +105,16 @@ _Failure? _fromCore(CoreMethodException error) {
     'request_bad_response' when statusCode != null => _Failure.httpStatus(
       statusCode,
     ),
-    'request_bad_response' || 'request_error' => _Failure(switch (reason) {
-      'timeout' => _Kind.timeout,
-      'dns' => _Kind.hostLookup,
-      'tls' => _Kind.tls,
-      'connection' => _Kind.connection,
-      _ => _Kind.unknown,
-    }, detail: error.message),
+    'request_bad_response' || 'request_error' => _Failure(
+      switch (coreFailureKind(reason)) {
+        FailureKind.timeout => _Kind.timeout,
+        FailureKind.hostLookup => _Kind.hostLookup,
+        FailureKind.tls => _Kind.tls,
+        FailureKind.connection => _Kind.connection,
+        FailureKind.unknown => _Kind.unknown,
+      },
+      detail: error.message,
+    ),
     _ => null,
   };
 }
@@ -135,11 +139,17 @@ String _messageOf(_Failure failure, AppLocalizations appLocalizations) {
 }
 
 String _httpStatusMessage(int statusCode, AppLocalizations appLocalizations) {
-  return switch (statusCode) {
-    401 || 403 || 407 => appLocalizations.networkAccessDeniedError(statusCode),
-    404 || 410 => appLocalizations.networkNotFoundError(statusCode),
-    429 => appLocalizations.networkRateLimitedError,
-    >= 500 && <= 599 => appLocalizations.networkServerError(statusCode),
-    _ => appLocalizations.networkBadResponseError(statusCode),
+  return switch (httpStatusClass(statusCode)) {
+    HttpStatusClass.accessDenied => appLocalizations.networkAccessDeniedError(
+      statusCode,
+    ),
+    HttpStatusClass.notFound => appLocalizations.networkNotFoundError(
+      statusCode,
+    ),
+    HttpStatusClass.rateLimited => appLocalizations.networkRateLimitedError,
+    HttpStatusClass.server => appLocalizations.networkServerError(statusCode),
+    HttpStatusClass.badResponse => appLocalizations.networkBadResponseError(
+      statusCode,
+    ),
   };
 }
