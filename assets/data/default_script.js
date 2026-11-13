@@ -1,7 +1,7 @@
 /**
  * Bundled default script of Panorama Secure Access.
  * Based on https://raw.githubusercontent.com/hheshenghuan-cloud/ziji/refs/heads/main/flclash.js
- * with only the two chain group icons replaced.
+ * with only the icons of 链式前置, 链式出口 and 国内网络 replaced.
  */
 /**
  * FlClash / Mihomo 配置脚本
@@ -93,7 +93,7 @@ function main(config) {
       {'name': 'Telegram', 'type': 'select', 'include-all': true, 'proxies': ['默认代理', 'DIRECT'], 'icon': 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png'},
       {'name': 'NETFLIX', 'type': 'select', 'include-all': true, 'proxies': ['默认代理', 'DIRECT'], 'icon': 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Netflix.png'},
       {'name': 'Disney', 'type': 'select', 'include-all': true, 'proxies': ['默认代理', 'DIRECT'], 'icon': 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Disney%2B.png'},
-      {'name': '国内网络', 'type': 'select', 'include-all': true, 'proxies': ['DIRECT', '默认代理'], 'icon': 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/China.png'},
+      {'name': '国内网络', 'type': 'select', 'include-all': true, 'proxies': ['DIRECT', '默认代理'], 'icon': CN_ICON},
       {'name': '漏网之鱼', 'type': 'select', 'include-all': true, 'proxies': ['默认代理', 'DIRECT'], 'icon': 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png'}
     ],
     'rules': [
@@ -158,9 +158,11 @@ function main(config) {
   return addChainProxy(config);
 }
 
-// 链式前置 / 链式出口 icons are drawn for Panorama Secure Access (original
-// artwork, no third-party license) and embedded so they show offline.
+// 链式前置 / 链式出口 / 国内网络 icons are drawn for Panorama Secure Access
+// (original artwork, no third-party license) and embedded so they show
+// offline.
 const ENTRY_ICON = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDggMTA4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImEiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyRkQzRjUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMyMTY1RTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cGF0aCBkPSJNNTYgMTJoMjZhMTQgMTQgMCAwIDEgMTQgMTR2NTZhMTQgMTQgMCAwIDEtMTQgMTRINTZhNyA3IDAgMCAxIDAtMTRoMjZWMjZINTZhNyA3IDAgMCAxIDAtMTR6IiBmaWxsPSJ1cmwoI2EpIi8+PHBhdGggZD0iTTQ1IDMwYTcgNyAwIDAgMSA5LjkgMGwxOSAxOWE3IDcgMCAwIDEgMCA5LjlsLTE5IDE5QTcgNyAwIDAgMSA0NSA2OGw3LjEtN0gxOGE3IDcgMCAwIDEgMC0xNGgzNC4xTDQ1IDQwYTcgNyAwIDAgMSAwLTEweiIgZmlsbD0idXJsKCNhKSIvPjwvc3ZnPg==';
+const CN_ICON = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDggMTA4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImMiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRjhBNjUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNFNTM5MzUiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB4PSI0NiIgeT0iNCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjEwIiByeD0iMyIgZmlsbD0iI0Y0QjQwMCIvPjxyZWN0IHg9IjM2IiB5PSIxMiIgd2lkdGg9IjM2IiBoZWlnaHQ9IjkiIHJ4PSI0LjUiIGZpbGw9IiNGNEI0MDAiLz48ZWxsaXBzZSBjeD0iNTQiIGN5PSI1NCIgcng9IjM4IiByeT0iMzMiIGZpbGw9InVybCgjYykiLz48cGF0aCBkPSJNNTQgMjFjLTEyIDktMTYgMjEtMTYgMzNzNCAyNCAxNiAzM2MxMi05IDE2LTIxIDE2LTMzcy00LTI0LTE2LTMzeiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZENTRGIiBzdHJva2Utd2lkdGg9IjQiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iMzYiIHk9Ijg1IiB3aWR0aD0iMzYiIGhlaWdodD0iOSIgcng9IjQuNSIgZmlsbD0iI0Y0QjQwMCIvPjxwYXRoIGQ9Ik01MCA5NGg4djEwYTQgNCAwIDAgMS04IDB6IiBmaWxsPSIjRjRCNDAwIi8+PC9zdmc+';
 const EXIT_ICON = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDggMTA4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImIiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkM5M0MiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRjVBMkMiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cGF0aCBkPSJNMjggODJjLTkgMi41LTE0IDYtMTQgOS41QzE0IDk4IDMyIDEwMiA1NCAxMDJzNDAtNCA0MC0xMC41YzAtMy41LTUtNy0xNC05LjVsLTMuNiA1LjdDODMgODkgODYgOTAuNCA4NiA5MS41YzAgMi40LTEyLjUgNS41LTMyIDUuNXMtMzItMy4xLTMyLTUuNWMwLTEuMSAzLTIuNSA5LjYtMy44eiIgZmlsbD0idXJsKCNiKSIgb3BhY2l0eT0iLjg1Ii8+PHBhdGggZD0iTTU0IDZjLTE5LjMgMC0zNSAxNS4yLTM1IDM0IDAgMjQuNSAzMC4yIDUwLjIgMzEuNSA1MS4zYTUuNCA1LjQgMCAwIDAgNyAwQzU4LjggOTAuMiA4OSA2NC41IDg5IDQwIDg5IDIxLjIgNzMuMyA2IDU0IDZ6bTAgNDdhMTMgMTMgMCAxIDEgMC0yNiAxMyAxMyAwIDAgMSAwIDI2eiIgZmlsbD0idXJsKCNiKSIvPjwvc3ZnPg==';
 
 function addChainProxy(config) {
