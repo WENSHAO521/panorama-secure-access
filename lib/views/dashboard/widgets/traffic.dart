@@ -13,10 +13,6 @@ import 'package:flutter/widgets.dart';
 import 'card.dart';
 import 'dipper_gauge.dart';
 
-const _minSpeedScale = 8 * 1024.0;
-
-const _chartBleed = 3.0;
-
 enum TrafficDirection {
   upload,
   download;
@@ -24,10 +20,6 @@ enum TrafficDirection {
   num of(Traffic traffic) => this == upload ? traffic.up : traffic.down;
 
   Glyph get glyph => this == upload ? AppGlyphs.arrowUp : AppGlyphs.arrowDown;
-
-  Color colorOf(BuildContext context) => this == upload
-      ? DashboardColors.of(context).series2
-      : context.colorScheme.primary;
 
   Color glyphColorOf(BuildContext context) => this == upload
       ? context.colorScheme.onSurfaceVariant
@@ -74,30 +66,9 @@ class _Figure extends StatelessWidget {
   }
 }
 
-/// The zero line is the chart's bottom: a card lets the chart bleed past its
-/// edge so idle traffic, or none sampled yet, leaves no line.
-class _SpeedChart extends StatelessWidget {
-  const _SpeedChart({required this.direction, required this.traffics});
-
-  final TrafficDirection direction;
-  final FixedList<Traffic> traffics;
-
-  @override
-  Widget build(BuildContext context) {
-    return LineChart(
-      values: [
-        for (final traffic in traffics.list) direction.of(traffic).toDouble(),
-      ],
-      revision: traffics.revision,
-      capacity: traffics.maxLength,
-      minScale: _minSpeedScale,
-      baselineRatio: 1,
-      color: direction.colorOf(context),
-    );
-  }
-}
-
-/// The upload or the download on its own desktop card.
+/// The upload or the download on its own desktop card: the title row with
+/// the peak over the window, a low arch of the seven stars of the Northern
+/// Dipper that lights up with the speed, and the figure and total under it.
 class SpeedCard extends ConsumerWidget {
   const SpeedCard({super.key, required this.direction});
 
@@ -108,7 +79,6 @@ class SpeedCard extends ConsumerWidget {
     final density = DashboardDensityScope.of(context);
     final compact = density.isCompact;
     final scale = DashboardDensityScope.scaleOf(context);
-    final padding = dashboardCardPadding(density);
     final appLocalizations = context.appLocalizations;
     final traffics = ref.watch(trafficsProvider);
     final total = ref.watch(
@@ -120,72 +90,59 @@ class SpeedCard extends ConsumerWidget {
       (peak, traffic) => math.max(peak, direction.of(traffic)),
     );
     final speed = current.traffic;
+    final gap = compact ? 6.0 : 10.0;
     return DashboardCard(
-      padding: EdgeInsets.zero,
       semanticLabel: direction.labelOf(context),
-      clipBehavior: Clip.antiAlias,
-      child: Stack(
+      child: Column(
         children: [
-          Positioned(
-            left: -_chartBleed,
-            right: -_chartBleed,
-            bottom: -_chartBleed,
-            height: compact ? 62 : 88,
-            child: RepaintBoundary(
-              child: _SpeedChart(direction: direction, traffics: traffics),
-            ),
-          ),
-          Padding(
-            padding: padding,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          SizedBox(
+            height: 24 * scale,
+            child: Row(
+              spacing: 8,
               children: [
-                SizedBox(
-                  height: 24 * scale,
-                  child: Row(
-                    spacing: 8,
-                    children: [
-                      GlyphIcon(
-                        direction.glyph,
-                        size: 18,
-                        color: direction.glyphColorOf(context),
-                      ),
-                      Text(
-                        direction.labelOf(context),
-                        maxLines: 1,
-                        style: DashboardText.cardTitle(context),
-                      ),
-                      Expanded(
-                        child: Text(
-                          appLocalizations.trafficPeak(
-                            '${dashboardTraffic(peak)}/s',
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.end,
-                          style: DashboardText.label(context),
-                        ),
-                      ),
-                    ],
-                  ),
+                GlyphIcon(
+                  direction.glyph,
+                  size: 18,
+                  color: direction.glyphColorOf(context),
                 ),
-                SizedBox(height: compact ? 6 : 10),
-                _Figure(
-                  show: speed,
-                  unit: _speedUnit(speed),
-                  style: compact
-                      ? AppTextStyle.largeTitle
-                      : AppTextStyle.display,
-                  unitStyle: AppTextStyle.subheadline,
-                ),
-                const SizedBox(height: 2),
                 Text(
-                  appLocalizations.trafficTotal(dashboardTraffic(total)),
+                  direction.labelOf(context),
                   maxLines: 1,
-                  style: DashboardText.label(context),
+                  style: DashboardText.cardTitle(context),
+                ),
+                Expanded(
+                  child: Text(
+                    appLocalizations.trafficPeak('${dashboardTraffic(peak)}/s'),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.end,
+                    style: DashboardText.label(context),
+                  ),
                 ),
               ],
             ),
+          ),
+          SizedBox(height: gap),
+          Expanded(
+            child: RepaintBoundary(
+              child: DipperGauge(
+                level: dipperLevel(current),
+                dark: context.colorScheme.brightness == Brightness.dark,
+              ),
+            ),
+          ),
+          SizedBox(height: gap / 2),
+          _Figure(
+            show: speed,
+            unit: _speedUnit(speed),
+            style: compact ? AppTextStyle.title1 : AppTextStyle.largeTitle,
+            unitStyle: AppTextStyle.subheadline,
+          ),
+          Text(
+            appLocalizations.trafficTotal(dashboardTraffic(total)),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: DashboardText.label(context),
           ),
         ],
       ),
@@ -230,9 +187,9 @@ class NetworkSpeedCard extends ConsumerWidget {
   }
 }
 
-/// Keeps one shape at every width, growing only when the text needs more. An
-/// arch of the seven stars of the Northern Dipper spans the tile under the
-/// title row and lights up with the speed, over the figure and the total.
+/// Keeps one shape at every width, growing only when the text needs more: the
+/// title, a low arch of the seven stars of the Northern Dipper that lights up
+/// with the speed, and the figure and total under it.
 class _SpeedTile extends StatelessWidget {
   const _SpeedTile({
     required this.direction,
@@ -244,36 +201,51 @@ class _SpeedTile extends StatelessWidget {
   final num speed;
   final num total;
 
-  static const _aspectRatio = 1.45;
+  static const _aspectRatio = 1.2;
   static const _padding = EdgeInsets.fromLTRB(12, 12, 12, 12);
-  static const _titleGap = 6.0;
+  static const _gaugeHeight = 48.0;
 
   @override
   Widget build(BuildContext context) {
     final color = direction.glyphColorOf(context);
     final show = speed.traffic;
     final scale = DashboardDensityScope.scaleOf(context);
-    final gaugeTop =
-        _padding.top + _titleGap + AppTextStyle.footnote.leading * scale;
     return LayoutBuilder(
       builder: (context, constraints) {
         return Container(
           constraints: BoxConstraints(
             minHeight: constraints.maxWidth / _aspectRatio,
           ),
-          clipBehavior: Clip.antiAlias,
+          padding: _padding,
           decoration: ShapeDecoration(
             color: DashboardColors.of(context).tone,
             shape: AppShape.all(DashboardCorner.mobileBlock),
           ),
-          child: Stack(
-            fit: StackFit.passthrough,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Positioned(
-                left: _padding.left,
-                right: _padding.right,
-                top: gaugeTop,
-                bottom: _padding.bottom,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 4,
+                children: [
+                  GlyphIcon(direction.glyph, size: 16, color: color),
+                  Flexible(
+                    child: Text(
+                      direction.labelOf(context),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyle.footnote
+                          .of(context, emphasized: true)
+                          .copyWith(
+                            color: context.colorScheme.onSurfaceVariant,
+                          ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: _gaugeHeight * scale,
                 child: RepaintBoundary(
                   child: DipperGauge(
                     level: dipperLevel(speed),
@@ -281,52 +253,23 @@ class _SpeedTile extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding: _padding,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      spacing: 4,
-                      children: [
-                        GlyphIcon(direction.glyph, size: 16, color: color),
-                        Flexible(
-                          child: Text(
-                            direction.labelOf(context),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTextStyle.footnote
-                                .of(context, emphasized: true)
-                                .copyWith(
-                                  color: context.colorScheme.onSurfaceVariant,
-                                ),
-                          ),
-                        ),
-                      ],
+              Column(
+                children: [
+                  _Figure(
+                    show: show,
+                    unit: _speedUnit(show),
+                    style: AppTextStyle.title1,
+                    unitStyle: AppTextStyle.footnote,
+                  ),
+                  Text(
+                    context.appLocalizations.trafficTotal(
+                      dashboardTraffic(total),
                     ),
-                    Column(
-                      children: [
-                        SizedBox(height: _titleGap + 20 * scale),
-                        _Figure(
-                          show: show,
-                          unit: _speedUnit(show),
-                          style: AppTextStyle.title1,
-                          unitStyle: AppTextStyle.footnote,
-                        ),
-                        Text(
-                          context.appLocalizations.trafficTotal(
-                            dashboardTraffic(total),
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: DashboardText.label(context),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: DashboardText.label(context),
+                  ),
+                ],
               ),
             ],
           ),
