@@ -2,6 +2,233 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.5.9",
+      "tag": "v3.5.9",
+      "date": "2026-11-13",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "breaking",
+          "entries": [
+            {
+              "id": "eb63f64",
+              "scope": "desktop",
+              "text": "Own binary, Helper, service and bundle identifiers"
+            },
+            {
+              "id": "25f5cc6",
+              "scope": "android",
+              "text": "Ship as com.panoramasg.secureaccess"
+            },
+            {
+              "id": "52d7d33",
+              "scope": "android",
+              "text": "Android installs this version as a new app. Back up the configuration in the old app, restore it in the new one, then uninstall the old app."
+            }
+          ]
+        },
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "cd82481",
+              "text": "Confirm beta channel changes, custom traffic on link import, clearer network diagnosis"
+            },
+            {
+              "id": "5089bac",
+              "scope": "dashboard",
+              "text": "Arch the Northern Dipper over the desktop speed cards"
+            },
+            {
+              "id": "6e7ad4f",
+              "scope": "uninstall",
+              "text": "Remove leftovers when the app is uninstalled"
+            },
+            {
+              "id": "a0ae682",
+              "scope": "diagnosis",
+              "text": "One-click network diagnosis with repairs"
+            },
+            {
+              "id": "6f309f9",
+              "scope": "update",
+              "text": "Back up the data before installing an update and offer to restore it"
+            },
+            {
+              "id": "148d405",
+              "scope": "dashboard",
+              "text": "Show the exit flag as a round flag under the Northern Dipper"
+            },
+            {
+              "id": "25f79a5",
+              "scope": "desktop",
+              "text": "Check for a busy mixed port and other proxy clients before start"
+            },
+            {
+              "id": "5456f9c",
+              "scope": "app",
+              "text": "Carry data over from installs under FlClash's identifiers"
+            },
+            {
+              "id": "eb63f64",
+              "scope": "desktop",
+              "text": "Own binary, Helper, service and bundle identifiers"
+            },
+            {
+              "id": "25f5cc6",
+              "scope": "android",
+              "text": "Ship as com.panoramasg.secureaccess"
+            },
+            {
+              "id": "7c892a4",
+              "scope": "linux",
+              "text": "Linux asks for administrator authorization once for TUN; the service survives reboots and upgrades and recovers without a password"
+            },
+            {
+              "id": "40cdaa8",
+              "scope": "dashboard",
+              "text": "Show the exit flag on a round disc"
+            },
+            {
+              "id": "ac691f1",
+              "scope": "dashboard",
+              "text": "Refine the exit flag badge"
+            },
+            {
+              "id": "db9770e",
+              "scope": "profiles",
+              "text": "Custom traffic totals can be entered in MB, GB or TB"
+            },
+            {
+              "id": "a53a91e",
+              "scope": "dashboard",
+              "text": "The dashboard shows the current exit's flag"
+            },
+            {
+              "id": "cb2cd3f",
+              "scope": "core",
+              "text": "Core updated to mihomo v1.19.34"
+            },
+            {
+              "id": "6c4914d",
+              "scope": "profiles",
+              "text": "Profiles can set a custom traffic total, monthly or permanent"
+            },
+            {
+              "id": "52d7d33",
+              "scope": "android",
+              "text": "The Android app installs alongside FlClash under its own package name"
+            },
+            {
+              "id": "b4200c8",
+              "scope": "core",
+              "text": "Every proxy group and provider tests its nodes every 300 seconds"
+            },
+            {
+              "id": "edbe798",
+              "scope": "delay",
+              "text": "Delay tests use http://cp.cloudflare.com/generate_204 by default"
+            }
+          ]
+        },
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "f913486",
+              "scope": "core",
+              "text": "Build with Go 1.27.4 and patched brotli and compress"
+            },
+            {
+              "id": "68bbfc1",
+              "scope": "security",
+              "text": "Redact secrets from app logs and audit dependencies in CI"
+            },
+            {
+              "id": "4263693",
+              "scope": "release",
+              "text": "Derive every platform's version from the release tag"
+            },
+            {
+              "id": "875b764",
+              "scope": "dashboard",
+              "text": "Set the dipper arch over the speed figure"
+            },
+            {
+              "id": "c9bf018",
+              "scope": "proxy",
+              "text": "Put back the Windows and Linux proxy settings a start replaced"
+            },
+            {
+              "id": "906aa17",
+              "scope": "providers",
+              "text": "Finish removing a stale download before putProvider returns"
+            },
+            {
+              "id": "abb1adb",
+              "scope": "proxy",
+              "text": "Put back the macOS proxy settings a start replaced"
+            },
+            {
+              "id": "44e9717",
+              "scope": "core",
+              "text": "Replace a TUN device name the OS cannot create"
+            },
+            {
+              "id": "f4d532d",
+              "scope": "windows",
+              "text": "Install under an own AppId and stop deleting FlClash's data"
+            },
+            {
+              "id": "ea3d9f0",
+              "scope": "dashboard",
+              "text": "Size the exit flag through AppTextStyle.custom"
+            },
+            {
+              "id": "e1819ad",
+              "scope": "android",
+              "text": "Android betas show their own version number when installed"
+            },
+            {
+              "id": "e273458",
+              "scope": "update",
+              "text": "Updates that cannot be verified are no longer installed, and Linux updates match how the app was installed"
+            },
+            {
+              "id": "d135ef0",
+              "scope": "core",
+              "text": "Desktop TUN no longer loses the network when it starts after the network changed"
+            },
+            {
+              "id": "7ca950d",
+              "scope": "update",
+              "text": "Updates are verified against the published checksums again"
+            },
+            {
+              "id": "6b0587e",
+              "scope": "windows",
+              "text": "Hand the foreground back after the tray menu closes"
+            },
+            {
+              "id": "297ab2b",
+              "scope": "core",
+              "text": "Update sing-tun to v0.4.29 plus the macOS DNS flush fix"
+            },
+            {
+              "id": "9facfce",
+              "scope": "dns",
+              "text": "Keep proxy nameservers when respect-rules is enabled"
+            },
+            {
+              "id": "0b99841",
+              "scope": "macos",
+              "text": "Keep the menu bar menu working with traffic titles and full-screen apps"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.5.8",
       "tag": "v3.5.8",
       "date": "2026-11-09",
