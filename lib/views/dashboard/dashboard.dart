@@ -186,10 +186,7 @@ class _DesktopDashboard extends StatelessWidget {
                 ),
                 sized(
                   topHeight,
-                  row(const [
-                    (1, SpeedCard(direction: TrafficDirection.upload)),
-                    (1, SpeedCard(direction: TrafficDirection.download)),
-                  ]),
+                  row(const [(2, NetworkSpeedCard(fill: true))]),
                 ),
                 sized(
                   controlHeight,
@@ -214,8 +211,7 @@ class _DesktopDashboard extends StatelessWidget {
             topHeight,
             row(const [
               (2, CurrentOutboundCard()),
-              (1, SpeedCard(direction: TrafficDirection.upload)),
-              (1, SpeedCard(direction: TrafficDirection.download)),
+              (2, NetworkSpeedCard(fill: true)),
             ]),
           ),
           sized(

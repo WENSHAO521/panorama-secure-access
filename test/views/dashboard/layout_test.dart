@@ -100,7 +100,14 @@ void main() {
     await pumpDashboard(tester, const Size(1220, 824));
 
     final current = rectOf(tester, CurrentOutboundCard);
-    final upload = rectOf(tester, SpeedCard);
+    // The speed card spans two columns; one column is half of it.
+    final speed = rectOf(tester, NetworkSpeedCard);
+    final upload = Rect.fromLTWH(
+      speed.left,
+      speed.top,
+      (speed.width - 16) / 2,
+      speed.height,
+    );
     final mode = rectOf(tester, OutboundModeBar);
     final systemProxy = tester.getRect(find.byType(NetworkTakeoverTile).first);
     final tun = tester.getRect(find.byType(NetworkTakeoverTile).last);
@@ -177,7 +184,14 @@ void main() {
   ) async {
     await pumpDashboard(tester, const Size(1440, 900));
 
-    final upload = rectOf(tester, SpeedCard);
+    // The speed card spans two columns; one column is half of it.
+    final speed = rectOf(tester, NetworkSpeedCard);
+    final upload = Rect.fromLTWH(
+      speed.left,
+      speed.top,
+      (speed.width - 16) / 2,
+      speed.height,
+    );
     final service = rectOf(tester, ServiceStatusCard);
     final memory = rectOf(tester, MemoryInfo);
     expect(service.width, closeTo(upload.width, 0.01));
@@ -187,10 +201,7 @@ void main() {
     );
     expect(memory.top, service.top);
     expect(memory.left, closeTo(service.right + 16, 0.01));
-    expect(
-      memory.right,
-      closeTo(rectOf(tester, SpeedCard).right + 16 + upload.width, 0.01),
-    );
+    expect(memory.right, closeTo(speed.right, 0.01));
     expect(tester.takeException(), isNull);
 
     await teardown(tester);
@@ -286,7 +297,7 @@ void main() {
 
     final current = rectOf(tester, CurrentOutboundCard);
     final memory = rectOf(tester, MemoryInfo);
-    expect(rectOf(tester, SpeedCard).width, 440);
+    expect(rectOf(tester, NetworkSpeedCard).width, 440 * 2 + 16);
     expect(current.left - 16, closeTo(2560 - 24 - memory.right, 0.01));
     expect(rectOf(tester, ConnectionsTableCard).bottom, 1440 - 24);
     expect(tester.takeException(), isNull);
@@ -358,7 +369,14 @@ void main() {
     );
 
     final current = rectOf(tester, CurrentOutboundCard);
-    final upload = rectOf(tester, SpeedCard);
+    // The speed card spans two columns; one column is half of it.
+    final speed = rectOf(tester, NetworkSpeedCard);
+    final upload = Rect.fromLTWH(
+      speed.left,
+      speed.top,
+      (speed.width - gap) / 2,
+      speed.height,
+    );
     final mode = rectOf(tester, OutboundModeBar);
     final tun = tester.getRect(find.byType(NetworkTakeoverTile).last);
     final intranet = rectOf(tester, IntranetIpCard);
@@ -460,7 +478,7 @@ void main() {
       expect(vpn.height, mode.height);
       expect(find.byType(NetworkTakeoverTile), findsNothing);
       expect(find.byType(CurrentOutboundCard), findsOneWidget);
-      expect(find.byType(NetworkSpeedCard), findsNothing);
+      expect(find.byType(NetworkSpeedCard), findsOneWidget);
       expect(tester.takeException(), isNull);
     }
 

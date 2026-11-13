@@ -66,19 +66,10 @@ void main() {
   void addTraffic(Traffic traffic) =>
       container.read(trafficsProvider.notifier).addTraffic(traffic);
 
-  Rect figureIn(WidgetTester tester, Finder card) => tester.getRect(
-    find.descendant(
-      of: card,
-      matching: find.byWidgetPredicate(
-        (widget) => widget.runtimeType.toString() == '_Figure',
-      ),
-    ),
-  );
-
-  Finder tileOf(String label) => find.ancestor(
+  Finder figuresOf(String label) => find.ancestor(
     of: find.text(label),
     matching: find.byWidgetPredicate(
-      (widget) => widget.runtimeType.toString() == '_SpeedTile',
+      (widget) => widget.runtimeType.toString() == '_SpeedFigures',
     ),
   );
 
@@ -94,8 +85,8 @@ void main() {
 
     await pumpCard(tester, const NetworkSpeedCard());
 
-    final upload = tileOf('Upload');
-    final download = tileOf('Download');
+    final upload = figuresOf('Upload');
+    final download = figuresOf('Download');
     Finder inTile(Finder tile, String text) =>
         find.descendant(of: tile, matching: find.textContaining(text));
     expect(inTile(upload, '${_traffic(1024)}/s'), findsOneWidget);
@@ -107,42 +98,47 @@ void main() {
     await teardownCard(tester);
   });
 
-  testWidgets(
-    'a phone tile keeps its ratio and arches its stars under its title',
-    (tester) async {
-      await pumpCard(tester, const NetworkSpeedCard());
-
-      for (final label in ['Upload', 'Download']) {
-        final tile = tileOf(label);
-        final rect = tester.getRect(tile);
-        expect(rect.height, closeTo(rect.width / 1.2, 0.5));
-
-        final chart = tester.getRect(
-          find.descendant(of: tile, matching: find.byType(DipperGauge)),
-        );
-        final title = tester.getRect(
-          find.descendant(of: tile, matching: find.text(label)),
-        );
-        expect(chart.top, greaterThanOrEqualTo(title.bottom));
-        expect(chart.bottom, lessThanOrEqualTo(figureIn(tester, tile).top));
-      }
-
-      await teardownCard(tester);
-    },
-  );
-
-  testWidgets('a phone tile grows rather than clip a scaled up total', (
-    tester,
-  ) async {
-    tester.platformDispatcher.textScaleFactorTestValue = 2;
-    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-
+  testWidgets('one dipper spans the phone card, the upload over its handle '
+      'and the download under its bowl', (tester) async {
+    addTraffic(const Traffic(up: 1 << 16, down: 1 << 22));
     await pumpCard(tester, const NetworkSpeedCard());
 
-    final rect = tester.getRect(tileOf('Upload'));
-    expect(rect.height, greaterThan(rect.width / 1.2 + 1));
-    final total = tester.getRect(find.textContaining('Total').first);
-    expect(total.bottom, lessThanOrEqualTo(rect.bottom));
+    final card = tester.getRect(find.byType(NetworkSpeedCard));
+    final gauge = tester.getRect(find.byType(DipperGauge));
+    final upload = tester.getRect(figuresOf('Upload'));
+    final download = tester.getRect(figuresOf('Download'));
+    final title = tester.getRect(find.text('Network speed'));
+
+    expect(find.byType(DipperGauge), findsOneWidget);
+    expect(gauge.top, greaterThanOrEqualTo(title.bottom));
+    expect(gauge.width, greaterThan(card.width * 0.7));
+    expect(upload.left, closeTo(gauge.left, 0.5));
+    expect(upload.top, lessThan(gauge.top + gauge.height / 2));
+    expect(download.right, closeTo(gauge.right, 0.5));
+    expect(download.top, greaterThanOrEqualTo(upload.bottom));
+    expect(download.bottom, lessThanOrEqualTo(card.bottom));
+    expect(tester.takeException(), isNull);
+
+    await teardownCard(tester);
+  });
+
+  testWidgets('the phone card grows rather than clip scaled up text', (
+    tester,
+  ) async {
+    await pumpCard(tester, const NetworkSpeedCard());
+    final before = tester.getRect(find.byType(NetworkSpeedCard)).height;
+    await teardownCard(tester);
+
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await pumpCard(tester, const NetworkSpeedCard());
+
+    final card = tester.getRect(find.byType(NetworkSpeedCard));
+    expect(card.height, greaterThan(before + 1));
+    final upload = tester.getRect(figuresOf('Upload'));
+    final download = tester.getRect(figuresOf('Download'));
+    expect(download.top, greaterThanOrEqualTo(upload.bottom));
+    expect(download.bottom, lessThanOrEqualTo(card.bottom));
     expect(tester.takeException(), isNull);
 
     await teardownCard(tester);
@@ -159,53 +155,23 @@ void main() {
     expect(dipperLevel(1 << 40), 1);
   });
 
-  testWidgets('a desktop card keeps its peak to the window it samples', (
-    tester,
-  ) async {
-    addTraffic(const Traffic(up: 1 << 20));
-    for (var i = 0; i < trafficSampleLength; i++) {
-      addTraffic(const Traffic(up: 2048));
-    }
-
-    await pumpCard(
-      tester,
-      const SizedBox(
-        height: 208,
-        child: SpeedCard(direction: TrafficDirection.upload),
-      ),
-    );
-
-    expect(find.textContaining(_traffic(1 << 20)), findsNothing);
-    expect(find.textContaining('${_traffic(2048)}/s'), findsWidgets);
-
-    await teardownCard(tester);
-  });
-  testWidgets('a desktop card arches its stars between its title and figure', (
-    tester,
-  ) async {
+  testWidgets('a desktop card fills its height and narrows the dipper to '
+      'fit', (tester) async {
     addTraffic(const Traffic(down: 1 << 20));
 
     await pumpCard(
       tester,
-      const SizedBox(
-        height: 208,
-        child: SpeedCard(direction: TrafficDirection.download),
-      ),
+      const SizedBox(height: 208, child: NetworkSpeedCard(fill: true)),
     );
 
-    final card = tester.getRect(find.byType(SpeedCard));
+    final card = tester.getRect(find.byType(NetworkSpeedCard));
     final gauge = tester.getRect(find.byType(DipperGauge));
-    final title = tester.getRect(find.text('Download'));
+    final title = tester.getRect(find.text('Network speed'));
+    final download = tester.getRect(figuresOf('Download'));
+    expect(card.height, 208);
     expect(gauge.top, greaterThanOrEqualTo(title.bottom));
-    expect(
-      gauge.bottom,
-      lessThanOrEqualTo(figureIn(tester, find.byType(SpeedCard)).top),
-    );
-    expect(
-      figureIn(tester, find.byType(SpeedCard)).bottom,
-      lessThanOrEqualTo(card.bottom),
-    );
-    expect(find.textContaining('${_traffic(1 << 20)}/s'), findsNWidgets(2));
+    expect(download.bottom, lessThanOrEqualTo(card.bottom));
+    expect(find.textContaining('${_traffic(1 << 20)}/s'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await teardownCard(tester);
