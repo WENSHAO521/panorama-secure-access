@@ -374,7 +374,7 @@ jobs:
 
       - name: Audit Go dependencies
         working-directory: core
-        run: go run golang.org/x/vuln/cmd/govulncheck@v1.1.4 ./...
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
 
   windows-helper-test:
     name: Windows helper test
