@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 
 import 'constant.dart';
+import 'install_policy.dart';
 import 'print.dart';
+
+export 'install_policy.dart' show legacyBundleId, legacyDataDirectories;
 
 class LegacyDataImport {
   final String source;
@@ -17,12 +19,6 @@ class LegacyDataImport {
 /// The source is only read, so FlClash or an older release keeps working.
 class LegacyDataMigration {
   static const markerName = '.imported-from.json';
-
-  static const _transient = {
-    'FlClash.lock',
-    '$appExecutableName.lock',
-    'restore',
-  };
 
   final Directory target;
   final List<Directory> candidates;
@@ -45,16 +41,22 @@ class LegacyDataMigration {
   }
 
   Future<LegacyDataImport?> run() async {
-    if (hasUserData(target) || !_isEmptyOrMissing(target)) {
-      return null;
-    }
-    final source = candidates.where(
-      (item) => p.canonicalize(item.path) != p.canonicalize(target.path),
+    final targetPath = p.canonicalize(target.path);
+    final index = pickImportSource(
+      targetHasData: hasUserData(target),
+      targetEmpty: _isEmptyOrMissing(target),
+      candidates: [
+        for (final candidate in candidates)
+          DataCandidate(
+            sameAsTarget: p.canonicalize(candidate.path) == targetPath,
+            hasUserData: hasUserData(candidate),
+          ),
+      ],
     );
-    final from = source.where(hasUserData).firstOrNull;
-    if (from == null) {
+    if (index == null) {
       return null;
     }
+    final from = candidates[index];
     final staging = Directory('${target.path}.importing-$pid');
     var importedPreferences = false;
     try {
@@ -113,7 +115,7 @@ class LegacyDataMigration {
     await to.create(recursive: true);
     await for (final entity in from.list(followLinks: false)) {
       final name = p.basename(entity.path);
-      if (_transient.contains(name)) {
+      if (isTransientEntry(name, appExecutableName)) {
         continue;
       }
       final destination = p.join(to.path, name);
@@ -128,35 +130,6 @@ class LegacyDataMigration {
     }
   }
 }
-
-/// Windows releases already used their own folder; only FlClash's is a
-/// candidate there.
-@visibleForTesting
-List<String> legacyDataDirectories({
-  required String operatingSystem,
-  required Map<String, String> environment,
-}) {
-  final home = environment['HOME'] ?? environment['USERPROFILE'] ?? '';
-  switch (operatingSystem) {
-    case 'linux':
-      final dataHome = environment['XDG_DATA_HOME'];
-      final base = dataHome != null && dataHome.isNotEmpty
-          ? dataHome
-          : p.join(home, '.local', 'share');
-      return [p.join(base, legacyBundleId), p.join(base, 'FlClash')];
-    case 'macos':
-      return [p.join(home, 'Library', 'Application Support', legacyBundleId)];
-    case 'windows':
-      final appData = environment['APPDATA'];
-      if (appData == null || appData.isEmpty) {
-        return const [];
-      }
-      return [p.windows.join(appData, 'com.follow', 'clash')];
-  }
-  return const [];
-}
-
-const legacyBundleId = 'com.follow.clash';
 
 const legacyBetaPackage = 'com.panorama.secureaccess';
 

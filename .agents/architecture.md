@@ -1968,6 +1968,14 @@ UTF-8 bytes rather than a `String` so that decoding them stays off the UI isolat
   `lifecyclePolicy` (`lib/core/desktop/lifecycle_policy.dart`), which is Rust once `RustLib` is loaded and
   `DartLifecyclePolicy` otherwise. `lifecycle_policy_test.dart` compares the two on every input, and
   `lifecycle_rust_test.dart` runs the lifecycle suite again with Rust deciding.
+- `netdiag/` decides how the system DNS patch moves between services (`lib/common/system_dns.dart`), how a failed
+  request is classified (`network_error.dart`), which local address the app shows (`network.dart`), and what a
+  connectivity change asks of the Core (`application.dart`). `install/` holds the install and migration decisions:
+  legacy data directories and the import source (`legacy_data.dart`), legacy package recognition and the root removal
+  script (`legacy_install.dart`), which accepts only the package names earlier releases used. Both are reached through
+  `lib/common/netdiag.dart` and `lib/common/install_policy.dart` with the same Dart fallback as `netcfg`;
+  `importLegacyData` runs before `RustLib.init`, so the data import itself always takes the Dart path.
+  `test/common/rust_policies_test.dart` runs the suites of those files again with Rust deciding.
 - `hotkey/` registers desktop global shortcuts through `global-hotkey`: `keys` maps Flutter USB HID usages to key
   codes, `owner` runs every registration on the thread the platform binds it to (a dedicated message-loop thread on
   Windows, the main dispatch queue on macOS, in place on Linux), and `service` owns the registry and forwards presses
