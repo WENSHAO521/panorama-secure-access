@@ -465,6 +465,7 @@
   "deleteTip": "Voulez-vous vraiment supprimer cet élément ({label}) ?",
   "deleteMultipTip": "Voulez-vous vraiment supprimer les éléments sélectionnés ({label}) ?",
   "nullTip": "Aucun élément ({label}) pour le moment",
+  "defaultScript": "Script par défaut",
   "script": "Script",
   "color": "Couleur",
   "unnamed": "Sans nom",

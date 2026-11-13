@@ -80,6 +80,18 @@ class Preferences {
     await preferences?.setBool('legacyInstallOffered', true);
   }
 
+  /// Whether the bundled default script was offered once; a user who deletes
+  /// it does not get it back on the next launch.
+  Future<bool> getDefaultScriptSeeded() async {
+    final preferences = await _store.value;
+    return preferences?.getBool('defaultScriptSeeded') ?? false;
+  }
+
+  Future<void> setDefaultScriptSeeded() async {
+    final preferences = await _store.value;
+    await preferences?.setBool('defaultScriptSeeded', true);
+  }
+
   Future<void> saveShareState(SharedState shareState) async {
     final preferences = await _store.value;
     await preferences?.setString('sharedState', json.encode(shareState));

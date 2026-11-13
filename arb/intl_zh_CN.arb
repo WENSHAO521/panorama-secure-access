@@ -465,6 +465,7 @@
   "deleteTip": "确定删除当前{label}吗？",
   "deleteMultipTip": "确定删除选中的{label}吗？",
   "nullTip": "暂无{label}",
+  "defaultScript": "默认脚本",
   "script": "脚本",
   "color": "颜色",
   "unnamed": "未命名",

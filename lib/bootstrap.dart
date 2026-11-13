@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:fl_clash/common/boot_guard.dart';
 import 'package:fl_clash/common/boot_record.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/common/default_script.dart';
 import 'package:fl_clash/common/launch.dart';
 import 'package:fl_clash/common/legacy_data.dart';
 import 'package:fl_clash/common/startup_checks.dart';
@@ -139,6 +140,7 @@ class Bootstrap {
       getLocaleForString(config.appSettingProps.locale) ??
           WidgetsBinding.instance.platformDispatcher.locale,
     );
+    await seedDefaultScript();
     await window?.init(version, config.windowProps);
     if (system.isAndroid) {
       await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);

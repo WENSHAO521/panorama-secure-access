@@ -3721,6 +3721,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Default script`
+  String get defaultScript {
+    return Intl.message(
+      'Default script',
+      name: 'defaultScript',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Script`
   String get script {
     return Intl.message('Script', name: 'script', desc: '', args: []);

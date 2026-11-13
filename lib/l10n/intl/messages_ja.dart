@@ -594,6 +594,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "defaultNameserverDesc": MessageLookupByLibrary.simpleMessage(
       "ほかの DNS サーバーのドメイン名を解決します。IP アドレスのみ指定できます。",
     ),
+    "defaultScript": MessageLookupByLibrary.simpleMessage("デフォルトスクリプト"),
     "defaultSelected": MessageLookupByLibrary.simpleMessage("デフォルトの選択"),
     "defaultText": MessageLookupByLibrary.simpleMessage("デフォルト"),
     "definitionNotMap": MessageLookupByLibrary.simpleMessage(
