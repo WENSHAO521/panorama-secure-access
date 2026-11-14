@@ -34,6 +34,8 @@ _AppSettingProps _$AppSettingPropsFromJson(
       RequestFeed.live,
   delayTestTimeout:
       (json['delayTestTimeout'] as num?)?.toInt() ?? defaultDelayTestTimeout,
+  coreMemoryLimit:
+      (json['coreMemoryLimit'] as num?)?.toInt() ?? coreMemoryLimitAuto,
   tabAnimation:
       $enumDecodeNullable(
         _$TabAnimationEnumMap,
@@ -113,6 +115,7 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
       'closeConnections': instance.closeConnections,
       'requestFeed': _$RequestFeedEnumMap[instance.requestFeed]!,
       'delayTestTimeout': instance.delayTestTimeout,
+      'coreMemoryLimit': instance.coreMemoryLimit,
       'tabAnimation': _$TabAnimationEnumMap[instance.tabAnimation]!,
       'floatingNavigationBar': instance.floatingNavigationBar,
       'autoCheckUpdate': instance.autoCheckUpdate,
@@ -375,11 +378,12 @@ _ThemeProps _$ThemePropsFromJson(Map<String, dynamic> json) => _ThemeProps(
       ThemeMode.system,
   colorStyle:
       $enumDecodeNullable(
-        _$ColorStyleEnumMap,
+        _$AppColorStyleEnumMap,
         _readColorStyle(json, 'colorStyle'),
       ) ??
-      ColorStyle.vivid,
+      AppColorStyle.xingGuan,
   pureBlack: json['pureBlack'] as bool? ?? false,
+  starChart: json['starChart'] as bool? ?? true,
   sidebarBlur: json['sidebarBlur'] as bool? ?? false,
   liquidGlass:
       $enumDecodeNullable(
@@ -398,8 +402,9 @@ Map<String, dynamic> _$ThemePropsToJson(_ThemeProps instance) =>
       'primaryColor': instance.primaryColor,
       'primaryColors': instance.primaryColors,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
-      'colorStyle': _$ColorStyleEnumMap[instance.colorStyle]!,
+      'colorStyle': _$AppColorStyleEnumMap[instance.colorStyle]!,
       'pureBlack': instance.pureBlack,
+      'starChart': instance.starChart,
       'sidebarBlur': instance.sidebarBlur,
       'liquidGlass': _$LiquidGlassModeEnumMap[instance.liquidGlass]!,
       'textScale': instance.textScale,
@@ -412,11 +417,15 @@ const _$ThemeModeEnumMap = {
   ThemeMode.dark: 'dark',
 };
 
-const _$ColorStyleEnumMap = {
-  ColorStyle.vivid: 'vivid',
-  ColorStyle.tinted: 'tinted',
-  ColorStyle.soft: 'soft',
-  ColorStyle.monochrome: 'monochrome',
+const _$AppColorStyleEnumMap = {
+  AppColorStyle.vivid: 'vivid',
+  AppColorStyle.tinted: 'tinted',
+  AppColorStyle.soft: 'soft',
+  AppColorStyle.monochrome: 'monochrome',
+  AppColorStyle.xingGuan: 'xingGuan',
+  AppColorStyle.ziFu: 'ziFu',
+  AppColorStyle.qingLu: 'qingLu',
+  AppColorStyle.shuiMo: 'shuiMo',
 };
 
 const _$LiquidGlassModeEnumMap = {

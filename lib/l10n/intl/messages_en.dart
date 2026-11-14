@@ -532,6 +532,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "The app is already up to date",
     ),
     "cipher": MessageLookupByLibrary.simpleMessage("Cipher"),
+    "classicLook": MessageLookupByLibrary.simpleMessage("Classic"),
     "clearData": MessageLookupByLibrary.simpleMessage("Clear data"),
     "clearDataAndExitTip": MessageLookupByLibrary.simpleMessage(
       "This deletes all profiles, settings, and local data, then closes the app. Open it again to start fresh.",
@@ -626,7 +627,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Windows Smart App Control blocked panorama-secure-access-core.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start Panorama Secure Access again. Smart App Control cannot be turned back on without reinstalling Windows.",
     ),
+    "coreMemoryLimit": MessageLookupByLibrary.simpleMessage(
+      "Core memory limit",
+    ),
+    "coreStarting": MessageLookupByLibrary.simpleMessage("Starting…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("Core status"),
+    "coreStopping": MessageLookupByLibrary.simpleMessage("Stopping…"),
     "country": MessageLookupByLibrary.simpleMessage("Region"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("Crash detected"),
     "crashDetectedTip": m7,
@@ -1780,6 +1786,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "publicKey": MessageLookupByLibrary.simpleMessage("Public key"),
     "pureBlack": MessageLookupByLibrary.simpleMessage("Pure black"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("Pure black mode"),
+    "qingLuStyle": MessageLookupByLibrary.simpleMessage("Blue-Green"),
     "qrcode": MessageLookupByLibrary.simpleMessage("QR code"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage(
       "Scan a QR code to obtain a profile",
@@ -2125,6 +2132,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Stop button in notification",
     ),
     "showPassword": MessageLookupByLibrary.simpleMessage("Show password"),
+    "shuiMoStyle": MessageLookupByLibrary.simpleMessage("Ink Wash"),
     "sidebar": MessageLookupByLibrary.simpleMessage("Sidebar"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("Silent launch"),
     "singleImport": MessageLookupByLibrary.simpleMessage("Single import"),
@@ -2171,7 +2179,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "Standard mode: adds rules on top of the profile",
     ),
+    "starChart": MessageLookupByLibrary.simpleMessage("Star chart"),
     "start": MessageLookupByLibrary.simpleMessage("Start"),
+    "startFailedRetry": MessageLookupByLibrary.simpleMessage(
+      "Start failed. Tap to retry",
+    ),
     "startFromScratch": MessageLookupByLibrary.simpleMessage(
       "Start from scratch",
     ),
@@ -2294,6 +2306,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "Unknown network error",
     ),
+    "unlimited": MessageLookupByLibrary.simpleMessage("No limit"),
     "unmaximize": MessageLookupByLibrary.simpleMessage("Restore down"),
     "unnamed": MessageLookupByLibrary.simpleMessage("Unnamed"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("Unpin window"),
@@ -2362,9 +2375,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "Write to system also sets the system clock; Android ignores it.",
     ),
+    "xingGuanStyle": MessageLookupByLibrary.simpleMessage("Star Chart"),
     "yearsAgo": m111,
     "yearsAgoShort": m112,
     "yes": MessageLookupByLibrary.simpleMessage("Yes"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
+    "ziFuStyle": MessageLookupByLibrary.simpleMessage("Purple Palace"),
   };
 }

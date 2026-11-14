@@ -70,18 +70,18 @@ ColorScheme genColorScheme(
 
 const _maxCachedColorSchemes = 64;
 
-final _colorSchemes = <(Color, Brightness, ColorStyle, bool), ColorScheme>{};
+final _colorSchemes = <(Color, Brightness, AppColorStyle, bool), ColorScheme>{};
 
 ColorScheme _cachedColorScheme(
   Color seedColor,
   Brightness brightness,
-  ColorStyle style,
+  AppColorStyle style,
   bool pureBlack,
 ) {
   final key = (seedColor, brightness, style, pureBlack);
   final colorScheme =
       _colorSchemes.remove(key) ??
-      seededColorScheme(
+      appColorScheme(
         seedColor: seedColor,
         brightness: brightness,
         style: style,

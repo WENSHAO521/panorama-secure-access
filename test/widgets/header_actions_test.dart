@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/test_app.dart';
-import 'package:prism_ui/prism_ui.dart';
 
 void _noop() {}
 

@@ -1,5 +1,22 @@
 # Changelog
 
+## v3.5.12 (2026-11-14)
+
+**Features**
+
+- **ui** Carry the star chart look to every page (0cf9e8d)
+- **theme** Taoist color styles and pigment presets, 星官箋 + 泥金 default (6aae39c)
+- **ui** Star chart look (星官箋) for the dashboard and theme preview (add4bd7)
+- **scripts** Own lantern icon for the 国内网络 group (d6034ed)
+- **scripts** Ship the ziji script as default and enable it everywhere (95a3f43)
+
+**Performance**
+
+- **ui** Draw the resting star chart backdrop from one shared image (8405e05)
+- **theme** Build the theme page a part a frame (9df24c1)
+- **theme** Draw the still theme previews from an image (114761f)
+- Stop the halo redrawing every frame, add a core memory limit (29096ac)
+
 ## v3.5.11 (2026-11-13)
 
 **Features**

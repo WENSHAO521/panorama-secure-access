@@ -184,6 +184,8 @@
   "paste": "붙여넣기",
   "testUrl": "테스트 URL",
   "delayTestTimeout": "지연 테스트 시간 제한",
+  "coreMemoryLimit": "코어 메모리 상한",
+  "unlimited": "제한 없음",
   "sync": "동기화",
   "exclude": "최근 작업에서 숨기기",
   "compact": "간결하게",
@@ -426,6 +428,10 @@
   "vividStyle": "선명",
   "tintedStyle": "틴트",
   "softStyle": "부드러움",
+  "xingGuanStyle": "성관전",
+  "ziFuStyle": "자부",
+  "qingLuStyle": "청록",
+  "shuiMoStyle": "수묵",
   "developerMode": "개발자 모드",
   "developerModeEnableTip": "개발자 모드가 켜졌습니다.",
   "messageTest": "메시지 테스트",
@@ -1169,5 +1175,10 @@
   "uninstallRebootTip": "Fedora Atomic(rpm-ostree)에서는 다음 재부팅 후 앱이 사라집니다.",
   "uninstallDeleteDataTip": "구독, 설정, 로그도 삭제할까요? 삭제하면 복구할 수 없습니다. 다시 설치할 계획이라면 유지하세요.",
   "uninstallFailed": "앱이 제거되지 않아 아무것도 삭제하지 않았습니다.",
-  "keep": "유지"
+  "keep": "유지",
+  "starChart": "성도",
+  "coreStarting": "시작 중…",
+  "coreStopping": "중지 중…",
+  "startFailedRetry": "시작하지 못했습니다. 탭하여 다시 시도",
+  "classicLook": "클래식"
 }

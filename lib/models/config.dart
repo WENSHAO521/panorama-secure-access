@@ -1,5 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/ui/color_style.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -250,6 +251,7 @@ abstract class AppSettingProps with _$AppSettingProps {
     @Default(true) bool closeConnections,
     @Default(RequestFeed.live) RequestFeed requestFeed,
     @Default(defaultDelayTestTimeout) int delayTestTimeout,
+    @Default(coreMemoryLimitAuto) int coreMemoryLimit,
     @Default(TabAnimation.fade)
     @JsonKey(readValue: _readTabAnimation)
     TabAnimation tabAnimation,
@@ -455,9 +457,10 @@ Object? _readColorStyle(Map<dynamic, dynamic> json, String key) {
     return json[key];
   }
   return switch (json['schemeVariant']) {
-    'monochrome' => ColorStyle.monochrome.name,
-    'tonalSpot' || 'neutral' => ColorStyle.soft.name,
-    _ => null,
+    'monochrome' => AppColorStyle.monochrome.name,
+    'tonalSpot' || 'neutral' => AppColorStyle.soft.name,
+    null => null,
+    _ => AppColorStyle.vivid.name,
   };
 }
 
@@ -476,10 +479,11 @@ abstract class ThemeProps with _$ThemeProps {
     int? primaryColor,
     @Default(defaultPrimaryColors) List<int> primaryColors,
     @Default(ThemeMode.system) ThemeMode themeMode,
-    @Default(ColorStyle.vivid)
+    @Default(AppColorStyle.xingGuan)
     @JsonKey(readValue: _readColorStyle)
-    ColorStyle colorStyle,
+    AppColorStyle colorStyle,
     @Default(false) bool pureBlack,
+    @Default(true) bool starChart,
     @Default(false) bool sidebarBlur,
     @Default(LiquidGlassMode.none)
     @JsonKey(readValue: _readLiquidGlass)

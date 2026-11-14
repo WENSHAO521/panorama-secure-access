@@ -1,6 +1,6 @@
 import 'package:fl_clash/enum/enum.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:prism_ui/color.dart';
+import 'package:fl_clash/ui/color_style.dart';
 
 import 'app.dart';
 import 'clash_config.dart';
@@ -121,7 +121,7 @@ abstract class ThemeColorsSelectorState with _$ThemeColorsSelectorState {
   const factory ThemeColorsSelectorState({
     required int? primaryColor,
     required List<int> primaryColors,
-    required ColorStyle colorStyle,
+    required AppColorStyle colorStyle,
     required bool isDefault,
   }) = _ThemeColorsSelectorState;
 }

@@ -63,6 +63,11 @@ tertiary, which the app barely shows, so most of them looked alike once surfaces
 | `soft`       | tonal spot       | Material's, muted | near gray                       |
 | `monochrome` | monochrome       | black or white    | gray                            |
 
+The app adds four Taoist styles in `lib/ui/color_style.dart` (`AppColorStyle`), built on `vivid`: 星官箋 (default),
+紫府, 青綠, 水墨. Each keeps prism's light tones but gives every surface one fixed hue and chroma (宣紙 paper by day,
+玄青 night by night for 星官箋), deepens the dark levels to tones 5/10/14/19 as the approved 星官箋 mockup does, and lifts
+a dark accent to tone 72 so it reads as starlight on 玄. 水墨 caps the accent's chroma at 30, a wash.
+
 
 - **Surfaces stay near gray.** Each `surface*` role keeps Material's tone but its chroma is capped at 3, the light
   `surface` and `surfaceBright` at 1.5, and `outlineVariant` at 4. Material tints neutrals by the seed (content
@@ -238,3 +243,22 @@ widget test does it: pump `HomePage` or the view inside a `RepaintBoundary`, loa
 gets real glyphs, and write `RenderRepaintBoundary.toImage` to a PNG outside the repository. Look for a surface that
 matches the one it sits on, which means it skipped `SurfaceScope`, and for a tonal container fill that survived on a
 card or row.
+
+## Star Chart Look
+
+`ThemeProps.starChart` (星官箋, on by default, toggled on the theme page) is this fork's deliberate exception to the
+rules above. `genColorScheme` swaps the seeded scheme for the fixed mineral palette in `lib/ui/star_chart.dart`
+(`ColorScheme.toStarChart`), and widgets read `StarChartScope.of(context)` to add the look's decorations: the
+dashboard cards' double hairline frame (文武邊), serif card titles, the yin-yang line switch (陰陽爻), the star plate
+start button (`star_plate.dart`) and the sky-and-mountains page (`star_backdrop.dart`). The theme page preview
+(`MiniScreen.starChart`) draws the same pieces; keep it in step with the dashboard. Tests run the classic look
+unless they wrap their widget in `StarChartScope(enabled: true)`.
+
+The look reaches every page through `lib/ui`, not through each view. `lib/ui/ui.dart` re-exports prism_ui with
+`Switch`, `ListHeader` and the `generate*Section`/`generateGroup` builders hidden and puts same-named
+stand-ins in their place (`star_switch.dart`, `star_list.dart`): with the look off they build prism_ui's own widget,
+with it on a yao switch in the same footprint, a gilt serif section title with a rule, and the frame round each
+grouped section. Keep call sites on these names so upstream code picks the look up unchanged; a file that imports
+`package:prism_ui/prism_ui.dart` itself must hide those names. The app `Scaffold` lays the backdrop under every
+full page (not under sheets) and sets its title in the serif face; `StarChartScope.litOf` brightens the backdrop
+while the core runs.

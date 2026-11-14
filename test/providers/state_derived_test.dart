@@ -1,3 +1,4 @@
+import 'package:fl_clash/ui/color_style.dart';
 import 'package:fl_clash/common/app_ports.dart';
 import 'package:fl_clash/common/cidr.dart';
 import 'package:fl_clash/common/constant.dart';
@@ -761,7 +762,7 @@ void main() {
 
     container
         .read(themeSettingProvider.notifier)
-        .update((state) => state.copyWith(colorStyle: ColorStyle.soft));
+        .update((state) => state.copyWith(colorStyle: AppColorStyle.soft));
     expect(container.read(provider), isNot(same(first)));
   });
 

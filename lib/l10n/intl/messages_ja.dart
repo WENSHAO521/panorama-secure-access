@@ -459,6 +459,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "checkUpdate": MessageLookupByLibrary.simpleMessage("更新を確認"),
     "checkUpdateError": MessageLookupByLibrary.simpleMessage("すでに最新バージョンです"),
     "cipher": MessageLookupByLibrary.simpleMessage("暗号方式"),
+    "classicLook": MessageLookupByLibrary.simpleMessage("クラシック"),
     "clearData": MessageLookupByLibrary.simpleMessage("データを消去"),
     "clearDataAndExitTip": MessageLookupByLibrary.simpleMessage(
       "すべてのプロファイル、設定、ローカルデータを削除してアプリを終了します。もう一度開くと最初から始められます。",
@@ -537,7 +538,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Windows のスマート アプリ コントロールが、署名されていない panorama-secure-access-core.exe をブロックしました。Windows セキュリティ → アプリとブラウザーの制御 → スマート アプリ コントロールの設定で「オフ」を選び、Panorama Secure Access を再起動してください。一度オフにすると、Windows を再インストールしない限り再度オンにはできません。",
     ),
+    "coreMemoryLimit": MessageLookupByLibrary.simpleMessage("コアのメモリ上限"),
+    "coreStarting": MessageLookupByLibrary.simpleMessage("起動中…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("コアの状態"),
+    "coreStopping": MessageLookupByLibrary.simpleMessage("停止中…"),
     "country": MessageLookupByLibrary.simpleMessage("地域"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("クラッシュを検出しました"),
     "crashDetectedTip": m7,
@@ -1524,6 +1528,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "publicKey": MessageLookupByLibrary.simpleMessage("公開鍵"),
     "pureBlack": MessageLookupByLibrary.simpleMessage("ピュアブラック"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("ピュアブラックモード"),
+    "qingLuStyle": MessageLookupByLibrary.simpleMessage("青緑"),
     "qrcode": MessageLookupByLibrary.simpleMessage("QRコード"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage(
       "QRコードをスキャンしてプロファイルを取得します",
@@ -1825,6 +1830,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "通知に停止ボタンを表示",
     ),
     "showPassword": MessageLookupByLibrary.simpleMessage("パスワードを表示"),
+    "shuiMoStyle": MessageLookupByLibrary.simpleMessage("水墨"),
     "sidebar": MessageLookupByLibrary.simpleMessage("サイドバー"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("サイレント起動"),
     "singleImport": MessageLookupByLibrary.simpleMessage("個別インポート"),
@@ -1865,7 +1871,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "標準モード：プロファイルにルールを追加します",
     ),
+    "starChart": MessageLookupByLibrary.simpleMessage("星図"),
     "start": MessageLookupByLibrary.simpleMessage("開始"),
+    "startFailedRetry": MessageLookupByLibrary.simpleMessage(
+      "起動に失敗しました。タップして再試行",
+    ),
     "startFromScratch": MessageLookupByLibrary.simpleMessage("最初から作成"),
     "startVpn": MessageLookupByLibrary.simpleMessage("VPNを起動しています…"),
     "startupAndBackground": MessageLookupByLibrary.simpleMessage("起動とバックグラウンド"),
@@ -1970,6 +1980,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "unknown": MessageLookupByLibrary.simpleMessage("不明"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage("不明なネットワークエラー"),
+    "unlimited": MessageLookupByLibrary.simpleMessage("制限なし"),
     "unmaximize": MessageLookupByLibrary.simpleMessage("元に戻す"),
     "unnamed": MessageLookupByLibrary.simpleMessage("名称未設定"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("固定を解除"),
@@ -2032,9 +2043,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "システムに書き込むを有効にするとシステムクロックも設定します。Android では無視されます。",
     ),
+    "xingGuanStyle": MessageLookupByLibrary.simpleMessage("星官箋"),
     "yearsAgo": m111,
     "yearsAgoShort": m112,
     "yes": MessageLookupByLibrary.simpleMessage("はい"),
     "zhCN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
+    "ziFuStyle": MessageLookupByLibrary.simpleMessage("紫府"),
   };
 }

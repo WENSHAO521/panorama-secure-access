@@ -69,6 +69,12 @@ const delayTestTimeoutOptions = [500, 1000, 2000, 5000, 8000];
 
 const defaultDelayTestTimeout = 8000;
 
+/// In MB; [coreMemoryLimitAuto] picks [androidCoreMemoryLimit] on Android,
+/// where the core shares the app's process, and none on desktop.
+const coreMemoryLimitAuto = -1;
+const androidCoreMemoryLimit = 128;
+const coreMemoryLimitOptions = [coreMemoryLimitAuto, 0, 64, 128, 256, 512];
+
 const delayTestGuardDuration = Duration(seconds: 30);
 
 const delayTimedOutValue = -1;
@@ -190,7 +196,11 @@ const proxiesListStoreKey = PageStorageKey<String>('proxies_list');
 const toolsStoreKey = PageStorageKey<String>('tools');
 const profilesStoreKey = PageStorageKey<String>('profiles');
 
-const defaultPrimaryColor = 0xFF007AFF;
+/// 泥金, the gilt of the 星官箋 palette.
+const defaultPrimaryColor = 0xFF9C7420;
+
+/// The default before the Taoist colors, which an upgrade moves off.
+const formerDefaultPrimaryColor = 0xFF007AFF;
 
 const maxLogsLength = 5000;
 const maxRequestsLength = 2000;
@@ -201,10 +211,24 @@ const pausedMaxDnsQueriesLength = maxDnsQueriesLength * 2;
 
 const trafficSampleLength = 30;
 
+// Traditional mineral pigments: 泥金 gilt, 紫微 violet, 石青 azurite, 石綠
+// malachite, 赭石 ochre, 月白 moon white, 玄墨 ink.
+const taoistPrimaryColors = [
+  defaultPrimaryColor,
+  0xFF5B3FB8,
+  0xFF1F5F8B,
+  0xFF3D7A5D,
+  0xFF9C5A2E,
+  0xFF6E8BA6,
+  0xFF3E3D4A,
+];
+
+const defaultPrimaryColors = [...taoistPrimaryColors, ...classicPrimaryColors];
+
 // iOS 27's system colors but the deeper blue of earlier iOS, in the order of the
 // macOS accent colors.
-const defaultPrimaryColors = [
-  defaultPrimaryColor,
+const classicPrimaryColors = [
+  formerDefaultPrimaryColor,
   0xFFCB30E0,
   0xFFFF2D55,
   0xFFFF383C,

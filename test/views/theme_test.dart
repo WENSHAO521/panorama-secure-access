@@ -13,6 +13,7 @@ import 'package:fl_clash/views/font_family.dart';
 import 'package:fl_clash/views/theme.dart';
 import 'package:fl_clash/views/theme_preview.dart';
 import 'package:fl_clash/widgets/widgets.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -82,13 +83,15 @@ void main() {
           widget is Semantics && widget.properties.label == Color(color).hex,
     );
 
-    testWidgets('starts on blue among the system colors', (tester) async {
+    testWidgets('starts on 泥金 among the Taoist and system colors', (
+      tester,
+    ) async {
       container
           .read(themeSettingProvider.notifier)
           .update((_) => defaultThemeProps);
       await pumpThemeView(tester);
 
-      expect(readTheme().primaryColor, 0xFF007AFF);
+      expect(readTheme().primaryColor, defaultPrimaryColor);
       for (final color in defaultPrimaryColors) {
         expect(swatch(color), findsOneWidget);
       }
@@ -115,7 +118,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Soft').last);
       await tester.pumpAndSettle();
-      expect(readTheme().colorStyle, ColorStyle.soft);
+      expect(readTheme().colorStyle, AppColorStyle.soft);
     });
 
     testWidgets('deletes a color from its context menu', (tester) async {
@@ -231,6 +234,8 @@ void main() {
         200,
         scrollable: find.byType(Scrollable).first,
       );
+      await tester.ensureVisible(find.byTooltip('Add'));
+      await tester.pumpAndSettle();
       await tester.tap(find.byTooltip('Add'));
       await tester.pumpAndSettle();
 
@@ -621,6 +626,148 @@ void main() {
 
       expect(readTheme().textScale.scale, 1);
       expect(find.text('100%'), findsOneWidget);
+    });
+  });
+
+  group('arrival', () {
+    testWidgets('builds the page a part a frame', (tester) async {
+      tester.view.physicalSize = const Size(1400, 2400);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const TestApp(child: ThemeView()),
+        ),
+      );
+
+      expect(find.byType(ThemeLivePreview), findsOneWidget);
+      expect(find.text('Auto'), findsNothing);
+      expect(find.text('Liquid Glass'), findsNothing);
+      final preview = tester.renderObject<RenderStillRaster>(
+        find.descendant(
+          of: find.byType(ThemeLivePreview),
+          matching: find.byType(StillRaster),
+        ),
+      );
+      // Taken right after the frame that first painted it.
+      expect(preview.hasRaster, isTrue);
+
+      await tester.pump();
+      expect(find.text('Auto'), findsOneWidget);
+      expect(find.text('Liquid Glass'), findsNothing);
+
+      await tester.pump();
+      expect(find.text('Liquid Glass'), findsOneWidget);
+    });
+  });
+
+  group('still previews', () {
+    const settle = Duration(milliseconds: 200);
+
+    List<RenderStillRaster> stills(WidgetTester tester) => tester
+        .renderObjectList<RenderStillRaster>(find.byType(StillRaster))
+        .toList();
+
+    /// Counts the sketches painted while [body] runs.
+    Future<int> sketchPaints(Future<void> Function() body) async {
+      var paints = 0;
+      debugProfilePaintsEnabled = true;
+      debugOnProfilePaint = (renderObject) {
+        if (renderObject is RenderCustomPaint &&
+            '${renderObject.painter.runtimeType}' == '_MiniScreenPainter') {
+          paints++;
+        }
+      };
+      try {
+        await body();
+      } finally {
+        debugOnProfilePaint = null;
+        debugProfilePaintsEnabled = false;
+      }
+      return paints;
+    }
+
+    testWidgets('draws every sketch from an image once it holds still', (
+      tester,
+    ) async {
+      await pumpThemeView(tester);
+      expect(stills(tester), isNotEmpty);
+      expect(stills(tester).every((still) => still.hasRaster), isTrue);
+
+      final paints = await sketchPaints(() async {
+        final gesture = await tester.startGesture(const Offset(700, 1600));
+        for (var i = 0; i < 20; i++) {
+          await gesture.moveBy(const Offset(0, -20));
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+        await gesture.up();
+        await tester.pumpAndSettle();
+      });
+      expect(paints, 0);
+    });
+
+    testWidgets('paints live while a setting changes them', (tester) async {
+      await pumpThemeView(tester);
+      await tester.pump(settle);
+      await tester.pump();
+
+      final paints = await sketchPaints(() async {
+        container
+            .read(appSettingProvider.notifier)
+            .update((state) => state.copyWith(floatingNavigationBar: false));
+        await tester.pump();
+      });
+      expect(paints, greaterThan(0));
+      expect(stills(tester).any((still) => !still.hasRaster), isTrue);
+
+      await tester.pumpAndSettle();
+      await tester.pump(settle);
+      await tester.pump();
+      expect(stills(tester).every((still) => still.hasRaster), isTrue);
+    });
+
+    testWidgets('takes no image of the preview while its tabs move', (
+      tester,
+    ) async {
+      await pumpThemeView(tester);
+      await tester.pump(settle);
+      await tester.pump();
+      final preview = tester.renderObject<RenderStillRaster>(
+        find.descendant(
+          of: find.byType(ThemeLivePreview),
+          matching: find.byType(StillRaster),
+        ),
+      );
+      expect(preview.hasRaster, isTrue);
+
+      final bar = tester.getRect(find.byType(ThemeLivePreview));
+      await tester.tapAt(Offset(bar.center.dx + 30, bar.bottom - 40));
+      for (var i = 0; i < 12; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+        expect(preview.hasRaster, isFalse);
+      }
+      await tester.pumpAndSettle();
+      await tester.pump(settle);
+      await tester.pump();
+      expect(preview.hasRaster, isTrue);
+    });
+
+    testWidgets('takes a new image at a new pixel ratio', (tester) async {
+      await pumpThemeView(tester);
+      await tester.pump(settle);
+      await tester.pump();
+      final still = stills(tester).first;
+      expect(still.hasRaster, isTrue);
+
+      tester.view.devicePixelRatio = 2;
+      await tester.pump();
+      expect(still.hasRaster, isFalse);
+
+      await tester.pump(settle);
+      await tester.pump();
+      expect(still.hasRaster, isTrue);
     });
   });
 }

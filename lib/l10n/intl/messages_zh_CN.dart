@@ -435,6 +435,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "checkUpdate": MessageLookupByLibrary.simpleMessage("检查更新"),
     "checkUpdateError": MessageLookupByLibrary.simpleMessage("当前应用已经是最新版了"),
     "cipher": MessageLookupByLibrary.simpleMessage("加密方式"),
+    "classicLook": MessageLookupByLibrary.simpleMessage("经典"),
     "clearData": MessageLookupByLibrary.simpleMessage("清除数据"),
     "clearDataAndExitTip": MessageLookupByLibrary.simpleMessage(
       "将删除所有配置、设置和本地数据，随后关闭应用。重新打开即可从头开始。",
@@ -501,7 +502,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Windows 智能应用控制拦截了未签名的 panorama-secure-access-core.exe。请打开 Windows 安全中心 → 应用和浏览器控制 → 智能应用控制设置，选择「关闭」后重新启动 Panorama Secure Access。智能应用控制关闭后无法再开启，除非重装 Windows。",
     ),
+    "coreMemoryLimit": MessageLookupByLibrary.simpleMessage("内核内存上限"),
+    "coreStarting": MessageLookupByLibrary.simpleMessage("正在启动…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("核心状态"),
+    "coreStopping": MessageLookupByLibrary.simpleMessage("正在停止…"),
     "country": MessageLookupByLibrary.simpleMessage("区域"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("检测到崩溃"),
     "crashDetectedTip": m7,
@@ -1380,6 +1384,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "publicKey": MessageLookupByLibrary.simpleMessage("公钥"),
     "pureBlack": MessageLookupByLibrary.simpleMessage("纯黑"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("纯黑模式"),
+    "qingLuStyle": MessageLookupByLibrary.simpleMessage("青绿"),
     "qrcode": MessageLookupByLibrary.simpleMessage("二维码"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage("扫描二维码获取配置文件"),
     "qrcodeTooLongTip": MessageLookupByLibrary.simpleMessage(
@@ -1643,6 +1648,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "通知栏显示停止按钮",
     ),
     "showPassword": MessageLookupByLibrary.simpleMessage("显示密码"),
+    "shuiMoStyle": MessageLookupByLibrary.simpleMessage("水墨"),
     "sidebar": MessageLookupByLibrary.simpleMessage("侧边栏"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("静默启动"),
     "singleImport": MessageLookupByLibrary.simpleMessage("单条导入"),
@@ -1679,7 +1685,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "标准模式，在配置的基础上附加规则",
     ),
+    "starChart": MessageLookupByLibrary.simpleMessage("星官笺"),
     "start": MessageLookupByLibrary.simpleMessage("启动"),
+    "startFailedRetry": MessageLookupByLibrary.simpleMessage("启动失败，点击重试"),
     "startFromScratch": MessageLookupByLibrary.simpleMessage("从零开始"),
     "startVpn": MessageLookupByLibrary.simpleMessage("正在启动VPN…"),
     "startupAndBackground": MessageLookupByLibrary.simpleMessage("启动与后台"),
@@ -1778,6 +1786,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "unknown": MessageLookupByLibrary.simpleMessage("未知"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage("未知网络错误"),
+    "unlimited": MessageLookupByLibrary.simpleMessage("不限制"),
     "unmaximize": MessageLookupByLibrary.simpleMessage("向下还原"),
     "unnamed": MessageLookupByLibrary.simpleMessage("未命名"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("取消置顶"),
@@ -1830,9 +1839,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "写入系统会同时设置系统时钟，Android 上不生效。",
     ),
+    "xingGuanStyle": MessageLookupByLibrary.simpleMessage("星官笺"),
     "yearsAgo": m111,
     "yearsAgoShort": m112,
     "yes": MessageLookupByLibrary.simpleMessage("是"),
     "zhCN": MessageLookupByLibrary.simpleMessage("中文简体"),
+    "ziFuStyle": MessageLookupByLibrary.simpleMessage("紫府"),
   };
 }

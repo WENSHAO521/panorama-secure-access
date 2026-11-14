@@ -134,13 +134,14 @@ class Bootstrap {
           darkSeed: dynamicColor.darkSeed,
           accentColor: dynamicColor.accentColor,
         );
-    final profiles = await database.profilesDao.query().get();
-    container.read(profilesProvider.notifier).reorder(profiles);
     await AppLocalizations.load(
       getLocaleForString(config.appSettingProps.locale) ??
           WidgetsBinding.instance.platformDispatcher.locale,
     );
+    // Before profiles are read: it may switch them to the default script.
     await seedDefaultScript();
+    final profiles = await database.profilesDao.query().get();
+    container.read(profilesProvider.notifier).reorder(profiles);
     await window?.init(version, config.windowProps);
     if (system.isAndroid) {
       await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
