@@ -3,13 +3,22 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:prism_ui/prism_ui.dart'
     hide
+        DecorationListItem,
         ListHeader,
+        SelectedDecorationListItem,
         generateAnimatedSection,
         generateGroup,
         generateSection,
         generateSliverSection;
-import 'package:prism_ui/prism_ui.dart' as prism show ListHeader, generateGroup;
+import 'package:prism_ui/prism_ui.dart'
+    as prism
+    show
+        DecorationListItem,
+        ListHeader,
+        SelectedDecorationListItem,
+        generateGroup;
 
+import 'star_card.dart';
 import 'star_chart.dart';
 
 /// prism_ui's section title; under the star-chart look a serif title in gilt
@@ -143,7 +152,7 @@ class _StarGroup extends StatelessWidget {
     return DecoratedBox(
       position: DecorationPosition.foreground,
       decoration: _groupFrameOf(context),
-      child: child,
+      child: _FramedGroup(child: child),
     );
   }
 }
@@ -225,7 +234,129 @@ class _StarSliverGroup extends StatelessWidget {
     return DecoratedSliver(
       position: DecorationPosition.foreground,
       decoration: _groupFrameOf(context),
-      sliver: sliver,
+      sliver: _FramedGroup(child: sliver),
     );
   }
+}
+
+/// Marks rows whose group already carries the frame.
+class _FramedGroup extends InheritedWidget {
+  const _FramedGroup({required super.child});
+
+  static bool of(BuildContext context) =>
+      context.getInheritedWidgetOfExactType<_FramedGroup>() != null;
+
+  @override
+  bool updateShouldNotify(_FramedGroup oldWidget) => false;
+}
+
+/// Frames a grouped row by its place in the group, so the rows of a list
+/// built outside [generateGroup] still join into one framed card.
+class _RowFrame extends StatelessWidget {
+  const _RowFrame({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final position = ItemPositionProvider.of(context)?.position;
+    if (position == null ||
+        !StarChartScope.of(context) ||
+        _FramedGroup.of(context)) {
+      return child;
+    }
+    return StarFramed(
+      radius: listItemRadiusOf(position),
+      openTop: position == ItemPosition.middle || position == ItemPosition.end,
+      openBottom:
+          position == ItemPosition.middle || position == ItemPosition.start,
+      child: child,
+    );
+  }
+}
+
+class DecorationListItem extends StatelessWidget {
+  const DecorationListItem({
+    super.key,
+    this.contentPadding,
+    required this.title,
+    this.leading,
+    this.trailing,
+    this.subtitle,
+    this.isSelected,
+    this.onPressed,
+    this.horizontalTitleGap,
+    this.minVerticalPadding,
+    this.invalid = false,
+  });
+
+  final Widget title;
+  final Widget? subtitle;
+  final Widget? leading;
+  final Widget? trailing;
+  final bool? isSelected;
+  final double? horizontalTitleGap;
+  final EdgeInsetsGeometry? contentPadding;
+  final VoidCallback? onPressed;
+  final double? minVerticalPadding;
+  final bool invalid;
+
+  @override
+  Widget build(BuildContext context) => _RowFrame(
+    child: prism.DecorationListItem(
+      contentPadding: contentPadding,
+      title: title,
+      leading: leading,
+      trailing: trailing,
+      subtitle: subtitle,
+      isSelected: isSelected,
+      onPressed: onPressed,
+      horizontalTitleGap: horizontalTitleGap,
+      minVerticalPadding: minVerticalPadding,
+      invalid: invalid,
+    ),
+  );
+}
+
+class SelectedDecorationListItem extends StatelessWidget {
+  const SelectedDecorationListItem({
+    super.key,
+    required this.isSelected,
+    required this.onSelected,
+    this.horizontalTitleGap,
+    this.isEditing = false,
+    this.invalid = false,
+    required this.title,
+    required this.onPressed,
+    this.minVerticalPadding,
+    this.subtitle,
+    this.leading,
+  });
+
+  final bool isSelected;
+  final bool isEditing;
+  final Widget title;
+  final Widget? subtitle;
+  final VoidCallback onSelected;
+  final VoidCallback onPressed;
+  final double? horizontalTitleGap;
+  final Widget? leading;
+  final bool invalid;
+  final double? minVerticalPadding;
+
+  @override
+  Widget build(BuildContext context) => _RowFrame(
+    child: prism.SelectedDecorationListItem(
+      isSelected: isSelected,
+      onSelected: onSelected,
+      horizontalTitleGap: horizontalTitleGap,
+      isEditing: isEditing,
+      invalid: invalid,
+      title: title,
+      onPressed: onPressed,
+      minVerticalPadding: minVerticalPadding,
+      subtitle: subtitle,
+      leading: leading,
+    ),
+  );
 }

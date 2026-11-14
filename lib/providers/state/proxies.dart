@@ -199,7 +199,7 @@ int? delay(Ref ref, {required String proxyName, String? testUrl}) {
 }
 
 @riverpod
-DelayTestPhase? delayTestPhase(
+({int? delay, DelayTestPhase? phase}) delayView(
   Ref ref, {
   required String proxyName,
   String? testUrl,
@@ -207,8 +207,16 @@ DelayTestPhase? delayTestPhase(
   final currentTestUrl = ref.watch(realTestUrlProvider(testUrl));
   final proxyState = ref.watch(realSelectedProxyStateProvider(proxyName));
   final effectiveTestUrl = proxyState.testUrl.takeFirstValid([currentTestUrl]);
-  final key = delayTestKey(effectiveTestUrl, proxyState.proxyName);
-  return ref.watch(pendingDelayTestsProvider.select((state) => state[key]));
+  final effectiveProxyName = proxyState.proxyName;
+  final key = delayTestKey(effectiveTestUrl, effectiveProxyName);
+  return (
+    delay: ref.watch(
+      delayDataSourceProvider.select(
+        (state) => state[effectiveTestUrl]?[effectiveProxyName],
+      ),
+    ),
+    phase: ref.watch(pendingDelayTestsProvider.select((state) => state[key])),
+  );
 }
 
 @riverpod

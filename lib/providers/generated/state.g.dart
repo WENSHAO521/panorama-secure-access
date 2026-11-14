@@ -2517,43 +2517,48 @@ final class DelayFamily extends $Family
   String toString() => r'delayProvider';
 }
 
-@ProviderFor(delayTestPhase)
-final delayTestPhaseProvider = DelayTestPhaseFamily._();
+@ProviderFor(delayView)
+final delayViewProvider = DelayViewFamily._();
 
-final class DelayTestPhaseProvider
+final class DelayViewProvider
     extends
-        $FunctionalProvider<DelayTestPhase?, DelayTestPhase?, DelayTestPhase?>
-    with $Provider<DelayTestPhase?> {
-  DelayTestPhaseProvider._({
-    required DelayTestPhaseFamily super.from,
+        $FunctionalProvider<
+          ({int? delay, DelayTestPhase? phase}),
+          ({int? delay, DelayTestPhase? phase}),
+          ({int? delay, DelayTestPhase? phase})
+        >
+    with $Provider<({int? delay, DelayTestPhase? phase})> {
+  DelayViewProvider._({
+    required DelayViewFamily super.from,
     required ({String proxyName, String? testUrl}) super.argument,
   }) : super(
          retry: null,
-         name: r'delayTestPhaseProvider',
+         name: r'delayViewProvider',
          isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
 
   @override
-  String debugGetCreateSourceHash() => _$delayTestPhaseHash();
+  String debugGetCreateSourceHash() => _$delayViewHash();
 
   @override
   String toString() {
-    return r'delayTestPhaseProvider'
+    return r'delayViewProvider'
         ''
         '$argument';
   }
 
   @$internal
   @override
-  $ProviderElement<DelayTestPhase?> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<({int? delay, DelayTestPhase? phase})> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
-  DelayTestPhase? create(Ref ref) {
+  ({int? delay, DelayTestPhase? phase}) create(Ref ref) {
     final argument = this.argument as ({String proxyName, String? testUrl});
-    return delayTestPhase(
+    return delayView(
       ref,
       proxyName: argument.proxyName,
       testUrl: argument.testUrl,
@@ -2561,16 +2566,17 @@ final class DelayTestPhaseProvider
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(DelayTestPhase? value) {
+  Override overrideWithValue(({int? delay, DelayTestPhase? phase}) value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<DelayTestPhase?>(value),
+      providerOverride:
+          $SyncValueProvider<({int? delay, DelayTestPhase? phase})>(value),
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is DelayTestPhaseProvider && other.argument == argument;
+    return other is DelayViewProvider && other.argument == argument;
   }
 
   @override
@@ -2579,31 +2585,31 @@ final class DelayTestPhaseProvider
   }
 }
 
-String _$delayTestPhaseHash() => r'e757e70a0e180c01a4e660e1f16ce77a4547f4cf';
+String _$delayViewHash() => r'8abe49a67f83e6043988653ef59b6616dbc7fb01';
 
-final class DelayTestPhaseFamily extends $Family
+final class DelayViewFamily extends $Family
     with
         $FunctionalFamilyOverride<
-          DelayTestPhase?,
+          ({int? delay, DelayTestPhase? phase}),
           ({String proxyName, String? testUrl})
         > {
-  DelayTestPhaseFamily._()
+  DelayViewFamily._()
     : super(
         retry: null,
-        name: r'delayTestPhaseProvider',
+        name: r'delayViewProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
 
-  DelayTestPhaseProvider call({required String proxyName, String? testUrl}) =>
-      DelayTestPhaseProvider._(
+  DelayViewProvider call({required String proxyName, String? testUrl}) =>
+      DelayViewProvider._(
         argument: (proxyName: proxyName, testUrl: testUrl),
         from: this,
       );
 
   @override
-  String toString() => r'delayTestPhaseProvider';
+  String toString() => r'delayViewProvider';
 }
 
 @ProviderFor(selectedMap)

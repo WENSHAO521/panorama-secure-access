@@ -255,10 +255,14 @@ start button (`star_plate.dart`) and the sky-and-mountains page (`star_backdrop.
 unless they wrap their widget in `StarChartScope(enabled: true)`.
 
 The look reaches every page through `lib/ui`, not through each view. `lib/ui/ui.dart` re-exports prism_ui with
-`Switch`, `ListHeader` and the `generate*Section`/`generateGroup` builders hidden and puts same-named
-stand-ins in their place (`star_switch.dart`, `star_list.dart`): with the look off they build prism_ui's own widget,
-with it on a yao switch in the same footprint, a gilt serif section title with a rule, and the frame round each
-grouped section. Keep call sites on these names so upstream code picks the look up unchanged; a file that imports
-`package:prism_ui/prism_ui.dart` itself must hide those names. The app `Scaffold` lays the backdrop under every
+`Switch`, `ListHeader`, `Card`, `DecorationListItem`, `SelectedDecorationListItem` and the
+`generate*Section`/`generateGroup` builders hidden and puts same-named stand-ins in their place (`star_switch.dart`,
+`star_list.dart`, `star_card.dart`): with the look off they build prism_ui's own widget, with it on a yao switch in
+the same footprint, a gilt serif section title with a rule, the frame round each grouped section, round each card
+(gilt once selected; small grid tiles keep the outer line only) and round each grouped row by its `ItemPosition`
+when no section frames it, so a reorderable list joins into one frame. A surface drawn by hand rather than through
+`Card` wraps itself in `StarFramed`. Keep call sites on these names so upstream code picks the look up unchanged; a
+file that imports `package:prism_ui/prism_ui.dart` itself must hide those names, and a test that looks for the card
+prism_ui builds inside its own widgets finds `prism.Card`. The app `Scaffold` lays the backdrop under every
 full page (not under sheets) and sets its title in the serif face; `StarChartScope.litOf` brightens the backdrop
 while the core runs.

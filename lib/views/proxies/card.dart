@@ -213,6 +213,7 @@ class ProxyCard extends ConsumerWidget {
             key: key,
             onPressed: () => _handleSelect(ref),
             isSelected: inUse,
+            frameInner: inUse,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -343,14 +344,8 @@ class _DelayTextState extends ConsumerState<_DelayText> {
   @override
   Widget build(BuildContext context) {
     final measure = globalState.measure;
-    final delay = ref.watch(
-      delayProvider(proxyName: widget.proxy.name, testUrl: widget.testUrl),
-    );
-    final phase = ref.watch(
-      delayTestPhaseProvider(
-        proxyName: widget.proxy.name,
-        testUrl: widget.testUrl,
-      ),
+    final (:delay, :phase) = ref.watch(
+      delayViewProvider(proxyName: widget.proxy.name, testUrl: widget.testUrl),
     );
     return Actions(
       actions: {
