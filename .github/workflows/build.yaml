@@ -554,8 +554,6 @@ jobs:
       - name: Setup
         env:
           ANDROID_NDK_HOME: ${{ steps.build-ndk.outputs.ndk-path }}
-          INVITE_API: ${{ vars.INVITE_API }}
-          INVITE_PUBLIC_KEY: ${{ vars.INVITE_PUBLIC_KEY }}
         run: dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} --release-tag ${{ needs.release-tag.outputs.tag }} --build-time ${{ needs.release-tag.outputs.build_time }} --run-number ${{ github.run_number }} -v
 
       - name: Verify the built version

@@ -33,28 +33,6 @@ void main() {
       });
     });
 
-    test('passes the invitation server only when the build has one', () {
-      expect(
-        setup.createBuildEnvironment(
-          'stable',
-          host: const {
-            'INVITE_API': ' https://invite.example ',
-            'INVITE_PUBLIC_KEY': 'a2V5',
-            'HOME': '/root',
-          },
-        ),
-        {
-          'APP_ENV': 'stable',
-          'INVITE_API': 'https://invite.example',
-          'INVITE_PUBLIC_KEY': 'a2V5',
-        },
-      );
-      expect(
-        setup.createBuildEnvironment('stable', host: const {'INVITE_API': ''}),
-        {'APP_ENV': 'stable'},
-      );
-    });
-
     test('omits verbose from flutter build args by default', () {
       final args = setup.createFlutterBuildArgs(
         platform: 'android',

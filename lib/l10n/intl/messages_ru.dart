@@ -1295,28 +1295,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "invalidRuleSet": m47,
     "invalidSubRule": m48,
-    "inviteDescription": MessageLookupByLibrary.simpleMessage(
-      "Panorama Secure Access доступен только по приглашению. Введите полученный код, чтобы продолжить.",
-    ),
-    "inviteDevice": MessageLookupByLibrary.simpleMessage("ID устройства"),
-    "inviteExhausted": MessageLookupByLibrary.simpleMessage(
-      "Код уже используется на максимальном числе устройств.",
-    ),
-    "inviteExpired": MessageLookupByLibrary.simpleMessage(
-      "Срок действия кода истёк.",
-    ),
-    "inviteInvalid": MessageLookupByLibrary.simpleMessage(
-      "Такого кода нет. Проверьте его и попробуйте снова.",
-    ),
-    "inviteNetworkError": MessageLookupByLibrary.simpleMessage(
-      "Не удалось связаться с сервером приглашений. Проверьте сеть и попробуйте снова.",
-    ),
-    "inviteRevoked": MessageLookupByLibrary.simpleMessage("Этот код отозван."),
-    "inviteSubmit": MessageLookupByLibrary.simpleMessage("Продолжить"),
-    "inviteTitle": MessageLookupByLibrary.simpleMessage("Код приглашения"),
-    "inviteUnbound": MessageLookupByLibrary.simpleMessage(
-      "Это устройство отвязано от кода. Введите код снова.",
-    ),
     "ipAddress": MessageLookupByLibrary.simpleMessage("IP-адрес"),
     "ipAsn": MessageLookupByLibrary.simpleMessage("ASN"),
     "ipFlagAbuser": MessageLookupByLibrary.simpleMessage("Злоупотребления"),

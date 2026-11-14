@@ -8,7 +8,6 @@ import 'api/charset.dart';
 import 'api/editor.dart';
 import 'api/hotkey.dart';
 import 'api/install.dart';
-import 'api/invite.dart';
 import 'api/ipc.dart';
 import 'api/lifecycle.dart';
 import 'api/netcfg.dart';

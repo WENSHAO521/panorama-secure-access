@@ -1330,28 +1330,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "invalidRuleSet": m47,
     "invalidSubRule": m48,
-    "inviteDescription": MessageLookupByLibrary.simpleMessage(
-      "Panorama Secure Access est accessible sur invitation. Saisissez le code reçu pour continuer.",
-    ),
-    "inviteDevice": MessageLookupByLibrary.simpleMessage("ID de l\'appareil"),
-    "inviteExhausted": MessageLookupByLibrary.simpleMessage(
-      "Ce code est déjà utilisé sur le nombre maximal d\'appareils.",
-    ),
-    "inviteExpired": MessageLookupByLibrary.simpleMessage("Ce code a expiré."),
-    "inviteInvalid": MessageLookupByLibrary.simpleMessage(
-      "Ce code n\'existe pas. Vérifiez-le et réessayez.",
-    ),
-    "inviteNetworkError": MessageLookupByLibrary.simpleMessage(
-      "Impossible de joindre le serveur d\'invitations. Vérifiez votre réseau et réessayez.",
-    ),
-    "inviteRevoked": MessageLookupByLibrary.simpleMessage(
-      "Ce code a été retiré.",
-    ),
-    "inviteSubmit": MessageLookupByLibrary.simpleMessage("Continuer"),
-    "inviteTitle": MessageLookupByLibrary.simpleMessage("Code d\'invitation"),
-    "inviteUnbound": MessageLookupByLibrary.simpleMessage(
-      "Cet appareil a été retiré de son code. Saisissez de nouveau un code.",
-    ),
     "ipAddress": MessageLookupByLibrary.simpleMessage("Adresse IP"),
     "ipAsn": MessageLookupByLibrary.simpleMessage("ASN"),
     "ipFlagAbuser": MessageLookupByLibrary.simpleMessage("Antécédents d’abus"),

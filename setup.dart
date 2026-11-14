@@ -162,21 +162,8 @@ List<String> createFlutterBuildArgs({
   ];
 }
 
-/// The invitation server and its public key come from the build's own
-/// environment, so a build without them, a fork's included, asks for no code.
-Map<String, String> createBuildEnvironment(
-  String env, {
-  String? releaseTag,
-  Map<String, String> host = const {},
-}) {
-  String? fromHost(String name) =>
-      host[name]?.trim().isNotEmpty == true ? host[name]!.trim() : null;
-  return {
-    'APP_ENV': env,
-    'APP_RELEASE_TAG': ?releaseTag,
-    'INVITE_API': ?fromHost('INVITE_API'),
-    'INVITE_PUBLIC_KEY': ?fromHost('INVITE_PUBLIC_KEY'),
-  };
+Map<String, String> createBuildEnvironment(String env, {String? releaseTag}) {
+  return {'APP_ENV': env, 'APP_RELEASE_TAG': ?releaseTag};
 }
 
 /// Packages whose build hook `pubspec.yaml` turns into a no-op.
@@ -217,13 +204,7 @@ Future<int> _package(
 }) async {
   final file = File(p.join(rootDir, 'env.json'));
   await file.writeAsString(
-    jsonEncode(
-      createBuildEnvironment(
-        env,
-        releaseTag: release?.tag,
-        host: Platform.environment,
-      ),
-    ),
+    jsonEncode(createBuildEnvironment(env, releaseTag: release?.tag)),
   );
 
   final flutterBuildArgs = createFlutterBuildArgs(

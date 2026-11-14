@@ -1180,15 +1180,5 @@
   "coreStarting": "Démarrage…",
   "coreStopping": "Arrêt…",
   "startFailedRetry": "Échec du démarrage. Touchez pour réessayer",
-  "classicLook": "Classique",
-  "inviteTitle": "Code d'invitation",
-  "inviteDescription": "Panorama Secure Access est accessible sur invitation. Saisissez le code reçu pour continuer.",
-  "inviteSubmit": "Continuer",
-  "inviteInvalid": "Ce code n'existe pas. Vérifiez-le et réessayez.",
-  "inviteRevoked": "Ce code a été retiré.",
-  "inviteExpired": "Ce code a expiré.",
-  "inviteExhausted": "Ce code est déjà utilisé sur le nombre maximal d'appareils.",
-  "inviteUnbound": "Cet appareil a été retiré de son code. Saisissez de nouveau un code.",
-  "inviteNetworkError": "Impossible de joindre le serveur d'invitations. Vérifiez votre réseau et réessayez.",
-  "inviteDevice": "ID de l'appareil"
+  "classicLook": "Classique"
 }

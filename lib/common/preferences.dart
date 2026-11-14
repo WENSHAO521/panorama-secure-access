@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:fl_clash/common/boot_record.dart';
 import 'package:fl_clash/common/common.dart';
@@ -94,34 +93,6 @@ class Preferences {
     final preferences = await _store.value;
     await preferences?.setInt('defaultScriptRevision', revision);
     await preferences?.remove('defaultScriptSeeded');
-  }
-
-  /// A random id this install sends with an invitation code, so a code that
-  /// admits a number of devices can count them.
-  Future<String> getInviteDevice() async {
-    final preferences = await _store.value;
-    final saved = preferences?.getString('inviteDevice');
-    if (saved != null) return saved;
-    final random = Random.secure();
-    final device = base64Url
-        .encode(List.generate(18, (_) => random.nextInt(256)))
-        .replaceAll('=', '');
-    await preferences?.setString('inviteDevice', device);
-    return device;
-  }
-
-  Future<String?> getInviteToken() async {
-    final preferences = await _store.value;
-    return preferences?.getString('inviteToken');
-  }
-
-  Future<void> saveInviteToken(String? token) async {
-    final preferences = await _store.value;
-    if (token == null) {
-      await preferences?.remove('inviteToken');
-    } else {
-      await preferences?.setString('inviteToken', token);
-    }
   }
 
   Future<void> saveShareState(SharedState shareState) async {

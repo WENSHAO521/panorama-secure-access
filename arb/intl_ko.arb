@@ -1180,15 +1180,5 @@
   "coreStarting": "시작 중…",
   "coreStopping": "중지 중…",
   "startFailedRetry": "시작하지 못했습니다. 탭하여 다시 시도",
-  "classicLook": "클래식",
-  "inviteTitle": "초대 코드",
-  "inviteDescription": "Panorama Secure Access는 초대받은 사용자만 이용할 수 있습니다. 받은 코드를 입력해 계속하세요.",
-  "inviteSubmit": "계속",
-  "inviteInvalid": "존재하지 않는 코드입니다. 확인 후 다시 시도하세요.",
-  "inviteRevoked": "이 코드는 회수되었습니다.",
-  "inviteExpired": "이 코드는 만료되었습니다.",
-  "inviteExhausted": "이 코드는 허용된 기기 수만큼 이미 사용 중입니다.",
-  "inviteUnbound": "이 기기는 코드에서 해제되었습니다. 코드를 다시 입력하세요.",
-  "inviteNetworkError": "초대 서버에 연결할 수 없습니다. 네트워크를 확인하고 다시 시도하세요.",
-  "inviteDevice": "기기 ID"
+  "classicLook": "클래식"
 }

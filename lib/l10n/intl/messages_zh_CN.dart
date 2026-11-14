@@ -964,22 +964,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "invalidRuleSet": m47,
     "invalidSubRule": m48,
-    "inviteDescription": MessageLookupByLibrary.simpleMessage(
-      "Panorama Secure Access 仅限受邀使用，请输入你收到的邀请码继续。",
-    ),
-    "inviteDevice": MessageLookupByLibrary.simpleMessage("设备 ID"),
-    "inviteExhausted": MessageLookupByLibrary.simpleMessage("该邀请码可用的设备数已满。"),
-    "inviteExpired": MessageLookupByLibrary.simpleMessage("该邀请码已过期。"),
-    "inviteInvalid": MessageLookupByLibrary.simpleMessage("邀请码不存在，请检查后重试。"),
-    "inviteNetworkError": MessageLookupByLibrary.simpleMessage(
-      "无法连接邀请服务器，请检查网络后重试。",
-    ),
-    "inviteRevoked": MessageLookupByLibrary.simpleMessage("该邀请码已被撤销。"),
-    "inviteSubmit": MessageLookupByLibrary.simpleMessage("继续"),
-    "inviteTitle": MessageLookupByLibrary.simpleMessage("邀请码"),
-    "inviteUnbound": MessageLookupByLibrary.simpleMessage(
-      "此设备已从邀请码中移除，请重新输入邀请码。",
-    ),
     "ipAddress": MessageLookupByLibrary.simpleMessage("IP 地址"),
     "ipAsn": MessageLookupByLibrary.simpleMessage("ASN"),
     "ipFlagAbuser": MessageLookupByLibrary.simpleMessage("滥用记录"),

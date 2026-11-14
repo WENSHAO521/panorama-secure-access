@@ -1180,15 +1180,5 @@
   "coreStarting": "正在启动…",
   "coreStopping": "正在停止…",
   "startFailedRetry": "启动失败，点击重试",
-  "classicLook": "经典",
-  "inviteTitle": "邀请码",
-  "inviteDescription": "Panorama Secure Access 仅限受邀使用，请输入你收到的邀请码继续。",
-  "inviteSubmit": "继续",
-  "inviteInvalid": "邀请码不存在，请检查后重试。",
-  "inviteRevoked": "该邀请码已被撤销。",
-  "inviteExpired": "该邀请码已过期。",
-  "inviteExhausted": "该邀请码可用的设备数已满。",
-  "inviteUnbound": "此设备已从邀请码中移除，请重新输入邀请码。",
-  "inviteNetworkError": "无法连接邀请服务器，请检查网络后重试。",
-  "inviteDevice": "设备 ID"
+  "classicLook": "经典"
 }

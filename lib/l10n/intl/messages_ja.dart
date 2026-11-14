@@ -1062,26 +1062,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "invalidRuleSet": m47,
     "invalidSubRule": m48,
-    "inviteDescription": MessageLookupByLibrary.simpleMessage(
-      "Panorama Secure Access は招待制です。受け取ったコードを入力して続行してください。",
-    ),
-    "inviteDevice": MessageLookupByLibrary.simpleMessage("端末 ID"),
-    "inviteExhausted": MessageLookupByLibrary.simpleMessage(
-      "このコードは利用できる端末数の上限に達しています。",
-    ),
-    "inviteExpired": MessageLookupByLibrary.simpleMessage("このコードは有効期限が切れています。"),
-    "inviteInvalid": MessageLookupByLibrary.simpleMessage(
-      "このコードは存在しません。確認してもう一度お試しください。",
-    ),
-    "inviteNetworkError": MessageLookupByLibrary.simpleMessage(
-      "招待サーバーに接続できません。ネットワークを確認してもう一度お試しください。",
-    ),
-    "inviteRevoked": MessageLookupByLibrary.simpleMessage("このコードは取り消されました。"),
-    "inviteSubmit": MessageLookupByLibrary.simpleMessage("続行"),
-    "inviteTitle": MessageLookupByLibrary.simpleMessage("招待コード"),
-    "inviteUnbound": MessageLookupByLibrary.simpleMessage(
-      "この端末はコードから外されました。もう一度コードを入力してください。",
-    ),
     "ipAddress": MessageLookupByLibrary.simpleMessage("IP アドレス"),
     "ipAsn": MessageLookupByLibrary.simpleMessage("ASN"),
     "ipFlagAbuser": MessageLookupByLibrary.simpleMessage("不正利用の履歴"),

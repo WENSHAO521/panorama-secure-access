@@ -13,7 +13,6 @@ import 'package:fl_clash/common/tray.dart';
 import 'package:fl_clash/common/window.dart';
 import 'package:fl_clash/database/database.dart';
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/features/invite/invite.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/plugins/app.dart';
@@ -112,7 +111,6 @@ class Bootstrap {
       config = config.copyWith(patchClashConfig: patchClashConfig);
       await preferences.saveConfig(config);
     }
-    await InviteBoot.load();
     final appState = AppState(
       brightness: WidgetsBinding.instance.platformDispatcher.platformBrightness,
       version: version,

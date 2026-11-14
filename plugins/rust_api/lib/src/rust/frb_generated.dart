@@ -8,7 +8,6 @@ import 'api/charset.dart';
 import 'api/editor.dart';
 import 'api/hotkey.dart';
 import 'api/install.dart';
-import 'api/invite.dart';
 import 'api/ipc.dart';
 import 'api/lifecycle.dart';
 import 'api/netcfg.dart';
@@ -76,7 +75,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => -123765633;
+  int get rustContentHash => -1173586028;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -332,12 +331,6 @@ abstract class RustLibApi extends BaseApi {
     required List<int> bytes,
     required String label,
     required bool lossy,
-  });
-
-  bool crateApiInviteVerifyInviteSignature({
-    required List<int> publicKey,
-    required List<int> message,
-    required List<int> signature,
   });
 
   Future<List<String>> crateApiEditorWordsExtract({required RopeBridge rope});
@@ -2236,38 +2229,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  bool crateApiInviteVerifyInviteSignature({
-    required List<int> publicKey,
-    required List<int> message,
-    required List<int> signature,
-  }) {
-    return handler.executeSync(
-      SyncTask(
-        callFfi: () {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_list_prim_u_8_loose(publicKey, serializer);
-          sse_encode_list_prim_u_8_loose(message, serializer);
-          sse_encode_list_prim_u_8_loose(signature, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 61)!;
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_bool,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiInviteVerifyInviteSignatureConstMeta,
-        argValues: [publicKey, message, signature],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiInviteVerifyInviteSignatureConstMeta =>
-      const TaskConstMeta(
-        debugName: "verify_invite_signature",
-        argNames: ["publicKey", "message", "signature"],
-      );
-
-  @override
   Future<List<String>> crateApiEditorWordsExtract({required RopeBridge rope}) {
     return handler.executeNormal(
       NormalTask(
@@ -2280,7 +2241,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 62,
+            funcId: 61,
             port: port_,
           );
         },

@@ -1244,30 +1244,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "invalidRuleSet": m47,
     "invalidSubRule": m48,
-    "inviteDescription": MessageLookupByLibrary.simpleMessage(
-      "Panorama Secure Access is invitation-only. Enter the code you were given to continue.",
-    ),
-    "inviteDevice": MessageLookupByLibrary.simpleMessage("Device ID"),
-    "inviteExhausted": MessageLookupByLibrary.simpleMessage(
-      "This code is already in use on as many devices as it allows.",
-    ),
-    "inviteExpired": MessageLookupByLibrary.simpleMessage(
-      "This code has expired.",
-    ),
-    "inviteInvalid": MessageLookupByLibrary.simpleMessage(
-      "This code does not exist. Check it and try again.",
-    ),
-    "inviteNetworkError": MessageLookupByLibrary.simpleMessage(
-      "The invitation server could not be reached. Check your network and try again.",
-    ),
-    "inviteRevoked": MessageLookupByLibrary.simpleMessage(
-      "This code has been withdrawn.",
-    ),
-    "inviteSubmit": MessageLookupByLibrary.simpleMessage("Continue"),
-    "inviteTitle": MessageLookupByLibrary.simpleMessage("Invitation code"),
-    "inviteUnbound": MessageLookupByLibrary.simpleMessage(
-      "This device was removed from its code. Enter a code again.",
-    ),
     "ipAddress": MessageLookupByLibrary.simpleMessage("IP address"),
     "ipAsn": MessageLookupByLibrary.simpleMessage("ASN"),
     "ipFlagAbuser": MessageLookupByLibrary.simpleMessage("Abuse history"),
