@@ -13,44 +13,80 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ThemeView extends StatelessWidget {
+class ThemeView extends StatefulWidget {
   const ThemeView({super.key});
+
+  @override
+  State<ThemeView> createState() => _ThemeViewState();
+}
+
+class _ThemeViewState extends State<ThemeView>
+    with ArrivalCacheExtentMixin<ThemeView> {
+  static const _stages = 3;
+
+  /// How many parts of the page are built: the preview, then the theme mode,
+  /// then the rest, one a frame while the push still holds, as the page and
+  /// its sixteen sketches built in one frame overran it.
+  var _stage = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _nextStage();
+  }
+
+  void _nextStage() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() => _stage++);
+      if (_stage < _stages) {
+        _nextStage();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
-    return BaseScaffold(
-      title: appLocalizations.theme,
-      body: ListView(
-        padding: EdgeInsets.only(
-          top: context.appBarInset,
-          bottom: 32 + context.bottomInset,
-        ),
-        children: [
-          const ThemeLivePreview(),
-          const SizedBox(height: 16),
-          const _ThemeModeItem(),
-          const SizedBox(height: 16),
-          const _StarChartItem(),
-          const SizedBox(height: 16),
-          const _PureBlackItem(),
-          const SizedBox(height: 16),
-          const _PrimaryColorItem(),
-          const SizedBox(height: 16),
-          const _NavigationBarItem(),
-          const SizedBox(height: 16),
-          const _TabAnimationItem(),
-          const SizedBox(height: 16),
-          const _LiquidGlassItem(),
-          const SizedBox(height: 16),
-          if (system.isMacOS || system.isWindows) ...const [
-            _SidebarBlurItem(),
-            SizedBox(height: 16),
+    return ArrivalHold(
+      ready: _stage == _stages,
+      child: BaseScaffold(
+        title: appLocalizations.theme,
+        body: ListView(
+          scrollCacheExtent: arrivalCacheExtent,
+          padding: EdgeInsets.only(
+            top: context.appBarInset,
+            bottom: 32 + context.bottomInset,
+          ),
+          children: [
+            const ThemeLivePreview(),
+            if (_stage > 1) ...const [SizedBox(height: 16), _ThemeModeItem()],
+            if (_stage > 2) ...[
+              const SizedBox(height: 16),
+              const _StarChartItem(),
+              const SizedBox(height: 16),
+              const _PureBlackItem(),
+              const SizedBox(height: 16),
+              const _PrimaryColorItem(),
+              const SizedBox(height: 16),
+              const _NavigationBarItem(),
+              const SizedBox(height: 16),
+              const _TabAnimationItem(),
+              const SizedBox(height: 16),
+              const _LiquidGlassItem(),
+              const SizedBox(height: 16),
+              if (system.isMacOS || system.isWindows) ...const [
+                _SidebarBlurItem(),
+                SizedBox(height: 16),
+              ],
+              const _FontFamilyItem(),
+              const SizedBox(height: 16),
+              const _TextScaleFactorItem(),
+            ],
           ],
-          const _FontFamilyItem(),
-          const SizedBox(height: 16),
-          const _TextScaleFactorItem(),
-        ],
+        ),
       ),
     );
   }
