@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.5.13 (2026-11-14)
+
+**Features**
+
+- **ui** Frame proxies, profiles and every list in the star-chart look (e359062)
+
+**Bug Fixes**
+
+- **core** Make geo resource auto update actually run (28846ba)
+
 ## v3.5.12 (2026-11-14)
 
 **Features**
