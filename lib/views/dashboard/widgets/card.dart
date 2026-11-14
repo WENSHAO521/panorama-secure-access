@@ -146,7 +146,7 @@ class DashboardCardHeader extends StatelessWidget {
             style: style,
           ),
         ),
-        ...leading,
+        for (final widget in leading) Flexible(child: widget),
       ],
     );
     return SizedBox(
@@ -479,13 +479,16 @@ class DashboardChip extends StatelessWidget {
               ),
               child: const SizedBox.square(dimension: 6),
             ),
-          Text(
-            label,
-            maxLines: 1,
-            style: AppTextStyle.caption1
-                .of(context, emphasized: true)
-                .toTabular
-                .copyWith(color: foreground),
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyle.caption1
+                  .of(context, emphasized: true)
+                  .toTabular
+                  .copyWith(color: foreground),
+            ),
           ),
         ],
       ),

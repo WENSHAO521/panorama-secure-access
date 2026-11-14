@@ -964,24 +964,26 @@ class _PageSketch {
     y += 6.2 + _gap;
 
     // One Northern Dipper for both directions, laid out as the phone card
-    // lays it: the upload's figure over its handle, the download's under its
-    // bowl.
-    final span = width - 2;
-    final gaugeTop = y + 2.3;
-    final downloadTop = gaugeTop + span * dipperRoomUnderBowl;
-    final blockHeight = downloadTop + 2.4 - y;
+    // lays it: a shallow body with the gauge in the middle, the upload's
+    // figure in the top left corner and the download's in the bottom right.
+    final body = (width - 2) * 0.42;
+    final span = (width - 2) * 0.62;
+    final bodyTop = y + 2.3;
+    final gaugeTop = bodyTop + (body - span * dipperBoxDepth) / 2;
+    final downloadTop = bodyTop + body - 1.9;
+    final blockHeight = 2.3 + body + 0.5;
     _block(_rect(0, y, width, blockHeight), card);
     _pill(1, y + 0.9, 4.5, 0.7, line);
     paintDipper(
       canvas,
-      _rect(1, gaugeTop, span, span * dipperBoxDepth),
+      _rect((width - span) / 2, gaugeTop, span, span * dipperBoxDepth),
       level: 0.6,
       download: 0.8,
       dark: colorScheme.brightness == Brightness.dark,
       starScaleCap: span * unit * 0.5,
     );
-    _pill(1, gaugeTop, 2, 0.6, line);
-    _pill(1, gaugeTop + 0.9, 3.6, 1, text);
+    _pill(1, bodyTop, 2, 0.6, line);
+    _pill(1, bodyTop + 0.9, 3.6, 1, text);
     _pill(width - 3, downloadTop, 2, 0.6, line);
     _pill(width - 4.6, downloadTop + 0.9, 3.6, 1, text);
     y += blockHeight + _gap;
