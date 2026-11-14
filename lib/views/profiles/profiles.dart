@@ -161,7 +161,8 @@ class _ProfilesGrid extends ConsumerStatefulWidget {
   ConsumerState<_ProfilesGrid> createState() => _ProfilesGridState();
 }
 
-class _ProfilesGridState extends ConsumerState<_ProfilesGrid> {
+class _ProfilesGridState extends ConsumerState<_ProfilesGrid>
+    with ArrivalCacheExtentMixin<_ProfilesGrid> {
   static const _horizontalPadding = 16.0;
 
   late final ScrollController _controller;
@@ -240,6 +241,7 @@ class _ProfilesGridState extends ConsumerState<_ProfilesGrid> {
         return GridView.builder(
           key: profilesStoreKey,
           controller: _controller,
+          scrollCacheExtent: arrivalCacheExtent,
           padding: _padding,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: _columnsFor(width),

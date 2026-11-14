@@ -133,25 +133,28 @@ class _HotKeyIntro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: ShapeDecoration(
-        color: context.raisedSurfaceLevel.colorOf(colorScheme),
-        shape: AppShape.xl,
-      ),
-      child: Row(
-        spacing: 14,
-        children: [
-          GlyphIcon(AppGlyphs.keyboard, color: colorScheme.primary),
-          Expanded(
-            child: Text(
-              context.appLocalizations.hotkeyDesc,
-              style: AppTextStyle.subheadline
-                  .of(context)
-                  .copyWith(color: colorScheme.onSurfaceVariant),
+    return StarFramed(
+      radius: AppRadius.xl,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: ShapeDecoration(
+          color: context.raisedSurfaceLevel.colorOf(colorScheme),
+          shape: AppShape.xl,
+        ),
+        child: Row(
+          spacing: 14,
+          children: [
+            GlyphIcon(AppGlyphs.keyboard, color: colorScheme.primary),
+            Expanded(
+              child: Text(
+                context.appLocalizations.hotkeyDesc,
+                style: AppTextStyle.subheadline
+                    .of(context)
+                    .copyWith(color: colorScheme.onSurfaceVariant),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

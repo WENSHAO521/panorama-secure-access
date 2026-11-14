@@ -17,6 +17,7 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:prism_ui/prism_ui.dart' as prism show Card;
 import 'package:riverpod_annotation/riverpod_annotation.dart' show Override;
 
 import '../../helpers/app_paths.dart';
@@ -498,7 +499,7 @@ void main() {
     expect(
       find.descendant(
         of: find.byType(CustomProfileView),
-        matching: find.byType(Card),
+        matching: find.byType(prism.Card),
       ),
       findsWidgets,
     );
@@ -513,7 +514,7 @@ void main() {
     );
 
     await tester.tap(
-      find.ancestor(of: find.text('Rule'), matching: find.byType(Card)),
+      find.ancestor(of: find.text('Rule'), matching: find.byType(prism.Card)),
     );
     await tester.pumpAndSettle();
 

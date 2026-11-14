@@ -52,22 +52,26 @@ class RecordListItem extends StatelessWidget {
     final level = context.raisedSurfaceLevel;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: PressSurface(
-        fill: level.colorOf(context.colorScheme),
-        shape: AppShape.xl,
-        onPressed: onTap,
-        child: SurfaceScope(
-          level: level,
-          child: ListRow(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
-            minVerticalPadding: 0,
-            minHeight: 0,
-            horizontalTitleGap: 12,
-            alignment: ListRowAlignment.top,
-            title: header,
-            subtitle: Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: body,
+      child: StarFramed(
+        radius: AppRadius.xl,
+        inner: false,
+        child: PressSurface(
+          fill: level.colorOf(context.colorScheme),
+          shape: AppShape.xl,
+          onPressed: onTap,
+          child: SurfaceScope(
+            level: level,
+            child: ListRow(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+              minVerticalPadding: 0,
+              minHeight: 0,
+              horizontalTitleGap: 12,
+              alignment: ListRowAlignment.top,
+              title: header,
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: body,
+              ),
             ),
           ),
         ),

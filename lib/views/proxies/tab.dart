@@ -258,32 +258,35 @@ class ProxyGroupView extends ConsumerWidget {
     final grid = Scrollbar(
       controller: controller,
       thumbVisibility: true,
-      child: GridView.builder(
-        key: _getPageStorageKey(ref),
-        controller: controller,
-        padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          bottom: 16 + context.bottomInset,
+      child: ArrivalCacheExtentBuilder(
+        builder: (cacheExtent) => GridView.builder(
+          key: _getPageStorageKey(ref),
+          controller: controller,
+          scrollCacheExtent: cacheExtent,
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            bottom: 16 + context.bottomInset,
+          ),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: columns,
+            mainAxisSpacing: proxyGridSpacing,
+            crossAxisSpacing: 8,
+            mainAxisExtent: getItemHeight(cardType),
+          ),
+          itemCount: proxies.length,
+          addAutomaticKeepAlives: false,
+          itemBuilder: (_, index) {
+            final proxy = proxies[index];
+            return ProxyCard(
+              testUrl: group.testUrl,
+              groupType: group.type,
+              type: cardType,
+              proxy: proxy,
+              groupName: group.name,
+            );
+          },
         ),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: columns,
-          mainAxisSpacing: proxyGridSpacing,
-          crossAxisSpacing: 8,
-          mainAxisExtent: getItemHeight(cardType),
-        ),
-        itemCount: proxies.length,
-        addAutomaticKeepAlives: false,
-        itemBuilder: (_, index) {
-          final proxy = proxies[index];
-          return ProxyCard(
-            testUrl: group.testUrl,
-            groupType: group.type,
-            type: cardType,
-            proxy: proxy,
-            groupName: group.name,
-          );
-        },
       ),
     );
     if (notice == null) {

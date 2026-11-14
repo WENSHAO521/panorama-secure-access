@@ -6,7 +6,6 @@ import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/widgets.dart';
-import 'package:prism_ui/prism_ui.dart';
 
 const _stripInset = 16.0;
 const _tabSpacing = 8.0;
