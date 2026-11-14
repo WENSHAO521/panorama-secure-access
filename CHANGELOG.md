@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.5.15 (2026-11-14)
+
+**Bug Fixes**
+
+- **android** The quick settings tile responds immediately and can grant VPN permission on first use (36c89ec)
+- **dashboard** Status and network speed cards fit narrow phones, foldables and tablets (2031db8)
+
 ## v3.5.14 (2026-11-14)
 
 Internal improvements only.
