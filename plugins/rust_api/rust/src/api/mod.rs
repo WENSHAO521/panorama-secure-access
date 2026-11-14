@@ -4,6 +4,7 @@ pub mod editor;
 pub mod hotkey;
 pub mod init;
 pub mod install;
+pub mod invite;
 pub mod ipc;
 pub mod lifecycle;
 pub mod netcfg;
