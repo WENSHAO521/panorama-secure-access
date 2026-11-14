@@ -16,7 +16,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:prism_ui/prism_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../helpers/app_paths.dart';

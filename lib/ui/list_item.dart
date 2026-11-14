@@ -1,9 +1,10 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:prism_ui/icons/icons.dart';
-import 'package:prism_ui/prism_ui.dart' hide Switch;
+import 'package:prism_ui/prism_ui.dart' hide DecorationListItem, Switch;
 
 import 'star_chart.dart';
+import 'star_list.dart' show DecorationListItem;
 import 'star_switch.dart';
 
 sealed class _ListItemAction {

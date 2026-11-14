@@ -96,14 +96,13 @@ void main() {
     ];
     await pumpProfiles(tester, profiles: profiles);
 
-    final cards = find
-        .byType(Card)
-        .evaluate()
-        .map((element) => element.widget)
-        .toList();
-
     Future<void> focusCard(int index) async {
       for (var tab = 0; tab < 50; tab++) {
+        final cards = find
+            .byType(Card)
+            .evaluate()
+            .map((element) => element.widget)
+            .toList();
         final context = FocusManager.instance.primaryFocus?.context;
         final focusedCard = context?.findAncestorWidgetOfExactType<Card>();
         if (identical(focusedCard, cards[index])) {

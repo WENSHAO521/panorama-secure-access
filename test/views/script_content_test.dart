@@ -10,6 +10,7 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:prism_ui/prism_ui.dart' as prism show Card;
 
 import '../helpers/test_app.dart';
 import '../helpers/test_database_providers.dart';
@@ -112,7 +113,7 @@ void main() {
         .getTopLeft(
           find.descendant(
             of: find.byType(MoreActionButton),
-            matching: find.byType(Card),
+            matching: find.byType(prism.Card),
           ),
         )
         .dy;

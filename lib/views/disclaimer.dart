@@ -150,27 +150,33 @@ class _DisclaimerIntro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
-    return DecoratedBox(
-      decoration: ShapeDecoration(
-        color: context.raisedSurfaceLevel.colorOf(colorScheme),
-        shape: AppShape.xl,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GlyphIcon(AppGlyphs.gavel, size: 28, color: colorScheme.primary),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                text,
-                style: AppTextStyle.subheadline
-                    .of(context)
-                    .copyWith(color: colorScheme.onSurfaceVariant, height: 1.6),
+    return StarFramed(
+      radius: AppRadius.xl,
+      child: DecoratedBox(
+        decoration: ShapeDecoration(
+          color: context.raisedSurfaceLevel.colorOf(colorScheme),
+          shape: AppShape.xl,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GlyphIcon(AppGlyphs.gavel, size: 28, color: colorScheme.primary),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  text,
+                  style: AppTextStyle.subheadline
+                      .of(context)
+                      .copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                        height: 1.6,
+                      ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -402,16 +408,19 @@ class _RestateDialogState extends State<_RestateDialog> {
   }
 
   Widget _buildStatement(String statement) {
-    return DecoratedBox(
-      decoration: ShapeDecoration(
-        color: context.raisedSurfaceLevel.colorOf(context.colorScheme),
-        shape: AppShape.lg,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: SelectableText(
-          statement,
-          style: AppTextStyle.subheadline.of(context).copyWith(height: 1.6),
+    return StarFramed(
+      radius: AppRadius.lg,
+      child: DecoratedBox(
+        decoration: ShapeDecoration(
+          color: context.raisedSurfaceLevel.colorOf(context.colorScheme),
+          shape: AppShape.lg,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: SelectableText(
+            statement,
+            style: AppTextStyle.subheadline.of(context).copyWith(height: 1.6),
+          ),
         ),
       ),
     );

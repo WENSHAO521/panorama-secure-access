@@ -2,6 +2,34 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.5.13",
+      "tag": "v3.5.13",
+      "date": "2026-11-14",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "e359062",
+              "scope": "ui",
+              "text": "Frame proxies, profiles and every list in the star-chart look"
+            }
+          ]
+        },
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "28846ba",
+              "scope": "core",
+              "text": "Make geo resource auto update actually run"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.5.12",
       "tag": "v3.5.12",
       "date": "2026-11-14",

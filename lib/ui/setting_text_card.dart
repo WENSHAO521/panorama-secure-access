@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:prism_ui/prism_ui.dart';
+import 'package:prism_ui/prism_ui.dart' hide Card;
+
+import 'star_card.dart';
 
 class SettingTextCard extends StatelessWidget {
   final String text;
