@@ -2,6 +2,29 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.5.15",
+      "tag": "v3.5.15",
+      "date": "2026-11-14",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "36c89ec",
+              "scope": "android",
+              "text": "The quick settings tile responds immediately and can grant VPN permission on first use"
+            },
+            {
+              "id": "2031db8",
+              "scope": "dashboard",
+              "text": "Status and network speed cards fit narrow phones, foldables and tablets"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.5.14",
       "tag": "v3.5.14",
       "date": "2026-11-14",

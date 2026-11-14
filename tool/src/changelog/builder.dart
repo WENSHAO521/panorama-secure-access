@@ -104,19 +104,30 @@ class ChangelogBuilder {
   Set<String> _idsOf(List<RawCommit> commits) =>
       commits.map((commit) => commit.shortHash).toSet();
 
-  // A revert of a merge names the merge, so everything it brought in goes.
+  // A revert of a merge names the merge, so everything it brought in goes. A
+  // revert whose every target sits in the same range takes nothing back from
+  // a release, so it goes too.
   List<RawCommit> _withoutReverted(List<RawCommit> commits) {
+    final inRange = commits.map((commit) => commit.hash).toSet();
     final reverted = <String>{};
     for (final commit in commits) {
-      for (final match in _revertedCommit.allMatches(commit.body)) {
-        final target = match[1]!;
-        try {
-          reverted.addAll(
-            git.commits(from: '$target^1', to: target).map((c) => c.hash),
-          );
-        } on GitException {
-          continue;
+      final targets = <String>{};
+      for (final line in _revertLine.allMatches(commit.body)) {
+        for (final hash in _hash.allMatches(line[0]!)) {
+          try {
+            targets.addAll(
+              git
+                  .commits(from: '${hash[0]}^1', to: hash[0]!)
+                  .map((c) => c.hash),
+            );
+          } on GitException {
+            continue;
+          }
         }
+      }
+      reverted.addAll(targets);
+      if (targets.isNotEmpty && targets.every(inRange.contains)) {
+        reverted.add(commit.hash);
       }
     }
     if (reverted.isEmpty) {
@@ -129,8 +140,10 @@ class ChangelogBuilder {
   }
 }
 
-// git's "This reverts commit X" and a reworded "Reverts PR #N (merge X)".
-final _revertedCommit = RegExp(r'\b[Rr]everts\b[^\n]*?\b([0-9a-f]{7,40})\b');
+// git's "This reverts commit X", a reworded "Reverts PR #N (merge X)" and
+// "This reverts commits X, Y and Z".
+final _revertLine = RegExp(r'\b[Rr]everts\b[^\n]*');
+final _hash = RegExp(r'\b[0-9a-f]{7,40}\b');
 
 final _frozenComment = RegExp(r'\s*<!--.*?-->', dotAll: true);
 
