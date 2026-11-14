@@ -4,7 +4,8 @@
 
 # Panorama Secure Access
 
-A multi-platform proxy client based on ClashMeta. Simple to use, open source and ad-free.
+A multi-platform proxy client based on ClashMeta, drawn as a star chart over mountains and rivers.
+The code is open source; the app will move to invitation-only access.
 
 **English** · [简体中文](README_zh_CN.md)
 
@@ -12,14 +13,14 @@ A multi-platform proxy client based on ClashMeta. Simple to use, open source and
 [![Downloads](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access/releases)
 [![License](https://img.shields.io/github/license/WENSHAO521/panorama-secure-access?style=flat-square)](LICENSE)
 
-[Download](#download) · [Changelog](CHANGELOG.md) · [Build from source](#build-from-source)
+[Website](https://wenshao521.github.io/panorama-secure-access) · [Download](#download) · [Invitations](#open-source-invitation-only-access) · [Changelog](CHANGELOG.md) · [Build from source](#build-from-source)
 
 </div>
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="snapshots/preview-dark.png">
-    <img alt="Panorama Secure Access dashboard on a MacBook and a phone" src="snapshots/preview.png" width="92%">
+    <img alt="The Panorama Secure Access star-chart dashboard on a laptop and a phone" src="snapshots/preview.png" width="92%">
   </picture>
 </p>
 
@@ -30,12 +31,21 @@ A multi-platform proxy client based on ClashMeta. Simple to use, open source and
 - **Profiles** from a subscription link or a file, with a built-in editor, override scripts, and custom rules,
   proxies and proxy groups.
 - **Live views** of connections, requests, DNS queries and logs.
-- **Material You design with Apple-style interaction**: dynamic color, light and dark themes, continuous corners,
-  sheets that snap between heights, and layouts that adapt from phones to desktops.
+- **星官箋, a star-chart interface**: the Northern Dipper in its true positions lights up star by star while you
+  connect and rests when you stop, the start button sits on an ancient star plate, and ink-wash mountains and rivers
+  run under every page. Rice paper by day, a 玄青 night sky by night, with Taoist color presets.
+- **Apple-style interaction**: continuous corners, sheets that snap between heights, and layouts that adapt from
+  phones to desktops.
 - **Backup and restore** through WebDAV or a local file.
 - **Platform touches**: a Quick Settings tile, per-app proxy and Android TV support on Android; a tray menu and
   global hotkeys on the desktop.
 - **Open source and ad-free**, licensed under GPL-3.0.
+
+## Open source, invitation-only access
+
+The code of Panorama Secure Access is and stays open source under GPL-3.0: anyone can read it, audit it and build it.
+The app itself will move to an invitation system: a coming release asks for an invitation code on first start.
+Builds published before then keep working as they are, and no code is needed today.
 
 ## Download
 

@@ -1,0 +1,59 @@
+name: pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'site/**'
+      - 'snapshots/preview*.png'
+      - 'tool/build_site.sh'
+      - 'tool/render_site.mjs'
+      - '.github/workflows/pages.yaml'
+  workflow_run:
+    workflows:
+      - build
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # A build of main publishes the stable release, so the page follows it to pick up the new downloads and notes.
+    if: >-
+      github.repository == 'WENSHAO521/panorama-secure-access' &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'))
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Assemble site
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash tool/build_site.sh _site
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
