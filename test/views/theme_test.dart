@@ -629,6 +629,40 @@ void main() {
     });
   });
 
+  group('arrival', () {
+    testWidgets('builds the page a part a frame', (tester) async {
+      tester.view.physicalSize = const Size(1400, 2400);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const TestApp(child: ThemeView()),
+        ),
+      );
+
+      expect(find.byType(ThemeLivePreview), findsOneWidget);
+      expect(find.text('Auto'), findsNothing);
+      expect(find.text('Liquid Glass'), findsNothing);
+      final preview = tester.renderObject<RenderStillRaster>(
+        find.descendant(
+          of: find.byType(ThemeLivePreview),
+          matching: find.byType(StillRaster),
+        ),
+      );
+      // Taken right after the frame that first painted it.
+      expect(preview.hasRaster, isTrue);
+
+      await tester.pump();
+      expect(find.text('Auto'), findsOneWidget);
+      expect(find.text('Liquid Glass'), findsNothing);
+
+      await tester.pump();
+      expect(find.text('Liquid Glass'), findsOneWidget);
+    });
+  });
+
   group('still previews', () {
     const settle = Duration(milliseconds: 200);
 
@@ -660,10 +694,6 @@ void main() {
     ) async {
       await pumpThemeView(tester);
       expect(stills(tester), isNotEmpty);
-      expect(stills(tester).every((still) => !still.hasRaster), isTrue);
-
-      await tester.pump(settle);
-      await tester.pump();
       expect(stills(tester).every((still) => still.hasRaster), isTrue);
 
       final paints = await sketchPaints(() async {

@@ -9,6 +9,7 @@ import 'package:fl_clash/views/dashboard/widgets/pole_star.dart';
 import 'package:fl_clash/views/dashboard/widgets/star_plate.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -244,7 +245,8 @@ class _ThemeLivePreviewState extends ConsumerState<ThemeLivePreview>
 /// blurred glows costs the raster thread all of them again on every frame the
 /// page scrolls; the theme page shows sixteen. Held still, each is one image.
 /// A repaint under it drops the raster and paints live until the child holds
-/// still again, so an animation never captures a frame per frame. A repaint
+/// still again, so an animation never captures a frame per frame. The first
+/// paint is taken at once. A repaint
 /// boundary under it would keep its changes from reaching it: keep none.
 class StillRaster extends SingleChildRenderObjectWidget {
   const StillRaster({
@@ -281,6 +283,7 @@ class RenderStillRaster extends RenderProxyBox {
   ui.Image? _raster;
   Timer? _timer;
   bool _dirty = true;
+  bool _captured = false;
 
   /// Whether the child is drawn from its raster.
   bool get hasRaster => _raster != null;
@@ -316,7 +319,11 @@ class RenderStillRaster extends RenderProxyBox {
   void _capture() {
     _timer = null;
     final layer = this.layer;
-    if (!attached || _dirty || !hasSize || layer is! OffsetLayer) {
+    if (!attached ||
+        _dirty ||
+        _raster != null ||
+        !hasSize ||
+        layer is! OffsetLayer) {
       return;
     }
     _raster = layer.toImageSync(
@@ -344,7 +351,14 @@ class RenderStillRaster extends RenderProxyBox {
     final raster = _raster;
     if (raster == null) {
       super.paint(context, offset);
-      _timer ??= Timer(settle, _capture);
+      if (!_captured) {
+        // The first paint is taken right after its frame, so a page sliding
+        // in moves images rather than drawing every sketch on each frame.
+        _captured = true;
+        SchedulerBinding.instance.addPostFrameCallback((_) => _capture());
+      } else {
+        _timer ??= Timer(settle, _capture);
+      }
       return;
     }
     context.canvas.drawImageRect(
