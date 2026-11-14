@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/ui/ui.dart';
@@ -232,5 +234,97 @@ void main() {
       ),
       isTrue,
     );
+  });
+
+  group('backdrop at rest', () {
+    setUp(StarChartBackdropRasterPainter.clearCache);
+    tearDown(StarChartBackdropRasterPainter.clearCache);
+
+    CustomPainter? backdropPainter(WidgetTester tester) => tester
+        .widget<CustomPaint>(
+          find.descendant(
+            of: find.byType(StarChartBackdrop),
+            matching: find.byType(CustomPaint),
+          ),
+        )
+        .painter;
+
+    testWidgets('draws one shared image, and live while it lights', (
+      tester,
+    ) async {
+      await _pump(tester, enabled: true, lit: false);
+      expect(backdropPainter(tester), isA<StarChartBackdropRasterPainter>());
+      expect(StarChartBackdropRasterPainter.cachedCount, 1);
+
+      await _pump(tester, enabled: true, lit: true);
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: globalState.container,
+          child: const TestApp(
+            child: StarChartScope(enabled: true, child: _Page()),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(backdropPainter(tester), isA<StarChartBackdropPainter>());
+
+      await tester.pump(const Duration(seconds: 2));
+      expect(backdropPainter(tester), isA<StarChartBackdropRasterPainter>());
+      expect(
+        StarChartBackdropRasterPainter.cachedCount,
+        lessThanOrEqualTo(StarChartBackdropRasterPainter.cacheSize),
+      );
+    });
+
+    test('holds at most two images and reuses the one it has', () {
+      void paintAt(Size size, {double lit = 1, double ratio = 3}) {
+        final recorder = ui.PictureRecorder();
+        StarChartBackdropRasterPainter(
+          brightness: Brightness.dark,
+          lit: lit,
+          pixelRatio: ratio,
+        ).paint(Canvas(recorder), size);
+        recorder.endRecording().dispose();
+      }
+
+      paintAt(Size.zero);
+      expect(StarChartBackdropRasterPainter.cachedCount, 0);
+
+      paintAt(const Size(40, 80));
+      paintAt(const Size(40, 80));
+      expect(StarChartBackdropRasterPainter.cachedCount, 1);
+
+      paintAt(const Size(40, 80), lit: 0);
+      paintAt(const Size(60, 80), ratio: 1);
+      expect(StarChartBackdropRasterPainter.cachedCount, 2);
+    });
+
+    test('repaints on what it draws from', () {
+      const painter = StarChartBackdropRasterPainter(
+        brightness: Brightness.dark,
+        lit: 1,
+        pixelRatio: 2,
+      );
+      expect(painter.shouldRepaint(painter), isFalse);
+      for (final other in const [
+        StarChartBackdropRasterPainter(
+          brightness: Brightness.light,
+          lit: 1,
+          pixelRatio: 2,
+        ),
+        StarChartBackdropRasterPainter(
+          brightness: Brightness.dark,
+          lit: 0,
+          pixelRatio: 2,
+        ),
+        StarChartBackdropRasterPainter(
+          brightness: Brightness.dark,
+          lit: 1,
+          pixelRatio: 3,
+        ),
+      ]) {
+        expect(painter.shouldRepaint(other), isTrue);
+      }
+    });
   });
 }
