@@ -6,7 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/test_app.dart';
 import '../helpers/host_scaffold.dart';
-import 'package:prism_ui/prism_ui.dart';
 
 void main() {
   Future<List<Finder>> pumpRows(

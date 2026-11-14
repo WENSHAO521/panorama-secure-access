@@ -184,6 +184,8 @@
   "paste": "Coller",
   "testUrl": "URL de test",
   "delayTestTimeout": "Délai d’expiration du test de latence",
+  "coreMemoryLimit": "Limite mémoire du cœur",
+  "unlimited": "Sans limite",
   "sync": "Synchroniser",
   "exclude": "Masquer des tâches récentes",
   "compact": "Compact",
@@ -426,6 +428,10 @@
   "vividStyle": "Vif",
   "tintedStyle": "Teinté",
   "softStyle": "Doux",
+  "xingGuanStyle": "Carte céleste",
+  "ziFuStyle": "Palais pourpre",
+  "qingLuStyle": "Bleu-vert",
+  "shuiMoStyle": "Lavis",
   "developerMode": "Mode développeur",
   "developerModeEnableTip": "Le mode développeur est activé.",
   "messageTest": "Test de message",
@@ -1169,5 +1175,10 @@
   "uninstallRebootTip": "Sur Fedora Atomic (rpm-ostree), l'application disparaît après le prochain redémarrage.",
   "uninstallDeleteDataTip": "Supprimer aussi vos abonnements, réglages et journaux ? Ils ne pourront pas être récupérés. Conservez-les si vous comptez réinstaller.",
   "uninstallFailed": "L'application n'a pas été supprimée, donc rien n'a été effacé.",
-  "keep": "Conserver"
+  "keep": "Conserver",
+  "starChart": "Carte céleste",
+  "coreStarting": "Démarrage…",
+  "coreStopping": "Arrêt…",
+  "startFailedRetry": "Échec du démarrage. Touchez pour réessayer",
+  "classicLook": "Classique"
 }

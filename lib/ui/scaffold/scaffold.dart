@@ -8,6 +8,9 @@ import 'package:flutter/widgets.dart';
 import 'package:prism_ui/icons/icons.dart';
 import 'package:prism_ui/prism_ui.dart';
 
+import '../star_backdrop.dart';
+import '../star_chart.dart';
+
 part 'scaffold_actions.dart';
 part 'scaffold_search.dart';
 
@@ -783,9 +786,12 @@ class ScaffoldState extends State<Scaffold>
           clipBehavior: Clip.none,
           toolbarHeight: isCompact ? sheetToolbarHeight : null,
           centerTitle: isCompact,
-          titleTextStyle: compactTitle
-              ? AppTextStyle.headline.of(context)
-              : AppTextStyle.pageTitle.of(context),
+          titleTextStyle: StarChartScope.titleOf(
+            context,
+            compactTitle
+                ? AppTextStyle.headline.of(context)
+                : AppTextStyle.pageTitle.of(context),
+          ),
           leading: hidesBar
               ? null
               : underField(searchLeading, _leadingUnderSearch),
@@ -830,6 +836,21 @@ class ScaffoldState extends State<Scaffold>
     );
   }
 
+  /// The star-chart sky and land under a whole page, not under a sheet.
+  Widget _withBackdrop(_SheetForm form, Widget body) {
+    if (!StarChartScope.of(context) || form.isCompact || form.pop != null) {
+      return body;
+    }
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: StarChartBackdrop(lit: StarChartScope.litOf(context)),
+        ),
+        body,
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     assert(widget.title != null || widget.titleWidget != null);
@@ -846,7 +867,10 @@ class ScaffoldState extends State<Scaffold>
     final docked = form.dockedSearch;
     return PrismScaffold(
       bar: _buildAppBar(backAction, form),
-      body: SortModeScope(sorting: _sorting, child: widget.body),
+      body: _withBackdrop(
+        form,
+        SortModeScope(sorting: _sorting, child: widget.body),
+      ),
       headerListenable: keywords,
       headerBuilder: keywords == null
           ? null

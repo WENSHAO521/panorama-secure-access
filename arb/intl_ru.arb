@@ -184,6 +184,8 @@
   "paste": "Вставить",
   "testUrl": "URL для теста",
   "delayTestTimeout": "Тайм-аут теста задержки",
+  "coreMemoryLimit": "Лимит памяти ядра",
+  "unlimited": "Без ограничения",
   "sync": "Синхронизация",
   "exclude": "Скрыть из недавних задач",
   "compact": "Компактный",
@@ -426,6 +428,10 @@
   "vividStyle": "Яркий",
   "tintedStyle": "Тонированный",
   "softStyle": "Мягкий",
+  "xingGuanStyle": "Звёздная карта",
+  "ziFuStyle": "Пурпурный дворец",
+  "qingLuStyle": "Сине-зелёный",
+  "shuiMoStyle": "Тушь",
   "developerMode": "Режим разработчика",
   "developerModeEnableTip": "Режим разработчика включён.",
   "messageTest": "Тест сообщения",
@@ -1169,5 +1175,10 @@
   "uninstallRebootTip": "В Fedora Atomic (rpm-ostree) приложение исчезнет после следующей перезагрузки.",
   "uninstallDeleteDataTip": "Также удалить подписки, настройки и журналы? Восстановить их будет нельзя. Оставьте их, если планируете установить приложение снова.",
   "uninstallFailed": "Приложение не было удалено, поэтому ничего не стёрто.",
-  "keep": "Оставить"
+  "keep": "Оставить",
+  "starChart": "Звёздная карта",
+  "coreStarting": "Запуск…",
+  "coreStopping": "Остановка…",
+  "startFailedRetry": "Не удалось запустить. Нажмите, чтобы повторить",
+  "classicLook": "Классика"
 }

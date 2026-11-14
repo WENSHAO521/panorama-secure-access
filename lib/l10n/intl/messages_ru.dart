@@ -553,6 +553,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "У вас уже последняя версия",
     ),
     "cipher": MessageLookupByLibrary.simpleMessage("Шифр"),
+    "classicLook": MessageLookupByLibrary.simpleMessage("Классика"),
     "clearData": MessageLookupByLibrary.simpleMessage("Очистить данные"),
     "clearDataAndExitTip": MessageLookupByLibrary.simpleMessage(
       "Все профили, настройки и локальные данные будут удалены, после чего приложение закроется. Откройте его снова, чтобы начать заново.",
@@ -655,7 +656,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Smart App Control в Windows заблокировал неподписанный panorama-secure-access-core.exe. Откройте Безопасность Windows → Управление приложениями и браузером → Параметры Smart App Control, выберите «Выкл.» и снова запустите Panorama Secure Access. Повторно включить Smart App Control без переустановки Windows нельзя.",
     ),
+    "coreMemoryLimit": MessageLookupByLibrary.simpleMessage(
+      "Лимит памяти ядра",
+    ),
+    "coreStarting": MessageLookupByLibrary.simpleMessage("Запуск…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("Статус ядра"),
+    "coreStopping": MessageLookupByLibrary.simpleMessage("Остановка…"),
     "country": MessageLookupByLibrary.simpleMessage("Регион"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("Обнаружен сбой"),
     "crashDetectedTip": m7,
@@ -1865,6 +1871,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "publicKey": MessageLookupByLibrary.simpleMessage("Открытый ключ"),
     "pureBlack": MessageLookupByLibrary.simpleMessage("Чисто чёрный"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("Чисто чёрный режим"),
+    "qingLuStyle": MessageLookupByLibrary.simpleMessage("Сине-зелёный"),
     "qrcode": MessageLookupByLibrary.simpleMessage("QR-код"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage(
       "Сканируйте QR-код, чтобы получить профиль",
@@ -2230,6 +2237,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Кнопка остановки в уведомлении",
     ),
     "showPassword": MessageLookupByLibrary.simpleMessage("Показать пароль"),
+    "shuiMoStyle": MessageLookupByLibrary.simpleMessage("Тушь"),
     "sidebar": MessageLookupByLibrary.simpleMessage("Боковая панель"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("Тихий запуск"),
     "singleImport": MessageLookupByLibrary.simpleMessage("По одному"),
@@ -2280,7 +2288,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "Стандартный режим: добавляет правила поверх профиля",
     ),
+    "starChart": MessageLookupByLibrary.simpleMessage("Звёздная карта"),
     "start": MessageLookupByLibrary.simpleMessage("Старт"),
+    "startFailedRetry": MessageLookupByLibrary.simpleMessage(
+      "Не удалось запустить. Нажмите, чтобы повторить",
+    ),
     "startFromScratch": MessageLookupByLibrary.simpleMessage("С нуля"),
     "startVpn": MessageLookupByLibrary.simpleMessage("Запуск VPN…"),
     "startupAndBackground": MessageLookupByLibrary.simpleMessage(
@@ -2413,6 +2425,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "Неизвестная сетевая ошибка",
     ),
+    "unlimited": MessageLookupByLibrary.simpleMessage("Без ограничения"),
     "unmaximize": MessageLookupByLibrary.simpleMessage("Свернуть в окно"),
     "unnamed": MessageLookupByLibrary.simpleMessage("Без названия"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("Открепить окно"),
@@ -2491,9 +2504,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "«Записывать в систему» также устанавливает системные часы; Android это игнорирует.",
     ),
+    "xingGuanStyle": MessageLookupByLibrary.simpleMessage("Звёздная карта"),
     "yearsAgo": m111,
     "yearsAgoShort": m112,
     "yes": MessageLookupByLibrary.simpleMessage("Да"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Упрощённый китайский"),
+    "ziFuStyle": MessageLookupByLibrary.simpleMessage("Пурпурный дворец"),
   };
 }

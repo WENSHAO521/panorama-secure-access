@@ -572,6 +572,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "L’app est déjà à jour",
     ),
     "cipher": MessageLookupByLibrary.simpleMessage("Chiffrement"),
+    "classicLook": MessageLookupByLibrary.simpleMessage("Classique"),
     "clearData": MessageLookupByLibrary.simpleMessage("Effacer les données"),
     "clearDataAndExitTip": MessageLookupByLibrary.simpleMessage(
       "Cela supprime tous les profils, réglages et données locales, puis ferme l’app. Rouvrez-la pour repartir de zéro.",
@@ -672,7 +673,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Windows Smart App Control a bloqué panorama-secure-access-core.exe car il n’est pas signé. Ouvrez Sécurité Windows → Contrôle des applications et du navigateur → Paramètres de Smart App Control, choisissez Désactivé, puis relancez Panorama Secure Access. Smart App Control ne peut pas être réactivé sans réinstaller Windows.",
     ),
+    "coreMemoryLimit": MessageLookupByLibrary.simpleMessage(
+      "Limite mémoire du cœur",
+    ),
+    "coreStarting": MessageLookupByLibrary.simpleMessage("Démarrage…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("État du cœur"),
+    "coreStopping": MessageLookupByLibrary.simpleMessage("Arrêt…"),
     "country": MessageLookupByLibrary.simpleMessage("Région"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("Plantage détecté"),
     "crashDetectedTip": m7,
@@ -1914,6 +1920,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "publicKey": MessageLookupByLibrary.simpleMessage("Clé publique"),
     "pureBlack": MessageLookupByLibrary.simpleMessage("Noir pur"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("Mode noir pur"),
+    "qingLuStyle": MessageLookupByLibrary.simpleMessage("Bleu-vert"),
     "qrcode": MessageLookupByLibrary.simpleMessage("Code QR"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage(
       "Scannez un code QR pour obtenir un profil",
@@ -2293,6 +2300,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "showPassword": MessageLookupByLibrary.simpleMessage(
       "Afficher le mot de passe",
     ),
+    "shuiMoStyle": MessageLookupByLibrary.simpleMessage("Lavis"),
     "sidebar": MessageLookupByLibrary.simpleMessage("Barre latérale"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage(
       "Lancement silencieux",
@@ -2345,7 +2353,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "Mode standard : ajoute des règles par-dessus le profil",
     ),
+    "starChart": MessageLookupByLibrary.simpleMessage("Carte céleste"),
     "start": MessageLookupByLibrary.simpleMessage("Démarrer"),
+    "startFailedRetry": MessageLookupByLibrary.simpleMessage(
+      "Échec du démarrage. Touchez pour réessayer",
+    ),
     "startFromScratch": MessageLookupByLibrary.simpleMessage("Partir de zéro"),
     "startVpn": MessageLookupByLibrary.simpleMessage("Démarrage du VPN…"),
     "startupAndBackground": MessageLookupByLibrary.simpleMessage(
@@ -2474,6 +2486,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "Erreur réseau inconnue",
     ),
+    "unlimited": MessageLookupByLibrary.simpleMessage("Sans limite"),
     "unmaximize": MessageLookupByLibrary.simpleMessage("Restaurer"),
     "unnamed": MessageLookupByLibrary.simpleMessage("Sans nom"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage(
@@ -2554,9 +2567,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "Écrire dans le système règle aussi l’horloge système ; Android l’ignore.",
     ),
+    "xingGuanStyle": MessageLookupByLibrary.simpleMessage("Carte céleste"),
     "yearsAgo": m111,
     "yearsAgoShort": m112,
     "yes": MessageLookupByLibrary.simpleMessage("Oui"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Chinois simplifié"),
+    "ziFuStyle": MessageLookupByLibrary.simpleMessage("Palais pourpre"),
   };
 }

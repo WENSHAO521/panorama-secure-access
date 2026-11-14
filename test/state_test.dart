@@ -1,5 +1,7 @@
+import 'package:fl_clash/ui/color_style.dart';
 import 'package:fl_clash/common/constant.dart';
 import 'package:fl_clash/providers/providers.dart';
+import 'package:fl_clash/ui/star_chart.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -36,7 +38,7 @@ void main() {
 
     expect(
       container.read(genColorSchemeProvider(Brightness.light)),
-      seededColorScheme(
+      appColorScheme(
         seedColor: lightSeed,
         brightness: Brightness.light,
         style: style,
@@ -44,7 +46,7 @@ void main() {
     );
     expect(
       container.read(genColorSchemeProvider(Brightness.dark)),
-      seededColorScheme(
+      appColorScheme(
         seedColor: darkSeed,
         brightness: Brightness.dark,
         style: style,
@@ -88,11 +90,28 @@ void main() {
 
     expect(
       container.read(genColorSchemeProvider(Brightness.light)),
-      seededColorScheme(
+      appColorScheme(
         seedColor: accent,
         brightness: Brightness.light,
         style: container.read(themeSettingProvider).colorStyle,
       ),
     );
+  });
+
+  test('the default 星官箋 style with 泥金 is the star chart palette', () {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    expect(container.read(themeSettingProvider).starChart, isTrue);
+    for (final brightness in Brightness.values) {
+      final seeded = seededColorScheme(
+        seedColor: const Color(defaultPrimaryColor),
+        brightness: brightness,
+      );
+      expect(
+        container.read(genColorSchemeProvider(brightness)),
+        seeded.toStarChart(),
+      );
+    }
   });
 }

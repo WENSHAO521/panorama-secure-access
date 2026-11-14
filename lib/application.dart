@@ -174,11 +174,14 @@ class ApplicationState extends ConsumerState<Application> {
             GlobalWidgetsLocalizations.delegate,
           ],
           builder: (context, child) {
-            return buildManagerStack(
-              isDesktop: system.isDesktop,
-              onConnectivityChanged: _handleConnectivityChanged,
-              terminateSignals: _terminateSignals,
-              child: child!,
+            return _StarChart(
+              enabled: themeProps.starChart,
+              child: buildManagerStack(
+                isDesktop: system.isDesktop,
+                onConnectivityChanged: _handleConnectivityChanged,
+                terminateSignals: _terminateSignals,
+                child: child!,
+              ),
             );
           },
           title: appName,
@@ -215,5 +218,21 @@ class ApplicationState extends ConsumerState<Application> {
     linkManager.destroy();
     _autoUpdateProfilesTaskTimer?.cancel();
     super.dispose();
+  }
+}
+
+/// Brightens the star-chart backdrop while the core runs; only the backdrops
+/// rebuild when it starts or stops.
+class _StarChart extends ConsumerWidget {
+  const _StarChart({required this.enabled, required this.child});
+
+  final bool enabled;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final lit =
+        enabled && ref.watch(isStartProvider) && !ref.watch(suspendProvider);
+    return StarChartScope(enabled: enabled, lit: lit, child: child);
   }
 }

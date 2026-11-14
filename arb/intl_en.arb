@@ -184,6 +184,8 @@
   "paste": "Paste",
   "testUrl": "Test URL",
   "delayTestTimeout": "Delay test timeout",
+  "coreMemoryLimit": "Core memory limit",
+  "unlimited": "No limit",
   "sync": "Sync",
   "exclude": "Hide from recent tasks",
   "compact": "Compact",
@@ -426,6 +428,10 @@
   "vividStyle": "Vivid",
   "tintedStyle": "Tinted",
   "softStyle": "Soft",
+  "xingGuanStyle": "Star Chart",
+  "ziFuStyle": "Purple Palace",
+  "qingLuStyle": "Blue-Green",
+  "shuiMoStyle": "Ink Wash",
   "developerMode": "Developer mode",
   "developerModeEnableTip": "Developer mode is enabled.",
   "messageTest": "Message test",
@@ -1169,5 +1175,10 @@
   "uninstallRebootTip": "On Fedora Atomic (rpm-ostree) the app disappears after the next reboot.",
   "uninstallDeleteDataTip": "Also delete your subscriptions, settings and logs? They cannot be recovered. Keep them if you plan to install again.",
   "uninstallFailed": "The app was not removed, so nothing was deleted.",
-  "keep": "Keep"
+  "keep": "Keep",
+  "starChart": "Star chart",
+  "coreStarting": "Starting…",
+  "coreStopping": "Stopping…",
+  "startFailedRetry": "Start failed. Tap to retry",
+  "classicLook": "Classic"
 }

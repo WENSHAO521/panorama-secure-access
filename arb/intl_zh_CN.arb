@@ -184,6 +184,8 @@
   "paste": "粘贴",
   "testUrl": "测速链接",
   "delayTestTimeout": "延迟测试超时",
+  "coreMemoryLimit": "内核内存上限",
+  "unlimited": "不限制",
   "sync": "同步",
   "exclude": "从最近任务中隐藏",
   "compact": "紧凑",
@@ -426,6 +428,10 @@
   "vividStyle": "鲜明",
   "tintedStyle": "氛围",
   "softStyle": "柔和",
+  "xingGuanStyle": "星官笺",
+  "ziFuStyle": "紫府",
+  "qingLuStyle": "青绿",
+  "shuiMoStyle": "水墨",
   "developerMode": "开发者模式",
   "developerModeEnableTip": "开发者模式已启用。",
   "messageTest": "消息测试",
@@ -1169,5 +1175,10 @@
   "uninstallRebootTip": "在 Fedora Atomic（rpm-ostree）上，应用会在下次重启后消失。",
   "uninstallDeleteDataTip": "同时删除订阅、设置和日志吗？删除后无法恢复。如果之后还会重新安装，请选择保留。",
   "uninstallFailed": "应用未被移除，因此没有删除任何内容。",
-  "keep": "保留"
+  "keep": "保留",
+  "starChart": "星官笺",
+  "coreStarting": "正在启动…",
+  "coreStopping": "正在停止…",
+  "startFailedRetry": "启动失败，点击重试",
+  "classicLook": "经典"
 }

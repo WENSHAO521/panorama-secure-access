@@ -570,6 +570,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "La app ya está actualizada",
     ),
     "cipher": MessageLookupByLibrary.simpleMessage("Cifrado"),
+    "classicLook": MessageLookupByLibrary.simpleMessage("Clásico"),
     "clearData": MessageLookupByLibrary.simpleMessage("Borrar datos"),
     "clearDataAndExitTip": MessageLookupByLibrary.simpleMessage(
       "Esto elimina todos los perfiles, ajustes y datos locales, y luego cierra la app. Ábrela de nuevo para empezar de cero.",
@@ -672,7 +673,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Smart App Control de Windows bloqueó panorama-secure-access-core.exe porque no está firmado. Abre Seguridad de Windows → Control de aplicaciones y navegador → Configuración de Smart App Control, elige Desactivado y vuelve a iniciar Panorama Secure Access. Smart App Control no se puede volver a activar sin reinstalar Windows.",
     ),
+    "coreMemoryLimit": MessageLookupByLibrary.simpleMessage(
+      "Límite de memoria del núcleo",
+    ),
+    "coreStarting": MessageLookupByLibrary.simpleMessage("Iniciando…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("Estado del núcleo"),
+    "coreStopping": MessageLookupByLibrary.simpleMessage("Deteniendo…"),
     "country": MessageLookupByLibrary.simpleMessage("Región"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("Fallo detectado"),
     "crashDetectedTip": m7,
@@ -1910,6 +1916,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "publicKey": MessageLookupByLibrary.simpleMessage("Clave pública"),
     "pureBlack": MessageLookupByLibrary.simpleMessage("Negro puro"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("Modo negro puro"),
+    "qingLuStyle": MessageLookupByLibrary.simpleMessage("Azul verde"),
     "qrcode": MessageLookupByLibrary.simpleMessage("Código QR"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage(
       "Escanea un código QR para obtener un perfil",
@@ -2295,6 +2302,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Botón de detener en la notificación",
     ),
     "showPassword": MessageLookupByLibrary.simpleMessage("Mostrar contraseña"),
+    "shuiMoStyle": MessageLookupByLibrary.simpleMessage("Tinta"),
     "sidebar": MessageLookupByLibrary.simpleMessage("Barra lateral"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("Inicio silencioso"),
     "singleImport": MessageLookupByLibrary.simpleMessage("Importar uno"),
@@ -2345,7 +2353,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "Modo estándar: añade reglas sobre el perfil",
     ),
+    "starChart": MessageLookupByLibrary.simpleMessage("Carta celeste"),
     "start": MessageLookupByLibrary.simpleMessage("Iniciar"),
+    "startFailedRetry": MessageLookupByLibrary.simpleMessage(
+      "No se pudo iniciar. Toca para reintentar",
+    ),
     "startFromScratch": MessageLookupByLibrary.simpleMessage(
       "Empezar desde cero",
     ),
@@ -2478,6 +2490,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "Error de red desconocido",
     ),
+    "unlimited": MessageLookupByLibrary.simpleMessage("Sin límite"),
     "unmaximize": MessageLookupByLibrary.simpleMessage("Restaurar tamaño"),
     "unnamed": MessageLookupByLibrary.simpleMessage("Sin nombre"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("Desfijar ventana"),
@@ -2556,9 +2569,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "Escribir en el sistema también ajusta el reloj del sistema; Android lo ignora.",
     ),
+    "xingGuanStyle": MessageLookupByLibrary.simpleMessage("Carta estelar"),
     "yearsAgo": m111,
     "yearsAgoShort": m112,
     "yes": MessageLookupByLibrary.simpleMessage("Sí"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Chino simplificado"),
+    "ziFuStyle": MessageLookupByLibrary.simpleMessage("Palacio púrpura"),
   };
 }

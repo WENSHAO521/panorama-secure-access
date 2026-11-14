@@ -23,6 +23,7 @@ import 'package:prism_ui/shapes/shapes.dart';
 import 'card.dart';
 import 'pole_star.dart';
 import 'star_badge.dart';
+import 'star_plate.dart';
 
 const _builtinOutbounds = {'DIRECT', 'REJECT', 'REJECT-DROP', 'PASS'};
 
@@ -91,6 +92,7 @@ class _CurrentOutboundCardState extends ConsumerState<CurrentOutboundCard>
     final appLocalizations = context.appLocalizations;
     final colorScheme = context.colorScheme;
     final colors = DashboardColors.of(context);
+    final starChart = StarChartScope.of(context);
     final (chipLabel, chipTone) = suspended
         ? (appLocalizations.suspended, DashboardChipTone.warn)
         : isStart
@@ -114,62 +116,78 @@ class _CurrentOutboundCardState extends ConsumerState<CurrentOutboundCard>
       ),
       child: Stack(
         children: [
-          Positioned.fill(
-            child: ClipPath(
-              clipper: ShapeBorderClipper(
-                shape: AppShape.all(dashboardCardRadius(density)),
-                textDirection: Directionality.of(context),
+          if (starChart)
+            PositionedDirectional(
+              end: metrics.paddingEndOf(context),
+              top: 0,
+              bottom: 0,
+              width: metrics.plateSize,
+              child: Center(
+                child: StarPlateToggle(
+                  size: metrics.plateSize,
+                  enabled: hasProfile,
+                  running: isStart,
+                  suspended: suspended,
+                ),
               ),
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  // The halo is centered on the button, the pole star the
-                  // dipper turns round.
-                  PositionedDirectional(
-                    end:
-                        metrics.paddingEndOf(context) +
-                        (metrics.buttonSlot - metrics.decorationSize) / 2,
-                    top: metrics.paddingOf(context).top,
-                    bottom: metrics.paddingOf(context).bottom,
-                    width: metrics.decorationSize,
-                    child: OverflowBox(
-                      minWidth: metrics.decorationSize,
-                      maxWidth: metrics.decorationSize,
-                      minHeight: metrics.decorationSize,
-                      maxHeight: metrics.decorationSize,
-                      child: TweenAnimationBuilder<double>(
-                        tween: Tween(end: isStart ? 1 : 0),
-                        duration: context.motionDuration(_morphDuration),
-                        curve: Curves.easeOutBack,
-                        builder: (_, progress, _) => Transform.scale(
-                          scale: 1 + _decorationGrowth * progress,
-                          // Only the halo follows the run time's ticks.
-                          child: Consumer(
-                            builder: (_, ref, _) => PoleStarHalo(
-                              size: metrics.decorationSize,
-                              runTime: isStart
-                                  ? ref.watch(runTimeProvider)
-                                  : null,
-                              lit: suspended ? progress * 0.4 : progress,
-                              dark: colorScheme.brightness == Brightness.dark,
-                              field: Color.lerp(
-                                colors.tone,
-                                Color.alphaBlend(
-                                  colorScheme.primary.withValues(alpha: 0.1),
-                                  colors.card,
-                                ),
-                                progress.clamp(0, 1),
-                              )!,
+            )
+          else
+            Positioned.fill(
+              child: ClipPath(
+                clipper: ShapeBorderClipper(
+                  shape: AppShape.all(dashboardCardRadius(density)),
+                  textDirection: Directionality.of(context),
+                ),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    // The halo is centered on the button, the pole star the
+                    // dipper turns round.
+                    PositionedDirectional(
+                      end:
+                          metrics.paddingEndOf(context) +
+                          (metrics.buttonSlot - metrics.decorationSize) / 2,
+                      top: metrics.paddingOf(context).top,
+                      bottom: metrics.paddingOf(context).bottom,
+                      width: metrics.decorationSize,
+                      child: OverflowBox(
+                        minWidth: metrics.decorationSize,
+                        maxWidth: metrics.decorationSize,
+                        minHeight: metrics.decorationSize,
+                        maxHeight: metrics.decorationSize,
+                        child: TweenAnimationBuilder<double>(
+                          tween: Tween(end: isStart ? 1 : 0),
+                          duration: context.motionDuration(_morphDuration),
+                          curve: Curves.easeOutBack,
+                          builder: (_, progress, _) => Transform.scale(
+                            scale: 1 + _decorationGrowth * progress,
+                            // Only the halo follows the run time's ticks.
+                            child: Consumer(
+                              builder: (_, ref, _) => PoleStarHalo(
+                                size: metrics.decorationSize,
+                                runTime: isStart
+                                    ? ref.watch(runTimeProvider)
+                                    : null,
+                                lit: suspended ? progress * 0.4 : progress,
+                                dark: colorScheme.brightness == Brightness.dark,
+                                field: Color.lerp(
+                                  colors.tone,
+                                  Color.alphaBlend(
+                                    colorScheme.primary.withValues(alpha: 0.1),
+                                    colors.card,
+                                  ),
+                                  progress.clamp(0, 1),
+                                )!,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
           Padding(
             padding: metrics.padding,
             child: Row(
@@ -215,17 +233,20 @@ class _CurrentOutboundCardState extends ConsumerState<CurrentOutboundCard>
                     ],
                   ),
                 ),
-                SizedBox(
-                  width: metrics.buttonSlot,
-                  child: Center(
-                    child: _StartToggle(
-                      size: metrics.buttonSize,
-                      enabled: hasProfile,
-                      running: isStart,
-                      suspended: suspended,
+                if (starChart)
+                  SizedBox(width: metrics.plateSize)
+                else
+                  SizedBox(
+                    width: metrics.buttonSlot,
+                    child: Center(
+                      child: _StartToggle(
+                        size: metrics.buttonSize,
+                        enabled: hasProfile,
+                        running: isStart,
+                        suspended: suspended,
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
@@ -246,6 +267,7 @@ class _OutboundMetrics {
     required this.buttonSize,
     required this.buttonSlot,
     required this.decorationSize,
+    required this.plateSize,
   });
 
   factory _OutboundMetrics.of(DashboardDensity density) => switch (density) {
@@ -259,6 +281,7 @@ class _OutboundMetrics {
       buttonSize: 104,
       buttonSlot: 120,
       decorationSize: 290,
+      plateSize: 196,
     ),
     DashboardDensity.compact => _OutboundMetrics(
       padding: dashboardCardPadding(density),
@@ -270,6 +293,7 @@ class _OutboundMetrics {
       buttonSize: 84,
       buttonSlot: 100,
       decorationSize: 250,
+      plateSize: 168,
     ),
     DashboardDensity.mobile => const _OutboundMetrics(
       padding: EdgeInsetsDirectional.fromSTEB(20, 18, 16, 18),
@@ -281,6 +305,7 @@ class _OutboundMetrics {
       buttonSize: 88,
       buttonSlot: 88,
       decorationSize: 204,
+      plateSize: 150,
     ),
   };
 
@@ -293,6 +318,9 @@ class _OutboundMetrics {
   final double buttonSize;
   final double buttonSlot;
   final double decorationSize;
+
+  /// The star plate in place of the button and its halo.
+  final double plateSize;
 
   EdgeInsets paddingOf(BuildContext context) =>
       padding.resolve(Directionality.of(context));

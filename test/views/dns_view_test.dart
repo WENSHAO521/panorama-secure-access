@@ -15,7 +15,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/test_app.dart';
 import '../helpers/test_profiles.dart';
-import 'package:prism_ui/prism_ui.dart';
 
 const _profileId = 1;
 

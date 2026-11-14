@@ -9,7 +9,6 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:prism_ui/shapes/shapes.dart';
-import 'package:prism_ui/prism_ui.dart';
 
 EdgeInsets dashboardCardPadding(DashboardDensity density) => switch (density) {
   DashboardDensity.standard => const EdgeInsets.symmetric(
@@ -62,6 +61,7 @@ class DashboardCard extends StatelessWidget {
       child: child,
     );
     final onTap = this.onTap;
+    final starChart = StarChartScope.of(context);
     final card = Container(
       clipBehavior: clipBehavior,
       decoration: ShapeDecoration(
@@ -69,9 +69,14 @@ class DashboardCard extends StatelessWidget {
         shape: shape,
         shadows: DashboardShadows.e1(context),
       ),
-      foregroundDecoration: side == BorderSide.none
-          ? null
-          : ShapeDecoration(shape: shape.copyWith(side: side)),
+      foregroundDecoration: side != BorderSide.none
+          ? ShapeDecoration(shape: shape.copyWith(side: side))
+          : starChart
+          ? StarFrameDecoration(
+              radius: AppRadius.all(dashboardCardRadius(density)),
+              color: StarChartColors.hairlineOf(context.colorScheme.brightness),
+            )
+          : null,
       child: onTap == null
           ? content
           : PressSurface(
@@ -115,7 +120,9 @@ class DashboardCardHeader extends StatelessWidget {
     final mobile = !DashboardDensityScope.of(context).isDesktop;
     final scale = DashboardDensityScope.scaleOf(context);
     final colorScheme = context.colorScheme;
-    final iconColor = colorScheme.onSurfaceVariant;
+    final iconColor = StarChartScope.of(context)
+        ? StarChartColors.giltOf(colorScheme.brightness)
+        : colorScheme.onSurfaceVariant;
     final style = mobile
         ? DashboardText.mobileCardTitle(context)
         : DashboardText.cardTitle(context);
@@ -637,6 +644,13 @@ class DashboardSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (StarChartScope.of(context)) {
+      return YaoSwitch(
+        value: value,
+        onChanged: onChanged,
+        semanticLabel: semanticLabel,
+      );
+    }
     return SizedBox(
       width: trackWidth,
       height: Switch.trackHeight,

@@ -452,6 +452,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "checkUpdate": MessageLookupByLibrary.simpleMessage("업데이트 확인"),
     "checkUpdateError": MessageLookupByLibrary.simpleMessage("이미 최신 버전입니다"),
     "cipher": MessageLookupByLibrary.simpleMessage("암호화 방식"),
+    "classicLook": MessageLookupByLibrary.simpleMessage("클래식"),
     "clearData": MessageLookupByLibrary.simpleMessage("데이터 지우기"),
     "clearDataAndExitTip": MessageLookupByLibrary.simpleMessage(
       "모든 프로필, 설정, 로컬 데이터를 삭제한 후 앱을 종료합니다. 앱을 다시 열면 처음부터 시작합니다.",
@@ -526,7 +527,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "서명되지 않아 Windows Smart App Control이 panorama-secure-access-core.exe를 차단했습니다. Windows 보안 → 앱 및 브라우저 컨트롤 → Smart App Control 설정에서 끔을 선택한 후 Panorama Secure Access를 다시 시작하세요. Smart App Control은 Windows를 다시 설치하지 않으면 다시 켤 수 없습니다.",
     ),
+    "coreMemoryLimit": MessageLookupByLibrary.simpleMessage("코어 메모리 상한"),
+    "coreStarting": MessageLookupByLibrary.simpleMessage("시작 중…"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("코어 상태"),
+    "coreStopping": MessageLookupByLibrary.simpleMessage("중지 중…"),
     "country": MessageLookupByLibrary.simpleMessage("지역"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("비정상 종료 감지됨"),
     "crashDetectedTip": m7,
@@ -1491,6 +1495,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "publicKey": MessageLookupByLibrary.simpleMessage("공개 키"),
     "pureBlack": MessageLookupByLibrary.simpleMessage("퓨어 블랙"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("퓨어 블랙 모드"),
+    "qingLuStyle": MessageLookupByLibrary.simpleMessage("청록"),
     "qrcode": MessageLookupByLibrary.simpleMessage("QR 코드"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage("QR 코드를 스캔하여 프로필 가져오기"),
     "qrcodeTooLongTip": MessageLookupByLibrary.simpleMessage(
@@ -1782,6 +1787,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "알림에 중지 버튼 표시",
     ),
     "showPassword": MessageLookupByLibrary.simpleMessage("비밀번호 표시"),
+    "shuiMoStyle": MessageLookupByLibrary.simpleMessage("수묵"),
     "sidebar": MessageLookupByLibrary.simpleMessage("사이드바"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("백그라운드 실행"),
     "singleImport": MessageLookupByLibrary.simpleMessage("개별 가져오기"),
@@ -1822,7 +1828,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
       "표준 모드: 프로필 위에 규칙을 추가합니다",
     ),
+    "starChart": MessageLookupByLibrary.simpleMessage("성도"),
     "start": MessageLookupByLibrary.simpleMessage("시작"),
+    "startFailedRetry": MessageLookupByLibrary.simpleMessage(
+      "시작하지 못했습니다. 탭하여 다시 시도",
+    ),
     "startFromScratch": MessageLookupByLibrary.simpleMessage("처음부터 시작"),
     "startVpn": MessageLookupByLibrary.simpleMessage("VPN 시작 중…"),
     "startupAndBackground": MessageLookupByLibrary.simpleMessage("시작 및 백그라운드"),
@@ -1931,6 +1941,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "알 수 없는 네트워크 오류",
     ),
+    "unlimited": MessageLookupByLibrary.simpleMessage("제한 없음"),
     "unmaximize": MessageLookupByLibrary.simpleMessage("이전 크기로 복원"),
     "unnamed": MessageLookupByLibrary.simpleMessage("이름 없음"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("창 고정 해제"),
@@ -1991,9 +2002,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "시스템에 기록하면 시스템 시계도 설정합니다. Android에서는 무시됩니다.",
     ),
+    "xingGuanStyle": MessageLookupByLibrary.simpleMessage("성관전"),
     "yearsAgo": m111,
     "yearsAgoShort": m112,
     "yes": MessageLookupByLibrary.simpleMessage("예"),
     "zhCN": MessageLookupByLibrary.simpleMessage("중국어 간체"),
+    "ziFuStyle": MessageLookupByLibrary.simpleMessage("자부"),
   };
 }

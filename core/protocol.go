@@ -129,6 +129,8 @@ type CoreOptions struct {
 	// keeps the timeout in force.
 	DelayTestTimeout int64 `json:"delay-test-timeout"`
 	MITMCapture      bool  `json:"mitm-capture"`
+	// In MB, a soft cap for the Go runtime; zero lifts it.
+	MemoryLimit int64 `json:"memory-limit"`
 }
 
 type SetupBase struct {

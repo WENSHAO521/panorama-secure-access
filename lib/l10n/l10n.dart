@@ -1451,6 +1451,21 @@ class AppLocalizations {
     );
   }
 
+  /// `Core memory limit`
+  String get coreMemoryLimit {
+    return Intl.message(
+      'Core memory limit',
+      name: 'coreMemoryLimit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No limit`
+  String get unlimited {
+    return Intl.message('No limit', name: 'unlimited', desc: '', args: []);
+  }
+
   /// `Sync`
   String get sync {
     return Intl.message('Sync', name: 'sync', desc: '', args: []);
@@ -3364,6 +3379,31 @@ class AppLocalizations {
   /// `Soft`
   String get softStyle {
     return Intl.message('Soft', name: 'softStyle', desc: '', args: []);
+  }
+
+  /// `Star Chart`
+  String get xingGuanStyle {
+    return Intl.message(
+      'Star Chart',
+      name: 'xingGuanStyle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Purple Palace`
+  String get ziFuStyle {
+    return Intl.message('Purple Palace', name: 'ziFuStyle', desc: '', args: []);
+  }
+
+  /// `Blue-Green`
+  String get qingLuStyle {
+    return Intl.message('Blue-Green', name: 'qingLuStyle', desc: '', args: []);
+  }
+
+  /// `Ink Wash`
+  String get shuiMoStyle {
+    return Intl.message('Ink Wash', name: 'shuiMoStyle', desc: '', args: []);
   }
 
   /// `Developer mode`
@@ -9941,6 +9981,36 @@ class AppLocalizations {
   /// `Keep`
   String get keep {
     return Intl.message('Keep', name: 'keep', desc: '', args: []);
+  }
+
+  /// `Star chart`
+  String get starChart {
+    return Intl.message('Star chart', name: 'starChart', desc: '', args: []);
+  }
+
+  /// `Starting…`
+  String get coreStarting {
+    return Intl.message('Starting…', name: 'coreStarting', desc: '', args: []);
+  }
+
+  /// `Stopping…`
+  String get coreStopping {
+    return Intl.message('Stopping…', name: 'coreStopping', desc: '', args: []);
+  }
+
+  /// `Start failed. Tap to retry`
+  String get startFailedRetry {
+    return Intl.message(
+      'Start failed. Tap to retry',
+      name: 'startFailedRetry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Classic`
+  String get classicLook {
+    return Intl.message('Classic', name: 'classicLook', desc: '', args: []);
   }
 }
 
