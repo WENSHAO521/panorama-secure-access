@@ -149,6 +149,39 @@ void main() {
     expect(texts, ['Kept fix']);
   });
 
+  test('drops a revert of several commits and what it took back', () {
+    File('${repo.path}/a.txt').writeAsStringSync('a');
+    git(['add', 'a.txt']);
+    commit('feat(f): dropped feature');
+    File('${repo.path}/b.txt').writeAsStringSync('b');
+    git(['add', 'b.txt']);
+    commit('feat(g): dropped helper');
+    commit('fix(h): kept fix');
+    final log =
+        Process.runSync('git', [
+              'log',
+              '--format=%h',
+              '-3',
+            ], workingDirectory: repo.path).stdout
+            as String;
+    final [_, helper, feature] = log.trim().split('\n');
+    git(['rm', '--quiet', 'a.txt', 'b.txt']);
+    commit(
+      'revert: drop the feature\n\n'
+      'This reverts commits $helper and $feature.',
+    );
+
+    final versions = build(
+      pending: const PendingVersion(version: '1.2.0', date: '2026-02-03'),
+    ).changelog.versions;
+
+    final texts = [
+      for (final group in versions.first.groups)
+        for (final entry in group.entries) entry.text,
+    ];
+    expect(texts, ['Kept fix']);
+  });
+
   test('a pending version is skipped once its tag exists', () {
     final versions = build(
       pending: const PendingVersion(version: '1.1.0', date: '2026-02-03'),
