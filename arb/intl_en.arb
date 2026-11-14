@@ -1180,5 +1180,15 @@
   "coreStarting": "Starting…",
   "coreStopping": "Stopping…",
   "startFailedRetry": "Start failed. Tap to retry",
-  "classicLook": "Classic"
+  "classicLook": "Classic",
+  "inviteTitle": "Invitation code",
+  "inviteDescription": "Panorama Secure Access is invitation-only. Enter the code you were given to continue.",
+  "inviteSubmit": "Continue",
+  "inviteInvalid": "This code does not exist. Check it and try again.",
+  "inviteRevoked": "This code has been withdrawn.",
+  "inviteExpired": "This code has expired.",
+  "inviteExhausted": "This code is already in use on as many devices as it allows.",
+  "inviteUnbound": "This device was removed from its code. Enter a code again.",
+  "inviteNetworkError": "The invitation server could not be reached. Check your network and try again.",
+  "inviteDevice": "Device ID"
 }

@@ -1037,6 +1037,26 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "invalidRuleSet": m47,
     "invalidSubRule": m48,
+    "inviteDescription": MessageLookupByLibrary.simpleMessage(
+      "Panorama Secure Access는 초대받은 사용자만 이용할 수 있습니다. 받은 코드를 입력해 계속하세요.",
+    ),
+    "inviteDevice": MessageLookupByLibrary.simpleMessage("기기 ID"),
+    "inviteExhausted": MessageLookupByLibrary.simpleMessage(
+      "이 코드는 허용된 기기 수만큼 이미 사용 중입니다.",
+    ),
+    "inviteExpired": MessageLookupByLibrary.simpleMessage("이 코드는 만료되었습니다."),
+    "inviteInvalid": MessageLookupByLibrary.simpleMessage(
+      "존재하지 않는 코드입니다. 확인 후 다시 시도하세요.",
+    ),
+    "inviteNetworkError": MessageLookupByLibrary.simpleMessage(
+      "초대 서버에 연결할 수 없습니다. 네트워크를 확인하고 다시 시도하세요.",
+    ),
+    "inviteRevoked": MessageLookupByLibrary.simpleMessage("이 코드는 회수되었습니다."),
+    "inviteSubmit": MessageLookupByLibrary.simpleMessage("계속"),
+    "inviteTitle": MessageLookupByLibrary.simpleMessage("초대 코드"),
+    "inviteUnbound": MessageLookupByLibrary.simpleMessage(
+      "이 기기는 코드에서 해제되었습니다. 코드를 다시 입력하세요.",
+    ),
     "ipAddress": MessageLookupByLibrary.simpleMessage("IP 주소"),
     "ipAsn": MessageLookupByLibrary.simpleMessage("ASN"),
     "ipFlagAbuser": MessageLookupByLibrary.simpleMessage("악용 이력"),

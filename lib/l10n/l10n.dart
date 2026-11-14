@@ -10012,6 +10012,96 @@ class AppLocalizations {
   String get classicLook {
     return Intl.message('Classic', name: 'classicLook', desc: '', args: []);
   }
+
+  /// `Invitation code`
+  String get inviteTitle {
+    return Intl.message(
+      'Invitation code',
+      name: 'inviteTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Panorama Secure Access is invitation-only. Enter the code you were given to continue.`
+  String get inviteDescription {
+    return Intl.message(
+      'Panorama Secure Access is invitation-only. Enter the code you were given to continue.',
+      name: 'inviteDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get inviteSubmit {
+    return Intl.message('Continue', name: 'inviteSubmit', desc: '', args: []);
+  }
+
+  /// `This code does not exist. Check it and try again.`
+  String get inviteInvalid {
+    return Intl.message(
+      'This code does not exist. Check it and try again.',
+      name: 'inviteInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This code has been withdrawn.`
+  String get inviteRevoked {
+    return Intl.message(
+      'This code has been withdrawn.',
+      name: 'inviteRevoked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This code has expired.`
+  String get inviteExpired {
+    return Intl.message(
+      'This code has expired.',
+      name: 'inviteExpired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This code is already in use on as many devices as it allows.`
+  String get inviteExhausted {
+    return Intl.message(
+      'This code is already in use on as many devices as it allows.',
+      name: 'inviteExhausted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This device was removed from its code. Enter a code again.`
+  String get inviteUnbound {
+    return Intl.message(
+      'This device was removed from its code. Enter a code again.',
+      name: 'inviteUnbound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The invitation server could not be reached. Check your network and try again.`
+  String get inviteNetworkError {
+    return Intl.message(
+      'The invitation server could not be reached. Check your network and try again.',
+      name: 'inviteNetworkError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device ID`
+  String get inviteDevice {
+    return Intl.message('Device ID', name: 'inviteDevice', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

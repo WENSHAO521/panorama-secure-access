@@ -1180,5 +1180,15 @@
   "coreStarting": "起動中…",
   "coreStopping": "停止中…",
   "startFailedRetry": "起動に失敗しました。タップして再試行",
-  "classicLook": "クラシック"
+  "classicLook": "クラシック",
+  "inviteTitle": "招待コード",
+  "inviteDescription": "Panorama Secure Access は招待制です。受け取ったコードを入力して続行してください。",
+  "inviteSubmit": "続行",
+  "inviteInvalid": "このコードは存在しません。確認してもう一度お試しください。",
+  "inviteRevoked": "このコードは取り消されました。",
+  "inviteExpired": "このコードは有効期限が切れています。",
+  "inviteExhausted": "このコードは利用できる端末数の上限に達しています。",
+  "inviteUnbound": "この端末はコードから外されました。もう一度コードを入力してください。",
+  "inviteNetworkError": "招待サーバーに接続できません。ネットワークを確認してもう一度お試しください。",
+  "inviteDevice": "端末 ID"
 }
