@@ -384,6 +384,30 @@ void main() {
       },
     );
 
+    testWidgets(
+      'keeps the star plate beside the whole column on a common phone',
+      (tester) async {
+        for (final (width, beside) in [(380.0, true), (288.0, false)]) {
+          await tester.pumpWidget(
+            _app(
+              (_, _) async => _residential,
+              density: DashboardDensity.mobile,
+              width: width,
+              starChart: true,
+            ),
+          );
+          await tester.pump();
+
+          final plate = tester.getRect(find.byType(StarPlateToggle));
+          final address = tester.getRect(find.text(_ip));
+          final runTime = tester.getRect(find.text('Run time'));
+          expect(address.top < plate.top, !beside, reason: '$width');
+          expect(runTime.top < plate.bottom, isTrue, reason: '$width');
+          expect(address.top < runTime.top, isTrue, reason: '$width');
+        }
+      },
+    );
+
     testWidgets('opens its details from the address, not the card', (
       tester,
     ) async {
