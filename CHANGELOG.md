@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.5.16 (2026-11-14)
+
+**Bug Fixes**
+
+- **dashboard** The status card keeps its original compact look on common phones (a5ce03f)
+
 ## v3.5.15 (2026-11-14)
 
 **Bug Fixes**
