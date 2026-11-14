@@ -2,6 +2,68 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.5.12",
+      "tag": "v3.5.12",
+      "date": "2026-11-14",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "0cf9e8d",
+              "scope": "ui",
+              "text": "Carry the star chart look to every page"
+            },
+            {
+              "id": "6aae39c",
+              "scope": "theme",
+              "text": "Taoist color styles and pigment presets, 星官箋 + 泥金 default"
+            },
+            {
+              "id": "add4bd7",
+              "scope": "ui",
+              "text": "Star chart look (星官箋) for the dashboard and theme preview"
+            },
+            {
+              "id": "d6034ed",
+              "scope": "scripts",
+              "text": "Own lantern icon for the 国内网络 group"
+            },
+            {
+              "id": "95a3f43",
+              "scope": "scripts",
+              "text": "Ship the ziji script as default and enable it everywhere"
+            }
+          ]
+        },
+        {
+          "type": "perf",
+          "entries": [
+            {
+              "id": "8405e05",
+              "scope": "ui",
+              "text": "Draw the resting star chart backdrop from one shared image"
+            },
+            {
+              "id": "9df24c1",
+              "scope": "theme",
+              "text": "Build the theme page a part a frame"
+            },
+            {
+              "id": "114761f",
+              "scope": "theme",
+              "text": "Draw the still theme previews from an image"
+            },
+            {
+              "id": "29096ac",
+              "text": "Stop the halo redrawing every frame, add a core memory limit"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.5.11",
       "tag": "v3.5.11",
       "date": "2026-11-13",
