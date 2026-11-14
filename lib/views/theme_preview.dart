@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:ui' as ui;
+
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/providers/state.dart';
@@ -5,6 +8,7 @@ import 'package:fl_clash/views/dashboard/widgets/dipper_gauge.dart';
 import 'package:fl_clash/views/dashboard/widgets/pole_star.dart';
 import 'package:fl_clash/views/dashboard/widgets/star_plate.dart';
 import 'package:fl_clash/widgets/widgets.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -74,18 +78,20 @@ class MiniScreenThumb extends StatelessWidget {
     return SizedBox(
       height: _height,
       width: _height * _screenSize.width / _shownHeight,
-      child: ClipRSuperellipse(
-        borderRadius: AppRadius.sm,
-        child: FittedBox(
-          child: SizedBox(
-            width: _screenSize.width,
-            height: _shownHeight,
-            child: ClipRect(
-              child: OverflowBox(
-                alignment: Alignment.bottomCenter,
-                minHeight: _screenSize.height,
-                maxHeight: _screenSize.height,
-                child: screen,
+      child: StillRaster(
+        child: ClipRSuperellipse(
+          borderRadius: AppRadius.sm,
+          child: FittedBox(
+            child: SizedBox(
+              width: _screenSize.width,
+              height: _shownHeight,
+              child: ClipRect(
+                child: OverflowBox(
+                  alignment: Alignment.bottomCenter,
+                  minHeight: _screenSize.height,
+                  maxHeight: _screenSize.height,
+                  child: screen,
+                ),
               ),
             ),
           ),
@@ -199,26 +205,28 @@ class _ThemeLivePreviewState extends ConsumerState<ThemeLivePreview>
         width: _phoneWidth,
         child: AspectRatio(
           aspectRatio: 9 / 17,
-          child: ClipRSuperellipse(
-            borderRadius: AppRadius.all(corner),
-            child: TweenAnimationBuilder<ColorScheme>(
-              tween: _ColorSchemeTween(end: colorScheme),
-              duration: _duration,
-              builder: (_, colorScheme, _) => AnimatedSwitcher(
+          child: StillRaster(
+            child: ClipRSuperellipse(
+              borderRadius: AppRadius.all(corner),
+              child: TweenAnimationBuilder<ColorScheme>(
+                tween: _ColorSchemeTween(end: colorScheme),
                 duration: _duration,
-                child: AnimatedBuilder(
-                  key: ValueKey((floatingBar, liquidGlass, starChart)),
-                  animation: _slideCurve,
-                  builder: (_, _) => MiniScreen(
-                    colorScheme: colorScheme,
-                    floatingBar: floatingBar,
-                    liquidGlass: liquidGlass,
-                    selected: _selected,
-                    previous: _previous,
-                    progress: _previous == null ? 1 : _slideCurve.value,
-                    tabAnimation: tabAnimation,
-                    onSelect: _select,
-                    starChart: starChart,
+                builder: (_, colorScheme, _) => AnimatedSwitcher(
+                  duration: _duration,
+                  child: AnimatedBuilder(
+                    key: ValueKey((floatingBar, liquidGlass, starChart)),
+                    animation: _slideCurve,
+                    builder: (_, _) => MiniScreen(
+                      colorScheme: colorScheme,
+                      floatingBar: floatingBar,
+                      liquidGlass: liquidGlass,
+                      selected: _selected,
+                      previous: _previous,
+                      progress: _previous == null ? 1 : _slideCurve.value,
+                      tabAnimation: tabAnimation,
+                      onSelect: _select,
+                      starChart: starChart,
+                    ),
                   ),
                 ),
               ),
@@ -226,6 +234,124 @@ class _ThemeLivePreviewState extends ConsumerState<ThemeLivePreview>
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Draws [child] from a raster of itself once it has held still for [settle].
+///
+/// Impeller keeps no raster cache, so a sketch of hundreds of paths and
+/// blurred glows costs the raster thread all of them again on every frame the
+/// page scrolls; the theme page shows sixteen. Held still, each is one image.
+/// A repaint under it drops the raster and paints live until the child holds
+/// still again, so an animation never captures a frame per frame. A repaint
+/// boundary under it would keep its changes from reaching it: keep none.
+class StillRaster extends SingleChildRenderObjectWidget {
+  const StillRaster({
+    super.key,
+    this.settle = const Duration(milliseconds: 150),
+    super.child,
+  });
+
+  final Duration settle;
+
+  @override
+  RenderStillRaster createRenderObject(BuildContext context) =>
+      RenderStillRaster(
+        devicePixelRatio: MediaQuery.devicePixelRatioOf(context),
+        settle: settle,
+      );
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    RenderStillRaster renderObject,
+  ) {
+    renderObject
+      ..devicePixelRatio = MediaQuery.devicePixelRatioOf(context)
+      ..settle = settle;
+  }
+}
+
+class RenderStillRaster extends RenderProxyBox {
+  RenderStillRaster({required double devicePixelRatio, required this.settle})
+    : _devicePixelRatio = devicePixelRatio;
+
+  Duration settle;
+  ui.Image? _raster;
+  Timer? _timer;
+  bool _dirty = true;
+
+  /// Whether the child is drawn from its raster.
+  bool get hasRaster => _raster != null;
+
+  double _devicePixelRatio;
+
+  set devicePixelRatio(double value) {
+    if (value == _devicePixelRatio) {
+      return;
+    }
+    _devicePixelRatio = value;
+    markNeedsPaint();
+  }
+
+  @override
+  bool get isRepaintBoundary => true;
+
+  @override
+  void markNeedsPaint() {
+    _drop();
+    _dirty = true;
+    super.markNeedsPaint();
+  }
+
+  void _drop() {
+    _timer?.cancel();
+    _timer = null;
+    _raster?.dispose();
+    _raster = null;
+  }
+
+  /// Takes the frame on screen, which this boundary's layer still holds.
+  void _capture() {
+    _timer = null;
+    final layer = this.layer;
+    if (!attached || _dirty || !hasSize || layer is! OffsetLayer) {
+      return;
+    }
+    _raster = layer.toImageSync(
+      Offset.zero & size,
+      pixelRatio: _devicePixelRatio,
+    );
+    super.markNeedsPaint();
+  }
+
+  @override
+  void detach() {
+    _drop();
+    super.detach();
+  }
+
+  @override
+  void dispose() {
+    _drop();
+    super.dispose();
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    _dirty = false;
+    final raster = _raster;
+    if (raster == null) {
+      super.paint(context, offset);
+      _timer ??= Timer(settle, _capture);
+      return;
+    }
+    context.canvas.drawImageRect(
+      raster,
+      Rect.fromLTWH(0, 0, raster.width.toDouble(), raster.height.toDouble()),
+      offset & size,
+      Paint()..filterQuality = FilterQuality.low,
     );
   }
 }
