@@ -276,11 +276,10 @@ class _CurrentOutboundCardState extends ConsumerState<CurrentOutboundCard>
   }
 }
 
-/// A phone is too narrow for the plate beside every line: the plate shrinks
-/// with the card and the run time and the network move under it. Past
-/// [_minAddressColumn] the address no longer fits beside the plate either, so
-/// it and the title take the full width and the two cells stack beside the
-/// plate instead.
+/// The plate sits beside the whole column, centered on the card, as long as
+/// the column keeps [_minColumn]: first the plate gives up room down to
+/// [_minPlate]. Narrower than that, the title and the address take the full
+/// width and the two cells stack beside the plate under them.
 class _PhoneStarLayout extends StatelessWidget {
   const _PhoneStarLayout({
     required this.metrics,
@@ -290,9 +289,8 @@ class _PhoneStarLayout extends StatelessWidget {
     required this.plateOf,
   });
 
-  static const _plateShare = 0.4;
   static const _minPlate = 112.0;
-  static const _minAddressColumn = 190.0;
+  static const _minColumn = 176.0;
 
   final _OutboundMetrics metrics;
   final Widget header;
@@ -307,31 +305,45 @@ class _PhoneStarLayout extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final room = constraints.maxWidth - padding.horizontal;
-        final plate = (room * _plateShare).clamp(_minPlate, metrics.plateSize);
-        final narrow = room - plate - metrics.gap < _minAddressColumn * scale;
-        final beside = narrow
-            ? [cellsOf(stacked: true)]
-            : [header, SizedBox(height: metrics.ipTop), exitRow];
+        final plate = math.min(
+          metrics.plateSize,
+          room - metrics.gap - _minColumn * scale,
+        );
+        Widget besidePlate(double size, List<Widget> children) => Row(
+          spacing: metrics.gap,
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: children,
+              ),
+            ),
+            SizedBox.square(dimension: size, child: plateOf(size)),
+          ],
+        );
+        if (plate >= _minPlate) {
+          return Padding(
+            padding: padding,
+            child: besidePlate(plate, [
+              header,
+              SizedBox(height: metrics.ipTop),
+              exitRow,
+              const SizedBox(height: 16),
+              cellsOf(stacked: false),
+            ]),
+          );
+        }
         return Padding(
           padding: padding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (narrow) ...[header, const SizedBox(height: 8)],
-              Row(
-                spacing: metrics.gap,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: beside,
-                    ),
-                  ),
-                  SizedBox.square(dimension: plate, child: plateOf(plate)),
-                ],
-              ),
+              header,
+              SizedBox(height: metrics.ipTop),
+              exitRow,
               const SizedBox(height: 12),
-              if (narrow) exitRow else cellsOf(stacked: false),
+              besidePlate(_minPlate, [cellsOf(stacked: true)]),
             ],
           ),
         );
