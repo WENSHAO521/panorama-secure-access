@@ -98,6 +98,29 @@ class _CurrentOutboundCardState extends ConsumerState<CurrentOutboundCard>
         : isStart
         ? (appLocalizations.running, DashboardChipTone.ok)
         : (appLocalizations.notRunning, DashboardChipTone.idle);
+    final header = DashboardCardHeader(
+      glyph: AppGlyphs.status,
+      title: appLocalizations.status,
+      leading: [DashboardChip(label: chipLabel, tone: chipTone, dot: isStart)],
+    );
+    final exitRow = _ExitRow(
+      info: ipInfo,
+      failed: failed,
+      loading: loading,
+      checking: phase == ProbePhase.probing || qualityLoading,
+      onRefresh: () => _refresh(ipInfo?.ip),
+      quality: quality,
+      active: isStart,
+      metrics: metrics,
+      large: !density.isDesktop,
+    );
+    Widget cellsOf({required bool stacked}) => _Cells(
+      quality: quality,
+      loading: loading,
+      active: isStart && !suspended,
+      gap: stacked ? 8 : metrics.cellGap,
+      stacked: stacked,
+    );
     return TweenAnimationBuilder<double>(
       tween: Tween(end: rootAccess ? 1 : 0),
       duration: context.motionDuration(commonDuration),
@@ -114,144 +137,205 @@ class _CurrentOutboundCardState extends ConsumerState<CurrentOutboundCard>
               ),
         child: child!,
       ),
-      child: Stack(
-        children: [
-          if (starChart)
-            PositionedDirectional(
-              end: metrics.paddingEndOf(context),
-              top: 0,
-              bottom: 0,
-              width: metrics.plateSize,
-              child: Center(
-                child: StarPlateToggle(
-                  size: metrics.plateSize,
-                  enabled: hasProfile,
-                  running: isStart,
-                  suspended: suspended,
-                ),
+      child: starChart && !density.isDesktop
+          ? _PhoneStarLayout(
+              metrics: metrics,
+              header: header,
+              exitRow: exitRow,
+              cellsOf: cellsOf,
+              plateOf: (size) => StarPlateToggle(
+                size: size,
+                enabled: hasProfile,
+                running: isStart,
+                suspended: suspended,
               ),
             )
-          else
-            Positioned.fill(
-              child: ClipPath(
-                clipper: ShapeBorderClipper(
-                  shape: AppShape.all(dashboardCardRadius(density)),
-                  textDirection: Directionality.of(context),
-                ),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    // The halo is centered on the button, the pole star the
-                    // dipper turns round.
-                    PositionedDirectional(
-                      end:
-                          metrics.paddingEndOf(context) +
-                          (metrics.buttonSlot - metrics.decorationSize) / 2,
-                      top: metrics.paddingOf(context).top,
-                      bottom: metrics.paddingOf(context).bottom,
-                      width: metrics.decorationSize,
-                      child: OverflowBox(
-                        minWidth: metrics.decorationSize,
-                        maxWidth: metrics.decorationSize,
-                        minHeight: metrics.decorationSize,
-                        maxHeight: metrics.decorationSize,
-                        child: TweenAnimationBuilder<double>(
-                          tween: Tween(end: isStart ? 1 : 0),
-                          duration: context.motionDuration(_morphDuration),
-                          curve: Curves.easeOutBack,
-                          builder: (_, progress, _) => Transform.scale(
-                            scale: 1 + _decorationGrowth * progress,
-                            // Only the halo follows the run time's ticks.
-                            child: Consumer(
-                              builder: (_, ref, _) => PoleStarHalo(
-                                size: metrics.decorationSize,
-                                runTime: isStart
-                                    ? ref.watch(runTimeProvider)
-                                    : null,
-                                lit: suspended ? progress * 0.4 : progress,
-                                dark: colorScheme.brightness == Brightness.dark,
-                                field: Color.lerp(
-                                  colors.tone,
-                                  Color.alphaBlend(
-                                    colorScheme.primary.withValues(alpha: 0.1),
-                                    colors.card,
-                                  ),
-                                  progress.clamp(0, 1),
-                                )!,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          Padding(
-            padding: metrics.padding,
-            child: Row(
-              spacing: metrics.gap,
+          : Stack(
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      DashboardCardHeader(
-                        glyph: AppGlyphs.status,
-                        title: appLocalizations.status,
-                        leading: [
-                          DashboardChip(
-                            label: chipLabel,
-                            tone: chipTone,
-                            dot: isStart,
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: metrics.ipTop),
-                      _ExitRow(
-                        info: ipInfo,
-                        failed: failed,
-                        loading: loading,
-                        checking: phase == ProbePhase.probing || qualityLoading,
-                        onRefresh: () => _refresh(ipInfo?.ip),
-                        quality: quality,
-                        active: isStart,
-                        metrics: metrics,
-                        large: !density.isDesktop,
-                      ),
-                      if (density.isDesktop)
-                        const Spacer()
-                      else
-                        const SizedBox(height: 16),
-                      _Cells(
-                        quality: quality,
-                        loading: loading,
-                        active: isStart && !suspended,
-                        gap: metrics.cellGap,
-                      ),
-                    ],
-                  ),
-                ),
                 if (starChart)
-                  SizedBox(width: metrics.plateSize)
-                else
-                  SizedBox(
-                    width: metrics.buttonSlot,
+                  PositionedDirectional(
+                    end: metrics.paddingEndOf(context),
+                    top: 0,
+                    bottom: 0,
+                    width: metrics.plateSize,
                     child: Center(
-                      child: _StartToggle(
-                        size: metrics.buttonSize,
+                      child: StarPlateToggle(
+                        size: metrics.plateSize,
                         enabled: hasProfile,
                         running: isStart,
                         suspended: suspended,
                       ),
                     ),
+                  )
+                else
+                  Positioned.fill(
+                    child: ClipPath(
+                      clipper: ShapeBorderClipper(
+                        shape: AppShape.all(dashboardCardRadius(density)),
+                        textDirection: Directionality.of(context),
+                      ),
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          // The halo is centered on the button, the pole star the
+                          // dipper turns round.
+                          PositionedDirectional(
+                            end:
+                                metrics.paddingEndOf(context) +
+                                (metrics.buttonSlot - metrics.decorationSize) /
+                                    2,
+                            top: metrics.paddingOf(context).top,
+                            bottom: metrics.paddingOf(context).bottom,
+                            width: metrics.decorationSize,
+                            child: OverflowBox(
+                              minWidth: metrics.decorationSize,
+                              maxWidth: metrics.decorationSize,
+                              minHeight: metrics.decorationSize,
+                              maxHeight: metrics.decorationSize,
+                              child: TweenAnimationBuilder<double>(
+                                tween: Tween(end: isStart ? 1 : 0),
+                                duration: context.motionDuration(
+                                  _morphDuration,
+                                ),
+                                curve: Curves.easeOutBack,
+                                builder: (_, progress, _) => Transform.scale(
+                                  scale: 1 + _decorationGrowth * progress,
+                                  // Only the halo follows the run time's ticks.
+                                  child: Consumer(
+                                    builder: (_, ref, _) => PoleStarHalo(
+                                      size: metrics.decorationSize,
+                                      runTime: isStart
+                                          ? ref.watch(runTimeProvider)
+                                          : null,
+                                      lit: suspended
+                                          ? progress * 0.4
+                                          : progress,
+                                      dark:
+                                          colorScheme.brightness ==
+                                          Brightness.dark,
+                                      field: Color.lerp(
+                                        colors.tone,
+                                        Color.alphaBlend(
+                                          colorScheme.primary.withValues(
+                                            alpha: 0.1,
+                                          ),
+                                          colors.card,
+                                        ),
+                                        progress.clamp(0, 1),
+                                      )!,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
+                Padding(
+                  padding: metrics.padding,
+                  child: Row(
+                    spacing: metrics.gap,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            header,
+                            SizedBox(height: metrics.ipTop),
+                            exitRow,
+                            if (density.isDesktop)
+                              const Spacer()
+                            else
+                              const SizedBox(height: 16),
+                            cellsOf(stacked: false),
+                          ],
+                        ),
+                      ),
+                      if (starChart)
+                        SizedBox(width: metrics.plateSize)
+                      else
+                        SizedBox(
+                          width: metrics.buttonSlot,
+                          child: Center(
+                            child: _StartToggle(
+                              size: metrics.buttonSize,
+                              enabled: hasProfile,
+                              running: isStart,
+                              suspended: suspended,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
               ],
             ),
+    );
+  }
+}
+
+/// A phone is too narrow for the plate beside every line: the plate shrinks
+/// with the card and the run time and the network move under it. Past
+/// [_minAddressColumn] the address no longer fits beside the plate either, so
+/// it and the title take the full width and the two cells stack beside the
+/// plate instead.
+class _PhoneStarLayout extends StatelessWidget {
+  const _PhoneStarLayout({
+    required this.metrics,
+    required this.header,
+    required this.exitRow,
+    required this.cellsOf,
+    required this.plateOf,
+  });
+
+  static const _plateShare = 0.4;
+  static const _minPlate = 112.0;
+  static const _minAddressColumn = 190.0;
+
+  final _OutboundMetrics metrics;
+  final Widget header;
+  final Widget exitRow;
+  final Widget Function({required bool stacked}) cellsOf;
+  final Widget Function(double size) plateOf;
+
+  @override
+  Widget build(BuildContext context) {
+    final padding = metrics.paddingOf(context);
+    final scale = DashboardDensityScope.scaleOf(context);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final room = constraints.maxWidth - padding.horizontal;
+        final plate = (room * _plateShare).clamp(_minPlate, metrics.plateSize);
+        final narrow = room - plate - metrics.gap < _minAddressColumn * scale;
+        final beside = narrow
+            ? [cellsOf(stacked: true)]
+            : [header, SizedBox(height: metrics.ipTop), exitRow];
+        return Padding(
+          padding: padding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (narrow) ...[header, const SizedBox(height: 8)],
+              Row(
+                spacing: metrics.gap,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: beside,
+                    ),
+                  ),
+                  SizedBox.square(dimension: plate, child: plateOf(plate)),
+                ],
+              ),
+              const SizedBox(height: 12),
+              if (narrow) exitRow else cellsOf(stacked: false),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -684,12 +768,14 @@ class _Cells extends StatelessWidget {
     required this.loading,
     required this.active,
     required this.gap,
+    this.stacked = false,
   });
 
   final IpQuality? quality;
   final bool loading;
   final bool active;
   final double gap;
+  final bool stacked;
 
   @override
   Widget build(BuildContext context) {
@@ -699,23 +785,30 @@ class _Cells extends StatelessWidget {
       IpQuality(asn: final asn?) => 'AS$asn',
       _ => null,
     };
+    final runTime = _Cell(
+      label: appLocalizations.runTime,
+      value: active ? const _RunTimeValue() : const _Placeholder(),
+    );
+    final network = _Cell(
+      label: appLocalizations.ipOrganization,
+      value: organization != null
+          ? _CellText(organization)
+          : loading
+          ? SkeletonText(width: 96, style: _cellStyle(context))
+          : const _Placeholder(),
+    );
+    if (stacked) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: gap,
+        children: [runTime, network],
+      );
+    }
     return Row(
       spacing: gap,
       children: [
-        _Cell(
-          label: appLocalizations.runTime,
-          value: active ? const _RunTimeValue() : const _Placeholder(),
-        ),
-        Flexible(
-          child: _Cell(
-            label: appLocalizations.ipOrganization,
-            value: organization != null
-                ? _CellText(organization)
-                : loading
-                ? SkeletonText(width: 96, style: _cellStyle(context))
-                : const _Placeholder(),
-          ),
-        ),
+        runTime,
+        Flexible(child: network),
       ],
     );
   }

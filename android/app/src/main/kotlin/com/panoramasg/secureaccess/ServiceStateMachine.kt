@@ -318,7 +318,9 @@ internal class ServiceStateMachine(private val host: ServiceStateHost) {
     @Synchronized
     private fun publish() {
         mutableRunState.value = transition ?: when {
-            host.runtime == null -> RunState.STOPPED
+            // A start still setting up the Core or waiting on a prompt is shown as under way,
+            // so a tap on the tile answers at once rather than when the service binds.
+            host.runtime == null -> if (isRunRequested) RunState.STARTING else RunState.STOPPED
             isRunRequested -> RunState.STARTED
             else -> RunState.STOPPING
         }
