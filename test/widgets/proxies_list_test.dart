@@ -238,26 +238,30 @@ void main() {
     expect(surfaceOf(tester, 'G0').shadows, isNull);
   });
 
-  testWidgets('a folded pinned header takes the page color of a new theme', (
-    tester,
-  ) async {
-    final brightness = ValueNotifier(Brightness.light);
-    addTearDown(brightness.dispose);
-    await pumpList(tester, unfoldSet: const {}, brightness: brightness);
-
-    brightness.value = Brightness.dark;
+  testWidgets('rows that scroll under a pinned header are clipped at its '
+      'foot instead of covered with the page color', (tester) async {
+    await pumpList(tester);
+    await tester.drag(scrollable(), const Offset(0, -300));
     await tester.pumpAndSettle();
 
-    final header = find.ancestor(
-      of: headerOf('G0'),
-      matching: find.byType(PinnedHeaderSliver),
+    final header = tester.getRect(headerOf('G0'));
+    final under = find.byWidgetPredicate(
+      (widget) => widget is ProxyCard && widget.groupName == 'G0',
     );
-    final context = tester.element(header);
-    final cover = tester.widget<ColoredBox>(
-      find.descendant(of: header, matching: find.byType(ColoredBox)).first,
+    final hidden = under.evaluate().map(
+      (element) => tester.getRect(find.byWidget(element.widget)),
     );
-    expect(context.colorScheme.brightness, Brightness.dark);
-    expect(cover.color, context.surfaceLevel.colorOf(context.colorScheme));
+    expect(hidden, contains(predicate<Rect>((rect) => rect.top < header.top)));
+    expect(
+      find.descendant(
+        of: find.ancestor(
+          of: headerOf('G0'),
+          matching: find.byType(PinnedHeaderSliver),
+        ),
+        matching: find.byType(ColoredBox),
+      ),
+      findsNothing,
+    );
   });
 
   testWidgets('the last row sits as far from the bottom of its group card as '

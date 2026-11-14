@@ -18,6 +18,10 @@ abstract final class StarChartColors {
   static Color hairlineOf(Brightness brightness) =>
       giltOf(brightness).withValues(alpha: 0.24);
 
+  /// The frame of a selected box, which the gilt marks as chosen.
+  static Color chosenHairlineOf(Brightness brightness) =>
+      giltOf(brightness).withValues(alpha: 0.72);
+
   static Color starOf(Brightness brightness) => brightness == Brightness.dark
       ? const Color(0xFFF3E6C0)
       : const Color(0xFF6B5A3A);
@@ -163,14 +167,27 @@ class StarChartScope extends InheritedModel<StarChartAspect> {
 }
 
 /// The star-chart frame (文武邊): a firm line at the edge and a fine one
-/// inside it.
+/// inside it. An open side leaves its edge undrawn, so two boxes stacked on
+/// it read as one frame.
 class StarFrameDecoration extends Decoration {
-  const StarFrameDecoration({required this.radius, required this.color});
+  const StarFrameDecoration({
+    required this.radius,
+    required this.color,
+    this.openTop = false,
+    this.openBottom = false,
+    this.inner = true,
+  });
 
   static const inset = 4.0;
 
   final BorderRadius radius;
   final Color color;
+  final bool openTop;
+  final bool openBottom;
+
+  /// Whether the fine inner line is drawn; a box too small to hold two lines
+  /// keeps the edge only.
+  final bool inner;
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) =>
@@ -180,10 +197,13 @@ class StarFrameDecoration extends Decoration {
   bool operator ==(Object other) =>
       other is StarFrameDecoration &&
       other.radius == radius &&
-      other.color == color;
+      other.color == color &&
+      other.openTop == openTop &&
+      other.openBottom == openBottom &&
+      other.inner == inner;
 
   @override
-  int get hashCode => Object.hash(radius, color);
+  int get hashCode => Object.hash(radius, color, openTop, openBottom, inner);
 }
 
 class _StarFramePainter extends BoxPainter {
@@ -198,30 +218,48 @@ class _StarFramePainter extends BoxPainter {
       return;
     }
     const inset = StarFrameDecoration.inset;
+    final decoration = this.decoration;
     final rect = offset & size;
     final radius = decoration.radius;
-    final inner = BorderRadius.only(
-      topLeft: _shrink(radius.topLeft),
-      topRight: _shrink(radius.topRight),
-      bottomLeft: _shrink(radius.bottomLeft),
-      bottomRight: _shrink(radius.bottomRight),
+    final open = decoration.openTop || decoration.openBottom;
+    final overhang = open ? radius.topLeft.y + radius.bottomLeft.y + 8 : 0.0;
+    final path = Rect.fromLTRB(
+      rect.left,
+      rect.top - (decoration.openTop ? overhang : 0),
+      rect.right,
+      rect.bottom + (decoration.openBottom ? overhang : 0),
     );
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..color = decoration.color;
-    canvas
-      ..drawPath(
-        AppShape.of(radius).getOuterPath(rect.deflate(0.6)),
-        paint..strokeWidth = 1.2,
-      )
-      ..drawPath(
-        AppShape.of(inner).getOuterPath(rect.deflate(inset)),
+    if (open) {
+      canvas
+        ..save()
+        ..clipRect(rect);
+    }
+    canvas.drawPath(
+      AppShape.of(radius).getOuterPath(path.deflate(0.6)),
+      paint..strokeWidth = 1.2,
+    );
+    if (decoration.inner) {
+      final inner = BorderRadius.only(
+        topLeft: _shrink(radius.topLeft),
+        topRight: _shrink(radius.topRight),
+        bottomLeft: _shrink(radius.bottomLeft),
+        bottomRight: _shrink(radius.bottomRight),
+      );
+      canvas.drawPath(
+        AppShape.of(inner).getOuterPath(path.deflate(inset)),
         paint
           ..strokeWidth = 0.7
           ..color = decoration.color.withValues(
             alpha: decoration.color.a * 0.7,
           ),
       );
+    }
+    if (open) {
+      canvas.restore();
+    }
   }
 
   static Radius _shrink(Radius radius) => Radius.elliptical(

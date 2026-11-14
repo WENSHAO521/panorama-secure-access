@@ -4,7 +4,6 @@ import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:prism_ui/prism_ui.dart';
 
 class InfoMessageButton extends StatelessWidget {
   final String message;
