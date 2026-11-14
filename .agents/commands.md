@@ -314,6 +314,31 @@ release notes. They publish no GitHub release, so the update dialog never sees t
 version from `pubspec.yaml` rather than the tag, so the patch has to be bumped before the first `-pre.N` of a cycle:
 while `v<pubspec version>` is still tagged it refuses to collect anything and the release job fails.
 
+### Website
+
+`site/` is the GitHub Pages site, ported from upstream FlClash's and redrawn in the 星官箋 look: a static page that
+renders `CHANGELOG.md` and the download links in the browser, and works as is for local previews.
+`tool/build_site.sh [dir]` assembles it with `snapshots/preview*.png`, the app icon, `CHANGELOG.md` read at the latest
+release tag, and a `release.json` of asset names, sizes and digests fetched through `gh`. Without `gh` access the page
+falls back to the newest version in `CHANGELOG.md` and lists the files without sizes. It then runs
+`tool/render_site.mjs` (Node), which writes the English page and a `zh/` copy for search engines from the strings,
+changelog parser and release markup in `site/assets/shared.js`. `SITE_URL` overrides the published URL.
+
+```bash
+tool/build_site.sh && python3 -m http.server -d build/site
+```
+
+`site/assets/field.js` draws the hero sky: scattered stars, the Northern Dipper in the same true positions as the
+dashboard speed card lighting from Alkaid to Dubhe, and a faint 紫微垣 ring with the 28 mansions. Text inside the hero has
+to be listed in `wireField` in `app.js`, or stars sit under it at full strength. The ink-wash hills above the footer
+are plain SVG in `index.html`. The page states that the code is open source and the app will move to invitation
+codes; keep that section in step with the README when the invitation system ships.
+
+`.github/workflows/pages.yaml` deploys it after every successful `build` run on `main` (which publishes the stable
+release) and on pushes to `main` that touch the site; the repository's Pages source has to be set to GitHub Actions
+once. The file names come from the release matrix in `build.yaml`, so a renamed artifact needs the same change in
+`buildsFor` in `site/assets/app.js`.
+
 ## Verify
 
 In the public repository every branch push runs the `dart` job; in the private
