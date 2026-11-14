@@ -17,18 +17,109 @@ class StarChartBackdrop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final brightness = context.colorScheme.brightness;
+    final pixelRatio = MediaQuery.devicePixelRatioOf(context);
     return RepaintBoundary(
       child: TweenAnimationBuilder<double>(
         tween: Tween(end: lit ? 1 : 0),
         duration: context.motionDuration(const Duration(milliseconds: 1200)),
         curve: Curves.easeInOutCubic,
         builder: (_, lit, _) => CustomPaint(
-          painter: StarChartBackdropPainter(brightness: brightness, lit: lit),
+          painter: lit == 0 || lit == 1
+              ? StarChartBackdropRasterPainter(
+                  brightness: brightness,
+                  lit: lit,
+                  pixelRatio: pixelRatio,
+                )
+              : StarChartBackdropPainter(brightness: brightness, lit: lit),
           size: Size.infinite,
         ),
       ),
     );
   }
+}
+
+/// The backdrop at rest, drawn from one image shared by every page.
+///
+/// Impeller keeps no raster cache, so the sky's gradient, stars and the
+/// three gradient-filled ranges were filled and tessellated again on every
+/// frame a page scrolled or slid, twice while one page slid over another.
+/// The scene is soft, so the image is taken at no more than twice the
+/// logical size.
+class StarChartBackdropRasterPainter extends CustomPainter {
+  const StarChartBackdropRasterPainter({
+    required this.brightness,
+    required this.lit,
+    required this.pixelRatio,
+  });
+
+  static const double maxPixelRatio = 2;
+
+  /// The images held at once, one per size, brightness and lighting; two
+  /// cover a page and a sheet or window of another size.
+  static const int cacheSize = 2;
+
+  static final _rasters = <(Size, double, Brightness, double), ui.Image>{};
+
+  /// How many images are held, for tests.
+  static int get cachedCount => _rasters.length;
+
+  static void clearCache() {
+    for (final raster in _rasters.values) {
+      raster.dispose();
+    }
+    _rasters.clear();
+  }
+
+  final Brightness brightness;
+  final double lit;
+  final double pixelRatio;
+
+  ui.Image _rasterOf(Size size) {
+    final ratio = math.min(pixelRatio, maxPixelRatio);
+    final key = (size, ratio, brightness, lit);
+    final cached = _rasters.remove(key);
+    if (cached != null) {
+      return _rasters[key] = cached;
+    }
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder)..scale(ratio);
+    StarChartBackdropPainter(
+      brightness: brightness,
+      lit: lit,
+    ).paint(canvas, size);
+    final picture = recorder.endRecording();
+    final raster = picture.toImageSync(
+      (size.width * ratio).ceil(),
+      (size.height * ratio).ceil(),
+    );
+    picture.dispose();
+    _rasters[key] = raster;
+    while (_rasters.length > cacheSize) {
+      // A picture already recorded with it keeps its own reference.
+      _rasters.remove(_rasters.keys.first)!.dispose();
+    }
+    return raster;
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty) {
+      return;
+    }
+    final raster = _rasterOf(size);
+    canvas.drawImageRect(
+      raster,
+      Rect.fromLTWH(0, 0, raster.width.toDouble(), raster.height.toDouble()),
+      Offset.zero & size,
+      Paint()..filterQuality = FilterQuality.medium,
+    );
+  }
+
+  @override
+  bool shouldRepaint(StarChartBackdropRasterPainter oldDelegate) =>
+      oldDelegate.brightness != brightness ||
+      oldDelegate.lit != lit ||
+      oldDelegate.pixelRatio != pixelRatio;
 }
 
 /// Stars in shares of the sky's width and height, with a radius and an
