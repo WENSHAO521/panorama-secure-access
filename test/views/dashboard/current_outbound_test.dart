@@ -16,6 +16,7 @@ import 'package:fl_clash/views/dashboard/layout.dart';
 import 'package:fl_clash/views/dashboard/widgets/card.dart';
 import 'package:fl_clash/views/dashboard/widgets/current_outbound.dart';
 import 'package:fl_clash/views/dashboard/widgets/star_badge.dart';
+import 'package:fl_clash/views/dashboard/widgets/star_plate.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'dart:async';
 
@@ -79,26 +80,34 @@ OutboundIpResult _address({int coreEpoch = 1}) => OutboundIpResult(
   routeVersion: 1,
 );
 
-Widget _card({DashboardDensity density = DashboardDensity.standard}) =>
-    HostScaffold(
-      body: Align(
-        alignment: Alignment.topLeft,
-        child: SizedBox(
-          width: density.isDesktop ? 600 : 380,
-          height: density.isDesktop ? 208 : null,
-          child: DashboardDensityScope(
-            density: density,
-            scale: 1,
-            child: const CurrentOutboundCard(),
-          ),
+Widget _card({
+  DashboardDensity density = DashboardDensity.standard,
+  double? width,
+  bool starChart = false,
+}) => HostScaffold(
+  body: Align(
+    alignment: Alignment.topLeft,
+    child: SizedBox(
+      width: width ?? (density.isDesktop ? 600 : 380),
+      height: density.isDesktop ? 208 : null,
+      child: StarChartScope(
+        enabled: starChart,
+        child: DashboardDensityScope(
+          density: density,
+          scale: 1,
+          child: const CurrentOutboundCard(),
         ),
       ),
-    );
+    ),
+  ),
+);
 
 Widget _app(
   Future<IpQuality> Function(Ref ref, String ip) quality, {
   DashboardDensity density = DashboardDensity.standard,
   bool root = false,
+  double? width,
+  bool starChart = false,
 }) {
   return TestApp(
     locale: const Locale('en'),
@@ -116,7 +125,7 @@ Widget _app(
       ),
       ipQualityProvider.overrideWith(quality),
     ],
-    child: _card(density: density),
+    child: _card(density: density, width: width, starChart: starChart),
   );
 }
 
@@ -348,6 +357,32 @@ void main() {
       expect(find.text('Residential'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets(
+      'beside the star plate on a phone stays clear of it at any width',
+      (tester) async {
+        for (final width in [320.0, 360.0, 412.0]) {
+          await tester.pumpWidget(
+            _app(
+              (_, _) async => _residential,
+              density: DashboardDensity.mobile,
+              width: width,
+              starChart: true,
+            ),
+          );
+          await tester.pump();
+
+          final plate = tester.getRect(find.byType(StarPlateToggle));
+          expect(
+            tester.getRect(find.text(_ip)).overlaps(plate),
+            isFalse,
+            reason: '$width',
+          );
+          expect(find.text('Example Broadband'), findsOneWidget);
+          expect(tester.takeException(), isNull);
+        }
+      },
+    );
 
     testWidgets('opens its details from the address, not the card', (
       tester,

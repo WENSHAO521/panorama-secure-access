@@ -484,7 +484,7 @@ class ServiceStateMachineTest {
         assertEquals(1, host.stoppedNotifications)
     }
 
-    /** The newer start still owns the intent, but nothing is running until it brings it up. */
+    /** The newer start still owns the intent, so it reads as starting until it brings it up. */
     @Test
     fun `handleServiceLost keeps the intent of a start that raced ahead of it`() = runTest {
         val host = FakeHost(backgroundScope)
@@ -497,7 +497,7 @@ class ServiceStateMachineTest {
         machine.handleServiceLost(staleToken)
 
         assertTrue(machine.isRunRequested)
-        assertEquals(RunState.STOPPED, machine.runState.value)
+        assertEquals(RunState.STARTING, machine.runState.value)
         assertEquals(0, host.stoppedNotifications)
     }
 
@@ -847,6 +847,22 @@ class ServiceStateMachineTest {
 
         assertEquals(2, host.startCalls)
         assertEquals(RunState.STARTED, machine.runState.value)
+    }
+
+    @Test
+    fun `a start reads as STARTING from the request, before any service exists`() = runTest {
+        val host = FakeHost(backgroundScope)
+        host.app = FakeApp(holdVpnPreparation = true)
+        val machine = ServiceStateMachine(host)
+        machine.syncSharedState(configuredState())
+
+        machine.requestStart()
+        testScheduler.runCurrent()
+
+        assertEquals(0, host.startCalls)
+        assertEquals(RunState.STARTING, machine.runState.value)
+        machine.requestStop().await()
+        assertEquals(RunState.STOPPED, machine.runState.value)
     }
 
     @Test

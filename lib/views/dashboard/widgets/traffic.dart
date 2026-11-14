@@ -70,9 +70,9 @@ class _Figure extends StatelessWidget {
 /// and the download filling its bowl, with the upload's figure in the open
 /// sky over the handle and the download's under the bowl.
 ///
-/// On the phone it takes the height its width calls for; with [fill], as on
-/// a desktop grid, it fills the height it is given and the gauge narrows to
-/// fit.
+/// On the phone it takes a shallow height its width and figures call for;
+/// with [fill], as on a desktop grid, it fills the height it is given. Either
+/// way the gauge narrows to fit between the figures in the corners.
 class NetworkSpeedCard extends ConsumerWidget {
   const NetworkSpeedCard({super.key, this.fill = false});
 
@@ -214,6 +214,10 @@ class _RenderDipperSpeedLayout extends RenderBox
   static const _filledSpan = 0.62;
   static const _gap = 4.0;
 
+  /// The least height of a phone card's body, as a share of its width.
+  static const _phoneDepth = 0.42;
+  static const _maxPhoneDepth = 168.0;
+
   @override
   void setupParentData(RenderBox child) {
     if (child.parentData is! _DipperSpeedParentData) {
@@ -244,16 +248,22 @@ class _RenderDipperSpeedLayout extends RenderBox
       gaugeTop + width * dipperRoomUnderBowl,
       uploadBottom,
     );
-    gauge.layout(BoxConstraints.tight(Size(width, width * dipperBoxDepth)));
-    size = constraints.constrain(
-      Size(
-        width,
-        math.max(
-          gaugeTop + width * dipperBoxDepth,
-          downloadTop + download.size.height,
-        ),
-      ),
+    final natural = math.max(
+      gaugeTop + width * dipperBoxDepth,
+      downloadTop + download.size.height,
     );
+    // That makes a phone card about as tall as it is wide; the filled layout
+    // keeps the figures in the corners at a shallower height.
+    final shallow = math.max(
+      math.min(width * _phoneDepth, _maxPhoneDepth),
+      uploadBottom + download.size.height,
+    );
+    if (shallow < natural) {
+      _layoutFilled(upload, gauge, download, width, shallow);
+      return;
+    }
+    gauge.layout(BoxConstraints.tight(Size(width, width * dipperBoxDepth)));
+    size = constraints.constrain(Size(width, natural));
     (upload.parentData! as _DipperSpeedParentData).offset = Offset.zero;
     (gauge.parentData! as _DipperSpeedParentData).offset = Offset(0, gaugeTop);
     (download.parentData! as _DipperSpeedParentData).offset = Offset(
