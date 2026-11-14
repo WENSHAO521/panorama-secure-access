@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.5.14 (2026-11-14)
+
+Internal improvements only.
+
 ## v3.5.13 (2026-11-14)
 
 **Features**

@@ -4,7 +4,8 @@
 
 # Panorama Secure Access
 
-基于 ClashMeta 的多平台代理客户端，简单易用，开源无广告。
+基于 ClashMeta 的多平台代理客户端，上观紫微、北斗为引，下承山河、阴阳相应。
+代码开源，软件将转为邀请制。
 
 [English](README.md) · **简体中文**
 
@@ -12,14 +13,14 @@
 [![Downloads](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access/releases)
 [![License](https://img.shields.io/github/license/WENSHAO521/panorama-secure-access?style=flat-square)](LICENSE)
 
-[下载](#下载) · [更新日志](CHANGELOG.md) · [从源码构建](#从源码构建)
+[官网](https://wenshao521.github.io/panorama-secure-access/zh/) · [下载](#下载) · [邀请制](#代码开源软件转为邀请制) · [更新日志](CHANGELOG.md) · [从源码构建](#从源码构建)
 
 </div>
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="snapshots/preview-dark.png">
-    <img alt="Panorama Secure Access 在 MacBook 与手机上的仪表盘" src="snapshots/preview.png" width="92%">
+    <img alt="Panorama Secure Access 星官箋仪表盘在笔记本与手机上的界面" src="snapshots/preview.png" width="92%">
   </picture>
 </p>
 
@@ -29,10 +30,16 @@
 - **mihomo（Clash.Meta）内核**：规则分流、代理组、延迟测试、系统代理与 TUN 模式。
 - **配置管理**：通过订阅链接或文件导入配置，内置编辑器，支持覆写脚本以及自定义规则、代理和代理组。
 - **实时查看**连接、请求、DNS 查询和日志。
-- **Material You 设计，融合 Apple 式交互**：支持动态取色、浅色与深色主题，连续曲率圆角，弹出面板可在几档高度间吸附，布局随屏幕从手机到桌面自适应。
+- **星官箋星图界面**：北斗七星按真实星位排列，连接时逐颗点亮、停止时归于静；启动按钮坐落在六壬式盘上，每一页底下都有水墨山河。白天是宣纸，夜里是玄青星空，另有道家配色预设。
+- **Apple 式交互**：连续曲率圆角，弹出面板可在几档高度间吸附，布局随屏幕从手机到桌面自适应。
 - **备份与恢复**：通过 WebDAV 或本地文件。
 - **平台细节**：Android 上有快捷设置磁贴、分应用代理和 Android TV 支持；桌面端有托盘菜单和全局快捷键。
 - **开源无广告**，以 GPL-3.0 协议发布。
+
+## 代码开源，软件转为邀请制
+
+Panorama Secure Access 的代码以 GPL-3.0 协议开源，并会一直保持开源：任何人都可以阅读、审计和自行构建。
+软件本身将转为邀请制：后续版本会在首次启动时要求输入邀请码。在此之前发布的版本照常可用，目前还不需要邀请码。
 
 ## 下载
 
