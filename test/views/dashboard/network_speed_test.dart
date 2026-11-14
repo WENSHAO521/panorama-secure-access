@@ -98,8 +98,10 @@ void main() {
     await teardownCard(tester);
   });
 
-  testWidgets('one dipper spans the phone card, the upload over its handle '
-      'and the download under its bowl', (tester) async {
+  testWidgets('the phone card keeps a shallow dipper between the upload in '
+      'its top left corner and the download in its bottom right', (
+    tester,
+  ) async {
     addTraffic(const Traffic(up: 1 << 16, down: 1 << 22));
     await pumpCard(tester, const NetworkSpeedCard());
 
@@ -111,10 +113,11 @@ void main() {
 
     expect(find.byType(DipperGauge), findsOneWidget);
     expect(gauge.top, greaterThanOrEqualTo(title.bottom));
-    expect(gauge.width, greaterThan(card.width * 0.7));
-    expect(upload.left, closeTo(gauge.left, 0.5));
+    expect(gauge.center.dx, closeTo(card.center.dx, 0.5));
+    expect(card.height, lessThan(card.width * 0.75));
     expect(upload.top, lessThan(gauge.top + gauge.height / 2));
-    expect(download.right, closeTo(gauge.right, 0.5));
+    expect(upload.left, lessThan(gauge.left));
+    expect(download.right, greaterThan(gauge.right));
     expect(download.top, greaterThanOrEqualTo(upload.bottom));
     expect(download.bottom, lessThanOrEqualTo(card.bottom));
     expect(tester.takeException(), isNull);
