@@ -4,7 +4,6 @@ import 'package:drift/native.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/default_script.dart';
 import 'package:fl_clash/database/database.dart' as db;
-import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:flutter/widgets.dart';
@@ -19,12 +18,8 @@ void main() {
   late Directory home;
   late db.Database database;
 
-  Profile profile(int id, {ExtendType? extendType, int? scriptId}) =>
-      Profile.normal(label: 'p$id').copyWith(
-        id: id,
-        extendType: extendType ?? ExtendType.standard,
-        scriptId: scriptId,
-      );
+  Profile profile(int id, {int? scriptId}) =>
+      Profile.normal(label: 'p$id').copyWith(id: id, scriptId: scriptId);
 
   Future<Profile> read(int id) async => (await database.profilesDao.get(id))!;
 
@@ -55,9 +50,9 @@ void main() {
     ]);
     await database.profilesDao.setAll([
       profile(10),
-      profile(11, extendType: ExtendType.script, scriptId: 50),
-      profile(12, extendType: ExtendType.script, scriptId: 99),
-      profile(13, extendType: ExtendType.script, scriptId: 1),
+      profile(11, scriptId: 50),
+      profile(12, scriptId: 99),
+      profile(13, scriptId: 1),
     ]);
 
     await seedDefaultScript();
@@ -71,7 +66,6 @@ void main() {
     );
     for (final id in [10, 12, 13]) {
       final p = await read(id);
-      expect(p.extendType, ExtendType.script, reason: 'profile $id');
       expect(p.scriptId, 1, reason: 'profile $id');
     }
     expect((await read(11)).scriptId, 50);
@@ -86,8 +80,8 @@ void main() {
     await seedDefaultScript();
 
     expect(await database.scriptsDao.get(1).getSingleOrNull(), isNull);
-    expect((await read(10)).extendType, ExtendType.standard);
-    expect(withDefaultScript(Profile.normal()).extendType, ExtendType.standard);
+    expect((await read(10)).scriptId, isNull);
+    expect(withDefaultScript(Profile.normal()).scriptId, isNull);
   });
 
   test('a fresh install gets the default script', () async {

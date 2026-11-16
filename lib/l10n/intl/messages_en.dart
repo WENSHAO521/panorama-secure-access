@@ -351,6 +351,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Add to local proxies",
     ),
     "addedRules": MessageLookupByLibrary.simpleMessage("Added rules"),
+    "addedRulesAfterScript": MessageLookupByLibrary.simpleMessage(
+      "Inserted after the script runs, ahead of the profile\'s rules",
+    ),
     "addedToLocalProxies": m1,
     "additionalParameters": MessageLookupByLibrary.simpleMessage(
       "Additional parameters",
@@ -952,7 +955,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "exportLogs": MessageLookupByLibrary.simpleMessage("Export logs"),
     "exportSuccess": MessageLookupByLibrary.simpleMessage("Export successful"),
     "extend": MessageLookupByLibrary.simpleMessage("Extend"),
-    "extendMode": MessageLookupByLibrary.simpleMessage("Extend mode"),
     "extendScript": MessageLookupByLibrary.simpleMessage("Extend script"),
     "externalController": MessageLookupByLibrary.simpleMessage(
       "External controller",
@@ -2044,9 +2046,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "save": MessageLookupByLibrary.simpleMessage("Save"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Save the changes?"),
     "script": MessageLookupByLibrary.simpleMessage("Script"),
-    "scriptModeDesc": MessageLookupByLibrary.simpleMessage(
-      "Script mode: rewrites the whole profile with an extension script",
-    ),
     "scrollToSelected": MessageLookupByLibrary.simpleMessage(
       "Scroll to selected",
     ),
@@ -2176,9 +2175,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "stackMode": MessageLookupByLibrary.simpleMessage("Stack mode"),
     "stackTrace": MessageLookupByLibrary.simpleMessage("Stack trace"),
     "standard": MessageLookupByLibrary.simpleMessage("Standard"),
-    "standardModeDesc": MessageLookupByLibrary.simpleMessage(
-      "Standard mode: adds rules on top of the profile",
-    ),
     "starChart": MessageLookupByLibrary.simpleMessage("Star chart"),
     "start": MessageLookupByLibrary.simpleMessage("Start"),
     "startFailedRetry": MessageLookupByLibrary.simpleMessage(

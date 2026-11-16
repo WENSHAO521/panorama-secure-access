@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/database/database.dart';
-import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:flutter/services.dart';
 
@@ -68,13 +67,12 @@ Future<void> _enableOnProfiles() async {
   final profiles = database.profiles;
   await (profiles.update()..where(
         (t) =>
-            t.extendType.equalsValue(ExtendType.standard) |
             t.scriptId.isNull() |
             t.scriptId.isNotIn(scriptIds),
       ))
       .write(
         const ProfilesCompanion(
-          extendType: Value(ExtendType.script),
+          extendType: Value('script'),
           scriptId: Value(_defaultScriptId),
         ),
       );
@@ -91,8 +89,5 @@ Profile withDefaultScript(Profile profile) {
   if (!_defaultScriptInstalled) {
     return profile;
   }
-  return profile.copyWith(
-    extendType: ExtendType.script,
-    scriptId: _defaultScriptId,
-  );
+  return profile.copyWith(scriptId: _defaultScriptId);
 }
