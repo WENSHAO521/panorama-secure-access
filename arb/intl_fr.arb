@@ -1179,5 +1179,7 @@
   "coreStopping": "Arrêt…",
   "startFailedRetry": "Échec du démarrage. Touchez pour réessayer",
   "classicLook": "Classique",
-  "mixedPortReset": "Le port mixte ne peut pas être {value}, il a été remis à {port}"
+  "mixedPortReset": "Le port mixte ne peut pas être {value}, il a été remis à {port}",
+  "vpnPermissionNotGranted": "L'autorisation VPN n'a pas été accordée, le VPN n'a donc pas démarré. Un VPN permanent défini pour une autre application l'empêche aussi.",
+  "vpnServiceStartFailed": "Le service VPN n'a pas pu démarrer."
 }

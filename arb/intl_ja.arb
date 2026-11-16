@@ -1179,5 +1179,7 @@
   "coreStopping": "停止中…",
   "startFailedRetry": "起動に失敗しました。タップして再試行",
   "classicLook": "クラシック",
-  "mixedPortReset": "混合ポートを {value} にはできないため、{port} に戻しました"
+  "mixedPortReset": "混合ポートを {value} にはできないため、{port} に戻しました",
+  "vpnPermissionNotGranted": "VPN の権限が許可されなかったため、VPN は起動しませんでした。ほかのアプリが常時接続 VPN に設定されている場合も起動できません。",
+  "vpnServiceStartFailed": "VPN サービスを起動できませんでした。"
 }

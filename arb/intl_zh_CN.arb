@@ -1179,5 +1179,7 @@
   "coreStopping": "正在停止…",
   "startFailedRetry": "启动失败，点击重试",
   "classicLook": "经典",
-  "mixedPortReset": "混合端口不能是 {value}，已恢复为 {port}"
+  "mixedPortReset": "混合端口不能是 {value}，已恢复为 {port}",
+  "vpnPermissionNotGranted": "未获得 VPN 权限，VPN 没有启动。其他应用设为始终开启的 VPN 时也会如此。",
+  "vpnServiceStartFailed": "VPN 服务无法启动。"
 }

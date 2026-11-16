@@ -1185,5 +1185,7 @@
       "value": {},
       "port": {}
     }
-  }
+  },
+  "vpnPermissionNotGranted": "VPN permission was not granted, so the VPN did not start. An always-on VPN set for another app also blocks it.",
+  "vpnServiceStartFailed": "The VPN service could not start."
 }
