@@ -511,9 +511,19 @@ class SetupAction extends _$SetupAction {
   }) async {
     final profileId = setupState.profileId;
     if (profileId == null) {
+      // The Android VPN still advertises 127.0.0.1:<mixed-port> as its HTTP proxy.
+      final yaml = await encodeYamlTask(
+        inboundConfigOf(
+          patchConfig,
+          authentication: ref
+              .read(networkSettingProvider)
+              .authentication
+              .credentials,
+        ),
+      );
       return (
-        yaml: '',
-        md5: '',
+        yaml: yaml,
+        md5: yaml.toMd5(),
         counts: configCountsOf(const {}),
         base: null,
         pinnedGeoXUrl: const <String, String>{},
