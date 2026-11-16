@@ -1178,5 +1178,6 @@
   "coreStarting": "起動中…",
   "coreStopping": "停止中…",
   "startFailedRetry": "起動に失敗しました。タップして再試行",
-  "classicLook": "クラシック"
+  "classicLook": "クラシック",
+  "mixedPortReset": "混合ポートを {value} にはできないため、{port} に戻しました"
 }

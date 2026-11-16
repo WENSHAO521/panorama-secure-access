@@ -1178,5 +1178,6 @@
   "coreStarting": "Запуск…",
   "coreStopping": "Остановка…",
   "startFailedRetry": "Не удалось запустить. Нажмите, чтобы повторить",
-  "classicLook": "Классика"
+  "classicLook": "Классика",
+  "mixedPortReset": "Смешанный порт не может быть {value}, он возвращён к {port}"
 }

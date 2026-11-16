@@ -1178,5 +1178,12 @@
   "coreStarting": "Starting…",
   "coreStopping": "Stopping…",
   "startFailedRetry": "Start failed. Tap to retry",
-  "classicLook": "Classic"
+  "classicLook": "Classic",
+  "mixedPortReset": "The mixed port cannot be {value}, so it was set back to {port}",
+  "@mixedPortReset": {
+    "placeholders": {
+      "value": {},
+      "port": {}
+    }
+  }
 }

@@ -1178,5 +1178,6 @@
   "coreStarting": "Iniciando…",
   "coreStopping": "Deteniendo…",
   "startFailedRetry": "No se pudo iniciar. Toca para reintentar",
-  "classicLook": "Clásico"
+  "classicLook": "Clásico",
+  "mixedPortReset": "El puerto mixto no puede ser {value}, se restableció a {port}"
 }
