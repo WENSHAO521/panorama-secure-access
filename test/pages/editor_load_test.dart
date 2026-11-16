@@ -75,8 +75,8 @@ void main() {
     );
   });
 
-  testWidgets('loads as the push starts and mounts the editor once the route '
-      'settles', (tester) async {
+  testWidgets('loads as the push starts, shows its spinner from the first '
+      'frame and mounts the editor once the route settles', (tester) async {
     late BuildContext home;
     await tester.pumpWidget(
       TestApp(
@@ -112,6 +112,9 @@ void main() {
       ),
     );
     await tester.pump();
+
+    expect(find.byType(ActivityIndicator, skipOffstage: false), findsOneWidget);
+
     await tester.pump(const Duration(milliseconds: 50));
 
     expect(transition!.status, AnimationStatus.forward);
@@ -123,10 +126,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 16));
     expect(transition!.status, AnimationStatus.forward);
     expect(find.byType(CodeForge), findsNothing);
-    expect(find.byType(ActivityIndicator), findsNothing);
+    expect(find.byType(ActivityIndicator), findsOneWidget);
 
     await settle(tester, 12);
     expect(find.byType(CodeForge), findsOneWidget);
+    expect(find.byType(ActivityIndicator), findsNothing);
   });
 
   testWidgets('an editor in a sheet grows the sheet before it scrolls', (
