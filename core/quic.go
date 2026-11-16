@@ -3,7 +3,7 @@ package core
 import (
 	"fmt"
 
-		"github.com/metacubex/mihomo/config"
+	"github.com/metacubex/mihomo/config"
 	"github.com/metacubex/mihomo/constant"
 	"github.com/metacubex/mihomo/tunnel"
 )
