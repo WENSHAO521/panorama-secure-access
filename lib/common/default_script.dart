@@ -65,11 +65,8 @@ Future<void> _enableOnProfiles() async {
       .map((script) => script.id)
       .get();
   final profiles = database.profiles;
-  await (profiles.update()..where(
-        (t) =>
-            t.scriptId.isNull() |
-            t.scriptId.isNotIn(scriptIds),
-      ))
+  await (profiles.update()
+        ..where((t) => t.scriptId.isNull() | t.scriptId.isNotIn(scriptIds)))
       .write(
         const ProfilesCompanion(
           extendType: Value('script'),
