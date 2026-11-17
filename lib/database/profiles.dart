@@ -21,7 +21,8 @@ class Profiles extends Table {
 
   DateTimeColumn get lastUpdateDate => dateTime().nullable()();
 
-  TextColumn get extendType => textEnum<ExtendType>()();
+  /// Older builds pick a script or added rules by it; this build runs both.
+  TextColumn get extendType => text()();
 
   IntColumn get scriptId => integer().nullable()();
 
@@ -202,7 +203,6 @@ extension RawProfilExt on RawProfile {
       autoUpdate: autoUpdate,
       selectedMap: selectedMap,
       unfoldSet: unfoldSet,
-      extendType: extendType,
       scriptId: scriptId,
       matchTarget: matchTarget,
       order: order,
@@ -228,7 +228,7 @@ extension ProfilesCompanionExt on Profile {
       autoUpdate: autoUpdate,
       selectedMap: selectedMap,
       unfoldSet: unfoldSet,
-      extendType: extendType,
+      extendType: scriptId == null ? 'standard' : 'script',
       scriptId: Value(scriptId),
       matchTarget: Value(matchTarget),
       order: Value(order ?? this.order),

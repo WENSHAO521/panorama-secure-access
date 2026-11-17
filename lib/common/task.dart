@@ -109,6 +109,22 @@ String? lastMatchTarget(List<String> rules) {
   return null;
 }
 
+Map<String, dynamic> inboundConfigOf(
+  PatchClashConfig config, {
+  required List<String> authentication,
+}) => {
+  'mixed-port': config.mixedPort,
+  'port': config.port,
+  'socks-port': config.socksPort,
+  'redir-port': config.redirPort,
+  'tproxy-port': config.tproxyPort,
+  'allow-lan': config.allowLan,
+  // The app owns local inbound authentication; a profile-provided
+  // skip-auth-prefixes could silently exempt loopback and defeat it.
+  'authentication': authentication,
+  'skip-auth-prefixes': const <String>[],
+};
+
 /// Profile-pinned geo URLs by config key; they win over the app's.
 Map<String, String> profileGeoXUrl(Object? raw) {
   if (raw is! Map) {
@@ -208,23 +224,14 @@ Future<RealProfile> _makeRealProfileTask(MakeRealProfileState data) async {
   rawConfig['external-ui-url'] = '';
   rawConfig.addAll(realPatchConfig.generalOverrideJson);
   rawConfig['log-level'] = realPatchConfig.logLevel.name;
-  rawConfig['port'] = 0;
-  rawConfig['socks-port'] = 0;
   rawConfig['keep-alive-interval'] = realPatchConfig.keepAliveInterval;
   rawConfig['keep-alive-idle'] = realPatchConfig.keepAliveIdle;
   rawConfig['disable-keep-alive'] = realPatchConfig.disableKeepAlive;
   rawConfig['routing-mark'] = realPatchConfig.routingMark;
-  rawConfig['mixed-port'] = realPatchConfig.mixedPort;
-  rawConfig['port'] = realPatchConfig.port;
-  rawConfig['socks-port'] = realPatchConfig.socksPort;
-  rawConfig['redir-port'] = realPatchConfig.redirPort;
-  rawConfig['tproxy-port'] = realPatchConfig.tproxyPort;
+  rawConfig.addAll(
+    inboundConfigOf(realPatchConfig, authentication: data.authentication),
+  );
   rawConfig['find-process-mode'] = realPatchConfig.findProcessMode.name;
-  rawConfig['allow-lan'] = realPatchConfig.allowLan;
-  // The app owns local inbound authentication; a profile-provided
-  // skip-auth-prefixes could silently exempt loopback and defeat it.
-  rawConfig['authentication'] = data.authentication;
-  rawConfig['skip-auth-prefixes'] = [];
   rawConfig['mode'] = realPatchConfig.mode.name;
   // auto-route is always on, so without auto-detect-interface the core sends
   // its own outbound back into the TUN unless interface-name binds it, and
@@ -599,6 +606,7 @@ Future<MigrationData> migrateLegacyConfig({
     final value = rawRule['value'] ?? '';
     rules.add(Rule.parse(value, id: id));
   }
+  final globalRuleIds = [for (final rule in rules) rule.id];
   final List rawProfiles = configMap['profiles'] as List<dynamic>? ?? [];
   final List<Profile> profiles = [];
   for (final rawProfile in rawProfiles) {
@@ -610,6 +618,7 @@ Future<MigrationData> migrateLegacyConfig({
     rawProfile['id'] = profileId;
     final overwrite = rawProfile['overwrite'] as Map?;
     if (overwrite != null) {
+      final isScript = overwrite['type'] == 'script';
       final standardOverwrite = overwrite['standardOverwrite'] as Map?;
       if (standardOverwrite != null) {
         final addedRules = standardOverwrite['addedRules'] as List? ?? [];
@@ -619,7 +628,7 @@ Future<MigrationData> migrateLegacyConfig({
           rules.add(Rule.parse(value, id: id).copyWith(profileId: profileId));
         }
         final disabledRuleIds = standardOverwrite['disabledRuleIds'] as List?;
-        if (disabledRuleIds != null) {
+        if (disabledRuleIds != null && !isScript) {
           for (final disabledRuleId in disabledRuleIds) {
             final newDisabledRuleId = idMap[disabledRuleId];
             if (newDisabledRuleId != null) {
@@ -630,14 +639,17 @@ Future<MigrationData> migrateLegacyConfig({
           }
         }
       }
-      final scriptOverwrite = overwrite['scriptOverwrite'] as Map?;
-      if (scriptOverwrite != null) {
-        final scriptId = scriptOverwrite['scriptId'] as String?;
-        rawProfile['scriptId'] = scriptId != null ? idMap[scriptId] : null;
+      // A script profile used to skip the global rules it now runs with.
+      if (isScript) {
+        for (final ruleId in globalRuleIds) {
+          disabledRules.add(DisabledRule(profileId: profileId, ruleId: ruleId));
+        }
+        final scriptId =
+            (overwrite['scriptOverwrite'] as Map?)?['scriptId'] as String?;
+        if (scriptId != null) {
+          rawProfile['scriptId'] = idMap[scriptId];
+        }
       }
-      rawProfile['extendType'] = overwrite['type'] == ExtendType.script.name
-          ? ExtendType.script.name
-          : ExtendType.standard.name;
     }
     final rawUrl = rawProfile['url'];
     rawProfile['type'] = rawUrl is String && rawUrl.isNotEmpty ? 'url' : 'file';

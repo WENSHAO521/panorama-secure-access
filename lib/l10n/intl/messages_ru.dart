@@ -358,6 +358,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Добавить в локальные прокси",
     ),
     "addedRules": MessageLookupByLibrary.simpleMessage("Добавленные правила"),
+    "addedRulesAfterScript": MessageLookupByLibrary.simpleMessage(
+      "Добавляются после выполнения скрипта, перед правилами профиля",
+    ),
     "addedToLocalProxies": m1,
     "additionalParameters": MessageLookupByLibrary.simpleMessage(
       "Дополнительные параметры",
@@ -995,7 +998,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "exportLogs": MessageLookupByLibrary.simpleMessage("Экспорт логов"),
     "exportSuccess": MessageLookupByLibrary.simpleMessage("Экспорт выполнен"),
     "extend": MessageLookupByLibrary.simpleMessage("Расширение"),
-    "extendMode": MessageLookupByLibrary.simpleMessage("Режим расширения"),
     "extendScript": MessageLookupByLibrary.simpleMessage("Скрипт расширения"),
     "externalController": MessageLookupByLibrary.simpleMessage(
       "Внешний контроллер",
@@ -2147,9 +2149,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "save": MessageLookupByLibrary.simpleMessage("Сохранить"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Сохранить изменения?"),
     "script": MessageLookupByLibrary.simpleMessage("Скрипт"),
-    "scriptModeDesc": MessageLookupByLibrary.simpleMessage(
-      "Режим скрипта: переписывает весь профиль скриптом расширения",
-    ),
     "scrollToSelected": MessageLookupByLibrary.simpleMessage(
       "Прокрутить к выбранному",
     ),
@@ -2285,9 +2284,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "stackMode": MessageLookupByLibrary.simpleMessage("Режим стека"),
     "stackTrace": MessageLookupByLibrary.simpleMessage("Трассировка стека"),
     "standard": MessageLookupByLibrary.simpleMessage("Стандартный"),
-    "standardModeDesc": MessageLookupByLibrary.simpleMessage(
-      "Стандартный режим: добавляет правила поверх профиля",
-    ),
     "starChart": MessageLookupByLibrary.simpleMessage("Звёздная карта"),
     "start": MessageLookupByLibrary.simpleMessage("Старт"),
     "startFailedRetry": MessageLookupByLibrary.simpleMessage(

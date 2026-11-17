@@ -369,6 +369,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ajouter aux proxys locaux",
     ),
     "addedRules": MessageLookupByLibrary.simpleMessage("Règles ajoutées"),
+    "addedRulesAfterScript": MessageLookupByLibrary.simpleMessage(
+      "Insérées après l\'exécution du script, avant les règles du profil",
+    ),
     "addedToLocalProxies": m1,
     "additionalParameters": MessageLookupByLibrary.simpleMessage(
       "Paramètres supplémentaires",
@@ -1014,7 +1017,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Exportation réussie",
     ),
     "extend": MessageLookupByLibrary.simpleMessage("Extension"),
-    "extendMode": MessageLookupByLibrary.simpleMessage("Mode d’extension"),
     "extendScript": MessageLookupByLibrary.simpleMessage("Script d’extension"),
     "externalController": MessageLookupByLibrary.simpleMessage(
       "Contrôleur externe",
@@ -2204,9 +2206,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Enregistrer les modifications ?",
     ),
     "script": MessageLookupByLibrary.simpleMessage("Script"),
-    "scriptModeDesc": MessageLookupByLibrary.simpleMessage(
-      "Mode script : réécrit tout le profil avec un script d’extension",
-    ),
     "scrollToSelected": MessageLookupByLibrary.simpleMessage(
       "Défiler jusqu’à la sélection",
     ),
@@ -2350,9 +2349,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "stackMode": MessageLookupByLibrary.simpleMessage("Mode de pile"),
     "stackTrace": MessageLookupByLibrary.simpleMessage("Trace de pile"),
     "standard": MessageLookupByLibrary.simpleMessage("Standard"),
-    "standardModeDesc": MessageLookupByLibrary.simpleMessage(
-      "Mode standard : ajoute des règles par-dessus le profil",
-    ),
     "starChart": MessageLookupByLibrary.simpleMessage("Carte céleste"),
     "start": MessageLookupByLibrary.simpleMessage("Démarrer"),
     "startFailedRetry": MessageLookupByLibrary.simpleMessage(
