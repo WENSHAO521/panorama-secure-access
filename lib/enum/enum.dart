@@ -201,7 +201,7 @@ enum CoreEventType {
   dialerLoop,
 }
 
-enum FindProcessMode { always, off }
+enum FindProcessMode { always, strict }
 
 enum InterfaceNameMode { clear, follow, custom }
 
