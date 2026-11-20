@@ -1,5 +1,37 @@
 # Changelog
 
+## v3.5.17 (2026-11-20)
+
+**Features**
+
+- **dns** DNS overrides can set fake-ip-disable-mapping; the default Fake-IP filter names msftncsi correctly (4c29357)
+- **core** Core updated to the latest mihomo Alpha: fake-ip filter typo, xhttp reuse and Linux process rule fixes (9416af5)
+- **logs** Open a log's details to select and copy it on a phone (ac15a7e)
+- **resources** Enable automatic resource updates by default (fa012c8)
+- **profiles** A profile's extend script and its added rules now apply together (52876f8)
+- **dns** DNS overrides can set respect-rules, use-hosts, use-system-hosts and cache-algorithm for subscription profiles (7771f2c)
+
+**Bug Fixes**
+
+- **ui** Hold a remote icon's size while it loads and once it shows (8e0add9)
+- **connections** Connections show the app's icon whenever the app is known (50f07a3)
+- **ui** Keep long user names on one line beside their row's title (5ed8d62)
+- **proxies** End a long group tab where its more menu row ends (69c2e21)
+- **editor** The editor shows its loading indicator as it opens instead of a blank page (c1e3cbb)
+- **requests** Grouped requests open on the newest group (9e7f0b9)
+- **tools** The tools page no longer opens scrolled to the bottom (71c57d3)
+- **android** An Android start that the VPN service gives up says why (f58a1c0)
+- **setup** A start that fails while applying the profile says why (496742e)
+- **config** Process rules now match by default; "Always find process" looks up the process of every connection (d9b7e5e)
+- **config** A mixed port of 0 is replaced by a working port and the app says so (12ed3e0)
+- **core** Share links of HTTPUpgrade proxies no longer import as WebSocket (86a660f)
+- **core** WireGuard, TUIC and Hysteria2 reconnect right after switching between Wi-Fi and mobile data (2c6ad8b)
+- **core** Apps using the VPN's HTTP proxy connect even with no profile selected (e235556)
+
+**Performance**
+
+- **icons** Proxy group icons use less memory on lower-density screens (adda0cd)
+
 ## v3.5.16 (2026-11-14)
 
 **Bug Fixes**
