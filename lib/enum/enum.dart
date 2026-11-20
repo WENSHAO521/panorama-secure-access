@@ -201,7 +201,7 @@ enum CoreEventType {
   dialerLoop,
 }
 
-enum FindProcessMode { always, off }
+enum FindProcessMode { always, strict }
 
 enum InterfaceNameMode { clear, follow, custom }
 
@@ -255,6 +255,7 @@ enum DnsOverrideKey with OverrideKey {
   fakeIpRange6('fake-ip-range6'),
   fakeIpFilter('fake-ip-filter'),
   fakeIpFilterMode('fake-ip-filter-mode'),
+  fakeIpDisableMapping('fake-ip-disable-mapping'),
   fakeIpTtl('fake-ip-ttl'),
   defaultNameserver('default-nameserver'),
   nameserverPolicy('nameserver-policy'),
@@ -868,3 +869,17 @@ enum CoreStatus { connecting, connected, disconnected }
 enum RequestFeed { recent, live }
 
 enum UpdatingScope { core, local }
+
+/// Why the Android service gave up a start, by the code `ServiceStateMachine`
+/// sends with its stopped report.
+enum ServiceStartFailure {
+  vpnPermission('vpn_permission'),
+  service('service');
+
+  final String code;
+
+  const ServiceStartFailure(this.code);
+
+  static ServiceStartFailure? fromCode(Object? code) =>
+      values.where((it) => it.code == code).firstOrNull;
+}

@@ -1356,11 +1356,11 @@ class AppLocalizations {
     );
   }
 
-  /// `Find process`
-  String get findProcessMode {
+  /// `Always find process`
+  String get alwaysFindProcess {
     return Intl.message(
-      'Find process',
-      name: 'findProcessMode',
+      'Always find process',
+      name: 'alwaysFindProcess',
       desc: '',
       args: [],
     );
@@ -9996,6 +9996,36 @@ class AppLocalizations {
   /// `Classic`
   String get classicLook {
     return Intl.message('Classic', name: 'classicLook', desc: '', args: []);
+  }
+
+  /// `The mixed port cannot be {value}, so it was set back to {port}`
+  String mixedPortReset(Object value, Object port) {
+    return Intl.message(
+      'The mixed port cannot be $value, so it was set back to $port',
+      name: 'mixedPortReset',
+      desc: '',
+      args: [value, port],
+    );
+  }
+
+  /// `VPN permission was not granted, so the VPN did not start. An always-on VPN set for another app also blocks it.`
+  String get vpnPermissionNotGranted {
+    return Intl.message(
+      'VPN permission was not granted, so the VPN did not start. An always-on VPN set for another app also blocks it.',
+      name: 'vpnPermissionNotGranted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The VPN service could not start.`
+  String get vpnServiceStartFailed {
+    return Intl.message(
+      'The VPN service could not start.',
+      name: 'vpnServiceStartFailed',
+      desc: '',
+      args: [],
+    );
   }
 }
 

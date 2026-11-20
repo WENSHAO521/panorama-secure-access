@@ -170,7 +170,7 @@
   "geodataLoader": "Geo 저메모리 모드",
   "requests": "요청",
   "recentRequests": "최근 요청",
-  "findProcessMode": "프로세스 찾기",
+  "alwaysFindProcess": "항상 프로세스 찾기",
   "init": "초기화",
   "infiniteTime": "만료되지 않음",
   "connections": "연결",
@@ -1178,5 +1178,8 @@
   "coreStarting": "시작 중…",
   "coreStopping": "중지 중…",
   "startFailedRetry": "시작하지 못했습니다. 탭하여 다시 시도",
-  "classicLook": "클래식"
+  "classicLook": "클래식",
+  "mixedPortReset": "혼합 포트는 {value}일 수 없어 {port}(으)로 되돌렸습니다",
+  "vpnPermissionNotGranted": "VPN 권한이 허용되지 않아 VPN을 시작하지 않았습니다. 다른 앱이 상시 사용 VPN으로 설정되어 있어도 시작할 수 없습니다.",
+  "vpnServiceStartFailed": "VPN 서비스를 시작하지 못했습니다."
 }

@@ -82,6 +82,7 @@ class TestSetupAction extends SetupAction {
   final List<bool> appliedForce = [];
   bool blockCoreCalls = false;
   Error? coreRunningError;
+  Error? applyError;
   final Set<bool> unansweredCoreCalls = {};
   int authorizeCalls = 0;
   AuthorizeCode authorizeResult = AuthorizeCode.none;
@@ -127,6 +128,9 @@ class TestSetupAction extends SetupAction {
   }) async {
     applyProfileCalls++;
     appliedForce.add(force);
+    if (applyError case final error?) {
+      throw error;
+    }
     await preloadInvoke?.call();
     return true;
   }
@@ -147,7 +151,7 @@ void main() {
         tun: Tun(),
         mixedPort: 7890,
         allowLan: false,
-        findProcessMode: FindProcessMode.off,
+        findProcessMode: FindProcessMode.strict,
         mode: Mode.rule,
         logLevel: LogLevel.info,
         ipv6: false,
@@ -322,6 +326,7 @@ void main() {
     test(
       'an initial start the core leaves unanswered is stopped again',
       () async {
+        await AppLocalizations.load(const Locale('en'));
         action.unansweredCoreCalls.add(true);
 
         final applied = await container
@@ -334,6 +339,28 @@ void main() {
         expect(container.read(runningVpnOptionsProvider), isNull);
       },
     );
+
+    test('an initial start that fails says why as it turns back', () async {
+      await AppLocalizations.load(const Locale('en'));
+      final banners = <String>[];
+      final print = debugPrint;
+      debugPrint = (message, {wrapWidth}) {
+        const prefix = '[APP] banner: ';
+        if (message != null && message.startsWith(prefix)) {
+          banners.add(message.substring(prefix.length));
+        }
+      };
+      addTearDown(() => debugPrint = print);
+      action.applyError = StateError('authorization helper failed');
+
+      final applied = await container
+          .read(setupActionProvider.notifier)
+          .setRunning(true, initialize: true);
+
+      expect(applied, isFalse);
+      expect(container.read(isStartProvider), isFalse);
+      expect(banners, ['Bad state: authorization helper failed']);
+    });
   });
 
   group('stop cleanup', () {

@@ -170,7 +170,7 @@
   "geodataLoader": "Modo geo de poca memoria",
   "requests": "Solicitudes",
   "recentRequests": "Solicitudes recientes",
-  "findProcessMode": "Buscar proceso",
+  "alwaysFindProcess": "Buscar siempre el proceso",
   "init": "Inicio",
   "infiniteTime": "No caduca",
   "connections": "Conexiones",
@@ -1178,5 +1178,8 @@
   "coreStarting": "Iniciando…",
   "coreStopping": "Deteniendo…",
   "startFailedRetry": "No se pudo iniciar. Toca para reintentar",
-  "classicLook": "Clásico"
+  "classicLook": "Clásico",
+  "mixedPortReset": "El puerto mixto no puede ser {value}, se restableció a {port}",
+  "vpnPermissionNotGranted": "No se concedió el permiso de VPN, así que la VPN no se inició. Una VPN siempre activa configurada en otra app también lo impide.",
+  "vpnServiceStartFailed": "No se pudo iniciar el servicio VPN."
 }
