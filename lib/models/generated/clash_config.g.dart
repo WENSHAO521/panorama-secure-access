@@ -366,13 +366,14 @@ _Dns _$DnsFromJson(Map<String, dynamic> json) => _Dns(
       (json['fake-ip-filter'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
-      const ['dns.msftnsci.com', 'www.msftnsci.com', 'www.msftconnecttest.com'],
+      const ['dns.msftncsi.com', 'www.msftncsi.com', 'www.msftconnecttest.com'],
   fakeIpFilterMode:
       $enumDecodeNullable(
         _$FakeIpFilterModeEnumMap,
         json['fake-ip-filter-mode'],
       ) ??
       FakeIpFilterMode.blacklist,
+  fakeIpDisableMapping: json['fake-ip-disable-mapping'] as bool? ?? false,
   fakeIpTtl: (json['fake-ip-ttl'] as num?)?.toInt() ?? 1,
   nameserverPolicy:
       (json['nameserver-policy'] as Map<String, dynamic>?)?.map(
@@ -430,6 +431,7 @@ Map<String, dynamic> _$DnsToJson(_Dns instance) => <String, dynamic>{
   'fake-ip-range6': instance.fakeIpRange6,
   'fake-ip-filter': instance.fakeIpFilter,
   'fake-ip-filter-mode': _$FakeIpFilterModeEnumMap[instance.fakeIpFilterMode]!,
+  'fake-ip-disable-mapping': instance.fakeIpDisableMapping,
   'fake-ip-ttl': instance.fakeIpTtl,
   'nameserver-policy': instance.nameserverPolicy,
   'nameserver': instance.nameserver,
@@ -628,6 +630,7 @@ const _$DnsOverrideKeyEnumMap = {
   DnsOverrideKey.fakeIpRange6: 'fake-ip-range6',
   DnsOverrideKey.fakeIpFilter: 'fake-ip-filter',
   DnsOverrideKey.fakeIpFilterMode: 'fake-ip-filter-mode',
+  DnsOverrideKey.fakeIpDisableMapping: 'fake-ip-disable-mapping',
   DnsOverrideKey.fakeIpTtl: 'fake-ip-ttl',
   DnsOverrideKey.defaultNameserver: 'default-nameserver',
   DnsOverrideKey.nameserverPolicy: 'nameserver-policy',
@@ -861,7 +864,9 @@ Map<String, dynamic> _$ClashConfigToJson(_ClashConfig instance) =>
 
 _PatchClashConfig _$PatchClashConfigFromJson(Map<String, dynamic> json) =>
     _PatchClashConfig(
-      mixedPort: (json['mixed-port'] as num?)?.toInt() ?? defaultMixedPort,
+      mixedPort: json['mixed-port'] == null
+          ? defaultMixedPort
+          : _mixedPortFromJson(json['mixed-port']),
       socksPort: (json['socks-port'] as num?)?.toInt() ?? 0,
       port: (json['port'] as num?)?.toInt() ?? 0,
       redirPort: (json['redir-port'] as num?)?.toInt() ?? 0,
@@ -876,9 +881,9 @@ _PatchClashConfig _$PatchClashConfigFromJson(Map<String, dynamic> json) =>
           $enumDecodeNullable(
             _$FindProcessModeEnumMap,
             json['find-process-mode'],
-            unknownValue: FindProcessMode.off,
+            unknownValue: FindProcessMode.strict,
           ) ??
-          FindProcessMode.off,
+          FindProcessMode.strict,
       interfaceNameMode:
           $enumDecodeNullable(
             _$InterfaceNameModeEnumMap,
@@ -931,7 +936,7 @@ _PatchClashConfig _$PatchClashConfigFromJson(Map<String, dynamic> json) =>
             (k, e) => MapEntry(k, e as String),
           ) ??
           const {},
-      geoAutoUpdate: json['geo-auto-update'] as bool? ?? false,
+      geoAutoUpdate: json['geo-auto-update'] as bool? ?? true,
       geoUpdateInterval: (json['geo-update-interval'] as num?)?.toInt() ?? 24,
       testUrl: json['test-url'] as String? ?? defaultTestUrl,
       generalOverrideKeys: json['general-override-keys'] == null
@@ -1004,7 +1009,7 @@ const _$LogLevelEnumMap = {
 
 const _$FindProcessModeEnumMap = {
   FindProcessMode.always: 'always',
-  FindProcessMode.off: 'off',
+  FindProcessMode.strict: 'strict',
 };
 
 const _$InterfaceNameModeEnumMap = {

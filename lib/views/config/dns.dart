@@ -29,6 +29,7 @@ extension on DnsOverrideKey {
     DnsOverrideKey.fakeIpRange6 => l.fakeipRange6,
     DnsOverrideKey.fakeIpFilter => l.fakeipFilter,
     DnsOverrideKey.fakeIpFilterMode => l.fakeipFilterMode,
+    DnsOverrideKey.fakeIpDisableMapping => 'Fake-IP Disable Mapping',
     DnsOverrideKey.fakeIpTtl => l.fakeipTtl,
     DnsOverrideKey.defaultNameserver => 'Default Nameserver',
     DnsOverrideKey.nameserverPolicy => 'Nameserver Policy',
@@ -72,6 +73,7 @@ extension on DnsOverrideKey {
     DnsOverrideKey.fakeIpRange6 ||
     DnsOverrideKey.fakeIpFilter ||
     DnsOverrideKey.fakeIpFilterMode ||
+    DnsOverrideKey.fakeIpDisableMapping ||
     DnsOverrideKey.fakeIpTtl => 'Fake-IP',
     DnsOverrideKey.defaultNameserver ||
     DnsOverrideKey.nameserverPolicy ||
@@ -207,6 +209,10 @@ class _DnsOverrideSpec extends OverrideSpec<DnsOverrideKey, Dns> {
     DnsOverrideKey.ipv6Timeout => NumberOverrideField(
       (dns) => dns.ipv6Timeout,
       (dns, value) => dns.copyWith(ipv6Timeout: value),
+    ),
+    DnsOverrideKey.fakeIpDisableMapping => ToggleOverrideField(
+      (dns) => dns.fakeIpDisableMapping,
+      (dns, value) => dns.copyWith(fakeIpDisableMapping: value),
     ),
     DnsOverrideKey.respectRules => ToggleOverrideField(
       (dns) => dns.respectRules,

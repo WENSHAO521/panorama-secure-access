@@ -88,15 +88,17 @@ class $ProfilesTable extends Profiles
         type: DriftSqlType.dateTime,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _extendTypeMeta = const VerificationMeta(
+    'extendType',
+  );
   @override
-  late final GeneratedColumnWithTypeConverter<ExtendType, String> extendType =
-      GeneratedColumn<String>(
-        'extend_type',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: true,
-      ).withConverter<ExtendType>($ProfilesTable.$converterextendType);
+  late final GeneratedColumn<String> extendType = GeneratedColumn<String>(
+    'extend_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _scriptIdMeta = const VerificationMeta(
     'scriptId',
   );
@@ -278,6 +280,14 @@ class $ProfilesTable extends Profiles
         ),
       );
     }
+    if (data.containsKey('extend_type')) {
+      context.handle(
+        _extendTypeMeta,
+        extendType.isAcceptableOrUnknown(data['extend_type']!, _extendTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_extendTypeMeta);
+    }
     if (data.containsKey('script_id')) {
       context.handle(
         _scriptIdMeta,
@@ -363,12 +373,10 @@ class $ProfilesTable extends Profiles
         DriftSqlType.dateTime,
         data['${effectivePrefix}last_update_date'],
       ),
-      extendType: $ProfilesTable.$converterextendType.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}extend_type'],
-        )!,
-      ),
+      extendType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}extend_type'],
+      )!,
       scriptId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}script_id'],
@@ -433,8 +441,6 @@ class $ProfilesTable extends Profiles
       const StringMapConverter();
   static TypeConverter<Map<String, String>?, String?> $converterheadersn =
       NullAwareTypeConverter.wrap($converterheaders);
-  static JsonTypeConverter2<ExtendType, String, String> $converterextendType =
-      const EnumNameConverter<ExtendType>(ExtendType.values);
   static TypeConverter<SubscriptionInfo?, String?> $convertersubscriptionInfo =
       const SubscriptionInfoConverter();
   static TypeConverter<TrafficQuota?, String?> $convertertrafficQuota =
@@ -456,7 +462,9 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
   final String? ageSecretKey;
   final Map<String, String>? headers;
   final DateTime? lastUpdateDate;
-  final ExtendType extendType;
+
+  /// Older builds pick a script or added rules by it; this build runs both.
+  final String extendType;
   final int? scriptId;
   final String? matchTarget;
   final int autoUpdateDurationMillis;
@@ -511,11 +519,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     if (!nullToAbsent || lastUpdateDate != null) {
       map['last_update_date'] = Variable<DateTime>(lastUpdateDate);
     }
-    {
-      map['extend_type'] = Variable<String>(
-        $ProfilesTable.$converterextendType.toSql(extendType),
-      );
-    }
+    map['extend_type'] = Variable<String>(extendType);
     if (!nullToAbsent || scriptId != null) {
       map['script_id'] = Variable<int>(scriptId);
     }
@@ -617,9 +621,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
       ageSecretKey: serializer.fromJson<String?>(json['ageSecretKey']),
       headers: serializer.fromJson<Map<String, String>?>(json['headers']),
       lastUpdateDate: serializer.fromJson<DateTime?>(json['lastUpdateDate']),
-      extendType: $ProfilesTable.$converterextendType.fromJson(
-        serializer.fromJson<String>(json['extendType']),
-      ),
+      extendType: serializer.fromJson<String>(json['extendType']),
       scriptId: serializer.fromJson<int?>(json['scriptId']),
       matchTarget: serializer.fromJson<String?>(json['matchTarget']),
       autoUpdateDurationMillis: serializer.fromJson<int>(
@@ -652,9 +654,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
       'ageSecretKey': serializer.toJson<String?>(ageSecretKey),
       'headers': serializer.toJson<Map<String, String>?>(headers),
       'lastUpdateDate': serializer.toJson<DateTime?>(lastUpdateDate),
-      'extendType': serializer.toJson<String>(
-        $ProfilesTable.$converterextendType.toJson(extendType),
-      ),
+      'extendType': serializer.toJson<String>(extendType),
       'scriptId': serializer.toJson<int?>(scriptId),
       'matchTarget': serializer.toJson<String?>(matchTarget),
       'autoUpdateDurationMillis': serializer.toJson<int>(
@@ -681,7 +681,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     Value<String?> ageSecretKey = const Value.absent(),
     Value<Map<String, String>?> headers = const Value.absent(),
     Value<DateTime?> lastUpdateDate = const Value.absent(),
-    ExtendType? extendType,
+    String? extendType,
     Value<int?> scriptId = const Value.absent(),
     Value<String?> matchTarget = const Value.absent(),
     int? autoUpdateDurationMillis,
@@ -846,7 +846,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
   final Value<String?> ageSecretKey;
   final Value<Map<String, String>?> headers;
   final Value<DateTime?> lastUpdateDate;
-  final Value<ExtendType> extendType;
+  final Value<String> extendType;
   final Value<int?> scriptId;
   final Value<String?> matchTarget;
   final Value<int> autoUpdateDurationMillis;
@@ -887,7 +887,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     this.ageSecretKey = const Value.absent(),
     this.headers = const Value.absent(),
     this.lastUpdateDate = const Value.absent(),
-    required ExtendType extendType,
+    required String extendType,
     this.scriptId = const Value.absent(),
     this.matchTarget = const Value.absent(),
     required int autoUpdateDurationMillis,
@@ -960,7 +960,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     Value<String?>? ageSecretKey,
     Value<Map<String, String>?>? headers,
     Value<DateTime?>? lastUpdateDate,
-    Value<ExtendType>? extendType,
+    Value<String>? extendType,
     Value<int?>? scriptId,
     Value<String?>? matchTarget,
     Value<int>? autoUpdateDurationMillis,
@@ -1028,9 +1028,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
       map['last_update_date'] = Variable<DateTime>(lastUpdateDate.value);
     }
     if (extendType.present) {
-      map['extend_type'] = Variable<String>(
-        $ProfilesTable.$converterextendType.toSql(extendType.value),
-      );
+      map['extend_type'] = Variable<String>(extendType.value);
     }
     if (scriptId.present) {
       map['script_id'] = Variable<int>(scriptId.value);
@@ -5470,7 +5468,7 @@ typedef $$ProfilesTableCreateCompanionBuilder =
       Value<String?> ageSecretKey,
       Value<Map<String, String>?> headers,
       Value<DateTime?> lastUpdateDate,
-      required ExtendType extendType,
+      required String extendType,
       Value<int?> scriptId,
       Value<String?> matchTarget,
       required int autoUpdateDurationMillis,
@@ -5492,7 +5490,7 @@ typedef $$ProfilesTableUpdateCompanionBuilder =
       Value<String?> ageSecretKey,
       Value<Map<String, String>?> headers,
       Value<DateTime?> lastUpdateDate,
-      Value<ExtendType> extendType,
+      Value<String> extendType,
       Value<int?> scriptId,
       Value<String?> matchTarget,
       Value<int> autoUpdateDurationMillis,
@@ -5638,10 +5636,9 @@ class $$ProfilesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnWithTypeConverterFilters<ExtendType, ExtendType, String>
-  get extendType => $composableBuilder(
+  ColumnFilters<String> get extendType => $composableBuilder(
     column: $table.extendType,
-    builder: (column) => ColumnWithTypeConverterFilters(column),
+    builder: (column) => ColumnFilters(column),
   );
 
   ColumnFilters<int> get scriptId => $composableBuilder(
@@ -5948,11 +5945,10 @@ class $$ProfilesTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumnWithTypeConverter<ExtendType, String> get extendType =>
-      $composableBuilder(
-        column: $table.extendType,
-        builder: (column) => column,
-      );
+  GeneratedColumn<String> get extendType => $composableBuilder(
+    column: $table.extendType,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get scriptId =>
       $composableBuilder(column: $table.scriptId, builder: (column) => column);
@@ -6141,7 +6137,7 @@ class $$ProfilesTableTableManager
                 Value<String?> ageSecretKey = const Value.absent(),
                 Value<Map<String, String>?> headers = const Value.absent(),
                 Value<DateTime?> lastUpdateDate = const Value.absent(),
-                Value<ExtendType> extendType = const Value.absent(),
+                Value<String> extendType = const Value.absent(),
                 Value<int?> scriptId = const Value.absent(),
                 Value<String?> matchTarget = const Value.absent(),
                 Value<int> autoUpdateDurationMillis = const Value.absent(),
@@ -6184,7 +6180,7 @@ class $$ProfilesTableTableManager
                 Value<String?> ageSecretKey = const Value.absent(),
                 Value<Map<String, String>?> headers = const Value.absent(),
                 Value<DateTime?> lastUpdateDate = const Value.absent(),
-                required ExtendType extendType,
+                required String extendType,
                 Value<int?> scriptId = const Value.absent(),
                 Value<String?> matchTarget = const Value.absent(),
                 required int autoUpdateDurationMillis,

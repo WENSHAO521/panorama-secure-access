@@ -170,7 +170,7 @@
   "geodataLoader": "Geo low-memory mode",
   "requests": "Requests",
   "recentRequests": "Recent requests",
-  "findProcessMode": "Find process",
+  "alwaysFindProcess": "Always find process",
   "init": "Init",
   "infiniteTime": "Never expires",
   "connections": "Connections",
@@ -511,10 +511,8 @@
   "coreStatus": "Core status",
   "appendSystemDns": "Append system DNS",
   "editRule": "Edit rule",
-  "extendMode": "Extend mode",
-  "standardModeDesc": "Standard mode: adds rules on top of the profile",
-  "scriptModeDesc": "Script mode: rewrites the whole profile with an extension script",
   "addedRules": "Added rules",
+  "addedRulesAfterScript": "Inserted after the script runs, ahead of the profile's rules",
   "controlGlobalAddedRules": "Control global added rules",
   "quickActions": "Quick actions",
   "rulePresetBlockQuic": "Block QUIC",
@@ -1180,5 +1178,14 @@
   "coreStarting": "Starting…",
   "coreStopping": "Stopping…",
   "startFailedRetry": "Start failed. Tap to retry",
-  "classicLook": "Classic"
+  "classicLook": "Classic",
+  "mixedPortReset": "The mixed port cannot be {value}, so it was set back to {port}",
+  "@mixedPortReset": {
+    "placeholders": {
+      "value": {},
+      "port": {}
+    }
+  },
+  "vpnPermissionNotGranted": "VPN permission was not granted, so the VPN did not start. An always-on VPN set for another app also blocks it.",
+  "vpnServiceStartFailed": "The VPN service could not start."
 }

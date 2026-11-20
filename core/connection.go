@@ -42,7 +42,7 @@ func handleCloseConnections() {
 
 func handleResetConnections() {
 	resolver.ResetConnection()
-	resetQuicSessions()
+	resetSharedOutbounds()
 }
 
 // A network change clears rather than waits out the TTLs: mihomo serves an
@@ -67,7 +67,7 @@ func handleNetworkChanged() {
 
 func resetNetworkState() {
 	handleClearDnsCache()
-	resetQuicSessions()
+	resetSharedOutbounds()
 }
 
 // A connection that went out over a network the device has left hangs until

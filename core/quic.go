@@ -3,8 +3,8 @@ package core
 import (
 	"fmt"
 
-	"github.com/metacubex/mihomo/adapter/outbound"
 	"github.com/metacubex/mihomo/config"
+	"github.com/metacubex/mihomo/constant"
 	"github.com/metacubex/mihomo/tunnel"
 )
 
@@ -53,15 +53,34 @@ func hasAnyKey(mapping map[string]any, keys ...string) bool {
 	return false
 }
 
-// Close drops only the session, which otherwise outlives its route until the QUIC idle timeout.
-func resetQuicSessions() {
-	safeGo("resetQuicSessions", closeQuicSessions)
+// WireGuard keeps one UDP socket, and Hysteria2 and TUIC one QUIC connection,
+// for all their traffic; after a route change they stay on the old network.
+func resetSharedOutbounds() {
+	safeGo("resetSharedOutbounds", reopenSharedOutbounds)
 }
 
-func closeQuicSessions() {
+type networkResetter interface{ ResetNetwork() }
+
+// AllProxies keeps one proxy per name; providers may each hold one by that name.
+func reopenSharedOutbounds() {
+	reset := make(map[networkResetter]struct{})
+	visit := func(proxy constant.Proxy) {
+		outbound, ok := adapterAs[networkResetter](proxy)
+		if !ok {
+			return
+		}
+		if _, done := reset[outbound]; done {
+			return
+		}
+		reset[outbound] = struct{}{}
+		outbound.ResetNetwork()
+	}
 	for _, proxy := range tunnel.AllProxies() {
-		if hy2, ok := adapterAs[*outbound.Hysteria2](proxy); ok {
-			_ = hy2.Close()
+		visit(proxy)
+	}
+	for _, provider := range tunnel.ProvidersSnapshot() {
+		for _, proxy := range provider.Proxies() {
+			visit(proxy)
 		}
 	}
 }
