@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/manager/android_manager.dart';
@@ -95,7 +96,7 @@ void main() {
   testWidgets('a start the service gave up says why it turned off', (
     tester,
   ) async {
-    loadAppLocalizations(const Locale('en'));
+    await AppLocalizations.load(const Locale('en'));
     await pumpAndroidManager(tester);
     final listener =
         tester.state(find.byType(AndroidManager)) as ServiceListener;

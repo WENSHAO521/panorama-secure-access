@@ -300,18 +300,21 @@ class _LogBody extends StatelessWidget {
 
 void _showLogDetail(BuildContext context, Log log) {
   final appLocalizations = context.appLocalizations;
-  showNestedSheet<void>(
-    context,
-    builder: (context) => Scaffold(
-      title: appLocalizations.details(appLocalizations.log),
-      iconActions: [
-        IconButtonData(
-          glyph: AppGlyphs.copy,
-          tooltip: appLocalizations.copy,
-          onPressed: () => _copyLog(context, log),
-        ),
-      ],
-      body: _LogDetailView(log: log),
+  showSheet<void>(
+    context: context,
+    props: nestedPagedSheetProps,
+    builder: (_) => NestedPagedSheet(
+      builder: (context) => Scaffold(
+        title: appLocalizations.details(appLocalizations.log),
+        iconActions: [
+          IconButtonData(
+            glyph: AppGlyphs.copy,
+            tooltip: appLocalizations.copy,
+            onPressed: () => _copyLog(context, log),
+          ),
+        ],
+        body: _LogDetailView(log: log),
+      ),
     ),
   );
 }

@@ -326,6 +326,7 @@ void main() {
     test(
       'an initial start the core leaves unanswered is stopped again',
       () async {
+        await AppLocalizations.load(const Locale('en'));
         action.unansweredCoreCalls.add(true);
 
         final applied = await container
@@ -340,7 +341,7 @@ void main() {
     );
 
     test('an initial start that fails says why as it turns back', () async {
-      loadAppLocalizations(const Locale('en'));
+      await AppLocalizations.load(const Locale('en'));
       final banners = <String>[];
       final print = debugPrint;
       debugPrint = (message, {wrapWidth}) {
