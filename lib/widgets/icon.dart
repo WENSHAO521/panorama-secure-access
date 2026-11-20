@@ -3,18 +3,21 @@ import 'dart:async';
 import 'package:fl_clash/common/cache.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/plugins/app.dart';
+import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/ui/ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 
 const _maxCachedIconBytes = 16 << 20;
 
-// The precache and the widget must resolve equal providers to share one
-// ImageCache entry; 192 physical pixels cover a 48 dp icon box at 4x.
-const _iconDecodeExtent = 192;
+// The decode size is in dp and follows the pixel ratio an image resolves at,
+// so the precache resolves at the view's ratio to share the widget's
+// ImageCache entry.
+const _iconDecodeExtent = 48;
 
 ImageProvider _iconImage(Uint8List bytes) {
   return ResizeImage(
@@ -22,6 +25,7 @@ ImageProvider _iconImage(Uint8List bytes) {
     width: _iconDecodeExtent,
     height: _iconDecodeExtent,
     policy: ResizeImagePolicy.fit,
+    useLogicalSize: true,
   );
 }
 
@@ -193,10 +197,20 @@ class _BytesImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = IconTheme.of(context).size ?? 24;
     return isSvg
-        ? SvgPicture.memory(bytes, errorBuilder: (_, _, _) => _buildFallback())
+        ? SvgPicture.memory(
+            bytes,
+            width: size,
+            height: size,
+            fit: BoxFit.scaleDown,
+            errorBuilder: (_, _, _) => _buildFallback(),
+          )
         : Image(
             image: _iconImage(bytes),
+            width: size,
+            height: size,
+            fit: BoxFit.scaleDown,
             gaplessPlayback: true,
             errorBuilder: (_, _, _) => _buildFallback(),
           );
@@ -235,7 +249,10 @@ Stream<Uint8List> _loadRemoteIcon(String src) {
 
 Future<void> _decodeAhead(Uint8List bytes) {
   final completer = Completer<void>();
-  final stream = _iconImage(bytes).resolve(ImageConfiguration.empty);
+  final view = WidgetsBinding.instance.platformDispatcher.implicitView;
+  final stream = _iconImage(
+    bytes,
+  ).resolve(ImageConfiguration(devicePixelRatio: view?.devicePixelRatio));
   late final ImageStreamListener listener;
   void finish() {
     stream.removeListener(listener);
@@ -417,11 +434,72 @@ class _PackageIconState extends State<PackageIcon> {
     if (icon == null) {
       return SizedBox(width: widget.size, height: widget.size);
     }
-    return Image(
-      image: icon,
-      gaplessPlayback: true,
-      width: widget.size,
-      height: widget.size,
+    return packageIconImage(icon, widget.size);
+  }
+}
+
+Widget packageIconImage(ImageProvider icon, double size) =>
+    Image(image: icon, gaplessPlayback: true, width: size, height: size);
+
+/// Builds with the icon [packageName] draws itself, or with null until it has
+/// loaded and where there is none, so a row lays out without an icon rather
+/// than around an empty slot.
+class OwnPackageIcon extends ConsumerStatefulWidget {
+  final String packageName;
+  final double size;
+  final Widget Function(BuildContext context, Widget? icon) builder;
+
+  const OwnPackageIcon({
+    super.key,
+    required this.packageName,
+    required this.size,
+    required this.builder,
+  });
+
+  @override
+  ConsumerState<OwnPackageIcon> createState() => _OwnPackageIconState();
+}
+
+class _OwnPackageIconState extends ConsumerState<OwnPackageIcon> {
+  ImageProvider? _icon;
+  int _generation = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _resolve();
+  }
+
+  @override
+  void didUpdateWidget(covariant OwnPackageIcon oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.packageName != widget.packageName) {
+      _resolve();
+    }
+  }
+
+  void _resolve() {
+    final generation = ++_generation;
+    final source = ref.read(packageIconSourceProvider);
+    _icon = source?.getCachedOwnPackageIcon(widget.packageName);
+    if (source == null || _icon != null) {
+      return;
+    }
+    source.getOwnPackageIcon(widget.packageName).then((icon) {
+      if (mounted && generation == _generation && icon != null) {
+        setState(() {
+          _icon = icon;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final icon = _icon;
+    return widget.builder(
+      context,
+      icon == null ? null : packageIconImage(icon, widget.size),
     );
   }
 }

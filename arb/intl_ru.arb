@@ -170,7 +170,7 @@
   "geodataLoader": "Geo: экономия памяти",
   "requests": "Запросы",
   "recentRequests": "Последние запросы",
-  "findProcessMode": "Поиск процесса",
+  "alwaysFindProcess": "Всегда искать процесс",
   "init": "Инициализация",
   "infiniteTime": "Бессрочно",
   "connections": "Соединения",
@@ -511,10 +511,8 @@
   "coreStatus": "Статус ядра",
   "appendSystemDns": "Добавлять системный DNS",
   "editRule": "Редактировать правило",
-  "extendMode": "Режим расширения",
-  "standardModeDesc": "Стандартный режим: добавляет правила поверх профиля",
-  "scriptModeDesc": "Режим скрипта: переписывает весь профиль скриптом расширения",
   "addedRules": "Добавленные правила",
+  "addedRulesAfterScript": "Добавляются после выполнения скрипта, перед правилами профиля",
   "controlGlobalAddedRules": "Управление глобальными добавленными правилами",
   "quickActions": "Быстрые действия",
   "rulePresetBlockQuic": "Блокировать QUIC",
@@ -1180,5 +1178,8 @@
   "coreStarting": "Запуск…",
   "coreStopping": "Остановка…",
   "startFailedRetry": "Не удалось запустить. Нажмите, чтобы повторить",
-  "classicLook": "Классика"
+  "classicLook": "Классика",
+  "mixedPortReset": "Смешанный порт не может быть {value}, он возвращён к {port}",
+  "vpnPermissionNotGranted": "Разрешение на VPN не выдано, поэтому VPN не запущен. Постоянная VPN, заданная для другого приложения, тоже мешает запуску.",
+  "vpnServiceStartFailed": "Не удалось запустить службу VPN."
 }

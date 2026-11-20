@@ -53,7 +53,7 @@ func handleStartListener() {
 	defer beginTunSettle(currentConfig)()
 	updateListeners(currentConfig)
 	resolver.ResetConnection()
-	resetQuicSessions()
+	resetSharedOutbounds()
 	// A probe already out left before the TUN routes and over the DNS
 	// connections just dropped, so its answer must not stand for this route.
 	bumpRouteEpoch()
@@ -107,7 +107,7 @@ func updateListeners(cfg *config.Config) {
 			if !pinned {
 				scheduleTunAftershock(func() {
 					resolver.ResetConnection()
-					closeQuicSessions()
+					reopenSharedOutbounds()
 					bumpRouteEpoch()
 				})
 			}

@@ -2,6 +2,7 @@ package com.panoramasg.secureaccess.plugins
 
 import com.panoramasg.secureaccess.ServiceController
 import com.panoramasg.secureaccess.ServiceState
+import com.panoramasg.secureaccess.StartFailure
 import com.panoramasg.secureaccess.common.Components
 import com.panoramasg.secureaccess.common.GlobalState
 import com.panoramasg.secureaccess.core.Core
@@ -132,10 +133,13 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     }
 
     // Read on the platform thread, where start and stop arrive: revision and intent are one instant.
-    fun notifyStopped() {
+    internal fun notifyStopped(failure: StartFailure?) {
         scope.launch(Dispatchers.Main) {
             if (!ServiceState.isRunRequested) {
-                channel.invokeMethod("stopped", commandRevision)
+                channel.invokeMethod(
+                    "stopped",
+                    mapOf("revision" to commandRevision, "failure" to failure?.code),
+                )
             }
         }
     }

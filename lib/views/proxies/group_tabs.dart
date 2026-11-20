@@ -285,7 +285,11 @@ class _TabExtents {
       for (final name in names)
         max(
           minWidth,
-          EmojiText.widthOf(context, name, style).ceilToDouble() + padding,
+          min(
+                EmojiText.widthOf(context, name, style),
+                PopupMenu.labelMaxWidth,
+              ).ceilToDouble() +
+              padding,
         ),
     ]);
   }
@@ -395,7 +399,11 @@ class _GroupTabState extends State<_GroupTab> {
                   ? colorScheme.onPrimary
                   : colorScheme.onSurfaceVariant,
             ),
-        child: EmojiText(widget.name, maxLines: 1),
+        child: EmojiText(
+          widget.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
     );
   }

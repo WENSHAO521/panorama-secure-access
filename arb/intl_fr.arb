@@ -170,7 +170,7 @@
   "geodataLoader": "Mode Geo à faible mémoire",
   "requests": "Requêtes",
   "recentRequests": "Requêtes récentes",
-  "findProcessMode": "Recherche de processus",
+  "alwaysFindProcess": "Toujours rechercher le processus",
   "init": "Initialisation",
   "infiniteTime": "N’expire jamais",
   "connections": "Connexions",
@@ -511,10 +511,8 @@
   "coreStatus": "État du cœur",
   "appendSystemDns": "Ajouter le DNS du système",
   "editRule": "Modifier la règle",
-  "extendMode": "Mode d’extension",
-  "standardModeDesc": "Mode standard : ajoute des règles par-dessus le profil",
-  "scriptModeDesc": "Mode script : réécrit tout le profil avec un script d’extension",
   "addedRules": "Règles ajoutées",
+  "addedRulesAfterScript": "Insérées après l'exécution du script, avant les règles du profil",
   "controlGlobalAddedRules": "Gérer les règles ajoutées globales",
   "quickActions": "Actions rapides",
   "rulePresetBlockQuic": "Bloquer QUIC",
@@ -1180,5 +1178,8 @@
   "coreStarting": "Démarrage…",
   "coreStopping": "Arrêt…",
   "startFailedRetry": "Échec du démarrage. Touchez pour réessayer",
-  "classicLook": "Classique"
+  "classicLook": "Classique",
+  "mixedPortReset": "Le port mixte ne peut pas être {value}, il a été remis à {port}",
+  "vpnPermissionNotGranted": "L'autorisation VPN n'a pas été accordée, le VPN n'a donc pas démarré. Un VPN permanent défini pour une autre application l'empêche aussi.",
+  "vpnServiceStartFailed": "Le service VPN n'a pas pu démarrer."
 }
