@@ -2,6 +2,134 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "3.5.17",
+      "tag": "v3.5.17",
+      "date": "2026-11-20",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "4c29357",
+              "scope": "dns",
+              "text": "DNS overrides can set fake-ip-disable-mapping; the default Fake-IP filter names msftncsi correctly"
+            },
+            {
+              "id": "9416af5",
+              "scope": "core",
+              "text": "Core updated to the latest mihomo Alpha: fake-ip filter typo, xhttp reuse and Linux process rule fixes"
+            },
+            {
+              "id": "ac15a7e",
+              "scope": "logs",
+              "text": "Open a log's details to select and copy it on a phone"
+            },
+            {
+              "id": "fa012c8",
+              "scope": "resources",
+              "text": "Enable automatic resource updates by default"
+            },
+            {
+              "id": "52876f8",
+              "scope": "profiles",
+              "text": "A profile's extend script and its added rules now apply together"
+            },
+            {
+              "id": "7771f2c",
+              "scope": "dns",
+              "text": "DNS overrides can set respect-rules, use-hosts, use-system-hosts and cache-algorithm for subscription profiles"
+            }
+          ]
+        },
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "8e0add9",
+              "scope": "ui",
+              "text": "Hold a remote icon's size while it loads and once it shows"
+            },
+            {
+              "id": "50f07a3",
+              "scope": "connections",
+              "text": "Connections show the app's icon whenever the app is known"
+            },
+            {
+              "id": "5ed8d62",
+              "scope": "ui",
+              "text": "Keep long user names on one line beside their row's title"
+            },
+            {
+              "id": "69c2e21",
+              "scope": "proxies",
+              "text": "End a long group tab where its more menu row ends"
+            },
+            {
+              "id": "c1e3cbb",
+              "scope": "editor",
+              "text": "The editor shows its loading indicator as it opens instead of a blank page"
+            },
+            {
+              "id": "9e7f0b9",
+              "scope": "requests",
+              "text": "Grouped requests open on the newest group"
+            },
+            {
+              "id": "71c57d3",
+              "scope": "tools",
+              "text": "The tools page no longer opens scrolled to the bottom"
+            },
+            {
+              "id": "f58a1c0",
+              "scope": "android",
+              "text": "An Android start that the VPN service gives up says why"
+            },
+            {
+              "id": "496742e",
+              "scope": "setup",
+              "text": "A start that fails while applying the profile says why"
+            },
+            {
+              "id": "d9b7e5e",
+              "scope": "config",
+              "text": "Process rules now match by default; \"Always find process\" looks up the process of every connection"
+            },
+            {
+              "id": "12ed3e0",
+              "scope": "config",
+              "text": "A mixed port of 0 is replaced by a working port and the app says so"
+            },
+            {
+              "id": "86a660f",
+              "scope": "core",
+              "text": "Share links of HTTPUpgrade proxies no longer import as WebSocket"
+            },
+            {
+              "id": "2c6ad8b",
+              "scope": "core",
+              "text": "WireGuard, TUIC and Hysteria2 reconnect right after switching between Wi-Fi and mobile data"
+            },
+            {
+              "id": "e235556",
+              "scope": "core",
+              "text": "Apps using the VPN's HTTP proxy connect even with no profile selected"
+            }
+          ]
+        },
+        {
+          "type": "perf",
+          "entries": [
+            {
+              "id": "adda0cd",
+              "scope": "icons",
+              "text": "Proxy group icons use less memory on lower-density screens"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.5.16",
       "tag": "v3.5.16",
       "date": "2026-11-14",
