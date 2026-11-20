@@ -1400,6 +1400,7 @@ const _dns = YamlSchema.map({
   'fake-ip-range6': _str,
   'fake-ip-filter': _strList,
   'fake-ip-filter-mode': YamlSchema.scalar(['blacklist', 'whitelist', 'rule']),
+  'fake-ip-disable-mapping': _bool,
   'fake-ip-ttl': _str,
   'default-nameserver': _nameserver,
   'nameserver': _nameserver,

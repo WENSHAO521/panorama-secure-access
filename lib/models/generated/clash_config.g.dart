@@ -366,13 +366,14 @@ _Dns _$DnsFromJson(Map<String, dynamic> json) => _Dns(
       (json['fake-ip-filter'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
-      const ['dns.msftnsci.com', 'www.msftnsci.com', 'www.msftconnecttest.com'],
+      const ['dns.msftncsi.com', 'www.msftncsi.com', 'www.msftconnecttest.com'],
   fakeIpFilterMode:
       $enumDecodeNullable(
         _$FakeIpFilterModeEnumMap,
         json['fake-ip-filter-mode'],
       ) ??
       FakeIpFilterMode.blacklist,
+  fakeIpDisableMapping: json['fake-ip-disable-mapping'] as bool? ?? false,
   fakeIpTtl: (json['fake-ip-ttl'] as num?)?.toInt() ?? 1,
   nameserverPolicy:
       (json['nameserver-policy'] as Map<String, dynamic>?)?.map(
@@ -430,6 +431,7 @@ Map<String, dynamic> _$DnsToJson(_Dns instance) => <String, dynamic>{
   'fake-ip-range6': instance.fakeIpRange6,
   'fake-ip-filter': instance.fakeIpFilter,
   'fake-ip-filter-mode': _$FakeIpFilterModeEnumMap[instance.fakeIpFilterMode]!,
+  'fake-ip-disable-mapping': instance.fakeIpDisableMapping,
   'fake-ip-ttl': instance.fakeIpTtl,
   'nameserver-policy': instance.nameserverPolicy,
   'nameserver': instance.nameserver,
@@ -628,6 +630,7 @@ const _$DnsOverrideKeyEnumMap = {
   DnsOverrideKey.fakeIpRange6: 'fake-ip-range6',
   DnsOverrideKey.fakeIpFilter: 'fake-ip-filter',
   DnsOverrideKey.fakeIpFilterMode: 'fake-ip-filter-mode',
+  DnsOverrideKey.fakeIpDisableMapping: 'fake-ip-disable-mapping',
   DnsOverrideKey.fakeIpTtl: 'fake-ip-ttl',
   DnsOverrideKey.defaultNameserver: 'default-nameserver',
   DnsOverrideKey.nameserverPolicy: 'nameserver-policy',

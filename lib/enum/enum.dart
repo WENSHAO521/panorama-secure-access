@@ -255,6 +255,7 @@ enum DnsOverrideKey with OverrideKey {
   fakeIpRange6('fake-ip-range6'),
   fakeIpFilter('fake-ip-filter'),
   fakeIpFilterMode('fake-ip-filter-mode'),
+  fakeIpDisableMapping('fake-ip-disable-mapping'),
   fakeIpTtl('fake-ip-ttl'),
   defaultNameserver('default-nameserver'),
   nameserverPolicy('nameserver-policy'),
