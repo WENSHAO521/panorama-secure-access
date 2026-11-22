@@ -80,6 +80,7 @@ class TestSetupAction extends SetupAction {
   int trafficResets = 0;
   int applyProfileCalls = 0;
   final List<bool> appliedForce = [];
+  Completer<void>? profileGate;
   bool blockCoreCalls = false;
   Error? coreRunningError;
   Exception? coreRunningException;
@@ -88,9 +89,11 @@ class TestSetupAction extends SetupAction {
   int authorizeCalls = 0;
   AuthorizeCode authorizeResult = AuthorizeCode.none;
   DateTime? serviceStart;
+  Completer<DateTime?>? serviceRead;
 
   @override
-  Future<DateTime?> serviceStartTime() async => serviceStart;
+  Future<DateTime?> serviceStartTime() =>
+      serviceRead?.future ?? Future.value(serviceStart);
 
   @override
   Duration get minApplyDebounce => const Duration(milliseconds: 100);
@@ -133,6 +136,9 @@ class TestSetupAction extends SetupAction {
   }) async {
     applyProfileCalls++;
     appliedForce.add(force);
+    if (profileGate case final gate?) {
+      await gate.future;
+    }
     if (applyError case final error?) {
       throw error;
     }
@@ -181,7 +187,6 @@ void main() {
       ],
     );
     globalState.container = container;
-    globalState.needInitStatus = true;
     container.read(setupActionProvider.notifier);
   });
 
@@ -197,7 +202,6 @@ void main() {
     }
     await container.read(setupActionProvider.notifier).setRunning(false);
     container.dispose();
-    globalState.needInitStatus = true;
   });
 
   void markInitialized() {
@@ -219,7 +223,6 @@ void main() {
 
       expect(action.coreRunningCalls, [true]);
       expect(action.applyProfileCalls, 1);
-      expect(globalState.needInitStatus, isFalse);
     });
 
     test('safe mode runs the profile but never touches the listener', () async {
@@ -714,13 +717,68 @@ void main() {
 
   group('initStatus', () {
     test('is a no-op once the status has already been initialized', () async {
-      globalState.needInitStatus = false;
+      final setup = container.read(setupActionProvider.notifier);
+      await setup.setRunning(true, initialize: true);
+      await setup.initStatus();
 
-      await container.read(setupActionProvider.notifier).initStatus();
-
-      expect(action.coreRunningCalls, isEmpty);
-      expect(action.applyProfileCalls, 0);
+      expect(action.coreRunningCalls, [true]);
+      expect(action.applyProfileCalls, 1);
     });
+
+    test(
+      'initialization waits for a start requested before bootstrap finished',
+      () async {
+        final setup = container.read(setupActionProvider.notifier);
+        final gate = action.profileGate = Completer<void>();
+        final starting = setup.setRunning(true, initialize: true);
+        expect(action.applyProfileCalls, 1);
+
+        var ready = false;
+        final initializing = setup.initStatus().then((_) => ready = true);
+        await pumpEventQueue();
+        expect(ready, isFalse);
+        gate.complete();
+        await initializing;
+        expect(await starting, isTrue);
+        expect(action.applyProfileCalls, 1);
+      },
+    );
+
+    test(
+      'a pending service snapshot yields to a start tapped while it loads',
+      () async {
+        final snapshot = action.serviceRead = Completer<DateTime?>();
+        final gate = action.profileGate = Completer<void>();
+        final setup = container.read(setupActionProvider.notifier);
+        var ready = false;
+        final initializing = setup.initStatus().then((_) => ready = true);
+        final starting = setup.setRunning(true, initialize: true);
+        snapshot.complete(null);
+        await pumpEventQueue();
+        expect(action.applyProfileCalls, 1);
+        expect(ready, isFalse);
+        gate.complete();
+        await initializing;
+        expect(await starting, isTrue);
+        expect(container.read(isStartProvider), isTrue);
+      },
+    );
+
+    test(
+      'a stop during startup reports its error to the request that made it',
+      () async {
+        final setup = container.read(setupActionProvider.notifier);
+        await setup.setRunning(true, initialize: true);
+        action.unansweredCoreCalls.add(false);
+        await expectLater(
+          setup.setRunning(false),
+          throwsA(isA<CoreMethodException>()),
+        );
+        await setup.initStatus();
+        expect(action.coreRunningCalls, [true, false]);
+        expect(action.applyProfileCalls, 1);
+      },
+    );
 
     test('starts the core when autoRun is enabled', () async {
       container.read(appSettingProvider.notifier).value = const AppSettingProps(
@@ -730,7 +788,6 @@ void main() {
       await container.read(setupActionProvider.notifier).initStatus();
 
       expect(action.coreRunningCalls, [true]);
-      expect(globalState.needInitStatus, isFalse);
     });
 
     test('only applies the profile when autoRun is disabled', () async {

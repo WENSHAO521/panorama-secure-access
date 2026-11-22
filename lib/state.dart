@@ -23,7 +23,6 @@ class GlobalState {
   late PackageInfo packageInfo;
   late Measure measure;
   late ProviderContainer container;
-  bool needInitStatus = true;
 
   bool get isPre => appEnv != 'stable';
 
