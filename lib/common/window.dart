@@ -26,6 +26,8 @@ class Window implements WindowPort {
             : Duration.zero,
       );
 
+  final _shown = ValueNotifier(false);
+
   Window._internal();
 
   factory Window() {
@@ -184,6 +186,9 @@ class Window implements WindowPort {
     }
   }
 
+  /// Whether [show] or [hide] ran last; the window starts hidden.
+  ValueListenable<bool> get shown => _shown;
+
   @override
   Future<void> show() => _visibility.show();
 
@@ -194,12 +199,23 @@ class Window implements WindowPort {
   Future<void> toggle() => _visibility.toggle();
 
   Future<void> _showWindow() async {
-    await desktopWindow.show();
+    await _turn(true, desktopWindow.show);
     await desktopWindow.focus();
   }
 
-  Future<void> _hideWindow() async {
-    await desktopWindow.hide();
+  Future<void> _hideWindow() => _turn(false, desktopWindow.hide);
+
+  /// Turns [shown] ahead of the platform, so focus goes before the window
+  /// does, and back where the platform refuses.
+  Future<void> _turn(bool shown, Future<void> Function() platform) async {
+    final was = _shown.value;
+    _shown.value = shown;
+    try {
+      await platform();
+    } catch (_) {
+      _shown.value = was;
+      rethrow;
+    }
   }
 
   Future<bool> _isWindowVisible() async {
