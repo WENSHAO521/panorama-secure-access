@@ -14,6 +14,7 @@ import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/ui.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/services.dart';
@@ -208,13 +209,7 @@ class ApplicationState extends ConsumerState<Application> {
             builder: (_) => KeyboardInsetHold(child: child!),
           ),
         );
-        final desktopWindow = window;
-        return desktopWindow == null
-            ? prismApp
-            : HiddenWindowFocusGuard(
-                shown: desktopWindow.shown,
-                child: prismApp,
-              );
+        return guardHiddenWindowFocus(prismApp, window?.shown);
       },
       child: const HomePage(),
     );
@@ -242,4 +237,14 @@ class _StarChart extends ConsumerWidget {
         enabled && ref.watch(isStartProvider) && !ref.watch(suspendProvider);
     return StarChartScope(enabled: enabled, lit: lit, child: child);
   }
+}
+
+/// Keeps focus out of the app while the desktop window is hidden; [shown] is
+/// null where there is no desktop window.
+@visibleForTesting
+Widget guardHiddenWindowFocus(Widget app, ValueListenable<bool>? shown) {
+  if (shown == null) {
+    return app;
+  }
+  return HiddenWindowFocusGuard(shown: shown, child: app);
 }

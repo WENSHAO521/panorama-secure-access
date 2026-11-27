@@ -24,4 +24,17 @@ void main() {
       ),
     ]);
   });
+
+  test('a framework error is logged after the frame that hit it', () async {
+    final printed = <String>[];
+    final original = debugPrint;
+    debugPrint = (message, {wrapWidth}) => printed.add(message ?? '');
+    addTearDown(() => debugPrint = original);
+
+    logFlutterError(FlutterErrorDetails(exception: StateError('layout')));
+    expect(printed, isEmpty);
+    await Future<void>.delayed(Duration.zero);
+
+    expect(printed, [contains('exception: Bad state: layout')]);
+  });
 }
