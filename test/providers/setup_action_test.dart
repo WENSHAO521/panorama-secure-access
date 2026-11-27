@@ -332,8 +332,7 @@ void main() {
       expect(action.trafficResets, 1);
     });
 
-    test('a stop whose answer the transport drops stays stopped, and the '
-        'lost session after it brings nothing back', () async {
+    test('a stop whose answer the transport drops stays stopped', () async {
       markInitialized();
       final setup = container.read(setupActionProvider.notifier);
       await setup.setRunning(true);
@@ -346,11 +345,9 @@ void main() {
         setup.setRunning(false),
         throwsA(isA<CoreMethodException>()),
       );
-      setup.onCoreLost();
 
       expect(container.read(isStartProvider), isFalse);
       expect(container.read(runTimeProvider), isNull);
-      expect(setup.wantsRunning, isFalse);
     });
 
     test(

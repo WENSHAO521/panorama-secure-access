@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:fl_clash/common/app_localizations.dart';
 import 'package:fl_clash/core/desktop/model.dart';
 import 'package:fl_clash/core/lib.dart';
 import 'package:fl_clash/core/method.dart';
