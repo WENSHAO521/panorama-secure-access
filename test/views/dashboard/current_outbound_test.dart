@@ -29,7 +29,6 @@ import 'package:mocktail/mocktail.dart';
 
 import '../../helpers/glyph_finders.dart';
 import '../../helpers/test_app.dart';
-import 'package:prism_ui/prism_ui.dart';
 import '../../helpers/host_scaffold.dart';
 
 const _ip = '203.0.113.9';

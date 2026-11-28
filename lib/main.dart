@@ -31,14 +31,7 @@ void main(List<String> args) {
       if (Platform.isLinux) {
         linkManager.seedInitialLink(args);
       }
-      FlutterError.onError = (details) {
-        Future.microtask(() {
-          commonPrint.log(
-            'exception: ${details.exception} stack: ${details.stack}',
-            logLevel: LogLevel.warning,
-          );
-        });
-      };
+      FlutterError.onError = logFlutterError;
       try {
         await RustLib.init();
         await importLegacyData(await appPath.homeDirPath);
@@ -54,14 +47,7 @@ void main(List<String> args) {
           ),
         );
       } catch (e, s) {
-        runApp(
-          InitErrorApp(
-            error: e,
-            stack: s,
-            onClearData: clearAppData,
-            onExit: _exitAfterInitFailure,
-          ),
-        );
+        runApp(initFailureApp(e, s));
         unawaited(window?.showInitFailure(onExit: _exitAfterInitFailure));
       }
     },
@@ -70,6 +56,28 @@ void main(List<String> args) {
         FlutterErrorDetails(exception: error, stack: stack),
       );
     },
+  );
+}
+
+/// Logs a framework error on the next microtask, off the frame that hit it.
+@visibleForTesting
+void logFlutterError(FlutterErrorDetails details) {
+  Future.microtask(() {
+    commonPrint.log(
+      'exception: ${details.exception} stack: ${details.stack}',
+      logLevel: LogLevel.warning,
+    );
+  });
+}
+
+@visibleForTesting
+Widget initFailureApp(Object error, StackTrace stack) {
+  commonPrint.log('Startup failed: $error\n$stack', logLevel: LogLevel.error);
+  return InitErrorApp(
+    error: error,
+    stack: stack,
+    onClearData: clearAppData,
+    onExit: _exitAfterInitFailure,
   );
 }
 

@@ -1,5 +1,32 @@
 # Changelog
 
+## v3.5.18 (2026-11-28)
+
+**Features**
+
+- **core** Update the core to the latest mihomo Alpha; macOS connections show the app that opened them again (b78d662)
+
+**Bug Fixes**
+
+- **ui** Pages open and close again after the display sleeps or changes (2a359e4)
+- **linux** The Linux window is no longer drawn shifted toward the bottom left on NVIDIA and other drivers without glBlitFramebuffer (daf79c8)
+- **core** On Android, stopping while the core is still starting no longer leaves it running, and a start that failed while sending settings to the core no longer blocks the next start (35babd8)
+- **setup** Restarting the core with TUN on no longer hangs when it has to ask for authorization again (0db9132)
+- **setup** Dashboard checks wait for startup to finish when you tap Start as the app opens (5c5af96)
+- **config** The default bypass list no longer skips the proxy for public 172.2* addresses, and the default fake-ip filter names Windows' real connectivity check hosts (2be046c)
+- **window** A hidden window no longer takes the foreground from a full-screen game on Windows (b0176fe)
+- **dashboard** Service checks show the address Claude and ChatGPT actually saw, not only the node's exit address (c7368ab)
+- **core** A stop whose answer is lost with the connection to the core no longer turns the proxy back on when the core comes back (bf4b0f3)
+- **scaffold** Opening search puts the cursor in its field even when something else on the page has the focus (3988315)
+- **android** App icons in access control and connections load from the cache instead of being redrawn every day (d3dff86)
+- **core** macOS no longer collects defunct dscacheutil processes each time TUN is turned on or off (7f5aeed)
+- **core** Gemini check no longer reports Hong Kong and Macau nodes as unsupported (01b4fe3)
+
+**Performance**
+
+- **db** Profiles with many rules, groups or proxies open and update without stalling the screen (1fc4be2)
+- **code_forge** Large files open in the editor without a pause (280c388)
+
 ## v3.5.17 (2026-11-20)
 
 **Features**
